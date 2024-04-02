@@ -1,13 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Dockerized Nginx Server</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .page {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .nav-link {
+            margin-right: 10px;
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+    <!-- <link rel="stylesheet" href="./style.css"> -->
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>This is a simple HTML page served by Nginx running in Docker.</p>
+    
+    <div class="home page">
+        <h1><center>Home</center></h1>
+        <p>This is the content of Home.</p>
+        <a button="settings" href="#" class="nav-link" >Settings</a>
+    </div>
+    
+    <div class="settings page">
+        <h1>Settings</h1>
+        <p>This is the content of Settings.</p>
+        <a button="home" href="#" class="nav-link">Home</a>
+
+    </div>
+
+    <script src="router.js"> </script>
 </body>
 </html>
-
-
- <!--Link for a possible game inspo: https://embed.plnkr.co/zg1iEjXtv0krpPSgkWe3/  -->

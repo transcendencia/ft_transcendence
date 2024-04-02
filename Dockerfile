@@ -11,7 +11,7 @@ ENV APP_DIR=/usr/share/nginx/html
 WORKDIR $APP_DIR
 
 # Copy the HTML files to the application directory inside the container
-COPY html/ ./
+COPY html /usr/share/nginx/html/.
 
 # Expose port 80
 EXPOSE 80
