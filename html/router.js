@@ -10,6 +10,7 @@ function showPage(pageId) {
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.add('active');
+
 }
 
 
@@ -19,10 +20,17 @@ var anchors = document.querySelectorAll('a');
 // Add event listener to each anchor element
 anchors.forEach(function(anchor) {
     anchor.addEventListener('click', function(event) {
+        event.preventDefault();
         // Prevent default link behavior
         var id = anchor.getAttribute('button');
+        history.pushState(id, null, null);
         showPage(id);
     });
 });
 
+window.addEventListener('popstate', function(event) {
+    showPage(event.state);
+});
+
 showPage('home');
+history.replaceState('home', null, null);
