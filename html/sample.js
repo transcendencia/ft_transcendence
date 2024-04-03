@@ -18,7 +18,7 @@ function init() {
     camera.position.z = 5;
 
     // Create cube
-    const geometry = new THREE.SphereGeometry();
+    const geometry = new THREE.BoxGeometry();
    
     // Load texture image
     const textureLoader = new THREE.TextureLoader();
