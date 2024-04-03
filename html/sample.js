@@ -10,7 +10,7 @@ function init() {
     scene = new THREE.Scene();
     // Load texture image
     const sceneTextureLoader = new THREE.TextureLoader();
-    const sceneTexture = sceneTextureLoader.load('park.jpg');
+    const sceneTexture = sceneTextureLoader.load('sunset.jpg');
     scene.background = sceneTexture;
 
     // Create camera
@@ -18,11 +18,11 @@ function init() {
     camera.position.z = 5;
 
     // Create cube
-    const geometry = new THREE.BoxGeometry();
+    const geometry = new THREE.SphereGeometry(15, 32, 16);
    
     // Load texture image
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('dog.jpg');
+    const texture = textureLoader.load('Hungry-Dog-meme-5.jpg');
 
     // Create material with texture
     const material = new THREE.MeshBasicMaterial({ map: texture }); 
