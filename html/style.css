@@ -1,16 +1,14 @@
-/* Some basic CSS for styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
 }
 .page {
-    display: none; /* Hide all pages by default */
+    display: none;
 }
 .active {
-    display: block; /* Show active page */
+    display: block;
 }
-/* Style navigation links */
 .nav-link {
     margin-right: 10px;
     text-decoration: none;
