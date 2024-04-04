@@ -1,21 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Sample Website</title>
-    </head>
-    <style>
-    canvas {
-       position: fixed;
-       top: 0;
-       left: 0;
-}
-    </style>
-    <body>
-        <canvas id="bg"></canvas>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
-        <script type="module" src="main.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sample Website</title>
+</head>
+<style>
+    body {
+        margin: 0; /* Remove default body margin */
+        overflow: hidden; /* Hide overflow to prevent scrollbars */
+    }
+
+    #a {
+        display: flex;
+        flex-direction: row;
+        width: 100vw; /* Use viewport width for container */
+        height: 100vh; /* Use viewport height for container */
+    }
+
+    #c1, #c2 {
+        width: 50%; /* Each canvas takes up 50% of the window width */
+        height: 100%; /* Each canvas fills the entire window height */
+    }
+
+    #c1 {
+        order: 1; /* Set the order of #c1 to 1 (display on the left) */
+    }
+
+    #c2 {
+        order: 2; /* Set the order of #c2 to 2 (display on the right) */
+    }
+</style>
+<body>
+    <div id="a">
+        <canvas id="c1"></canvas>
+        <canvas id="c2"></canvas>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    <script type="module" src="main.js"></script>
+</body>
 </html>

@@ -8,15 +8,28 @@ import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/js
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const aspectRatio = 0.5 * window.innerWidth / window.innerHeight; // Adjust aspect ratio
+const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000 );
+const camera1 = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000 );
+const cameraHelper = new THREE.CameraHelper(camera);
+const camera1Helper = new THREE.CameraHelper(camera1);
+// scene.add(cameraHelper, camera1Helper);
 
 const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#bg')
+    canvas: document.querySelector('#c1')
 });
 
+const renderer1 = new THREE.WebGLRenderer({
+    canvas: document.querySelector('#c2')
+})
+
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth / 2, window.innerHeight);
 renderer.render(scene, camera);
+
+renderer1.setPixelRatio(window.devicePixelRatio);
+renderer1.setSize(window.innerWidth / 2, window.innerHeight); // Set width to half of window width
+renderer1.render(scene, camera1);
 
 // TORUS
 const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
@@ -43,11 +56,12 @@ scene.add(lightHelper, gridHelper);
 
 let redCar;
 let purpleCar;
+let moon;
 
 // BLENDER MODEL
 const redCarLoader = new GLTFLoader();
 redCarLoader.load(
-    'voitureRouge/scene.gltf',
+    'voitureViolette/scene.gltf',
     function(gltf) {
         redCar = gltf.scene;
         redCar.scale.set(3,3,3);
@@ -63,7 +77,7 @@ redCarLoader.load(
 
 const purpleCarLoader = new GLTFLoader();
 purpleCarLoader.load(
-    'voitureViolette/scene.gltf',
+    'voitureRouge/scene.gltf',
     function(gltf) {
         purpleCar = gltf.scene;
         purpleCar.scale.set(3,3,3);
@@ -77,6 +91,24 @@ purpleCarLoader.load(
     }
 );
 
+const moonLoader = new GLTFLoader();
+moonLoader.load(
+    'moon/scene.gltf',
+    function(gltf) {
+        moon = gltf.scene;
+        moon.scale.set(400,400,400);
+        scene.add(moon);
+        moon.position.set(250, 250, 250);
+    },
+    function(xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+    },
+    function (error) {
+        console.error(error);
+    }
+)
+
+// STARS
 function addStar(){
     const geometry = new THREE.SphereGeometry(0.25, 24, 24);
     const material = new THREE.MeshStandardMaterial({color:0xffffff})
@@ -86,6 +118,7 @@ function addStar(){
     star.position.set(x, y, z);
     scene.add(star)
 }
+
 
 Array(800).fill().forEach(addStar)
 
@@ -98,8 +131,6 @@ let wKeyPressed = false;
 let aKeyPressed = false;
 let sKeyPressed = false;
 let dKeyPressed = false;
-
-
 
 let aKeyIsPressed =false;
 
@@ -152,11 +183,11 @@ document.addEventListener('keyup', (event) => {
 });
 
 document.addEventListener('keypress', (event) => {
-    if (event.key === ' ' && distance === 40) {
+    if (event.key === ' ' && distance1 === 40) {
         console.log("a");
         goToFirstPerson = true;
     }
-    if (event.key === ' ' && distance === 0) {
+    if (event.key === ' ' && distance1 === 0) {
        console.log("b");
         goToThirdPerson = true;
     }
@@ -164,9 +195,10 @@ document.addEventListener('keypress', (event) => {
 })
 
 // Update camera position and orientation to follow the car
-let distance = 0; // Distance of the camera from the car (adjust as needed)
-let height = 3;
-
+let distance1 = 0; // Distance1 of the camera from the car (adjust as needed)
+let height1 = 3;
+let distance2 = 40;
+let height2 = 9;
 
 function redCarMovement() {
     if (upArrowPressed) {
@@ -190,7 +222,7 @@ function redCarMovement() {
         else 
             redCar.rotation.y -= 0.05;
     }
-    camera.position.copy(new THREE.Vector3(redCar.position.x - distance * Math.sin(redCar.rotation.y), height, redCar.position.z - distance * Math.cos(redCar.rotation.y)));
+    camera.position.copy(new THREE.Vector3(redCar.position.x - distance1 * Math.sin(redCar.rotation.y), height1, redCar.position.z - distance1 * Math.cos(redCar.rotation.y)));
 }
 
 function purpleCarMovement() {
@@ -215,6 +247,7 @@ function purpleCarMovement() {
         else 
             purpleCar.rotation.y -= 0.05;
     }
+    camera1.position.copy(new THREE.Vector3(purpleCar.position.x - distance2 * Math.sin(purpleCar.rotation.y), height2, purpleCar.position.z - distance2 * Math.cos(purpleCar.rotation.y)));
 }
 
 let goToFirstPerson = false;
@@ -222,32 +255,37 @@ let goToThirdPerson = false;
 
 function update() {
     // Update car position and rotation
-    console.log(goToThirdPerson);
-    if (height == 3)
-        camera.position.copy(new THREE.Vector3(redCar.position.x - distance * Math.sin(redCar.rotation.y), height, redCar.position.z - distance * Math.cos(redCar.rotation.y)));
+    if (height1 == 3)
+        camera.position.copy(new THREE.Vector3(redCar.position.x - distance1 * Math.sin(redCar.rotation.y), height1, redCar.position.z - distance1 * Math.cos(redCar.rotation.y)));
+    if (height2 == 3)
+        camera1.position.copy(new THREE.Vector3(purpleCar.position.x - distance2 * Math.sin(purpleCar.rotation.y), height1, purpleCar.position.z - distance2 * Math.cos(purpleCar.rotation.y)));
+        
     if (aKeyIsPressed)
     {
         purpleCarMovement();
         redCarMovement();
     }
-    if (goToFirstPerson && distance != 0){
-        distance -= 1;
-        height -= 0.2;
-        camera.position.copy(new THREE.Vector3(redCar.position.x - distance * Math.sin(redCar.rotation.y), height, redCar.position.z - distance * Math.cos(redCar.rotation.y)));
+    if (goToFirstPerson && distance1 != 0){
+        distance1 -= 1;
+        height1 -= 0.2;
+        camera.position.copy(new THREE.Vector3(redCar.position.x - distance1 * Math.sin(redCar.rotation.y), height1, redCar.position.z - distance1 * Math.cos(redCar.rotation.y)));
     }
-    if (goToThirdPerson && distance != 40){
-        distance += 1;
-        height += 0.2;
-        camera.position.copy(new THREE.Vector3(redCar.position.x - distance * Math.sin(redCar.rotation.y), height, redCar.position.z - distance * Math.cos(redCar.rotation.y)));
+    if (goToThirdPerson && distance1 != 40){
+        distance1 += 1;
+        height1 += 0.2;
+        camera.position.copy(new THREE.Vector3(redCar.position.x - distance1 * Math.sin(redCar.rotation.y), height1, redCar.position.z - distance1 * Math.cos(redCar.rotation.y)));
     }
-    if (distance === 0 && goToFirstPerson)
+    if (distance1 === 0 && goToFirstPerson)
         goToFirstPerson = false;
-    if (distance === 40 && goToThirdPerson)
+    if (distance1 === 40 && goToThirdPerson)
         goToThirdPerson = false;
     // Set the camera's position and orientation
     // camera.position.copy(new THREE.Vector3(redCar.position.x, 3, redCar.position.z));
     // camera.applyQuaternion(redCar.quaternion);
     camera.rotation.y = redCar.rotation.y - Math.PI; // Rotate the camera to look behind the car
+    camera1.rotation.y = purpleCar.rotation.y - Math.PI;
+    moon.rotation.x += 0.01;
+    moon.rotation.z += 0.01;
 }
 
 function animate()
@@ -257,6 +295,7 @@ function animate()
     torus.rotation.x += 0.05;
     // UPDATE CAMERA POSITION TO BEHIND THE redCar
     update();
+    renderer1.render( scene, camera1 );
     renderer.render( scene, camera );
 }
 animate();
