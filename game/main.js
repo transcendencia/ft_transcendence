@@ -12,7 +12,7 @@ import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/l
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050505);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
-const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 10000);
+const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 const cameraLeft = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 camera.position.set(20, 20, 0);
@@ -41,10 +41,10 @@ renderer.render(scene, camera);
 // renderer2.render(scene, cameraLeft);
 
 // TORUS THINGY (VERY IOMPORTNATNT)
-const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
-const material = new THREE.MeshStandardMaterial({color:0xFFFFFF, wireframe:true});
-const torus = new THREE.Mesh(geometry, material);
-scene.add(torus);
+// const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
+// const material = new THREE.MeshStandardMaterial({color:0xFFFFFF, wireframe:true});
+// const torus = new THREE.Mesh(geometry, material);
+// scene.add(torus);
 
 //MOON AND STARS
 function addStar(){
@@ -58,35 +58,32 @@ function addStar(){
 }
 Array(800).fill().forEach(addStar)
 
-let moon;
-const moonLoader = new GLTFLoader();
-moonLoader.load(
-    'moon/scene.gltf',
-    function(gltf) {
-        moon = gltf.scene;
-        moon.scale.set(250,250,250);
-        scene.add(moon);
-        moon.position.set(250, 250, 250);
-    },
-    function(xhr) {
-        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
-    },
-    function (error) {
-        console.error(error);
-    }
-)
-
-
+// let moon;
+// const moonLoader = new GLTFLoader();
+// moonLoader.load(
+//     'moon/scene.gltf',
+//     function(gltf) {
+//         moon = gltf.scene;
+//         moon.scale.set(250,250,250);
+//         scene.add(moon);
+//         moon.position.set(250, 250, 250);
+//     },
+//     function(xhr) {
+//         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+//     },
+//     function (error) {
+//         console.error(error);
+//     }
+// )
 
 // HELPERS
-const ambientLight = new THREE.AmbientLight(0xffffff, 0);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 const gridHelper = new THREE.GridHelper(1000, 500, 0,  0xAA00ff);
 const axesHelper = new THREE.AxesHelper(50); // Length of axes
 const rightHelper = new THREE.CameraHelper(cameraRight);
 const leftHelper = new THREE.CameraHelper(cameraLeft);
-// scene.add(axesHelper);
-// scene.add(gridHelper, ambientLight);
-
+scene.add(axesHelper);
+scene.add(gridHelper, ambientLight);
 
 // VIEW UTILS
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -100,6 +97,8 @@ let aKeyPressed = false;
 let sKeyPressed = false;
 let dKeyPressed = false;
 let cKeyPressed = false;
+let oKeyPressed = false;
+let pKeyPressed = false;
 
 // Event listeners for arrow key presses
 document.addEventListener('keydown', (event) => {
@@ -123,6 +122,10 @@ document.addEventListener('keydown', (event) => {
         spaceKeyPressed = true;
     if (event.key === 'c')
         cKeyPressed = true;
+    if (event.key === 'o')
+        oKeyPressed = true;
+    if (event.key === 'p')
+        pKeyPressed = true;
 });
 
 document.addEventListener('keyup', (event) => {
@@ -149,6 +152,10 @@ document.addEventListener('keyup', (event) => {
         spaceKeyPressed = false;
     if (event.key === 'c')
         cKeyPressed = false;
+    if (event.key === 'o')
+        oKeyPressed = false;
+    if (event.key === 'p')
+        pKeyPressed = false;
 });
 
 function cameraDebug()
@@ -280,28 +287,61 @@ function animatePaddle(paddle, keyRight, keyLeft, arena)
 
 
 const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 200, 30, 300);
+const arena1 = new Arena(centerPosition, 20, 3, 30);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft);
-const centerPosition1 = new THREE.Vector3(300, 0, 0);
-const arena2 = new Arena(centerPosition1, 20, 80, 30);
-scene.add(arena2, arena2.paddleLeft, arena2.paddleRight);
-const centerPosition2 = new THREE.Vector3(0, 100, 300);
-const arena3 = new Arena(centerPosition2, 150, 10, 150);
-scene.add(arena3, arena3.paddleLeft, arena3.paddleRight);
-// setCameraPositions(cameraRight, cameraLeft, arena);
+
+
+function swapToLeftScreen() {
+    if (oKeyPressed) {
+        const targetWidth = window.innerWidth / 2;
+        const duration = 500; // Animation duration in milliseconds
+        new TWEEN.Tween(renderer.domElement)
+            .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(() => {
+                renderer.setSize(renderer.domElement.width, window.innerHeight);
+            })
+            .start();
+
+        const aspectRatio = (window.innerWidth / window.innerHeight) / 2;
+        new TWEEN.Tween(camera)
+            .to({ aspect: aspectRatio, fov: 95 }, duration)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(() => {
+                camera.updateProjectionMatrix();
+            })
+            .start();
+    }
+    if (pKeyPressed) {
+        const targetWidth = window.innerWidth;
+        const duration = 500; // Animation duration in milliseconds
+        new TWEEN.Tween(renderer.domElement)
+            .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(() => {
+                renderer.setSize(renderer.domElement.width, window.innerHeight);
+            })
+            .start();
+
+        const aspectRatio = (window.innerWidth / window.innerHeight);
+        new TWEEN.Tween(camera)
+            .to({ aspect: aspectRatio, fov: 75 }, duration)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(() => {
+                camera.updateProjectionMatrix();
+            })
+            .start();
+    }
+}
 
 function animate()
 {
     requestAnimationFrame( animate );
-    torus.rotation.z += 5;
-    controls.update();
-    // if (spaceKeyPressed)
-    //     setCameraPositions(cameraRight, cameraLeft, arena);
+    // torus.rotation.z += 5;
+    // controls.update();
+    TWEEN.update();
     arena1.monitorArena();
-    arena2.monitorArena();
-    arena3.monitorArena();
-    // animatePaddle(arena.paddleRight, dKeyPressed, aKeyPressed, arena);
-    // animatePaddle(arena.paddleLeft, leftArrowPressed, rightArrowPressed, arena);
+    swapToLeftScreen();
     renderer.render(scene, camera);
     // renderer1.render(scene, cameraRight);
     // renderer2.render(scene, cameraLeft);
