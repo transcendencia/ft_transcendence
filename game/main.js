@@ -10,9 +10,9 @@ import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/l
 
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x151515);
+scene.background = new THREE.Color(0x050505);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
-const camera = new THREE.PerspectiveCamera(75, aspectRatio);
+const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 10000);
 const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 const cameraLeft = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 camera.position.set(20, 20, 0);
@@ -26,27 +26,27 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.render(scene, camera);
 
-const renderer1 = new THREE.WebGLRenderer({ // Renderer for split screen
-    canvas: document.querySelector('#c1')
-});
-renderer1.setPixelRatio(window.devicePixelRatio);
-renderer1.setSize(window.innerWidth / 2, window.innerHeight);
-renderer1.render(scene, cameraRight);
+// const renderer1 = new THREE.WebGLRenderer({ // Renderer for split screen
+//     canvas: document.querySelector('#c1')
+// });
+// renderer1.setPixelRatio(window.devicePixelRatio);
+// renderer1.setSize(window.innerWidth / 2, window.innerHeight);
+// renderer1.render(scene, cameraRight);
 
-const renderer2 = new THREE.WebGLRenderer({ // Renderer for split screen
-    canvas: document.querySelector('#c2')
-})
-renderer2.setPixelRatio(window.devicePixelRatio);
-renderer2.setSize(window.innerWidth / 2, window.innerHeight); // Set width to half of window width
-renderer2.render(scene, cameraLeft);
+// const renderer2 = new THREE.WebGLRenderer({ // Renderer for split screen
+//     canvas: document.querySelector('#c2')
+// })
+// renderer2.setPixelRatio(window.devicePixelRatio);
+// renderer2.setSize(window.innerWidth / 2, window.innerHeight); // Set width to half of window width
+// renderer2.render(scene, cameraLeft);
 
 // TORUS THINGY (VERY IOMPORTNATNT)
 const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
 const material = new THREE.MeshStandardMaterial({color:0xFFFFFF, wireframe:true});
 const torus = new THREE.Mesh(geometry, material);
-// scene.add(torus);
+scene.add(torus);
 
-//STARS
+//MOON AND STARS
 function addStar(){
     const geometry = new THREE.SphereGeometry(0.25, 24, 24);
     const material = new THREE.MeshStandardMaterial({color:0xffffff})
@@ -56,20 +56,36 @@ function addStar(){
     star.position.set(x, y, z);
     scene.add(star)
 }
-
-
 Array(800).fill().forEach(addStar)
+
+let moon;
+const moonLoader = new GLTFLoader();
+moonLoader.load(
+    'moon/scene.gltf',
+    function(gltf) {
+        moon = gltf.scene;
+        moon.scale.set(250,250,250);
+        scene.add(moon);
+        moon.position.set(250, 250, 250);
+    },
+    function(xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+    },
+    function (error) {
+        console.error(error);
+    }
+)
 
 
 
 // HELPERS
-const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0);
 const gridHelper = new THREE.GridHelper(1000, 500, 0,  0xAA00ff);
 const axesHelper = new THREE.AxesHelper(50); // Length of axes
 const rightHelper = new THREE.CameraHelper(cameraRight);
 const leftHelper = new THREE.CameraHelper(cameraLeft);
-scene.add(axesHelper);
-scene.add(gridHelper, ambientLight);
+// scene.add(axesHelper);
+// scene.add(gridHelper, ambientLight);
 
 
 // VIEW UTILS
@@ -153,7 +169,7 @@ class Arena extends THREE.Mesh {
         const geometry = new THREE.BoxGeometry(width, height, depth);
         
         // Create material
-        const material = new THREE.MeshBasicMaterial({ color: 0x8800dd, wireframe: false});
+        const material = new THREE.MeshStandardMaterial({ color: 0x8800dd, wireframe: false});
         
         // Call super constructor to set up mesh
         super(geometry, material);
@@ -184,11 +200,33 @@ class Arena extends THREE.Mesh {
     }
     monitorArena()
     {
+        this.paddleLeft.light.position.copy(this.paddleLeft.position);
+        this.paddleRight.light.position.copy(this.paddleRight.position);
         if (this.isActive)
         {
             animatePaddle(this.paddleLeft, leftArrowPressed, rightArrowPressed, this);
             animatePaddle(this.paddleRight, dKeyPressed, aKeyPressed, this);
         }
+        if (spaceKeyPressed)
+            this.paddleLeft.light.power += 0.02;
+        if (cKeyPressed)
+            this.paddleRight.light.power += 0.02;
+        if (wKeyPressed)
+        {
+            this.paddleLeft.light.power -= 0.02;
+            this.paddleRight.light.power -= 0.02;
+        }
+    }
+    setCameraPositions(_cameraRight, _cameraLeft)
+    {
+    _cameraRight.position.y = this.position.y + this.height * 3;
+    _cameraRight.position.z = this.position.z + this.width * 0.85;
+    _cameraRight.position.x = this.position.x;
+    _cameraLeft.position.y = this.position.y + this.height * 3;
+    _cameraLeft.position.z = this.position.z - this.width * 0.85;
+    _cameraLeft.position.x = this.position.x;
+    _cameraRight.lookAt(this.position);
+    _cameraLeft.lookAt(this.position);
     }
 }
 
@@ -199,7 +237,7 @@ class Paddle extends THREE.Mesh {
         // Calculate paddle dimensions based on arena size
         const paddleWidth = arena.width * 0.1; // 20% of arena width
         const paddleHeight = arena.length * 0.05; // 5% of arena height
-        const paddleDepth = arena.height * 0.15; // 2% of arena depth
+        const paddleDepth = paddleHeight * 0.25; // 2% of arena depth
         console.log("arena = " + arena.width, arena.height, arena.length);
         console.log(paddleWidth, paddleHeight, paddleDepth);
         // Create geometry for the paddle
@@ -208,7 +246,7 @@ class Paddle extends THREE.Mesh {
         const textureLoader = new THREE.TextureLoader();
         const texture = textureLoader.load('mathy.jpeg');
         // Create material
-        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const material = new THREE.MeshStandardMaterial({ map: texture });
 
         // Call super constructor to set up mesh
         super(geometry, material);
@@ -225,46 +263,47 @@ class Paddle extends THREE.Mesh {
 
         // Store arena reference
         this.arena = arena;
+        this.light = new THREE.PointLight(0xffffff, 2);
+        scene.add(this.light);
+        this.light.power = 1;
+        this.light.castShadow = true;
     }
 }
 
 function animatePaddle(paddle, keyRight, keyLeft, arena)
 {
-    if (keyRight && paddle.position.x + 0.01 <= arena.rightCorner.x)
-        paddle.position.x += 0.01 * arena.length;
-    if (keyLeft && paddle.position.x - 0.01 >= arena.leftCorner.x)
-        paddle.position.x -= 0.01 * arena.length;
-}
-
-function setCameraPositions(cameraRight, cameraLeft, arena)
-{
-    cameraRight.position.y = arena.position.y + arena.height * 3;
-    cameraRight.position.z = arena.position.z + arena.width * 0.85;
-    cameraRight.position.x = arena.position.x;
-    cameraLeft.position.y = arena.position.y + arena.height * 3;
-    cameraLeft.position.z = arena.position.z - arena.width * 0.85;
-    cameraLeft.position.x = arena.position.x;
-    cameraRight.lookAt(arena.position);
-    cameraLeft.lookAt(arena.position);
+    if (keyRight && paddle.position.x + 0.005 <= arena.rightCorner.x)
+        paddle.position.x += 0.005 * arena.length;
+    if (keyLeft && paddle.position.x - 0.005 >= arena.leftCorner.x)
+        paddle.position.x -= 0.005 * arena.length;
 }
 
 
 const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena = new Arena(centerPosition, 200, 30, 300);
-scene.add(arena, arena.paddleRight, arena.paddleLeft);
-
-setCameraPositions(cameraRight, cameraLeft, arena);
+const arena1 = new Arena(centerPosition, 200, 30, 300);
+scene.add(arena1, arena1.paddleRight, arena1.paddleLeft);
+const centerPosition1 = new THREE.Vector3(300, 0, 0);
+const arena2 = new Arena(centerPosition1, 20, 80, 30);
+scene.add(arena2, arena2.paddleLeft, arena2.paddleRight);
+const centerPosition2 = new THREE.Vector3(0, 100, 300);
+const arena3 = new Arena(centerPosition2, 150, 10, 150);
+scene.add(arena3, arena3.paddleLeft, arena3.paddleRight);
+// setCameraPositions(cameraRight, cameraLeft, arena);
 
 function animate()
 {
     requestAnimationFrame( animate );
     torus.rotation.z += 5;
-    if (spaceKeyPressed)
-        setCameraPositions(cameraRight, cameraLeft, arena);
-    arena.monitorArena();
+    controls.update();
+    // if (spaceKeyPressed)
+    //     setCameraPositions(cameraRight, cameraLeft, arena);
+    arena1.monitorArena();
+    arena2.monitorArena();
+    arena3.monitorArena();
     // animatePaddle(arena.paddleRight, dKeyPressed, aKeyPressed, arena);
     // animatePaddle(arena.paddleLeft, leftArrowPressed, rightArrowPressed, arena);
-    renderer1.render(scene, cameraRight);
-    renderer2.render(scene, cameraLeft);
+    renderer.render(scene, camera);
+    // renderer1.render(scene, cameraRight);
+    // renderer2.render(scene, cameraLeft);
 }
 animate();
