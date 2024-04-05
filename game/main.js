@@ -16,8 +16,8 @@ const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 const cameraLeft = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 camera.position.set(20, 20, 0);
-
-
+cameraLeft.position.set(0, 400, 0);
+cameraLeft.lookAt(0, 0, 0);
 //RENDERERS
 const renderer = new THREE.WebGLRenderer({ // Renderer for full screen
     canvas: document.querySelector('#c1')
@@ -33,12 +33,12 @@ renderer.render(scene, camera);
 // renderer1.setSize(window.innerWidth / 2, window.innerHeight);
 // renderer1.render(scene, cameraRight);
 
-// const renderer2 = new THREE.WebGLRenderer({ // Renderer for split screen
-//     canvas: document.querySelector('#c2')
-// })
-// renderer2.setPixelRatio(window.devicePixelRatio);
-// renderer2.setSize(window.innerWidth / 2, window.innerHeight); // Set width to half of window width
-// renderer2.render(scene, cameraLeft);
+const renderer2 = new THREE.WebGLRenderer({ // Renderer for split screen
+    canvas: document.querySelector('#c2')
+})
+renderer2.setPixelRatio(window.devicePixelRatio);
+renderer2.setSize(window.innerWidth / 2, window.innerHeight); // Set width to half of window width
+renderer2.render(scene, cameraLeft);
 
 // TORUS THINGY (VERY IOMPORTNATNT)
 // const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
@@ -58,23 +58,23 @@ function addStar(){
 }
 Array(800).fill().forEach(addStar)
 
-// let moon;
-// const moonLoader = new GLTFLoader();
-// moonLoader.load(
-//     'moon/scene.gltf',
-//     function(gltf) {
-//         moon = gltf.scene;
-//         moon.scale.set(250,250,250);
-//         scene.add(moon);
-//         moon.position.set(250, 250, 250);
-//     },
-//     function(xhr) {
-//         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
-//     },
-//     function (error) {
-//         console.error(error);
-//     }
-// )
+let moon;
+const moonLoader = new GLTFLoader();
+moonLoader.load(
+    'moon/scene.gltf',
+    function(gltf) {
+        moon = gltf.scene;
+        moon.scale.set(250,250,250);
+        scene.add(moon);
+        moon.position.set(250, 250, 250);
+    },
+    function(xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+    },
+    function (error) {
+        console.error(error);
+    }
+)
 
 // HELPERS
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -82,8 +82,8 @@ const gridHelper = new THREE.GridHelper(1000, 500, 0,  0xAA00ff);
 const axesHelper = new THREE.AxesHelper(50); // Length of axes
 const rightHelper = new THREE.CameraHelper(cameraRight);
 const leftHelper = new THREE.CameraHelper(cameraLeft);
-scene.add(axesHelper);
-scene.add(gridHelper, ambientLight);
+// scene.add(axesHelper);
+// scene.add(gridHelper, ambientLight);
 
 // VIEW UTILS
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -99,6 +99,7 @@ let dKeyPressed = false;
 let cKeyPressed = false;
 let oKeyPressed = false;
 let pKeyPressed = false;
+let iKeyPressed = false;
 
 // Event listeners for arrow key presses
 document.addEventListener('keydown', (event) => {
@@ -126,6 +127,8 @@ document.addEventListener('keydown', (event) => {
         oKeyPressed = true;
     if (event.key === 'p')
         pKeyPressed = true;
+    if (event.key === 'i')
+        iKeyPressed = true;
 });
 
 document.addEventListener('keyup', (event) => {
@@ -156,6 +159,8 @@ document.addEventListener('keyup', (event) => {
         oKeyPressed = false;
     if (event.key === 'p')
         pKeyPressed = false;
+    if (event.key === 'i')
+        iKeyPressed = false;
 });
 
 function cameraDebug()
@@ -215,25 +220,81 @@ class Arena extends THREE.Mesh {
             animatePaddle(this.paddleRight, dKeyPressed, aKeyPressed, this);
         }
         if (spaceKeyPressed)
-            this.paddleLeft.light.power += 0.02;
+            this.paddleLeft.light.power += 0.1;
         if (cKeyPressed)
-            this.paddleRight.light.power += 0.02;
+            this.paddleRight.light.power += 0.1;
         if (wKeyPressed)
         {
-            this.paddleLeft.light.power -= 0.02;
-            this.paddleRight.light.power -= 0.02;
+            this.paddleLeft.light.power -= 0.1;
+            this.paddleRight.light.power -= 0.1;
+        }
+        if (iKeyPressed)
+        {
+            cameraLeft.position.copy(this.position);
+            cameraLeft.position.y += this.length * 3;
+            cameraLeft.position.z -= this.length * 3;
+            cameraLeft.position.x += this.length * 3;
+            cameraLeft.lookAt(this.position);
+            swapToSplitScreen();
+            this.setCameraPositions(camera, cameraLeft);
         }
     }
     setCameraPositions(_cameraRight, _cameraLeft)
     {
-    _cameraRight.position.y = this.position.y + this.height * 3;
-    _cameraRight.position.z = this.position.z + this.width * 0.85;
-    _cameraRight.position.x = this.position.x;
-    _cameraLeft.position.y = this.position.y + this.height * 3;
-    _cameraLeft.position.z = this.position.z - this.width * 0.85;
-    _cameraLeft.position.x = this.position.x;
-    _cameraRight.lookAt(this.position);
-    _cameraLeft.lookAt(this.position);
+    let targetY = this.position.y + this.height * 3;
+    let targetZ = this.position.z + this.width * 0.85;
+    let targetX = this.position.x;
+    const duration = 3500;
+    // Create tweens for each property
+    new TWEEN.Tween(_cameraLeft.position)
+        .to({ y: targetY }, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+        
+    new TWEEN.Tween(_cameraLeft.position)
+        .to({ z: targetZ }, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+
+    new TWEEN.Tween(_cameraLeft.position)
+        .to({ x: targetX }, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+
+    // LookAt tween
+    new TWEEN.Tween(_cameraLeft)
+        .to({}, duration) // Dummy tween, to ensure that onUpdate is called
+        .onUpdate(() => {
+            _cameraLeft.lookAt(this.position);
+        })
+        .start();
+
+    targetY = this.position.y + this.height * 3;
+    targetZ = this.position.z - this.width * 0.85;
+    targetX = this.position.x;
+    // Create tweens for each property
+    new TWEEN.Tween(_cameraRight.position)
+    .to({ y: targetY }, duration)
+    .easing(TWEEN.Easing.Quadratic.Out)
+    .start();
+    
+    new TWEEN.Tween(_cameraRight.position)
+        .to({ z: targetZ }, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+
+    new TWEEN.Tween(_cameraRight.position)
+        .to({ x: targetX }, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+
+    // LookAt tween
+    new TWEEN.Tween(_cameraRight)
+        .to({}, duration) // Dummy tween, to ensure that onUpdate is called
+        .onUpdate(() => {
+            _cameraRight.lookAt(this.position);
+        })
+        .start();
     }
 }
 
@@ -270,9 +331,9 @@ class Paddle extends THREE.Mesh {
 
         // Store arena reference
         this.arena = arena;
-        this.light = new THREE.PointLight(0xffffff, 2);
+        this.light = new THREE.PointLight(0xffffff);
         scene.add(this.light);
-        this.light.power = 1;
+        this.light.power = 30;
         this.light.castShadow = true;
     }
 }
@@ -285,14 +346,7 @@ function animatePaddle(paddle, keyRight, keyLeft, arena)
         paddle.position.x -= 0.005 * arena.length;
 }
 
-
-const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 20, 3, 30);
-scene.add(arena1, arena1.paddleRight, arena1.paddleLeft);
-
-
-function swapToLeftScreen() {
-    if (oKeyPressed) {
+function swapToSplitScreen() {
         const targetWidth = window.innerWidth / 2;
         const duration = 500; // Animation duration in milliseconds
         new TWEEN.Tween(renderer.domElement)
@@ -311,39 +365,51 @@ function swapToLeftScreen() {
                 camera.updateProjectionMatrix();
             })
             .start();
-    }
-    if (pKeyPressed) {
-        const targetWidth = window.innerWidth;
-        const duration = 500; // Animation duration in milliseconds
-        new TWEEN.Tween(renderer.domElement)
-            .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(() => {
-                renderer.setSize(renderer.domElement.width, window.innerHeight);
-            })
-            .start();
+        }
+        
+function swapToFullScreen()
+{
+    const targetWidth = window.innerWidth;
+    const duration = 500; // Animation duration in milliseconds
+    new TWEEN.Tween(renderer.domElement)
+        .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            renderer.setSize(renderer.domElement.width, window.innerHeight);
+        })
+        .start();
 
         const aspectRatio = (window.innerWidth / window.innerHeight);
         new TWEEN.Tween(camera)
-            .to({ aspect: aspectRatio, fov: 75 }, duration)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(() => {
-                camera.updateProjectionMatrix();
-            })
-            .start();
-    }
+        .to({ aspect: aspectRatio, fov: 75 }, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            camera.updateProjectionMatrix();
+        })
+        .start();
 }
+
+function monitorScreen()
+{
+    if (oKeyPressed)
+        swapToSplitScreen();
+    if (pKeyPressed)
+        swapToFullScreen();
+}
+const centerPosition = new THREE.Vector3(0, 0, 0);
+const arena1 = new Arena(centerPosition, 100, 20, 200);
+scene.add(arena1, arena1.paddleRight, arena1.paddleLeft);
 
 function animate()
 {
     requestAnimationFrame( animate );
     // torus.rotation.z += 5;
-    // controls.update();
+    controls.update();
     TWEEN.update();
     arena1.monitorArena();
-    swapToLeftScreen();
+    monitorScreen();
     renderer.render(scene, camera);
     // renderer1.render(scene, cameraRight);
-    // renderer2.render(scene, cameraLeft);
+    renderer2.render(scene, cameraLeft);
 }
 animate();
