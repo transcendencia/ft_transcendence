@@ -8,9 +8,12 @@ import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/js
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
 
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x151515);
 const aspectRatio = 0.5 * window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000 );
+camera.position.set(0, 3, 0);
 const camera1 = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000 );
+camera1.position.set(0, 3, 0);
 const cameraHelper = new THREE.CameraHelper(camera);
 const camera1Helper = new THREE.CameraHelper(camera1);
 // scene.add(cameraHelper, camera1Helper);
@@ -58,7 +61,13 @@ let redCar;
 let purpleCar;
 let moon;
 
-// BLENDER MODEL
+// BLENDER MODELS
+
+let redCarLoaded = false;
+let purpleCarLoaded = false;
+let moonLoaded = false;
+let sunLoaded = true;
+
 const redCarLoader = new GLTFLoader();
 redCarLoader.load(
     'voitureViolette/scene.gltf',
@@ -69,6 +78,7 @@ redCarLoader.load(
     },
     function(xhr) {
         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        redCarLoaded = true;
     },
     function (error) {
         console.error(error);
@@ -85,6 +95,7 @@ purpleCarLoader.load(
     },
     function(xhr) {
         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        purpleCarLoaded = true;
     },
     function (error) {
         console.error(error);
@@ -102,11 +113,35 @@ moonLoader.load(
     },
     function(xhr) {
         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        moonLoaded = true;
     },
     function (error) {
         console.error(error);
     }
 )
+
+const sunLoader = new GLTFLoader();
+sunLoader.load(
+    'sun/scene.gltf',
+    function(gltf) {
+        const sun = gltf.scene;
+        sun.scale.set(400,400,400);
+        scene.add(sun);
+        sun.position.set(10, 10, 10);
+    },
+    function(xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        sunLoaded = true;
+    },
+    function (error) {
+        console.error(error);
+    }
+)
+
+function allModelsLoaded() {
+    console.log(redCarLoaded, purpleCarLoaded, moonLoaded, sunLoaded);
+    return redCarLoaded && purpleCarLoaded && moonLoaded && sunLoaded;
+}
 
 // STARS
 function addStar(){
@@ -197,8 +232,8 @@ document.addEventListener('keypress', (event) => {
 // Update camera position and orientation to follow the car
 let distance1 = 0; // Distance1 of the camera from the car (adjust as needed)
 let height1 = 3;
-let distance2 = 40;
-let height2 = 9;
+let distance2 = 0;
+let height2 = 3;
 
 function redCarMovement() {
     if (upArrowPressed) {
@@ -255,10 +290,10 @@ let goToThirdPerson = false;
 
 function update() {
     // Update car position and rotation
-    if (height1 == 3)
-        camera.position.copy(new THREE.Vector3(redCar.position.x - distance1 * Math.sin(redCar.rotation.y), height1, redCar.position.z - distance1 * Math.cos(redCar.rotation.y)));
-    if (height2 == 3)
-        camera1.position.copy(new THREE.Vector3(purpleCar.position.x - distance2 * Math.sin(purpleCar.rotation.y), height1, purpleCar.position.z - distance2 * Math.cos(purpleCar.rotation.y)));
+    // if (height1 == 3)
+    //     camera.position.copy(new THREE.Vector3(redCar.position.x - distance1 * Math.sin(redCar.rotation.y), height1, redCar.position.z - distance1 * Math.cos(redCar.rotation.y)));
+    // if (height2 == 3)
+    //     camera1.position.copy(new THREE.Vector3(purpleCar.position.x - distance2 * Math.sin(purpleCar.rotation.y), height1, purpleCar.position.z - distance2 * Math.cos(purpleCar.rotation.y)));
         
     if (aKeyIsPressed)
     {
@@ -267,13 +302,19 @@ function update() {
     }
     if (goToFirstPerson && distance1 != 0){
         distance1 -= 1;
+        distance2 -= 1;
         height1 -= 0.2;
+        height2 -= 0.2;
         camera.position.copy(new THREE.Vector3(redCar.position.x - distance1 * Math.sin(redCar.rotation.y), height1, redCar.position.z - distance1 * Math.cos(redCar.rotation.y)));
+        camera1.position.copy(new THREE.Vector3(purpleCar.position.x - distance2 * Math.sin(purpleCar.rotation.y), height2, purpleCar.position.z - distance2 * Math.cos(purpleCar.rotation.y)));
     }
     if (goToThirdPerson && distance1 != 40){
         distance1 += 1;
+        distance2 += 1;
         height1 += 0.2;
+        height2 += 0.2;
         camera.position.copy(new THREE.Vector3(redCar.position.x - distance1 * Math.sin(redCar.rotation.y), height1, redCar.position.z - distance1 * Math.cos(redCar.rotation.y)));
+        camera1.position.copy(new THREE.Vector3(purpleCar.position.x - distance2 * Math.sin(purpleCar.rotation.y), height2, purpleCar.position.z - distance2 * Math.cos(purpleCar.rotation.y)));
     }
     if (distance1 === 0 && goToFirstPerson)
         goToFirstPerson = false;
@@ -298,4 +339,13 @@ function animate()
     renderer1.render( scene, camera1 );
     renderer.render( scene, camera );
 }
-animate();
+if (allModelsLoaded()) {
+    animate();
+} else {
+    const checkModelsLoaded = setInterval(() => {
+        if (allModelsLoaded()) {
+            clearInterval(checkModelsLoaded);
+            animate();
+        }
+    }, 100);
+}
