@@ -12,7 +12,7 @@ import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/l
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050505);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
-const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000);
 const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 const cameraLeft = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 camera.position.set(20, 20, 0);
@@ -78,7 +78,7 @@ moonLoader.load(
 
 // HELPERS
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-const gridHelper = new THREE.GridHelper(1000, 500, 0,  0xAA00ff);
+const gridHelper = new THREE.GridHelper(1000, 500, 100,  0xAA00ff);
 const axesHelper = new THREE.AxesHelper(50); // Length of axes
 const rightHelper = new THREE.CameraHelper(cameraRight);
 const leftHelper = new THREE.CameraHelper(cameraLeft);
@@ -208,19 +208,29 @@ class Arena extends THREE.Mesh {
         this.width = depth;
         this.paddleRight = new Paddle(this, false);
         this.paddleLeft = new Paddle(this, true);
+        this.ball = new Ball(this);
         this.isActive = true;
     }
     monitorArena()
     {
         this.paddleLeft.light.position.copy(this.paddleLeft.position);
         this.paddleRight.light.position.copy(this.paddleRight.position);
+        if (this.ball.isRolling)
+            this.ball.monitorMovement();
+        this.ball.light.position.copy(this.ball.position);
+        if (this.ball.isRolling)
+            this.ball.rotation.y += 0.1;
         if (this.isActive)
         {
-            animatePaddle(this.paddleLeft, leftArrowPressed, rightArrowPressed, this);
-            animatePaddle(this.paddleRight, dKeyPressed, aKeyPressed, this);
+            animatePaddle(this.paddleRight, rightArrowPressed, leftArrowPressed, this);
+            animatePaddle(this.paddleLeft, aKeyPressed, dKeyPressed, this);
         }
         if (spaceKeyPressed)
+        {
+            this.ball.speedZ = this.width / 200;
+            this.ball.isRolling = true;
             this.paddleLeft.light.power += 0.1;
+        }
         if (cKeyPressed)
             this.paddleRight.light.power += 0.1;
         if (wKeyPressed)
@@ -236,64 +246,79 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             cameraLeft.lookAt(this.position);
             swapToSplitScreen();
-            this.setCameraPositions(camera, cameraLeft);
+            this.setSplitCameraPositions(camera, cameraLeft);
         }
+        if (pKeyPressed)
+        {
+            swapToFullScreen();
+            this.setTopView(camera);
+        }
+        if (this.ball.collisionWithBorder(this.paddleRight, this.paddleLeft))
+        {
+            this.ball.isRolling = false;
+            this.ball.speedZ = 0;
+            this.ball.speedX = 0;
+            this.ball.position.copy(this.ball.startingPoint);
+        }
+        if (this.ball.collisionWithLeftPaddle(this.paddleLeft))
+            this.ball.goToRight(this.paddleLeft);
+        if (this.ball.collisionWithRightPaddle(this.paddleRight))
+            this.ball.goToLeft(this.paddleRight);
     }
-    setCameraPositions(_cameraRight, _cameraLeft)
+    setSplitCameraPositions(_cameraRight, _cameraLeft)
     {
-    let targetY = this.position.y + this.height * 3;
-    let targetZ = this.position.z + this.width * 0.85;
-    let targetX = this.position.x;
-    const duration = 3500;
-    // Create tweens for each property
-    new TWEEN.Tween(_cameraLeft.position)
-        .to({ y: targetY }, duration)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .start();
-        
-    new TWEEN.Tween(_cameraLeft.position)
-        .to({ z: targetZ }, duration)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .start();
+        let targetY = this.position.y + this.height * 3;
+        let targetZ = this.position.z + this.width * 0.85;
+        let targetX = this.position.x;
+        const duration = 3500;
+        // Create tweens for each property
+        new TWEEN.Tween(_cameraLeft.position)
+            .to({ y: targetY, z: targetZ, x:targetX }, duration)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .start();
 
-    new TWEEN.Tween(_cameraLeft.position)
-        .to({ x: targetX }, duration)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .start();
+        // LookAt tween
+        new TWEEN.Tween(_cameraLeft)
+            .to({}, duration) // Dummy tween, to ensure that onUpdate is called
+            .onUpdate(() => {
+                _cameraLeft.lookAt(this.position);
+            })
+            .start();
 
-    // LookAt tween
-    new TWEEN.Tween(_cameraLeft)
-        .to({}, duration) // Dummy tween, to ensure that onUpdate is called
-        .onUpdate(() => {
-            _cameraLeft.lookAt(this.position);
-        })
-        .start();
-
-    targetY = this.position.y + this.height * 3;
-    targetZ = this.position.z - this.width * 0.85;
-    targetX = this.position.x;
-    // Create tweens for each property
-    new TWEEN.Tween(_cameraRight.position)
-    .to({ y: targetY }, duration)
-    .easing(TWEEN.Easing.Quadratic.Out)
-    .start();
-    
-    new TWEEN.Tween(_cameraRight.position)
-        .to({ z: targetZ }, duration)
+        targetY = this.position.y + this.height * 3;
+        targetZ = this.position.z - this.width * 0.85;
+        targetX = this.position.x;
+        // Create tweens for each property
+        new TWEEN.Tween(_cameraRight.position)
+        .to({ y: targetY, z: targetZ, x: targetX }, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .start();
 
-    new TWEEN.Tween(_cameraRight.position)
-        .to({ x: targetX }, duration)
+        // LookAt tween
+        new TWEEN.Tween(_cameraRight)
+            .to({}, duration) // Dummy tween, to ensure that onUpdate is called
+            .onUpdate(() => {
+                _cameraRight.lookAt(this.position);
+            })
+            .start();
+    }
+    setTopView(camera)
+    {
+        let targetY = this.position.y + this.height + this.width;
+        let targetX = this.position.x;
+        let targetZ = this.position.z;
+        const duration = 3500;
+        new TWEEN.Tween(camera.position)
+        .to({x: targetX, y: targetY, z: targetZ}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .start();
 
-    // LookAt tween
-    new TWEEN.Tween(_cameraRight)
-        .to({}, duration) // Dummy tween, to ensure that onUpdate is called
-        .onUpdate(() => {
-            _cameraRight.lookAt(this.position);
-        })
+        targetX = Math.PI / -2;
+        targetY = 0;
+        targetZ = Math.PI / 2;
+        new TWEEN.Tween(camera.rotation)
+        .to({z: targetZ, x: targetX, y: targetY}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
         .start();
     }
 }
@@ -306,8 +331,6 @@ class Paddle extends THREE.Mesh {
         const paddleWidth = arena.width * 0.1; // 20% of arena width
         const paddleHeight = arena.length * 0.05; // 5% of arena height
         const paddleDepth = paddleHeight * 0.25; // 2% of arena depth
-        console.log("arena = " + arena.width, arena.height, arena.length);
-        console.log(paddleWidth, paddleHeight, paddleDepth);
         // Create geometry for the paddle
         const geometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
         // Load texture
@@ -327,9 +350,10 @@ class Paddle extends THREE.Mesh {
             this.position.z -= arena.width;
         this.position.y = arena.position.y + (arena.height / 2) + (paddleHeight / 2);
         this.position.x = arena.position.x;
-        // this.position.set(arena.topCorner);
-
         // Store arena reference
+        this.width = paddleWidth;
+        this.height = paddleHeight;
+        this.depth = paddleDepth;
         this.arena = arena;
         this.light = new THREE.PointLight(0xffffff);
         scene.add(this.light);
@@ -338,12 +362,90 @@ class Paddle extends THREE.Mesh {
     }
 }
 
+class Ball extends THREE.Mesh {
+    constructor(arena)
+    {
+        // BALL CREATION
+        const size = arena.width * 0.025;
+        const geometry = new THREE.SphereGeometry(size, 32, 16);
+        const textureLoader = new THREE.TextureLoader();
+        const texture = textureLoader.load('ball.jpg');
+        const material = new THREE.MeshBasicMaterial({map: texture});
+        super(geometry, material);
+        this.light = new THREE.PointLight(0xffffff);
+        scene.add(this.light);
+        this.light.power = 2;
+        this.light.castShadow = true;
+        // ATRIBUTES
+        this.radius = arena.width * 0.025;
+        this.startingPoint = new THREE.Vector3(arena.position.x, arena.position.y + arena.height / 2 + this.radius, arena.position.z);
+        this.position.copy(this.startingPoint);
+        this.isRolling = false;
+        this.speedX = 0;
+        this.speedY = 0;
+        this.zLimit1 = arena.position.z + arena.width / 2;
+        this.zLimit2 = arena.position.z - arena.width / 2;
+        this.arena = arena;
+    }
+    collisionWithBorder(paddle1, paddle2)
+    {
+        return (this.position.z >= paddle1.position.z || this.position.z <= paddle2.position.z);
+    }
+    collisionWithLeftPaddle(paddle)
+    {
+        if ((this.position.z < paddle.position.z + this.radius) && this.position.z > paddle.position.z)
+        {
+            if ((this.position.x < paddle.position.x + paddle.width / 2) && (this.position.x > paddle.position.x - paddle.width / 2))
+            {
+                if (Math.abs(this.speedZ) <= this.arena.width / 40)
+                    this.speedZ *= 1.05;
+                return true;
+            }
+        }
+        return false;
+    }
+    collisionWithRightPaddle(paddle)
+    {
+        if ((this.position.z > paddle.position.z - this.radius) && this.position.z < paddle.position.z)
+        {
+            if ((this.position.x < paddle.position.x + paddle.width / 2) && (this.position.x > paddle.position.x - paddle.width / 2))
+            {
+                if (Math.abs(this.speedZ) <= this.arena.width / 40)
+                    this.speedZ *= 1.05;
+                return true;
+            }
+        }
+        return false;
+    }
+    goToLeft(paddle)
+    {
+        let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
+        this.speedX += distanceFromCenter * 0.01 * this.arena.width;
+        this.speedZ *= -1;
+    }
+    goToRight(paddle)
+    {
+        let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
+        this.speedX += distanceFromCenter * 0.01 * this.arena.width;
+        this.speedZ *= -1;
+    }
+    monitorMovement()
+    {
+        if (this.position.x + this.speedX <= this.arena.position.x - this.arena.length / 2)
+            this.speedX *= -1;
+        if (this.position.x + this.speedX >= this.arena.position.x + this.arena.length / 2)
+            this.speedX *= -1;
+        this.position.z += this.speedZ;
+        this.position.x += this.speedX;
+    }
+}
+
 function animatePaddle(paddle, keyRight, keyLeft, arena)
 {
-    if (keyRight && paddle.position.x + 0.005 <= arena.rightCorner.x)
-        paddle.position.x += 0.005 * arena.length;
-    if (keyLeft && paddle.position.x - 0.005 >= arena.leftCorner.x)
-        paddle.position.x -= 0.005 * arena.length;
+    if (keyRight && paddle.position.x + 0.008 <= arena.rightCorner.x)
+        paddle.position.x += 0.008 * arena.length;
+    if (keyLeft && paddle.position.x - 0.008 >= arena.leftCorner.x)
+        paddle.position.x -= 0.008 * arena.length;
 }
 
 function swapToSplitScreen() {
@@ -365,8 +467,8 @@ function swapToSplitScreen() {
                 camera.updateProjectionMatrix();
             })
             .start();
-        }
-        
+}
+
 function swapToFullScreen()
 {
     const targetWidth = window.innerWidth;
@@ -393,20 +495,19 @@ function monitorScreen()
 {
     if (oKeyPressed)
         swapToSplitScreen();
-    if (pKeyPressed)
-        swapToFullScreen();
 }
 const centerPosition = new THREE.Vector3(0, 0, 0);
 const arena1 = new Arena(centerPosition, 100, 20, 200);
-scene.add(arena1, arena1.paddleRight, arena1.paddleLeft);
+scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
 
 function animate()
 {
     requestAnimationFrame( animate );
     // torus.rotation.z += 5;
-    controls.update();
+    // controls.update();
     TWEEN.update();
     arena1.monitorArena();
+    cameraDebug();
     monitorScreen();
     renderer.render(scene, camera);
     // renderer1.render(scene, cameraRight);
