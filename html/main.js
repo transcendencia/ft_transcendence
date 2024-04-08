@@ -1,6 +1,7 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
-import { spaceShip, spaceShipLoaded } from "./objs.js";
+import {spaceShip, allModelsLoaded} from "./objs.js";
 import { addStar } from "./stars.js";
+import { sun, planets, setupPlanets} from "./planets.js";
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c1')
@@ -11,15 +12,6 @@ scene.background = new THREE.Color(0x050505);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
-
-// Create a sphere
-const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
-const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
-const sun = new THREE.Mesh(sphereGeometry, sphereMaterial);
-sun.scale.set(200, 200, 200);
-sun.position.set(0, 5, 0);
-scene.add(sun);
-
 
 // Define the size of the minimap
 const minimapWidth = 200; // Adjust as needed
@@ -69,7 +61,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.render(scene, camera);
 
 // LIGHTING
-const pointLight = new THREE.PointLight(0xffffff, 0.5)
+const pointLight = new THREE.PointLight(0xffffff, 1)
 pointLight.castShadow = true;
 pointLight.position.copy(sun.position);
 pointLight.scale.set(10,10,10);
@@ -79,7 +71,7 @@ spaceShipPointLight.castShadow = true;
 const lightHelperss = new THREE.PointLightHelper(spaceShipPointLight);
 lightHelperss.scale.set(10,10,10);
 
-const ambientLight = new THREE.AmbientLight(0Xffffff, 0.2);
+const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
 const lightHelper = new THREE.PointLightHelper(pointLight);
 scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight);
 
@@ -105,33 +97,6 @@ scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight);
 // const wireframe2 = new THREE.LineSegments(edges2, lineMaterial2); // Create line segments
 // wireframe2.position.y = 0.8;
 // scene.add(wireframe2);
-
-
-
-// Planets
-const planets = [];
-const planetDistances = [720, 900, 800, 300, 620]; // Updated distances of planets from the sun
-const planetColors = [0x00ff55, 0x6600aa, 0x00eeff, 0xeeeeaa, 0xae2200]; // Colors of planets
-const planetScales = [100, 150, 50, 80, 130]; // Updated scales of planets
-const numPlanets = planetDistances.length;
-
-for (let i = 0; i < numPlanets; i++) {
-    const planetGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-    const planetMaterial = new THREE.MeshStandardMaterial({ color: planetColors[i] });
-    const planet = new THREE.Mesh(planetGeometry, planetMaterial);
-    planet.scale.set(planetScales[i], planetScales[i], planetScales[i]);
-    
-    const initialAngle = Math.random() * Math.PI * 2; // Random angle between 0 and 2*pi
-    
-    planet.position.x = sun.position.x + planetDistances[i] * Math.cos(initialAngle);
-    planet.position.y = sun.position.y; 
-    planet.position.z = sun.position.z + planetDistances[i] * Math.sin(initialAngle); 
-    
-    const orbitSpeed = Math.random() * 0.005 + 0.005;
-    
-    planets.push({ mesh: planet, orbitSpeed });
-    scene.add(planet);
-}
 
 
 Array(800).fill().forEach(addStar);
@@ -283,6 +248,14 @@ let goToThirdPerson = false;
 function update() {
     planets.forEach(planet => {
         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
+        if (planet.scale === 50) { 
+            planet.mesh.rotation.y += planet.orbitSpeed * 2;
+            planet.orbitMesh.rotation.x += planet.orbitSpeed / 3;
+        }
+        if (planet.orbitMesh != null) {
+            planet.orbitMesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
+            planet.orbitMesh.rotation.y += planet.orbitSpeed;
+        }
     });
     if (aKeyIsPressed)
         spaceShipMovement();
@@ -300,11 +273,7 @@ function update() {
         goToFirstPerson = false;
     if (distance >= camMaxDist && goToThirdPerson)
         goToThirdPerson = false;
-    camera.rotation.y = spaceShip.rotation.y - Math.PI; // Rotate the camera to look behind the car
-}
-
-function allModelsLoaded() {
-    return spaceShipLoaded;
+    camera.rotation.y = spaceShip.rotation.y - Math.PI;
 }
 
 function animate()
@@ -316,15 +285,12 @@ function animate()
     update();
     renderer.render( scene, camera );
 }
-if (allModelsLoaded()) {
-    animate();
-} else {
-    const checkModelsLoaded = setInterval(() => {
-        if (allModelsLoaded()) {
-            clearInterval(checkModelsLoaded);
-            animate();
-        }
-    }, 100);
-}
+
+const checkModelsLoaded = setInterval(() => {
+    if (allModelsLoaded()) {
+        clearInterval(checkModelsLoaded);
+        animate();
+    }
+}, 100);
 
 export {scene, THREE};
