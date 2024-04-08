@@ -374,7 +374,7 @@ class Ball extends THREE.Mesh {
         super(geometry, material);
         this.light = new THREE.PointLight(0xffffff);
         scene.add(this.light);
-        this.light.power = 2;
+        this.light.power = 200;
         this.light.castShadow = true;
         // ATRIBUTES
         this.radius = arena.width * 0.025;
@@ -420,13 +420,18 @@ class Ball extends THREE.Mesh {
     goToLeft(paddle)
     {
         let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
-        this.speedX += distanceFromCenter * 0.01 * this.arena.width;
+        if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
+            this.speedX = distanceFromCenter * 0.015 * this.arena.width;
+        else
+            this.speedX += distanceFromCenter * 0.015 * this.arena.width;
         this.speedZ *= -1;
     }
     goToRight(paddle)
     {
         let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
-        this.speedX += distanceFromCenter * 0.01 * this.arena.width;
+        if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
+            this.speedX = distanceFromCenter * 0.015 * this.arena.width;
+        this.speedX += distanceFromCenter * 0.015 * this.arena.width;
         this.speedZ *= -1;
     }
     monitorMovement()
@@ -497,7 +502,7 @@ function monitorScreen()
         swapToSplitScreen();
 }
 const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 100, 20, 200);
+const arena1 = new Arena(centerPosition, 20, 4, 30);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
 
 function animate()
