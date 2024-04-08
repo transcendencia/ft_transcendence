@@ -7,7 +7,6 @@ import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/js
 // To allow for importing the .gltf file
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
 
-
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050505);
@@ -25,13 +24,6 @@ const renderer = new THREE.WebGLRenderer({ // Renderer for full screen
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.render(scene, camera);
-
-// const renderer1 = new THREE.WebGLRenderer({ // Renderer for split screen
-//     canvas: document.querySelector('#c1')
-// });
-// renderer1.setPixelRatio(window.devicePixelRatio);
-// renderer1.setSize(window.innerWidth / 2, window.innerHeight);
-// renderer1.render(scene, cameraRight);
 
 const renderer2 = new THREE.WebGLRenderer({ // Renderer for split screen
     canvas: document.querySelector('#c2')
@@ -58,23 +50,23 @@ function addStar(){
 }
 Array(800).fill().forEach(addStar)
 
-let moon;
-const moonLoader = new GLTFLoader();
-moonLoader.load(
-    'moon/scene.gltf',
-    function(gltf) {
-        moon = gltf.scene;
-        moon.scale.set(250,250,250);
-        scene.add(moon);
-        moon.position.set(250, 250, 250);
-    },
-    function(xhr) {
-        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
-    },
-    function (error) {
-        console.error(error);
-    }
-)
+// let moon;
+// const moonLoader = new GLTFLoader();
+// moonLoader.load(
+//     'moon/scene.gltf',
+//     function(gltf) {
+//         moon = gltf.scene;
+//         moon.scale.set(250,250,250);
+//         scene.add(moon);
+//         moon.position.set(250, 250, 250);
+//     },
+//     function(xhr) {
+//         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+//     },
+//     function (error) {
+//         console.error(error);
+//     }
+// )
 
 // HELPERS
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -177,11 +169,14 @@ function cameraDebug()
 class Arena extends THREE.Mesh {
     constructor(centerPosition, width, height, depth)
     {
+
         // Create geometry for the arena
         const geometry = new THREE.BoxGeometry(width, height, depth);
-        
+        const textureLoader = new THREE.TextureLoader();
+        const texture = textureLoader.load('box.jpg');
         // Create material
-        const material = new THREE.MeshStandardMaterial({ color: 0x8800dd, wireframe: false});
+        // const material = new THREE.MeshStandardMaterial({ color: 0x8800dd, wireframe: false});
+        const material = new THREE.MeshStandardMaterial({map: texture});
         
         // Call super constructor to set up mesh
         super(geometry, material);
@@ -218,6 +213,7 @@ class Arena extends THREE.Mesh {
         if (this.ball.isRolling)
             this.ball.monitorMovement();
         this.ball.light.position.copy(this.ball.position);
+        this.ball.light.position.y += this.height;
         if (this.ball.isRolling)
             this.ball.rotation.y += 0.1;
         if (this.isActive)
@@ -254,12 +250,7 @@ class Arena extends THREE.Mesh {
             this.setTopView(camera);
         }
         if (this.ball.collisionWithBorder(this.paddleRight, this.paddleLeft))
-        {
-            this.ball.isRolling = false;
-            this.ball.speedZ = 0;
-            this.ball.speedX = 0;
-            this.ball.position.copy(this.ball.startingPoint);
-        }
+            this.resetPositions();
         if (this.ball.collisionWithLeftPaddle(this.paddleLeft))
             this.ball.goToRight(this.paddleLeft);
         if (this.ball.collisionWithRightPaddle(this.paddleRight))
@@ -321,6 +312,35 @@ class Arena extends THREE.Mesh {
         .easing(TWEEN.Easing.Quadratic.Out)
         .start();
     }
+    resetPositions()
+    {
+        let duration = 1500;
+        // PADDLE RESETS
+        new TWEEN.Tween(this.paddleLeft.position)
+        .to({x: this.position.x}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+        new TWEEN.Tween(this.paddleRight.position)
+        .to({x: this.position.x}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start()
+
+        // BALL RESETS
+        let targetY = this.ball.startingPoint.y + this.length / 2;
+        const firstTween = new TWEEN.Tween(this.ball.position)
+        .to({x: this.ball.startingPoint.x, y: targetY, z: this.ball.startingPoint.z}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+
+        const secondTween = new TWEEN.Tween(this.ball.position)
+        .to({y: this.ball.startingPoint.y}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out);
+
+        firstTween.chain(secondTween);
+        firstTween.start();
+        this.ball.isRolling = false;
+        this.ball.speedZ = 0;
+        this.ball.speedX = 0;
+    }
 }
 
 // PADDLE CLASS
@@ -337,7 +357,7 @@ class Paddle extends THREE.Mesh {
         const textureLoader = new THREE.TextureLoader();
         const texture = textureLoader.load('mathy.jpeg');
         // Create material
-        const material = new THREE.MeshStandardMaterial({ map: texture });
+        const material = new THREE.MeshBasicMaterial({ map: texture });
 
         // Call super constructor to set up mesh
         super(geometry, material);
@@ -357,7 +377,7 @@ class Paddle extends THREE.Mesh {
         this.arena = arena;
         this.light = new THREE.PointLight(0xffffff);
         scene.add(this.light);
-        this.light.power = 30;
+        this.light.power = 0;
         this.light.castShadow = true;
     }
 }
@@ -374,8 +394,8 @@ class Ball extends THREE.Mesh {
         super(geometry, material);
         this.light = new THREE.PointLight(0xffffff);
         scene.add(this.light);
-        this.light.power = 200;
-        this.light.castShadow = true;
+        this.light.power = 20;
+        // this.light.castShadow = true;
         // ATRIBUTES
         this.radius = arena.width * 0.025;
         this.startingPoint = new THREE.Vector3(arena.position.x, arena.position.y + arena.height / 2 + this.radius, arena.position.z);
@@ -448,9 +468,9 @@ class Ball extends THREE.Mesh {
 function animatePaddle(paddle, keyRight, keyLeft, arena)
 {
     if (keyRight && paddle.position.x + 0.008 <= arena.rightCorner.x)
-        paddle.position.x += 0.008 * arena.length;
+        paddle.position.x += 0.016 * arena.length;
     if (keyLeft && paddle.position.x - 0.008 >= arena.leftCorner.x)
-        paddle.position.x -= 0.008 * arena.length;
+        paddle.position.x -= 0.016 * arena.length;
 }
 
 function swapToSplitScreen() {
@@ -502,13 +522,12 @@ function monitorScreen()
         swapToSplitScreen();
 }
 const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 20, 4, 30);
+const arena1 = new Arena(centerPosition, 20, 2, 30);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
 
 function animate()
 {
     requestAnimationFrame( animate );
-    // torus.rotation.z += 5;
     // controls.update();
     TWEEN.update();
     arena1.monitorArena();
