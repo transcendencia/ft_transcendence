@@ -29,6 +29,7 @@ EXPOSE 8000
 #Install python on my docker 
 RUN python -m pip install Django
 
+
 CMD ["python", "manage.py", "runserver"]
 
 CMD ["sleep", "2000"]
