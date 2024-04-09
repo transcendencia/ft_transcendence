@@ -11,7 +11,7 @@ spaceShipLoader.load(
     'spaceShip/scene.gltf',
     function(gltf) {
         spaceShip = gltf.scene;
-        spaceShip.scale.set(1,1,1);
+        spaceShip.scale.set(0.1,0.1,0.1);
         spaceShip.position.set(0,0,-500);
         scene.add(spaceShip);
     },
@@ -25,11 +25,11 @@ spaceShipLoader.load(
     );
     
 let modelsData = [
-    { filePath: 'arena.glb', loaded: false},
-    { filePath: 'arenaRing.glb', loaded: false},
-    { filePath: 'settingsPlanet.glb', loaded: false},
-    { filePath: 'settingsPlanetRing.glb', loaded: false},
-    { filePath: 'tournamentPlanet.glb', loaded: false},
+    {name: 'arena', filePath: 'blender/arena.glb', loaded: false},
+    {name: 'arenaRing', filePath: 'blender/arenaRing.glb', loaded: false},
+    {name: 'settings', filePath: 'blender/settingsPlanet.glb', loaded: false},
+    {name: 'settingsRing', filePath: 'blender/settingsPlanetRing.glb', loaded: false},
+    {name: 'tournament', filePath: 'blender/tournamentPlanet.glb', loaded: false},
 ];
     
 let models = [];
@@ -40,10 +40,10 @@ for (let i = 0; i < modelsData.length; i++) {
     loader.load(
         data.filePath,
         function (gltf) {
-            models[i] = gltf.scene;
-            models[i].scale.set(10, 10, 10);
-            models[i].position.set(0, 0, 0);
-            scene.add(models[i]);
+            models[data.name] = gltf.scene;
+            models[data.name].scale.set(10, 10, 10);
+            models[data.name].position.set(0, 0, 0);
+            scene.add(models[data.name]);
             data.loaded = true;
             if (modelsData.every(model => model.loaded) && spaceShipLoaded) {
                 setupPlanets(models);

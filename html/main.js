@@ -2,13 +2,14 @@ import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module
 import {spaceShip, allModelsLoaded} from "./objs.js";
 import { addStar } from "./stars.js";
 import { sun, planets, setupPlanets} from "./planets.js";
+import { spaceShipMovement, changePov } from './movement.js';
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c1')
 });
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x050505);
+scene.background = new THREE.Color(0x000020);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
@@ -17,37 +18,78 @@ camera.position.set(0, 1, -495);
 const minimapWidth = 200; // Adjust as needed
 const minimapHeight = 200;
 
+
 // Create an orthographic camera for the minimap
 const minimapCamera = new THREE.OrthographicCamera(
-    -minimapWidth * 6,  // left
-    minimapWidth * 6,   // right
-    minimapHeight * 6,  // top
-    -minimapHeight * 6, // bottom
+    -minimapWidth * 7,  // left
+    minimapWidth * 7,   // right
+    minimapHeight * 7,  // top
+    -minimapHeight * 7, // bottom
     1,                // near
-    1000              // far
-);
+    2000              // far
+    );
+    
+    minimapCamera.position.set(sun.position.x, sun.position.y + 1000, sun.position.z); // Position de la caméra (vue aérienne)
+    
+    // Créer une nouvelle instance de rendu pour la minimap
+    const minimapRenderer = new THREE.WebGLRenderer();
+    minimapRenderer.setSize(300, 300); // Taille de la minimap (à ajuster selon vos besoins)
+    minimapRenderer.setClearColor(0x000000, 0); // Fond transparent
+    
+    // Ajouter la vue de la minimap à votre document HTML
+    document.body.appendChild(minimapRenderer.domElement);
+    
+    const planeGeometry = new THREE.PlaneGeometry(2800, 2800);
+    const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000045 }); 
+    const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
+    minimapBG.position.set(0, -500, 0); 
+    minimapBG.rotation.x = -Math.PI / 2;
+    scene.add(minimapBG);
 
-minimapCamera.position.set(sun.position.x, sun.position.y + 1000, sun.position.z); // Position de la caméra (vue aérienne)
-
-// Créer une nouvelle instance de rendu pour la minimap
-const minimapRenderer = new THREE.WebGLRenderer();
-minimapRenderer.setSize(200, 200); // Taille de la minimap (à ajuster selon vos besoins)
-minimapRenderer.setClearColor(0x000000, 0); // Fond transparent
-
-// Ajouter la vue de la minimap à votre document HTML
-document.body.appendChild(minimapRenderer.domElement);
-
-// const camera1Helper = new THREE.CameraHelper(minimapCamera);
-// scene.add(camera1Helper);
+    minimapBG.layers.set(1);
+    minimapCamera.layers.enable(1);
+    const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
+    const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const playerMarker = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    playerMarker.scale.set(20,20,20);
+    scene.add(playerMarker);
+    // const camera1Helper = new THREE.CameraHelper(minimapCamera);
 
 function renderMinimap() {
+    playerMarker.position.x = spaceShip.position.x;
+    playerMarker.position.z = spaceShip.position.z;
+    playerMarker.position.y = 500;
     minimapCamera.lookAt(sun.position);
     minimapRenderer.render(scene, minimapCamera);
 }
 
-// Set the CSS style for the minimap renderer DOM element
-minimapRenderer.domElement.style.border = '2px solid white'; // Add a white border
+// Create a div element for the dot
+const dotElement = document.createElement('div');
 
+// Apply CSS styles to the dot
+dotElement.style.width = '5px';
+dotElement.style.height = '5px';
+dotElement.style.backgroundColor = 'white';
+dotElement.style.opacity = '40%';
+dotElement.style.borderRadius = '50%'; // Make it round
+dotElement.style.position = 'fixed'; // Position fixed so it stays in the middle of the screen
+dotElement.style.top = '50%'; // Position in the middle vertically
+dotElement.style.left = '50%'; // Position in the middle horizontally
+dotElement.style.transform = 'translate(-50%, -50%)'; // Center the dot precisely
+
+const textElement = document.createElement('div');
+document.body.appendChild(dotElement);
+
+// Set the text content and style
+textElement.textContent = '';
+textElement.style.color = '#aaaaaa';
+textElement.style.position = 'absolute';
+textElement.style.top = '35%';
+textElement.style.right = '6%'; // Align to the right
+
+document.body.appendChild(textElement);
+
+minimapRenderer.domElement.style.borderRadius = '100px'; // Adjust the radius as needed
 // Position the minimap renderer
 minimapRenderer.domElement.style.position = 'absolute';
 minimapRenderer.domElement.style.top = '10px'; // Adjust vertical position as needed
@@ -98,182 +140,73 @@ scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight);
 // wireframe2.position.y = 0.8;
 // scene.add(wireframe2);
 
-
 Array(800).fill().forEach(addStar);
 
-let leftArrowPressed = false;
-let rightArrowPressed = false;
-let upArrowPressed = false;
-let downArrowPressed = false;
-let spaceKeyPressed = false;
-let wKeyPressed = false;
-let aKeyPressed = false;
-let sKeyPressed = false;
-let dKeyPressed = false;
+const raycaster = new THREE.Raycaster();
 
-let aKeyIsPressed =false;
-
-// Event listeners for arrow key presses
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft')
-    leftArrowPressed = true;
-if (event.key === 'ArrowRight')
-rightArrowPressed = true;
-if (event.key === 'ArrowUp')
-upArrowPressed = true;
-if (event.key === 'ArrowDown')
-downArrowPressed = true;
-if (event.key === 'w')
-wKeyPressed = true;
-if (event.key === 'a')
-aKeyPressed = true;
-if (event.key === 's')
-sKeyPressed = true;    
-if (event.key === 'd')
-dKeyPressed = true;
-if (event.key === '1')
-spaceKeyPressed = true;
-aKeyIsPressed = true;
-});
-
-document.addEventListener('keyup', (event) => {
-    if (event.key === 'ArrowLeft') {
-        leftArrowPressed = false;
-    } else if (event.key === 'ArrowRight') {
-        rightArrowPressed = false;
-    }
-    if (event.key === 'ArrowUp') {
-        upArrowPressed = false;
-    }
-    if (event.key === 'ArrowDown') {
-        downArrowPressed = false;
-    }
-    if (event.key === 'w')
-    wKeyPressed = false;
-if (event.key === 'a')
-aKeyPressed = false;
-if (event.key === 's')
-sKeyPressed = false;    
-if (event.key === 'd')
-dKeyPressed = false;
-if (event.key === '1')
-spaceKeyPressed = false;
-});
+let cameraDirection = new THREE.Vector3();
+camera.getWorldDirection(cameraDirection);
+const rayLength = 3000; // Adjust as needed
+let rayEndPoint = new THREE.Vector3();
 
 
-
-document.addEventListener('keypress', (event) => {
-    if (event.key === '1' && distance >= camMaxDist) {
-        goToFirstPerson = true;
-    }
-    if (event.key === '1' && distance <= camMinDist) {
-        goToThirdPerson = true;
-    }
-    if (event.key === ' ' && !boost) {
-        startBoost(); 
-    }
-})
-
-let camMinDist = -5;
-let camMaxDist = 100;
-let distance = camMinDist;
-let height = 1;
-let moveSpeed = 10;
-let rotSpeed = 0.10;
-const tolerance = 0.01; 
-
-
-function rotateSpaceShipAnim(targetRot) {
-    const tolerance = 0.01;
-    if (Math.abs(spaceShip.rotation.z - targetRot) > tolerance) {
-        if (spaceShip.rotation.z > targetRot)
-        spaceShip.rotation.z -= rotSpeed;
-    else if (spaceShip.rotation.z < targetRot)
-        spaceShip.rotation.z += rotSpeed;
-}}
-
-let boost = false;
-const boostDuration = 500; 
-let originalMoveSpeed; 
-
-function startBoost() {
-    originalMoveSpeed = moveSpeed;
-    moveSpeed *= 2;
-    boost = true;
-    setTimeout(endBoost, boostDuration);
+function updateRay() {
+    camera.getWorldDirection(cameraDirection);
+    rayEndPoint.copy(cameraDirection).multiplyScalar(rayLength).add(camera.position);
+    raycaster.set(camera.position, cameraDirection); // Update raycaster with new direction
 }
 
-function endBoost() {
-    moveSpeed = originalMoveSpeed;
-    boost = false;
+// const rayGeometry = new THREE.BufferGeometry().setFromPoints([camera.position, rayEndPoint]);
+// const rayMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 }); // Red color
+// const rayLine = new THREE.Line(rayGeometry, rayMaterial);
+
+// // Add the ray line to the scene
+// scene.add(rayLine);
+
+function displayRay() {
+    rayLine.geometry.attributes.position.setXYZ(0, camera.position.x, camera.position.y, camera.position.z); // Update starting point
+    rayLine.geometry.attributes.position.setXYZ(1, rayEndPoint.x, rayEndPoint.y, rayEndPoint.z); // Update endpoint
+    rayLine.geometry.attributes.position.needsUpdate = true;
 }
-
-function spaceShipMovement() {
-    if (upArrowPressed || wKeyPressed) {
-        spaceShip.position.x += Math.sin(spaceShip.rotation.y) * moveSpeed;
-        spaceShip.position.z += Math.cos(spaceShip.rotation.y) * moveSpeed;
-        if (!leftArrowPressed && !rightArrowPressed && !aKeyPressed && !dKeyPressed)
-            rotateSpaceShipAnim(0);
-    }
-    if (downArrowPressed || sKeyPressed) {
-        spaceShip.position.x -= Math.sin(spaceShip.rotation.y) * moveSpeed;
-        spaceShip.position.z -= Math.cos(spaceShip.rotation.y) * moveSpeed;
-        if (!leftArrowPressed && !rightArrowPressed && !aKeyPressed && !dKeyPressed)
-            rotateSpaceShipAnim(0);
-    }
-    if (leftArrowPressed || aKeyPressed) {
-        if (downArrowPressed || sKeyPressed) {
-            spaceShip.rotation.y -= 0.05;
-        }
-        else 
-            spaceShip.rotation.y += 0.05;
-        rotateSpaceShipAnim(-0.80);
-    }
-    if (rightArrowPressed || dKeyPressed) {
-        if (downArrowPressed || sKeyPressed)
-            spaceShip.rotation.y += 0.05;
-        else 
-            spaceShip.rotation.y -= 0.05;
-        rotateSpaceShipAnim(0.80);
-
-    }
-    camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
-    spaceShipPointLight.position.copy(spaceShip.position);
-}
-
-
-let goToFirstPerson = false;
-let goToThirdPerson = false;
 
 function update() {
+    // displayRay();
+    updateRay(); 
+    const intersects = raycaster.intersectObjects(scene.children, true);
+    if (intersects.length > 0) {
+        const firstIntersectedObject = intersects[0].object;
+        if (firstIntersectedObject.planet)
+            textElement.textContent = firstIntersectedObject.planet.name + ' planet';
+        else textElement.textContent = 'The sun';
+    }
+    else if (textElement.textContent != '') 
+        textElement.textContent = '';
+
     planets.forEach(planet => {
         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
-        if (planet.scale === 50) { 
-            planet.mesh.rotation.y += planet.orbitSpeed * 2;
-            planet.orbitMesh.rotation.x += planet.orbitSpeed / 3;
+        planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
+
+        if (planet.name === 'settings') {
+            planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
+            planet.orbitMesh.rotation.x += planet.orbitSpeed;
+        }
+        if (planet.name === 'tournament') {
+            planet.mesh.rotation.x += planet.orbitSpeed  * 4;
+            planet.mesh.rotation.y += planet.orbitSpeed * 4;
+        }
+        if (planet.name === 'arena') {
+            planet.mesh.rotation.x += planet.orbitSpeed  * 4;
+            planet.mesh.rotation.y += planet.orbitSpeed * 4;
+            planet.orbitMesh.rotation.x += planet.orbitSpeed  * 4;
+            planet.orbitMesh.rotation.y += planet.orbitSpeed * 4;
         }
         if (planet.orbitMesh != null) {
             planet.orbitMesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
-            planet.orbitMesh.rotation.y += planet.orbitSpeed;
+            planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
     });
-    if (aKeyIsPressed)
-        spaceShipMovement();
-    if (goToFirstPerson && distance > camMinDist){
-        distance -= 10;
-        height -= 4;
-        camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
-    }
-    if (goToThirdPerson && distance < camMaxDist){
-        distance += 10;
-        height += 4;
-        camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
-    }
-    if (distance <= camMinDist && goToFirstPerson)
-        goToFirstPerson = false;
-    if (distance >= camMaxDist && goToThirdPerson)
-        goToThirdPerson = false;
-    camera.rotation.y = spaceShip.rotation.y - Math.PI;
+    spaceShipMovement();
+    changePov();
 }
 
 function animate()
@@ -283,7 +216,7 @@ function animate()
     // UPDATE CAMERA POSITION TO BEHIND THE spaceShip
     renderMinimap(); // Rendu de la minimap
     update();
-    renderer.render( scene, camera );
+    renderer.render(scene, camera);
 }
 
 const checkModelsLoaded = setInterval(() => {
@@ -293,4 +226,4 @@ const checkModelsLoaded = setInterval(() => {
     }
 }, 100);
 
-export {scene, THREE};
+export {scene, THREE, camera, spaceShip, spaceShipPointLight}
