@@ -1,6 +1,6 @@
 # # ---- Directories ---- #
 
-include .env.example
+include .env
 
 DOCKER_COMPOSE = docker-compose.yml
 

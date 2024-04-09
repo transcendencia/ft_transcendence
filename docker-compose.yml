@@ -15,22 +15,33 @@ services:
     expose:
       - "5432"
 
+  server:
+    container_name: server
+    image: server
+    networks:
+      - inception
+    build:
+      dockerfile: nginx/Dockerfile
+    env_file: .env
+    restart: on-failure
+    ports:
+      - "8000"
+    volumes:
+      - server:/django
 
-# services:
- 
-#   db:
-#     image: postgres
-#     restart: always
-#     environment:
-#       POSTGRES_PASSWORD: example
-#     volumes:
-# - pgdata:/var/lib/postgresql/data
- 
-# volumes:
-#   pgdata:
- 
-#   adminer:
-#     image: adminer
-#     restart: always
-#     ports:
-#       - 8080:8080
+#ou placer le dossier montee dans le docker /django docker 
+
+volumes:
+  server:
+    name: server
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: /home/lciullo/ft_transcendence/django
+#device : dossier dans lequel il y l'installation django sur machine hote 
+
+networks:
+  inception:
+    name: inception
+    driver: bridge
