@@ -1,12 +1,11 @@
-//Import the THREE.js library
-import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
-// To allow for the camera to move around the scene
-import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
-// For animation thingys
-// import { TWEEN } from "https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js";
-// To allow for importing the .gltf file
-import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
 
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050505);
@@ -49,23 +48,23 @@ function addStar(){
 }
 Array(800).fill().forEach(addStar)
 
-// let moon;
-// const moonLoader = new GLTFLoader();
-// moonLoader.load(
-//     'moon/scene.gltf',
-//     function(gltf) {
-//         moon = gltf.scene;
-//         moon.scale.set(250,250,250);
-//         scene.add(moon);
-//         moon.position.set(250, 250, 250);
-//     },
-//     function(xhr) {
-//         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
-//     },
-//     function (error) {
-//         console.error(error);
-//     }
-// )
+let moon;
+const moonLoader = new GLTFLoader();
+moonLoader.load(
+    'moon/scene.gltf',
+    function(gltf) {
+        moon = gltf.scene;
+        moon.scale.set(250,250,250);
+        scene.add(moon);
+        moon.position.set(250, 250, 250);
+    },
+    function(xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+    },
+    function (error) {
+        console.error(error);
+    }
+)
 
 // HELPERS
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -91,6 +90,7 @@ let cKeyPressed = false;
 let oKeyPressed = false;
 let pKeyPressed = false;
 let iKeyPressed = false;
+let gKeyPressed = false;
 
 // Event listeners for arrow key presses
 document.addEventListener('keydown', (event) => {
@@ -120,6 +120,8 @@ document.addEventListener('keydown', (event) => {
         pKeyPressed = true;
     if (event.key === 'i')
         iKeyPressed = true;
+    if (event.key === 'g')
+        gKeyPressed = true;
 });
 
 document.addEventListener('keyup', (event) => {
@@ -152,6 +154,8 @@ document.addEventListener('keyup', (event) => {
         pKeyPressed = false;
     if (event.key === 'i')
         iKeyPressed = false;
+    if (event.key === 'g')
+        gKeyPressed = false;
 });
 
 function cameraDebug()
@@ -249,9 +253,15 @@ class Arena extends THREE.Mesh {
             this.setTopView(camera);
         }
         if (this.ball.rightScore(this.paddleLeft))
+        {
+            glitch(glitchLeft);
             this.resetPositions(this.paddleLeft, this.paddleRight);
+        }
         if (this.ball.leftScore(this.paddleRight))
+        {
+            glitch(glitchRight);
             this.resetPositions(this.paddleRight, this.paddleLeft);
+        }
         if (this.ball.collisionWithLeftPaddle(this.paddleLeft))
             this.ball.goToRight(this.paddleLeft);
         if (this.ball.collisionWithRightPaddle(this.paddleRight))
@@ -315,7 +325,7 @@ class Arena extends THREE.Mesh {
     }
     resetPositions(loserPaddle, winnerPaddle)
     {
-        let duration = 750;
+        let duration = 1150;
 
         loserPaddle.light.power = loserPaddle.defaultLight;
         loserPaddle.light.color = new THREE.Color(1, 0, 0);
@@ -544,9 +554,38 @@ function monitorScreen()
     if (oKeyPressed)
         swapToSplitScreen();
 }
+
+// effectGlitch.enabled = false; // Enable glitch effect
+// effectGlitch.goWild = false; // Make the glitch wild
+
 const centerPosition = new THREE.Vector3(0, 0, 0);
 const arena1 = new Arena(centerPosition, 20, 2, 34);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
+
+let renderPass1 = new RenderPass(scene, camera);
+const composer1 = new EffectComposer( renderer );
+let glitchLeft = new GlitchPass(64);
+glitchLeft.renderToScreen = true;
+composer1.addPass(renderPass1);
+composer1.addPass(glitchLeft);
+
+let renderPass2 = new RenderPass(scene, cameraLeft);
+const composer2 = new EffectComposer( renderer2 );
+let glitchRight = new GlitchPass(64);
+glitchRight.renderToScreen = true;
+composer2.addPass(renderPass2);
+composer2.addPass(glitchRight);
+
+glitchRight.enabled = false;
+glitchLeft.enabled = false;
+
+function glitch(glitchEffect)
+{
+    glitchEffect.enabled = true;
+    setTimeout(function() {
+        glitchEffect.enabled = false;
+    }, 250);
+}
 
 function animate()
 {
@@ -556,8 +595,10 @@ function animate()
     arena1.monitorArena();
     monitorScreen();
     // cameraDebug();
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
+    composer1.render();
+    composer2.render();
     // renderer1.render(scene, cameraRight);
-    renderer2.render(scene, cameraLeft);
+    // renderer2.render(scene, cameraLeft);
 }
 animate();
