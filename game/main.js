@@ -7,6 +7,8 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+
 
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
@@ -230,7 +232,8 @@ class Arena extends THREE.Mesh {
         }
         if (spaceKeyPressed)
         {
-            this.ball.speedZ = this.width / 200;
+            this.ball.speedX = 0;
+            this.ball.speedZ = this.ball.initialSpeed;
             this.ball.isRolling = true;
         }
         if (cKeyPressed)
@@ -274,7 +277,7 @@ class Arena extends THREE.Mesh {
         let targetY = this.position.y + this.height * 3;
         let targetZ = this.position.z + this.width * 0.85;
         let targetX = this.position.x;
-        const duration = 3500;
+        const duration = 1500;
         // Create tweens for each property
         new TWEEN.Tween(_cameraLeft.position)
             .to({ y: targetY, z: targetZ, x:targetX }, duration)
@@ -333,6 +336,9 @@ class Arena extends THREE.Mesh {
         loserPaddle.light.color = new THREE.Color(1, 0, 0);
         winnerPaddle.light.power = winnerPaddle.defaultLight * 4;
         winnerPaddle.light.color = new THREE.Color(0, 1, 0);
+        this.ball.isgoingLeft = false;
+        this.ball.isgoingRight = true;
+        this.ball.speedX = 0;
         this.ball.light.power = 0;
         // PADDLE RESETS
         new TWEEN.Tween(this.paddleLeft.position)
@@ -443,6 +449,7 @@ class Ball extends THREE.Mesh {
         this.zLimit1 = arena.position.z + arena.width / 2;
         this.zLimit2 = arena.position.z - arena.width / 2;
         this.arena = arena;
+        this.initialSpeed = this.arena.width / 200;
     }
     leftScore(paddle)
     {
@@ -596,10 +603,19 @@ glitchLeft.enabled = false;
 function glitch(glitchEffect)
 {
     glitchEffect.enabled = true;
+    console.log("glitch");
     setTimeout(function() {
         glitchEffect.enabled = false;
-    }, 250);
+    }, 500);
 }
+
+// Bloom Pass
+const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+bloomPass.threshold = 0.5;
+bloomPass.strength = 1;
+bloomPass.radius = 0.5;
+composer1.addPass(bloomPass);
+composer2.addPass(bloomPass);
 
 function animate()
 {
