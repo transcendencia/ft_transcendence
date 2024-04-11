@@ -13,23 +13,27 @@
 # # Set the working directory
 # WORKDIR $APP_DIR
 
-# # Copy the HTML files to the application directory inside the container
-# COPY html /usr/share/nginx/html/.
+
 
 # # Define a default command to run when the container starts
 # CMD ["nginx", "-g", "daemon off;"]
 
 # CMD ["spleep", "2000"]
-
 FROM python
 
 # Expose port 80
 EXPOSE 8000
+EXPOSE 8001
+
+#Update 
+RUN apt-get -y update && apt-get -y upgrade 
+
+# # Copy the HTML files to the application directory inside the container
+# COPY html /usr/share/nginx/html/.
 
 #Install python on my docker 
 RUN python -m pip install Django
 
+RUN apt-get install netcat-traditional
 
-CMD ["python", "manage.py", "runserver"]
-
-CMD ["sleep", "2000"]
+CMD ["python", "/django/server/manage.py", "runserver", "0.0.0.0:8000"]

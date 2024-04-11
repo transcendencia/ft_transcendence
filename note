@@ -1,4 +1,4 @@
-#sudo docker build . -t nginx && docker rm nginx && sudo docker run --name nginx -p 80:80 nginx
+#sudo docker build . -t nginx && docker rm nginx && sudo docker run --name nginx -p 80:80 nginx to up docker 
 #docker exec -it nginx /bin/bash
 
 #sudo docker build . -t mariadb && docker rm mariadb
@@ -25,3 +25,8 @@
 #  5- docker rm postgres
 #  6- docker exec -it ID /bin/bash 
 #docker exec -it nom_conteneur_postgresql psql -U nom_utilisateur_postgresql -d nom_base_de_données_postgresql
+
+#test on docker : nc -l 8001 -> create server 
+#test on terminal : nc 127.0.0.1 8001 -> try to connect server 
+
+#Si je me connect sur une machine differente il faut preciser : python manage.py runserver 0.0.0.0:8000 
