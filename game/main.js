@@ -6,6 +6,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
+
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050505);
@@ -354,8 +356,8 @@ class Arena extends THREE.Mesh {
         .onComplete(() => {
            loserPaddle.light.power = loserPaddle.defaultLight;
            winnerPaddle.light.power = winnerPaddle.defaultLight;
-           loserPaddle.light.color = new THREE.Color(1, 1, 1);
-           winnerPaddle.light.color = new THREE.Color(1, 1, 1);
+           loserPaddle.light.color = new THREE.Color(0.2, 0.2, 0.8);
+           winnerPaddle.light.color = new THREE.Color(0.2, 0.2, 0.8);
            this.ball.light.power = this.ball.startingPower;
         });
 
@@ -399,7 +401,7 @@ class Paddle extends THREE.Mesh {
         this.height = paddleHeight;
         this.depth = paddleDepth;
         this.arena = arena;
-        this.light = new THREE.PointLight(0xffffff);
+        this.light = new THREE.PointLight(0x4B4FC5);
         scene.add(this.light);
         this.defaultLight = this.arena.width * this.arena.length / 7.5;
         this.light.power = this.defaultLight;
@@ -436,6 +438,8 @@ class Ball extends THREE.Mesh {
         this.isRolling = false;
         this.speedX = 0;
         this.speedY = 0;
+        this.isgoingLeft = false;
+        this.isgoingRight = true;
         this.zLimit1 = arena.position.z + arena.width / 2;
         this.zLimit2 = arena.position.z - arena.width / 2;
         this.arena = arena;
@@ -452,29 +456,36 @@ class Ball extends THREE.Mesh {
     {
         return (this.position.z >= paddle1.position.z || this.position.z <= paddle2.position.z);
     }
+    checkCollisionBoxSphere(box, sphere) {
+        // Get the bounding box of the box object
+        let boxBox = new THREE.Box3().setFromObject(box);
+    
+        // Get the bounding sphere of the sphere object
+        let sphereSphere = new THREE.Sphere();
+        sphere.geometry.computeBoundingSphere();
+        sphereSphere.copy(sphere.geometry.boundingSphere);
+        sphereSphere.applyMatrix4(sphere.matrixWorld);
+    
+        // Check for intersection between the box and sphere bounding volumes
+        return boxBox.intersectsSphere(sphereSphere);
+    }
     collisionWithLeftPaddle(paddle)
     {
-        if ((this.position.z < paddle.position.z + this.radius) && this.position.z > paddle.position.z)
+        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft)
         {
-            if ((this.position.x < paddle.position.x + paddle.width / 2) && (this.position.x > paddle.position.x - paddle.width / 2))
-            {
-                if (Math.abs(this.speedZ) <= this.arena.width / 40)
-                    this.speedZ *= 1.05;
-                return true;
-            }
+            this.isgoingLeft = false;
+            this.isgoingRight = true;
+            return true;
         }
         return false;
     }
     collisionWithRightPaddle(paddle)
     {
-        if ((this.position.z > paddle.position.z - this.radius) && this.position.z < paddle.position.z)
+        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight)
         {
-            if ((this.position.x < paddle.position.x + paddle.width / 2) && (this.position.x > paddle.position.x - paddle.width / 2))
-            {
-                if (Math.abs(this.speedZ) <= this.arena.width / 40)
-                    this.speedZ *= 1.05;
-                return true;
-            }
+            this.isgoingRight = false;
+            this.isgoingLeft = true;
+            return true;
         }
         return false;
     }
@@ -485,7 +496,10 @@ class Ball extends THREE.Mesh {
             this.speedX = distanceFromCenter * 0.015 * this.arena.width;
         else
             this.speedX += distanceFromCenter * 0.015 * this.arena.width;
-        this.speedZ *= -1;
+        if (Math.abs(this.speedZ) <= this.arena.width / 40)
+            this.speedZ *= -1.08;
+        else
+            this.speedZ *= -1;
     }
     goToRight(paddle)
     {
@@ -493,7 +507,10 @@ class Ball extends THREE.Mesh {
         if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
             this.speedX = distanceFromCenter * 0.015 * this.arena.width;
         this.speedX += distanceFromCenter * 0.015 * this.arena.width;
-        this.speedZ *= -1;
+        if (Math.abs(this.speedZ) <= this.arena.width / 40)
+            this.speedZ *= -1.08;
+        else
+            this.speedZ *= -1;
     }
     monitorMovement()
     {
@@ -554,9 +571,6 @@ function monitorScreen()
     if (oKeyPressed)
         swapToSplitScreen();
 }
-
-// effectGlitch.enabled = false; // Enable glitch effect
-// effectGlitch.goWild = false; // Make the glitch wild
 
 const centerPosition = new THREE.Vector3(0, 0, 0);
 const arena1 = new Arena(centerPosition, 20, 2, 34);
