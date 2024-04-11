@@ -1,8 +1,12 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
+import * as THREE from 'three';
 import {spaceShip, allModelsLoaded} from "./objs.js";
 import { addStar } from "./stars.js";
 import { sun, planets, setupPlanets} from "./planets.js";
 import { spaceShipMovement, changePov } from './movement.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
+import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c1')
@@ -77,15 +81,35 @@ dotElement.style.top = '50%'; // Position in the middle vertically
 dotElement.style.left = '50%'; // Position in the middle horizontally
 dotElement.style.transform = 'translate(-50%, -50%)'; // Center the dot precisely
 
-const textElement = document.createElement('div');
 document.body.appendChild(dotElement);
+const textElement = document.createElement('div');
+
+// Add outline pass
+const composer = new EffectComposer(renderer);
+composer.setSize(window.innerWidth, window.innerHeight);
+const renderPass = new RenderPass( scene, camera );
+
+const outlinePass = new OutlinePass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight), 
+    scene, 
+    camera
+    );
+outlinePass.visibleEdgeColor.set("#1abaff");
+outlinePass.edgeStrength = 5;
+outlinePass.edgeGlow = 1;
+outlinePass.edgeThickness = 2;
+composer.addPass(renderPass);
+composer.addPass(outlinePass);
+
+// outlinePass.selectedObjects.push(sun);
 
 // Set the text content and style
 textElement.textContent = '';
 textElement.style.color = '#aaaaaa';
 textElement.style.position = 'absolute';
 textElement.style.top = '35%';
-textElement.style.right = '6%'; // Align to the right
+textElement.style.right = '2%'; // Align to the right
+textElement.style.whiteSpace = 'pre-line';
 
 document.body.appendChild(textElement);
 
@@ -116,7 +140,6 @@ lightHelperss.scale.set(10,10,10);
 const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
 const lightHelper = new THREE.PointLightHelper(pointLight);
 scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight);
-
 
 // //HELPERS
 // const gridHelper = new THREE.GridHelper(10000, 100); // size: 100, divisions: 10
@@ -169,19 +192,22 @@ function displayRay() {
     rayLine.geometry.attributes.position.needsUpdate = true;
 }
 
+let selectedObjects = [];
+
 function update() {
     // displayRay();
     updateRay(); 
     const intersects = raycaster.intersectObjects(scene.children, true);
     if (intersects.length > 0) {
         const firstIntersectedObject = intersects[0].object;
-        if (firstIntersectedObject.planet)
-            textElement.textContent = firstIntersectedObject.planet.name + ' planet';
+        if (firstIntersectedObject.planet) {
+            console.log(firstIntersectedObject.planet.name);
+            textElement.textContent = firstIntersectedObject.planet.desc;
+        }
         else textElement.textContent = 'The sun';
     }
     else if (textElement.textContent != '') 
         textElement.textContent = '';
-
     planets.forEach(planet => {
         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
         planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
@@ -209,6 +235,13 @@ function update() {
     changePov();
 }
 
+// Bloom Pass
+const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+bloomPass.threshold = 0.1;
+bloomPass.strength = 1;
+bloomPass.radius = 0.5;
+composer.addPass(bloomPass);
+
 function animate()
 {
     requestAnimationFrame( animate )
@@ -216,7 +249,8 @@ function animate()
     // UPDATE CAMERA POSITION TO BEHIND THE spaceShip
     renderMinimap(); // Rendu de la minimap
     update();
-    renderer.render(scene, camera);
+    composer.render();
+    // renderer.render(scene, camera);
 }
 
 const checkModelsLoaded = setInterval(() => {

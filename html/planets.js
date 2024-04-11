@@ -1,13 +1,15 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
+import * as THREE from 'three';
 import { scene } from "./main.js";
 
+
 class Planet {
-	constructor(name, distance, scale, mesh, orbitMesh, hitboxSize) {
+	constructor(name, distance, scale, mesh, orbitMesh, hitboxSize, desc) {
 		this.scene = scene;
         this.sun = sun;
         this.distance = distance;
 		this.hitboxSize = hitboxSize;
-        this.scale = scale;
+		this.scale = scale;
+        this.desc = desc;
 		this.orbitMesh = orbitMesh;
         this.mesh = mesh; // Référence au modèle 3D de la planète
         this.orbitSpeed = null; // Vitesse de l'orbite de la planète
@@ -49,7 +51,6 @@ class Planet {
 	}
 	initialize() {
 		this.setPlanetInfo();
-		console.log(this.name);
 		if (this.orbitMesh != null)
 			this.setOrbitRingInfo();
 		if (this.name === 'settings')
@@ -69,17 +70,21 @@ const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
 const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
 const sun = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
+sun.scale.set(300, 300, 300);
+sun.position.set(0, -10, 0);
+
 function setupPlanets(models) {
-	sun.scale.set(300, 300, 300);
-	sun.position.set(0, -10, 0);
 	scene.add(sun);
 	const planetData = [
-		{ name: 'arena',distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80},
-		{ name: 'settings', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40},
-		{ name: 'tournament', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90},
+		{name: 'arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80,
+			desc: "[Name]: Pong arena\n[ID]: PA-0667 \n[Atmosphere]: none \n[Temperature]: -270.45°C"},
+		{name: 'settings', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40,
+			desc: "[Name]: Settings changer \n[ID]: SO-0911 \n[Atmosphere]: CO₂-SO₂-H₂S \n[Temperature]: +127°C"},
+		{name: 'tournament', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90,
+			desc: "[Name]: The tournament™ \n[ID]: XR-0720 \n[Atmosphere]: N₂-0₂-Ar-Ne \n[Temperature]: 14°C"},
 	]
 	planetData.forEach(data => {
-		const planet = new Planet(data.name, data.distance, data.scale, data.mesh, data.orbitMesh, data.hitboxSize);
+		const planet = new Planet(data.name, data.distance, data.scale, data.mesh, data.orbitMesh, data.hitboxSize, data.desc);
 		planets.push(planet);
 	});
 }

@@ -1,3 +1,5 @@
+
+import * as THREE from 'three';
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
 import { scene } from "./main.js";
 import { setupPlanets } from "./planets.js";
@@ -60,7 +62,7 @@ for (let i = 0; i < modelsData.length; i++) {
 
 
 function allModelsLoaded() {
-    console.log(models);
+    // console.log(models);
     return modelsData.every(model => model.loaded) && spaceShipLoaded;
 }
 
