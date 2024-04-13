@@ -8,7 +8,8 @@ import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-
+import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
+import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
@@ -95,6 +96,7 @@ let oKeyPressed = false;
 let pKeyPressed = false;
 let iKeyPressed = false;
 let gKeyPressed = false;
+let bKeyPressed = false;
 
 // Event listeners for arrow key presses
 document.addEventListener('keydown', (event) => {
@@ -126,6 +128,8 @@ document.addEventListener('keydown', (event) => {
         iKeyPressed = true;
     if (event.key === 'g')
         gKeyPressed = true;
+    if (event.key === 'b')
+        bKeyPressed = true;
 });
 
 document.addEventListener('keyup', (event) => {
@@ -160,6 +164,8 @@ document.addEventListener('keyup', (event) => {
         iKeyPressed = false;
     if (event.key === 'g')
         gKeyPressed = false;
+    if (event.key === 'b')
+        bKeyPressed = false;
 });
 
 function cameraDebug()
@@ -214,6 +220,12 @@ class Arena extends THREE.Mesh {
         this.paddleLeft = new Paddle(this, true);
         this.ball = new Ball(this);
         this.isActive = true;
+        this.horizontalBlur = new ShaderPass(HorizontalBlurShader);
+        this.verticalBlur = new ShaderPass(VerticalBlurShader);
+        this.horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
+        this.verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
+        this.horizontalBlur.renderToScreen = true; // Render to a texture
+        this.verticalBlur.renderToScreen = true; // Render to the screen
     }
     monitorArena()
     {
@@ -235,6 +247,19 @@ class Arena extends THREE.Mesh {
             this.ball.speedX = 0;
             this.ball.speedZ = this.ball.initialSpeed;
             this.ball.isRolling = true;
+        }
+        if (bKeyPressed)
+        {
+            if (this.horizontalBlur.enabled || this.verticalBlur.enabled)
+            {
+                this.verticalBlur.enabled = false;
+                this.horizontalBlur.enabled = false;
+            }
+            else
+            {
+                this.verticalBlur.enabled = true;
+                this.horizontalBlur.enabled = true;
+            }
         }
         if (cKeyPressed)
         {
@@ -616,6 +641,12 @@ bloomPass.strength = 1;
 bloomPass.radius = 0.5;
 composer1.addPass(bloomPass);
 composer2.addPass(bloomPass);
+
+
+composer1.addPass(arena1.horizontalBlur);
+composer1.addPass(arena1.verticalBlur);
+composer2.addPass(arena1.horizontalBlur);
+composer2.addPass(arena1.verticalBlur);
 
 function animate()
 {
