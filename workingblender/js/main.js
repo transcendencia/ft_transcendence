@@ -12,8 +12,10 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 
 //Create a Three.JS Scene
 const scene = new THREE.Scene();
+const scene2 = new THREE.Scene();
 //create a new camera with positions and angles
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 //Keep track of the mouse position, so we can make the eye move
 let mouseX = window.innerWidth / 2;
@@ -21,16 +23,16 @@ let mouseY = window.innerHeight / 2;
 
 //Keep the 3D object on a global variable so we can access it later
 let object;
-
+let object2;
 //OrbitControls allow the camera to move around the scene
 let controls;
 
 //Set which object to render
-let objToRender = 'eye';
-
+let objToRender = 'dino';
+let objToRender2 = 'dino'
 //Instantiate a loader for the .gltf file
 const loader = new GLTFLoader();
-
+const loader2 = new GLTFLoader();
 //Load the file
 loader.load(
   `models/${objToRender}/scene.gltf`,
@@ -49,10 +51,32 @@ loader.load(
   }
 );
 
+const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
+const material = new THREE.MeshBasicMaterial({color:0xFFFFFF, wireframe:true});
+const torus = new THREE.Mesh(geometry, material);
+scene2.add(torus);
+
+let spaceKeyPressed = false;
+let cKeyPressed = false;
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === ' ')
+    spaceKeyPressed = true;
+  if (event.key === 'c')
+    cKeyPressed = true;
+});
+
+document.addEventListener('keyup', (event) => {
+  if (event.key === ' ')
+    spaceKeyPressed = false;
+  if (event.key === 'c')
+    cKeyPressed = false;
+});
+
 //Instantiate a new renderer and set its size
 const renderer = new THREE.WebGLRenderer({ alpha: true }); //Alpha: true allows for the transparent background
 renderer.setSize(window.innerWidth, window.innerHeight);
-
+renderer.autoClear = false;
 //Add the renderer to the DOM
 document.getElementById("container3D").appendChild(renderer.domElement);
 
@@ -72,19 +96,30 @@ scene.add(ambientLight);
 if (objToRender === "dino") {
   controls = new OrbitControls(camera, renderer.domElement);
 }
-
+if (object)
+  object.position.x += 5;
 //Render the scene
 function animate() {
   requestAnimationFrame(animate);
   //Here we could add some code to update the scene, adding some automatic movement
-
+  
   //Make the eye move
   if (object && objToRender === "eye") {
     //I've played with the constants here until it looked good 
     object.rotation.y = -3 + mouseX / window.innerWidth * 3;
     object.rotation.x = -1.2 + mouseY * 2.5 / window.innerHeight;
   }
-  // renderer.render(scene, camera);
+  console.log("blur = ", blur_x_pass.uniforms.h.value);
+  if (spaceKeyPressed)
+  {
+    blur_x_pass.uniforms.h.value += 0.001;
+    blur_y_pass.uniforms.v.value += 0.001;
+  }
+  if (cKeyPressed)
+  {
+    blur_x_pass.uniforms.h.value = 0;
+    blur_y_pass.uniforms.v.value = 0;
+  }
   composer.render();
 }
 
