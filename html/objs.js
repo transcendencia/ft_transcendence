@@ -1,7 +1,5 @@
-
-import * as THREE from 'three';
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
-import { scene } from "./main.js";
+import { scene, THREE } from "./main.js";
 import { setupPlanets } from "./planets.js";
 
 
@@ -14,12 +12,35 @@ spaceShipLoader.load(
     function(gltf) {
         spaceShip = gltf.scene;
         spaceShip.scale.set(0.1,0.1,0.1);
-        spaceShip.position.set(0,0,-500);
+        spaceShip.position.set(0,0,-1293.5);
         scene.add(spaceShip);
     },
     function(xhr) {
         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
         spaceShipLoaded = true;
+    },
+    function (error) {
+        console.error(error);
+    }
+);
+    
+let spaceShipInt;
+let spaceShipIntLoaded = false;
+
+const spaceShipIntLoader = new GLTFLoader();
+spaceShipLoader.load(
+    'blender/spaceshipInterior.glb',
+    function(gltf) {
+        spaceShipInt = gltf.scene;
+        spaceShipInt.scale.set(1,1,1);
+        spaceShipInt.position.set(0, 0.5, -1300);
+        spaceShipInt.rotation.set(0,THREE.MathUtils.degToRad(180),THREE.MathUtils.degToRad(180));
+        
+        scene.add(spaceShipInt);
+    },
+    function(xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        spaceShipIntLoaded = true;
     },
     function (error) {
         console.error(error);

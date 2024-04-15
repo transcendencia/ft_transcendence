@@ -24,3 +24,50 @@ body {
 #c2 {
     order: 2; /* Set the order of #c2 to 2 (display on the right) */
 }
+
+/* Style the container */
+#enterPlanetTextContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Style the text element */
+#enterPlanetText {
+    color: #00ff00;
+    font-size: 30px;
+}
+
+/* Style the container */
+#planetInfoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 38%;
+    right: 2%;
+}
+
+/* Style the text element */
+#planetInfoText {
+    color: #ffffff;
+    font-size: 20px;
+    white-space: pre-line;
+}
+
+ /* Style the dot */
+ .dot {
+    width: 5px;
+    height: 5px;
+    background-color: white;
+    opacity: 0.4;
+    border-radius: 50%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

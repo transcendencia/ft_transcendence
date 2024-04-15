@@ -2,12 +2,13 @@ import * as THREE from 'three';
 import {spaceShip, allModelsLoaded} from "./objs.js";
 import { addStar } from "./stars.js";
 import { sun, planets, setupPlanets} from "./planets.js";
-import { spaceShipMovement, changePov } from './movement.js';
+import { spaceShipMovement, camMovement} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
+let gameStart = false;
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c1')
 });
@@ -15,7 +16,7 @@ const renderer = new THREE.WebGLRenderer({
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000020);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
-const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000 );
+const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
 
 // Define the size of the minimap
@@ -32,7 +33,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     1,                // near
     2000              // far
     );
-    
+     
     minimapCamera.position.set(sun.position.x, sun.position.y + 1000, sun.position.z); // Position de la caméra (vue aérienne)
     
     // Créer une nouvelle instance de rendu pour la minimap
@@ -60,29 +61,14 @@ const minimapCamera = new THREE.OrthographicCamera(
     // const camera1Helper = new THREE.CameraHelper(minimapCamera);
 
 function renderMinimap() {
+    if (!spaceShip)
+        return;
     playerMarker.position.x = spaceShip.position.x;
     playerMarker.position.z = spaceShip.position.z;
     playerMarker.position.y = 500;
     minimapCamera.lookAt(sun.position);
     minimapRenderer.render(scene, minimapCamera);
 }
-
-// Create a div element for the dot
-const dotElement = document.createElement('div');
-
-// Apply CSS styles to the dot
-dotElement.style.width = '5px';
-dotElement.style.height = '5px';
-dotElement.style.backgroundColor = 'white';
-dotElement.style.opacity = '40%';
-dotElement.style.borderRadius = '50%'; // Make it round
-dotElement.style.position = 'fixed'; // Position fixed so it stays in the middle of the screen
-dotElement.style.top = '50%'; // Position in the middle vertically
-dotElement.style.left = '50%'; // Position in the middle horizontally
-dotElement.style.transform = 'translate(-50%, -50%)'; // Center the dot precisely
-
-document.body.appendChild(dotElement);
-const textElement = document.createElement('div');
 
 // Add outline pass
 const composer = new EffectComposer(renderer);
@@ -94,24 +80,12 @@ const outlinePass = new OutlinePass(
     scene, 
     camera
     );
-outlinePass.visibleEdgeColor.set("#1abaff");
+    outlinePass.visibleEdgeColor.set("#ffee00");
 outlinePass.edgeStrength = 5;
 outlinePass.edgeGlow = 1;
 outlinePass.edgeThickness = 2;
 composer.addPass(renderPass);
 composer.addPass(outlinePass);
-
-// outlinePass.selectedObjects.push(sun);
-
-// Set the text content and style
-textElement.textContent = '';
-textElement.style.color = '#aaaaaa';
-textElement.style.position = 'absolute';
-textElement.style.top = '35%';
-textElement.style.right = '2%'; // Align to the right
-textElement.style.whiteSpace = 'pre-line';
-
-document.body.appendChild(textElement);
 
 minimapRenderer.domElement.style.borderRadius = '100px'; // Adjust the radius as needed
 // Position the minimap renderer
@@ -126,42 +100,27 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.render(scene, camera);
 
+const planetInfoText = document.getElementById('planetInfoText');
+planetInfoText.textContent = '';
+const enterPlanetText = document.getElementById('enterPlanetText');
+enterPlanetText.textContent = 'Press [E] to start';
+
 // LIGHTING
 const pointLight = new THREE.PointLight(0xffffff, 1)
 pointLight.castShadow = true;
 pointLight.position.copy(sun.position);
-pointLight.scale.set(10,10,10);
+pointLight.scale.set(10, 10, 10);
+
+const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
+pointLight2.castShadow = true;
+pointLight2.position.set(0,5,-1300);
+const lightHelperss = new THREE.PointLightHelper(pointLight2);
 
 const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
 spaceShipPointLight.castShadow = true;
-const lightHelperss = new THREE.PointLightHelper(spaceShipPointLight);
-lightHelperss.scale.set(10,10,10);
-
 const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
 const lightHelper = new THREE.PointLightHelper(pointLight);
-scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight);
-
-// //HELPERS
-// const gridHelper = new THREE.GridHelper(10000, 100); // size: 100, divisions: 10
-// gridHelper.material.color.set(0xffffff); // Set grid color to white
-// scene.add(gridHelper);
-// CONTROLS
-// const controls = new OrbitControls(camera, renderer.domElement);
-
-
-// const geometry1 = new THREE.BoxGeometry(2, 1, 4);
-// const edges1 = new THREE.EdgesGeometry(geometry1); // Get edges of the geometry
-// const lineMaterial1 = new THREE.LineBasicMaterial({ color: 0x00ff00 }); // Line material for wireframe
-// const wireframe1 = new THREE.LineSegments(edges1, lineMaterial1); // Create line segments
-// wireframe1.position.y = 0.8;
-// scene.add(wireframe1); // Add wireframe to scene
-
-// const geometry2 = new THREE.BoxGeometry(2, 1, 4);
-// const edges2 = new THREE.EdgesGeometry(geometry2); // Get edges of the geometry
-// const lineMaterial2 = new THREE.LineBasicMaterial({ color: 0x00ff00}); // Line material for wireframe
-// const wireframe2 = new THREE.LineSegments(edges2, lineMaterial2); // Create line segments
-// wireframe2.position.y = 0.8;
-// scene.add(wireframe2);
+scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, lightHelperss, pointLight2);
 
 Array(800).fill().forEach(addStar);
 
@@ -192,35 +151,69 @@ function displayRay() {
     rayLine.geometry.attributes.position.needsUpdate = true;
 }
 
-let selectedObjects = [];
 
-function update() {
-    // displayRay();
-    updateRay(); 
+let inRange = false;
+let cursorOnPlanet = false;
+
+function resetOutlineAndText() {
+    planetInfoText.textContent = '';
+    enterPlanetText.textContent = '';
+    outlinePass.selectedObjects = [];
+    cursorOnPlanet = false;
+}
+
+function getPlanetIntersection() {
     const intersects = raycaster.intersectObjects(scene.children, true);
     if (intersects.length > 0) {
-        const firstIntersectedObject = intersects[0].object;
-        if (firstIntersectedObject.planet) {
-            console.log(firstIntersectedObject.planet.name);
-            textElement.textContent = firstIntersectedObject.planet.desc;
+        const aimedObj = intersects[0].object;
+        if (!aimedObj.planet)
+            return;
+        if (!cursorOnPlanet) {
+            outlinePass.selectedObjects = [];
+            if (aimedObj.planet) {
+                outlinePass.selectedObjects = [aimedObj];
+                planetInfoText.textContent = aimedObj.planet.desc;
+            }
+            cursorOnPlanet = true;
         }
-        else textElement.textContent = 'The sun';
+        else if (cursorOnPlanet) {
+            if (aimedObj.planet.name != outlinePass.selectedObjects[0].planet.name)
+                resetOutlineAndText();
+            spaceShipInRange(aimedObj);
+        }
     }
-    else if (textElement.textContent != '') 
-        textElement.textContent = '';
+    else if (intersects.length === 0 && cursorOnPlanet)
+        resetOutlineAndText();
+}
+
+function spaceShipInRange(obj) {
+    if (obj.planet) { 
+        if (spaceShip.position.distanceTo(obj.position) < 4 * obj.planet.scale && !inRange) {       
+            outlinePass.visibleEdgeColor.set("#00ff00");
+            enterPlanetText.textContent = 'Press [E] to land on ' + obj.planet.name;
+            inRange = true;
+        }
+        else if (spaceShip.position.distanceTo(obj.position) >= 4 * obj.planet.scale && inRange) {
+            outlinePass.visibleEdgeColor.set("#ffee00");
+            enterPlanetText.textContent = '';
+            inRange = false;
+        }
+    }
+}
+
+function planetMovement() {
     planets.forEach(planet => {
         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
         planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
-
-        if (planet.name === 'settings') {
+        if (planet.name === 'Settings changer') {
             planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
             planet.orbitMesh.rotation.x += planet.orbitSpeed;
         }
-        if (planet.name === 'tournament') {
+        if (planet.name === 'The tournament™') {
             planet.mesh.rotation.x += planet.orbitSpeed  * 4;
             planet.mesh.rotation.y += planet.orbitSpeed * 4;
         }
-        if (planet.name === 'arena') {
+        if (planet.name === 'Pong arena') {
             planet.mesh.rotation.x += planet.orbitSpeed  * 4;
             planet.mesh.rotation.y += planet.orbitSpeed * 4;
             planet.orbitMesh.rotation.x += planet.orbitSpeed  * 4;
@@ -231,8 +224,22 @@ function update() {
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
     });
+}
+
+
+document.addEventListener('keydown', (event) => { 
+    if (event.key === 'e' && !gameStart)
+        gameStart = true;
+});
+function update() {
+    // displayRay();
+    planetMovement();
+    camMovement();
+    if (!gameStart)
+        return;
+    updateRay(); 
+    getPlanetIntersection();
     spaceShipMovement();
-    changePov();
 }
 
 // Bloom Pass
@@ -240,7 +247,7 @@ const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, win
 bloomPass.threshold = 0.1;
 bloomPass.strength = 1;
 bloomPass.radius = 0.5;
-composer.addPass(bloomPass);
+// composer.addPass(bloomPass);
 
 function animate()
 {
@@ -257,6 +264,7 @@ const checkModelsLoaded = setInterval(() => {
     if (allModelsLoaded()) {
         clearInterval(checkModelsLoaded);
         animate();
+        camMovement();
     }
 }, 100);
 

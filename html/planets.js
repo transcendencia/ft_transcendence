@@ -53,11 +53,11 @@ class Planet {
 		this.setPlanetInfo();
 		if (this.orbitMesh != null)
 			this.setOrbitRingInfo();
-		if (this.name === 'settings')
+		if (this.name === 'Settings changer')
 			this.setupSettings();
-		if (this.name === 'arena')
+		if (this.name === 'Pong arena')
 			this.setupArena();
-		if (this.name === 'tournament')
+		if (this.name === 'The tournament™')
 			this.setupTournament();
 		this.createHitbox();
     }
@@ -76,11 +76,11 @@ sun.position.set(0, -10, 0);
 function setupPlanets(models) {
 	scene.add(sun);
 	const planetData = [
-		{name: 'arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80,
+		{name: 'Pong arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80,
 			desc: "[Name]: Pong arena\n[ID]: PA-0667 \n[Atmosphere]: none \n[Temperature]: -270.45°C"},
-		{name: 'settings', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40,
+		{name: 'Settings changer', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40,
 			desc: "[Name]: Settings changer \n[ID]: SO-0911 \n[Atmosphere]: CO₂-SO₂-H₂S \n[Temperature]: +127°C"},
-		{name: 'tournament', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90,
+		{name: 'The tournament™', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90,
 			desc: "[Name]: The tournament™ \n[ID]: XR-0720 \n[Atmosphere]: N₂-0₂-Ar-Ne \n[Temperature]: 14°C"},
 	]
 	planetData.forEach(data => {

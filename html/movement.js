@@ -8,7 +8,7 @@ let wKeyPressed = false;
 let aKeyPressed = false;
 let sKeyPressed = false;
 let dKeyPressed = false;
-let aKeyIsPressed =false;
+let aKeyIsPressed = false;
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft')
@@ -50,10 +50,6 @@ document.addEventListener('keyup', (event) => {
 });
 
 document.addEventListener('keypress', (event) => {
-    if (event.key === '1' && distance >= camMaxDist)
-        goToFirstPerson = true;
-    if (event.key === '1' && distance <= camMinDist)
-        goToThirdPerson = true;
     if (event.key === ' ' && !boost)
         startBoost(); 
 })
@@ -154,26 +150,20 @@ function spaceShipMovement() {
 }
 
 
-let goToFirstPerson = false;
-let goToThirdPerson = false;
+let goToThirdPerson = true;
 
-function changePov() {
-    if (goToFirstPerson && distance > camMinDist){
-        distance -= 1;
-        height -= 0.4;
-        camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
-    }
+function camMovement() {
+    if (!spaceShip)
+        return;
     if (goToThirdPerson && distance < camMaxDist){
         distance += 1;
         height += 0.4;
         camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
     }
-    if (distance <= camMinDist && goToFirstPerson)
-        goToFirstPerson = false;
-    if (distance >= camMaxDist && goToThirdPerson)
+    if (distance >= camMaxDist)
         goToThirdPerson = false;
     camera.rotation.y = spaceShip.rotation.y - Math.PI;
 }
 
 
-export { spaceShipMovement, changePov };
+export { spaceShipMovement, camMovement };
