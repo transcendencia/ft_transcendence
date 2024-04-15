@@ -1,0 +1,14 @@
+#VARIABLES ENVIRONNEMENT 
+.env
+
+#VENV DIRECTORIES AND FILES
+venv/
+
+#DATABASE
+/backend/ft_transcendence/db.sqlite3
+
+# .vscode
+*.vscode
+
+#note 
+note 
