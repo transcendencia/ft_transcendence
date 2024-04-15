@@ -13,5 +13,4 @@ ENV POSTGRES_DB=test
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-
 # CMD ["sleep", "2000"]

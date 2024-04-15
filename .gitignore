@@ -2,8 +2,13 @@
 .env
 
 #VENV DIRECTORIES AND FILES
-/bin
-/include 
-/lib
-/lib64
-pyvenv.cfg
+venv/
+
+#DATABASE
+/backend/ft_transcendence/db.sqlite3
+
+# .vscode
+*.vscode
+
+#note 
+note 

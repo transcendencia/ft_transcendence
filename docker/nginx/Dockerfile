@@ -23,7 +23,6 @@ FROM python
 
 # Expose port 80
 EXPOSE 8000
-EXPOSE 8001
 
 #Update 
 RUN apt-get -y update && apt-get -y upgrade 
@@ -35,5 +34,3 @@ RUN apt-get -y update && apt-get -y upgrade
 RUN python -m pip install Django
 
 RUN apt-get install netcat-traditional
-
-CMD ["python", "/django/server/manage.py", "runserver", "0.0.0.0:8000"]

@@ -6,7 +6,7 @@ services:
     image: postgres
     init: true 
     build:
-      dockerfile: Postgres/Dockerfile
+      dockerfile: docker/Postgres/Dockerfile
       args:
        POSTGRES_USER: $POSTGRES_USER
        POSTGRES_PASSWORD: $POSTGRES_PASSWORD
@@ -23,16 +23,16 @@ services:
     networks:
       - ft_transcendence
     build:
-      dockerfile: nginx/Dockerfile
+      dockerfile: docker/nginx/Dockerfile
+    command: python /backend/ft_transcendence/manage.py runserver 0.0.0.0:8000
     env_file: .env
     restart: on-failure
     ports:
       - "8000:8000"
-      - "8001:8001"
     volumes:
-      - server:/django
+      - server:/backend
 
-#ou placer le dossier montee dans le docker /django docker 
+#ou placer le dossier montee dans le docker /backend docker 
 
 volumes:
   server:
@@ -41,7 +41,7 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/lciullo/ft_transcendence/django
+      device: /home/lciullo/ft_transcendence/backend
 #device : dossier dans lequel il y l'installation django sur machine hote 
 
 networks:
