@@ -12,3 +12,6 @@ venv/
 
 #note 
 note 
+
+#backend
+/backend/ft_transcendence/server/__pycache__/
