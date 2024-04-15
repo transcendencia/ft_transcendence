@@ -27,6 +27,7 @@ const renderer = new THREE.WebGLRenderer({ // Renderer for full screen
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.render(scene, camera);
+renderer.autoClear = false;
 
 const renderer2 = new THREE.WebGLRenderer({ // Renderer for split screen
     canvas: document.querySelector('#c2')
@@ -44,7 +45,8 @@ renderer2.render(scene, cameraLeft);
 //MOON AND STARS
 function addStar(){
     const geometry = new THREE.SphereGeometry(0.25, 24, 24);
-    const material = new THREE.MeshStandardMaterial({color:0xffffff})
+    const color = new THREE.Color(THREE.MathUtils.randInt(0, 0xffffff));
+    const material = new THREE.MeshStandardMaterial({color: color})
     const star = new THREE.Mesh( geometry, material);
     const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread( 1000 ));
     
@@ -226,6 +228,9 @@ class Arena extends THREE.Mesh {
         this.verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
         this.horizontalBlur.renderToScreen = true; // Render to a texture
         this.verticalBlur.renderToScreen = true; // Render to the screen
+        this.horizontalBlur.uniforms.h.value = 0;
+        this.verticalBlur.uniforms.v.value = 0;
+        this.isBlurred = false;
     }
     monitorArena()
     {
@@ -250,22 +255,16 @@ class Arena extends THREE.Mesh {
         }
         if (bKeyPressed)
         {
-            if (this.horizontalBlur.enabled || this.verticalBlur.enabled)
-            {
-                this.verticalBlur.enabled = false;
-                this.horizontalBlur.enabled = false;
-            }
-            else
-            {
-                this.verticalBlur.enabled = true;
-                this.horizontalBlur.enabled = true;
-            }
+            this.blurScreen();
+            // if (this.isBlurred)
+            //     this.isBlurred = false;
+            // else
+            //     this.isBlurred = true;
         }
         if (cKeyPressed)
         {
             this.paddleLeft.light.power += 0.1;
             this.paddleRight.light.power += 0.1;
-            console.log('light = ' + this.paddleLeft.light.power);
         }
         if (iKeyPressed)
         {
@@ -282,6 +281,10 @@ class Arena extends THREE.Mesh {
             swapToFullScreen();
             this.setTopView(camera);
         }
+        if (this.ball.collisionWithLeftPaddle(this.paddleLeft))
+            this.ball.goToRight(this.paddleLeft);
+        if (this.ball.collisionWithRightPaddle(this.paddleRight))
+            this.ball.goToLeft(this.paddleRight);
         if (this.ball.rightScore(this.paddleLeft))
         {
             glitch(glitchLeft);
@@ -292,10 +295,6 @@ class Arena extends THREE.Mesh {
             glitch(glitchRight);
             this.resetPositions(this.paddleRight, this.paddleLeft);
         }
-        if (this.ball.collisionWithLeftPaddle(this.paddleLeft))
-            this.ball.goToRight(this.paddleLeft);
-        if (this.ball.collisionWithRightPaddle(this.paddleRight))
-            this.ball.goToLeft(this.paddleRight);
     }
     setSplitCameraPositions(_cameraRight, _cameraLeft)
     {
@@ -333,6 +332,46 @@ class Arena extends THREE.Mesh {
                 _cameraRight.lookAt(this.position);
             })
             .start();
+    }
+    blurScreen()
+    {
+        const duration = 1500;
+        console.log("wagwan, blur is = " + this.isBlurred);
+        if (!this.isBlurred)
+        {
+            let target = 0.002;
+    
+            new TWEEN.Tween(this.horizontalBlur.uniforms.h)
+            .to({value: target}, duration)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onComplete(() => {
+                this.isBlurred = !this.isBlurred;
+            })
+            .start();
+    
+            new TWEEN.Tween(this.verticalBlur.uniforms.v)
+            .to({value: target}, duration)
+            .easing(TWEEN.Easing.Quadratic.Out)
+
+            .start();
+        }
+        else
+        {
+            let target = 0;
+    
+            new TWEEN.Tween(this.horizontalBlur.uniforms.h)
+            .to({value: target}, duration)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .start();
+    
+            new TWEEN.Tween(this.verticalBlur.uniforms.v)
+            .to({value: target}, duration)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onComplete(() => {
+                this.isBlurred = !this.isBlurred;
+            })
+            .start();
+        }
     }
     setTopView(camera)
     {
@@ -412,9 +451,9 @@ class Paddle extends THREE.Mesh {
         const geometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
         // Load texture
         const textureLoader = new THREE.TextureLoader();
-        const texture = textureLoader.load('mathy.jpeg');
+        const texture = textureLoader.load('purplebox.jpeg');
         // Create material
-        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
         // Call super constructor to set up mesh
         super(geometry, material);
@@ -505,6 +544,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft)
         {
+            console.log("left collision");
             this.isgoingLeft = false;
             this.isgoingRight = true;
             return true;
@@ -515,6 +555,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight)
         {
+            console.log("right collision");
             this.isgoingRight = false;
             this.isgoingLeft = true;
             return true;
@@ -523,6 +564,7 @@ class Ball extends THREE.Mesh {
     }
     goToLeft(paddle)
     {
+        console.log("going to left");
         let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
         if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
             this.speedX = distanceFromCenter * 0.015 * this.arena.width;
@@ -535,6 +577,7 @@ class Ball extends THREE.Mesh {
     }
     goToRight(paddle)
     {
+        console.log("going to right");
         let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
         if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
             this.speedX = distanceFromCenter * 0.015 * this.arena.width;
@@ -605,7 +648,7 @@ function monitorScreen()
 }
 
 const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 20, 2, 34);
+const arena1 = new Arena(centerPosition, 20, 4, 34);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
 
 let renderPass1 = new RenderPass(scene, camera);
@@ -628,7 +671,7 @@ glitchLeft.enabled = false;
 function glitch(glitchEffect)
 {
     glitchEffect.enabled = true;
-    console.log("glitch");
+    glitchEffect.goWild = true;
     setTimeout(function() {
         glitchEffect.enabled = false;
     }, 500);
