@@ -47,7 +47,7 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/lciullo/ft_transcendence/backend
+      device: /home/lciullo/projet/backend
 #device : dossier dans lequel il y l'installation django sur machine hote 
 
 networks:
