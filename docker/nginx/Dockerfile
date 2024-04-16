@@ -35,6 +35,7 @@ COPY requirements.txt /backend
 
 COPY . /backend/
 
+
 #Update 
 RUN apt-get -y update && apt-get -y upgrade 
 
@@ -53,3 +54,5 @@ RUN pip install psycopg2
 
 #Install python on my docker 
 #RUN apt-get install netcat-traditional
+
+CMD ["bash", "ft_transcendence/run_server.sh"]

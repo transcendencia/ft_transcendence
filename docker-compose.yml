@@ -28,7 +28,6 @@ services:
       - ft_transcendence
     build:
       dockerfile: docker/nginx/Dockerfile
-    command: python /backend/ft_transcendence/manage.py runserver 0.0.0.0:8000
     env_file: .env
     restart: on-failure
     ports:
