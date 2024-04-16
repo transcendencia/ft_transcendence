@@ -231,6 +231,7 @@ class Arena extends THREE.Mesh {
         this.horizontalBlur.uniforms.h.value = 0;
         this.verticalBlur.uniforms.v.value = 0;
         this.isBlurred = false;
+        this.isBeingBlurred = false;
     }
     monitorArena()
     {
@@ -244,8 +245,8 @@ class Arena extends THREE.Mesh {
             this.ball.rotation.y += 0.1;
         if (this.isActive)
         {
-            this.paddleRight.animatePaddle(rightArrowPressed, leftArrowPressed, this);
-            this.paddleLeft.animatePaddle(aKeyPressed, dKeyPressed, this);
+            this.paddleRight.animatePaddle(rightArrowPressed, leftArrowPressed, this, upArrowPressed);
+            this.paddleLeft.animatePaddle(aKeyPressed, dKeyPressed, this, wKeyPressed);
         }
         if (spaceKeyPressed)
         {
@@ -255,11 +256,11 @@ class Arena extends THREE.Mesh {
         }
         if (bKeyPressed)
         {
-            this.blurScreen();
-            // if (this.isBlurred)
-            //     this.isBlurred = false;
-            // else
-            //     this.isBlurred = true;
+            if (!this.isBeingBlurred)
+            {
+                this.isBeingBlurred = true;
+                this.blurScreen();
+            }
         }
         if (cKeyPressed)
         {
@@ -346,6 +347,7 @@ class Arena extends THREE.Mesh {
             .easing(TWEEN.Easing.Quadratic.Out)
             .onComplete(() => {
                 this.isBlurred = !this.isBlurred;
+                this.isBeingBlurred = false;
             })
             .start();
     
@@ -369,6 +371,7 @@ class Arena extends THREE.Mesh {
             .easing(TWEEN.Easing.Quadratic.Out)
             .onComplete(() => {
                 this.isBlurred = !this.isBlurred;
+                this.isBeingBlurred = false;
             })
             .start();
         }
@@ -400,9 +403,6 @@ class Arena extends THREE.Mesh {
         loserPaddle.light.color = new THREE.Color(1, 0, 0);
         winnerPaddle.light.power = winnerPaddle.defaultLight * 4;
         winnerPaddle.light.color = new THREE.Color(0, 1, 0);
-        this.ball.isgoingLeft = false;
-        this.ball.isgoingRight = true;
-        this.ball.speedX = 0;
         this.ball.light.power = 0;
         // PADDLE RESETS
         new TWEEN.Tween(this.paddleLeft.position)
@@ -428,6 +428,8 @@ class Arena extends THREE.Mesh {
            winnerPaddle.light.power = winnerPaddle.defaultLight;
            loserPaddle.light.color = new THREE.Color(0.2, 0.2, 0.8);
            winnerPaddle.light.color = new THREE.Color(0.2, 0.2, 0.8);
+           this.ball.isgoingRight = true;
+           this.ball.isgoingLeft = false;
            this.ball.light.power = this.ball.startingPower;
         });
 
@@ -436,6 +438,7 @@ class Arena extends THREE.Mesh {
         this.ball.isRolling = false;
         this.ball.speedZ = 0;
         this.ball.speedX = 0;
+
     }
 }
 
@@ -476,13 +479,27 @@ class Paddle extends THREE.Mesh {
         this.defaultLight = this.arena.width * this.arena.length / 7.5;
         this.light.power = this.defaultLight;
         this.light.castShadow = true;
+        this.isPowered = false;
     }
-    animatePaddle(keyRight, keyLeft, arena)
+    animatePaddle(keyRight, keyLeft, arena, keyPower)
     {
         if (keyRight && this.position.x + 0.008 <= arena.rightCorner.x)
+        {
             this.position.x += 0.016 * arena.length;
+            if (arena.ball.isSupercharging && (this.position.z * arena.ball.position.z > 0))
+                arena.ball.position.x += 0.016 * arena.length;
+        }
         if (keyLeft && this.position.x - 0.008 >= arena.leftCorner.x)
+        {
             this.position.x -= 0.016 * arena.length;
+            if (arena.ball.isSupercharging && (this.position.z * arena.ball.position.z > 0))
+                arena.ball.position.x -= 0.016 * arena.length;
+        }
+        if (keyPower)
+        {
+            this.material.color.set(0xff2222);
+            this.isPowered = true;
+        }
     }
 }
 
@@ -494,7 +511,7 @@ class Ball extends THREE.Mesh {
         const geometry = new THREE.SphereGeometry(size, 32, 16);
         const textureLoader = new THREE.TextureLoader();
         const texture = textureLoader.load('ball.jpg');
-        const material = new THREE.MeshBasicMaterial({map: texture});
+        const material = new THREE.MeshBasicMaterial({color: 0xffffff});
         super(geometry, material);
         this.light = new THREE.PointLight(0xffffff);
         scene.add(this.light);
@@ -514,14 +531,16 @@ class Ball extends THREE.Mesh {
         this.zLimit2 = arena.position.z - arena.width / 2;
         this.arena = arena;
         this.initialSpeed = this.arena.width / 200;
+        this.isSupercharging
+        this.justCollisioned = false;
     }
     leftScore(paddle)
     {
-        return (this.position.z >= paddle.position.z);
+        return (this.position.z > paddle.position.z);
     }
     rightScore(paddle)
     {
-        return (this.position.z <= paddle.position.z);
+        return (this.position.z < paddle.position.z);
     }
     collisionWithBorder(paddle1, paddle2)
     {
@@ -542,50 +561,92 @@ class Ball extends THREE.Mesh {
     }
     collisionWithLeftPaddle(paddle)
     {
-        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft)
+        console.log("just collisioned = " + this.justCollisioned);
+        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && !this.justCollisioned)
         {
-            console.log("left collision");
-            this.isgoingLeft = false;
-            this.isgoingRight = true;
+            this.justCollisioned = true;
+            this.isgoingLeft = !this.isgoingLeft;
+            this.isgoingRight = !this.isgoingRight;
+            //console.log("left collision, is going right = ", this.isgoingRight);
+            this.speedZ *= -1.08;
+            setTimeout(() => {
+                this.justCollisioned = false;
+            }, 500);
             return true;
         }
         return false;
     }
     collisionWithRightPaddle(paddle)
     {
-        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight)
+        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight && !this.justCollisioned)
         {
-            console.log("right collision");
-            this.isgoingRight = false;
-            this.isgoingLeft = true;
+            this.justCollisioned = true;
+            this.isgoingRight = !this.isgoingRight;
+            this.isgoingLeft = !this.isgoingLeft;
+            // console.log("right collision, is going left = ", this.isgoingLeft);
+            this.speedZ *= -1.08;
+            setTimeout(() => {
+                this.justCollisioned = false;
+            }, 500);
             return true;
         }
         return false;
     }
     goToLeft(paddle)
     {
-        console.log("going to left");
-        let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
-        if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
-            this.speedX = distanceFromCenter * 0.015 * this.arena.width;
+        if (!paddle.isPowered)
+        {
+            let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
+            if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
+                this.speedX = distanceFromCenter * 0.015 * this.arena.width;
+            else
+                this.speedX += distanceFromCenter * 0.015 * this.arena.width;
+            // if (Math.abs(this.speedZ) <= this.arena.width / 40)
+            //     this.speedZ *= -1.08;
+            // else
+            //     this.speedZ *= -1;
+        }
         else
-            this.speedX += distanceFromCenter * 0.015 * this.arena.width;
-        if (Math.abs(this.speedZ) <= this.arena.width / 40)
-            this.speedZ *= -1.08;
-        else
-            this.speedZ *= -1;
+        {
+            this.isSupercharging = true;
+            const tmpSpeed = this.speedZ;
+            this.speedZ = 0;
+            this.speedX = 0;
+            setTimeout(() => {
+                this.speedZ = tmpSpeed * 2;
+                this.isSupercharging = false;
+                paddle.isPowered = false;
+                paddle.material.color.set(0xffffff);
+            }, 2500);
+        }
     }
     goToRight(paddle)
     {
-        console.log("going to right");
-        let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
-        if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
-            this.speedX = distanceFromCenter * 0.015 * this.arena.width;
-        this.speedX += distanceFromCenter * 0.015 * this.arena.width;
-        if (Math.abs(this.speedZ) <= this.arena.width / 40)
-            this.speedZ *= -1.08;
+        if (!paddle.isPowered)
+        {
+            let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
+            if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
+                this.speedX = distanceFromCenter * 0.015 * this.arena.width;
+            else
+                this.speedX += distanceFromCenter * 0.015 * this.arena.width;
+            // if (Math.abs(this.speedZ) <= this.arena.width / 40)
+            //     this.speedZ *= -1.08;
+            // else
+            //     this.speedZ *= -1;
+        }
         else
-            this.speedZ *= -1;
+        {
+            this.isSupercharging = true;
+            const tmpSpeed = this.speedZ;
+            this.speedZ = 0;
+            this.speedX = 0;
+            setTimeout(() => {
+                this.speedZ = tmpSpeed * 2;
+                this.isSupercharging = false;
+                paddle.isPowered = false;
+                paddle.material.color.set(0xffffff);
+            }, 2500);
+        }
     }
     monitorMovement()
     {
