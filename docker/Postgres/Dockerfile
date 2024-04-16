@@ -13,4 +13,17 @@ ENV POSTGRES_DB=test
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
+#Update 
+#RUN apt-get -y update && apt-get -y upgrade 
+# CMD ["apt-get", "-y", "update"]
+
+# CMD ["pip", "install", "django"]
+
+# CMD ["pip", "install", "psycopg2"]
+# RUN apt-get update && apt-get install -y libpq-dev gcc
+
+# RUN pip install psycopg2-binary
+
+#RUN pip install psycopg2
+
 # CMD ["sleep", "2000"]
