@@ -28,7 +28,7 @@ prune:
 fclean:
 	docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
 
-re: fclean
+re: down
 	${MAKE} all
 
 .PHONY: all fclean up down
