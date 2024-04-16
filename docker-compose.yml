@@ -5,15 +5,19 @@ services:
     container_name: postgres
     image: postgres
     init: true 
+    networks:
+      - ft_transcendence
     build:
       dockerfile: docker/Postgres/Dockerfile
       args:
        POSTGRES_USER: $POSTGRES_USER
        POSTGRES_PASSWORD: $POSTGRES_PASSWORD
        POSTGRES_DB: $POSTGRES_DB
+       POSTGRES_HOST: $POSTGRES_HOST
+       POSTGRES_PORT: $POSTGRES_PORT
     env_file: .env
     restart: always
-    expose:
+    ports:
       - "5432:5432"
 
   server:
