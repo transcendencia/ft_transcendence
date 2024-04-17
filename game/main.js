@@ -277,6 +277,7 @@ class Arena extends THREE.Mesh {
             swapToSplitScreen();
             this.setSplitCameraPositions(camera, cameraLeft);
         }
+        console.log("speed = " + this.ball.speedZ);
         if (pKeyPressed)
         {
             swapToFullScreen();
@@ -337,44 +338,26 @@ class Arena extends THREE.Mesh {
     blurScreen()
     {
         const duration = 1500;
-        console.log("wagwan, blur is = " + this.isBlurred);
+        let target;
         if (!this.isBlurred)
-        {
-            let target = 0.002;
-    
-            new TWEEN.Tween(this.horizontalBlur.uniforms.h)
-            .to({value: target}, duration)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onComplete(() => {
-                this.isBlurred = !this.isBlurred;
-                this.isBeingBlurred = false;
-            })
-            .start();
-    
-            new TWEEN.Tween(this.verticalBlur.uniforms.v)
-            .to({value: target}, duration)
-            .easing(TWEEN.Easing.Quadratic.Out)
-
-            .start();
-        }
+            target = 0.002;
         else
-        {
-            let target = 0;
+            target = 0;
+        new TWEEN.Tween(this.horizontalBlur.uniforms.h)
+        .to({value: target}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onComplete(() => {
+            this.isBlurred = !this.isBlurred;
+            this.isBeingBlurred = false;
+        })
+        .start();
+
+        new TWEEN.Tween(this.verticalBlur.uniforms.v)
+        .to({value: target}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+
+        .start();
     
-            new TWEEN.Tween(this.horizontalBlur.uniforms.h)
-            .to({value: target}, duration)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .start();
-    
-            new TWEEN.Tween(this.verticalBlur.uniforms.v)
-            .to({value: target}, duration)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onComplete(() => {
-                this.isBlurred = !this.isBlurred;
-                this.isBeingBlurred = false;
-            })
-            .start();
-        }
     }
     setTopView(camera)
     {
@@ -536,11 +519,11 @@ class Ball extends THREE.Mesh {
     }
     leftScore(paddle)
     {
-        return (this.position.z > paddle.position.z);
+        return (this.position.z > paddle.position.z + paddle.width);
     }
     rightScore(paddle)
     {
-        return (this.position.z < paddle.position.z);
+        return (this.position.z < paddle.position.z - paddle.width);
     }
     collisionWithBorder(paddle1, paddle2)
     {
@@ -561,13 +544,11 @@ class Ball extends THREE.Mesh {
     }
     collisionWithLeftPaddle(paddle)
     {
-        console.log("just collisioned = " + this.justCollisioned);
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && !this.justCollisioned)
         {
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
-            //console.log("left collision, is going right = ", this.isgoingRight);
             this.speedZ *= -1.08;
             setTimeout(() => {
                 this.justCollisioned = false;
@@ -583,7 +564,6 @@ class Ball extends THREE.Mesh {
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
             this.isgoingLeft = !this.isgoingLeft;
-            // console.log("right collision, is going left = ", this.isgoingLeft);
             this.speedZ *= -1.08;
             setTimeout(() => {
                 this.justCollisioned = false;
@@ -709,7 +689,7 @@ function monitorScreen()
 }
 
 const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 20, 4, 34);
+const arena1 = new Arena(centerPosition, 2, 1, 3.4);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
 
 let renderPass1 = new RenderPass(scene, camera);
