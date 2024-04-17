@@ -234,6 +234,7 @@ class Arena extends THREE.Mesh {
         this.isBlurred = false;
         this.isBeingBlurred = false;
         this.isBeingReset = false;
+        this.maxSpeed = this.width / 40;
     }
     monitorArena()
     {
@@ -399,6 +400,7 @@ class Arena extends THREE.Mesh {
         let ballUp = new TWEEN.Tween(this.ball.position)
         .to({y: (this.ball.position.y + this.paddleLeft.height * 5), z: this.position.z}, 1500)
         .easing(TWEEN.Easing.Quadratic.Out);
+
         // BALL TO CAMERA
         let ballToCamera = new TWEEN.Tween(this.ball.position)
         .to({x: tmpCamera.position.x, y: tmpCamera.position.y, z: tmpCamera.position.z}, 200)
@@ -406,6 +408,7 @@ class Arena extends THREE.Mesh {
         .onComplete(() => {
             glitch(whichGlitch);
         });
+
         // PADDLE RESETS
         let leftReset = new TWEEN.Tween(this.paddleLeft.position)
         .to({x: this.position.x}, duration)
@@ -413,7 +416,6 @@ class Arena extends THREE.Mesh {
         let rightReset = new TWEEN.Tween(this.paddleRight.position)
         .to({x: this.position.x}, duration)
         .easing(TWEEN.Easing.Quadratic.Out);
-
 
         // BALL RESETS
         let targetY = this.ball.startingPoint.y + this.length / 2;
@@ -564,12 +566,13 @@ class Ball extends THREE.Mesh {
     }
     collisionWithLeftPaddle(paddle)
     {
+        console.log("speed = " + this.speedZ)
+        console.log("max speed = " + this.arena.width / 40);
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && !this.justCollisioned)
         {
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
-            this.speedZ *= -1.08;
             setTimeout(() => {
                 this.justCollisioned = false;
             }, 500);
@@ -584,7 +587,6 @@ class Ball extends THREE.Mesh {
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
             this.isgoingLeft = !this.isgoingLeft;
-            this.speedZ *= -1.08;
             setTimeout(() => {
                 this.justCollisioned = false;
             }, 500);
@@ -601,10 +603,10 @@ class Ball extends THREE.Mesh {
                 this.speedX = distanceFromCenter * 0.015 * this.arena.width;
             else
                 this.speedX += distanceFromCenter * 0.015 * this.arena.width;
-            // if (Math.abs(this.speedZ) <= this.arena.width / 40)
-            //     this.speedZ *= -1.08;
-            // else
-            //     this.speedZ *= -1;
+            if (Math.abs(this.speedZ) <= this.arena.width / 40)
+                this.speedZ *= -1.08;
+            else
+                this.speedZ *= -1;
         }
         else
         {
@@ -613,7 +615,17 @@ class Ball extends THREE.Mesh {
             this.speedZ = 0;
             this.speedX = 0;
             setTimeout(() => {
-                this.speedZ = tmpSpeed * 2;
+                if (Math.abs(this.tmpSpeed) * 1.5 >= this.arena.maxSpeed)
+                    this.speedZ = tmpSpeed * -1;
+                else
+                    this.speedZ = tmpSpeed * -1.5;
+                if (Math.abs(this.speedZ) > this.arena.maxSpeed)
+                {
+                    if (this.speedZ * this.arena.maxSpeed < 0)
+                        this.speedZ = this.arena.maxSpeed * -1;
+                    else
+                        this.speedZ = this.arena.maxSpeed;
+                }
                 this.isSupercharging = false;
                 paddle.isPowered = false;
                 paddle.material.color.set(0xffffff);
@@ -629,10 +641,10 @@ class Ball extends THREE.Mesh {
                 this.speedX = distanceFromCenter * 0.015 * this.arena.width;
             else
                 this.speedX += distanceFromCenter * 0.015 * this.arena.width;
-            // if (Math.abs(this.speedZ) <= this.arena.width / 40)
-            //     this.speedZ *= -1.08;
-            // else
-            //     this.speedZ *= -1;
+            if (Math.abs(this.speedZ) <= this.arena.maxSpeed)
+                this.speedZ *= -1.08;
+            else
+                this.speedZ *= -1;
         }
         else
         {
@@ -641,7 +653,17 @@ class Ball extends THREE.Mesh {
             this.speedZ = 0;
             this.speedX = 0;
             setTimeout(() => {
-                this.speedZ = tmpSpeed * 2;
+                if (Math.abs(this.tmpSpeed) * 1.5 >= this.arena.maxSpeed)
+                    this.speedZ = tmpSpeed * -1;
+                else
+                    this.speedZ = tmpSpeed * -1.5;
+                if (Math.abs(this.speedZ) > this.arena.maxSpeed)
+                {
+                    if (this.speedZ * this.arena.maxSpeed < 0)
+                        this.speedZ = this.arena.maxSpeed * -1;
+                    else
+                        this.speedZ = this.arena.maxSpeed;
+                }
                 this.isSupercharging = false;
                 paddle.isPowered = false;
                 paddle.material.color.set(0xffffff);
