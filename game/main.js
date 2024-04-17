@@ -189,9 +189,10 @@ class Arena extends THREE.Mesh {
         const geometry = new THREE.BoxGeometry(width, height, depth);
         const textureLoader = new THREE.TextureLoader();
         const texture = textureLoader.load('purplebox.jpeg');
+        const arenaColor = 0x000000;
         // Create material
         // const material = new THREE.MeshStandardMaterial({ color: 0x8800dd, wireframe: false});
-        const material = new THREE.MeshStandardMaterial({map: texture});
+        const material = new THREE.MeshStandardMaterial({color: 0x101010});
         
         // Call super constructor to set up mesh
         super(geometry, material);
@@ -232,6 +233,7 @@ class Arena extends THREE.Mesh {
         this.verticalBlur.uniforms.v.value = 0;
         this.isBlurred = false;
         this.isBeingBlurred = false;
+        this.isBeingReset = false;
     }
     monitorArena()
     {
@@ -277,7 +279,6 @@ class Arena extends THREE.Mesh {
             swapToSplitScreen();
             this.setSplitCameraPositions(camera, cameraLeft);
         }
-        console.log("speed = " + this.ball.speedZ);
         if (pKeyPressed)
         {
             swapToFullScreen();
@@ -287,15 +288,15 @@ class Arena extends THREE.Mesh {
             this.ball.goToRight(this.paddleLeft);
         if (this.ball.collisionWithRightPaddle(this.paddleRight))
             this.ball.goToLeft(this.paddleRight);
-        if (this.ball.rightScore(this.paddleLeft))
+        if (this.ball.rightScore(this.paddleLeft) && !this.isBeingReset)
         {
-            glitch(glitchLeft);
-            this.resetPositions(this.paddleLeft, this.paddleRight);
+            this.isBeingReset = true;
+            this.resetPositions(this.paddleLeft, this.paddleRight, false, glitchLeft);
         }
-        if (this.ball.leftScore(this.paddleRight))
+        if (this.ball.leftScore(this.paddleRight) && !this.isBeingReset)
         {
-            glitch(glitchRight);
-            this.resetPositions(this.paddleRight, this.paddleLeft);
+            this.isBeingReset = true;
+            this.resetPositions(this.paddleRight, this.paddleLeft, true, glitchRight);
         }
     }
     setSplitCameraPositions(_cameraRight, _cameraLeft)
@@ -357,7 +358,6 @@ class Arena extends THREE.Mesh {
         .easing(TWEEN.Easing.Quadratic.Out)
 
         .start();
-    
     }
     setTopView(camera)
     {
@@ -378,24 +378,42 @@ class Arena extends THREE.Mesh {
         .easing(TWEEN.Easing.Quadratic.Out)
         .start();
     }
-    resetPositions(loserPaddle, winnerPaddle)
+    resetPositions(loserPaddle, winnerPaddle, leftScored, whichGlitch)
     {
         let duration = 1150;
 
-        loserPaddle.light.power = loserPaddle.defaultLight;
+        console.log("glitched");
+        loserPaddle.light.power = 0;
         loserPaddle.light.color = new THREE.Color(1, 0, 0);
-        winnerPaddle.light.power = winnerPaddle.defaultLight * 4;
+        winnerPaddle.light.power = 0;
         winnerPaddle.light.color = new THREE.Color(0, 1, 0);
         this.ball.light.power = 0;
+        let tmpCamera;
+        if (leftScored)
+            tmpCamera = cameraLeft;
+        else
+            tmpCamera = camera;
+        // const scareDuration = (tmpCamera.position.z - this.position.z) / this.ball.speedZ * 3;
+        // let ballTargetZ = tmpCamera.position.z + ((this.position.z - tmpCamera.position.z) * 0.2);
+        // BALL UP
+        let ballUp = new TWEEN.Tween(this.ball.position)
+        .to({y: (this.ball.position.y + this.paddleLeft.height * 5), z: this.position.z}, 1500)
+        .easing(TWEEN.Easing.Quadratic.Out);
+        // BALL TO CAMERA
+        let ballToCamera = new TWEEN.Tween(this.ball.position)
+        .to({x: tmpCamera.position.x, y: tmpCamera.position.y, z: tmpCamera.position.z}, 200)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onComplete(() => {
+            glitch(whichGlitch);
+        });
         // PADDLE RESETS
-        new TWEEN.Tween(this.paddleLeft.position)
+        let leftReset = new TWEEN.Tween(this.paddleLeft.position)
         .to({x: this.position.x}, duration)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .start();
-        new TWEEN.Tween(this.paddleRight.position)
+        .easing(TWEEN.Easing.Quadratic.Out);
+        let rightReset = new TWEEN.Tween(this.paddleRight.position)
         .to({x: this.position.x}, duration)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .start()
+        .easing(TWEEN.Easing.Quadratic.Out);
+
 
         // BALL RESETS
         let targetY = this.ball.startingPoint.y + this.length / 2;
@@ -407,17 +425,19 @@ class Arena extends THREE.Mesh {
         .to({y: this.ball.startingPoint.y}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
-           loserPaddle.light.power = loserPaddle.defaultLight;
+            loserPaddle.light.power = loserPaddle.defaultLight;
            winnerPaddle.light.power = winnerPaddle.defaultLight;
            loserPaddle.light.color = new THREE.Color(0.2, 0.2, 0.8);
            winnerPaddle.light.color = new THREE.Color(0.2, 0.2, 0.8);
            this.ball.isgoingRight = true;
            this.ball.isgoingLeft = false;
            this.ball.light.power = this.ball.startingPower;
+           this.isBeingReset = false;
         });
-
+        ballUp.chain(ballToCamera);
+        ballToCamera.chain(leftReset, rightReset, firstTween);
         firstTween.chain(secondTween);
-        firstTween.start();
+        ballUp.start();
         this.ball.isRolling = false;
         this.ball.speedZ = 0;
         this.ball.speedX = 0;
@@ -689,7 +709,7 @@ function monitorScreen()
 }
 
 const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 2, 1, 3.4);
+const arena1 = new Arena(centerPosition, 20, 4, 34);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
 
 let renderPass1 = new RenderPass(scene, camera);
@@ -715,6 +735,7 @@ function glitch(glitchEffect)
     glitchEffect.goWild = true;
     setTimeout(function() {
         glitchEffect.enabled = false;
+        glitchEffect.goWild = false;
     }, 500);
 }
 
