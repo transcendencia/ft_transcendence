@@ -1,5 +1,5 @@
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
-import { scene, THREE } from "./main.js";
+import { scene, THREE} from "./main.js";
 import { setupPlanets } from "./planets.js";
 
 
@@ -27,7 +27,6 @@ spaceShipLoader.load(
 let spaceShipInt;
 let spaceShipIntLoaded = false;
 
-const spaceShipIntLoader = new GLTFLoader();
 spaceShipLoader.load(
     'blender/spaceshipInterior.glb',
     function(gltf) {
@@ -87,4 +86,4 @@ function allModelsLoaded() {
     return modelsData.every(model => model.loaded) && spaceShipLoaded;
 }
 
-export { spaceShip, allModelsLoaded };
+export { spaceShip, spaceShipInt, allModelsLoaded };

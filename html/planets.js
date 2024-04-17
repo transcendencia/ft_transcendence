@@ -1,5 +1,4 @@
-import * as THREE from 'three';
-import { scene } from "./main.js";
+import { THREE, scene } from "./main.js";
 
 
 class Planet {

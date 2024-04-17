@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {spaceShip, allModelsLoaded} from "./objs.js";
+import {spaceShip, spaceShipInt, allModelsLoaded} from "./objs.js";
 import { addStar } from "./stars.js";
 import { sun, planets, setupPlanets} from "./planets.js";
 import { spaceShipMovement, camMovement} from './movement.js';
@@ -7,6 +7,9 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
+import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 
 let gameStart = false;
 const renderer = new THREE.WebGLRenderer({
@@ -18,6 +21,7 @@ scene.background = new THREE.Color(0x000020);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
+const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 
 // Define the size of the minimap
 const minimapWidth = 200; // Adjust as needed
@@ -70,6 +74,31 @@ function renderMinimap() {
     minimapRenderer.render(scene, minimapCamera);
 }
 
+
+minimapRenderer.domElement.style.borderRadius = '100px'; // Adjust the radius as needed
+// Position the minimap renderer
+minimapRenderer.domElement.style.position = 'absolute';
+minimapRenderer.domElement.style.top = '10px'; // Adjust vertical position as needed
+minimapRenderer.domElement.style.right = '10px'; // Adjust horizontal position as needed
+
+// Add the minimap renderer to the document body
+document.body.appendChild(minimapRenderer.domElement);
+
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.render(scene, camera);
+
+function toggleMinimapVisibility() {
+    if (landedOnPlanet) {
+        minimapRenderer.domElement.style.transition = 'opacity 1s';
+        minimapRenderer.domElement.style.opacity = '0';
+    }
+    else {
+        minimapRenderer.domElement.style.transition = 'opacity 1s';
+        minimapRenderer.domElement.style.opacity = '1';
+    }
+}
+
 // Add outline pass
 const composer = new EffectComposer(renderer);
 composer.setSize(window.innerWidth, window.innerHeight);
@@ -86,19 +115,6 @@ outlinePass.edgeGlow = 1;
 outlinePass.edgeThickness = 2;
 composer.addPass(renderPass);
 composer.addPass(outlinePass);
-
-minimapRenderer.domElement.style.borderRadius = '100px'; // Adjust the radius as needed
-// Position the minimap renderer
-minimapRenderer.domElement.style.position = 'absolute';
-minimapRenderer.domElement.style.top = '10px'; // Adjust vertical position as needed
-minimapRenderer.domElement.style.right = '10px'; // Adjust horizontal position as needed
-
-// Add the minimap renderer to the document body
-document.body.appendChild(minimapRenderer.domElement);
-
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.render(scene, camera);
 
 const planetInfoText = document.getElementById('planetInfoText');
 planetInfoText.textContent = '';
@@ -120,7 +136,7 @@ const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
 spaceShipPointLight.castShadow = true;
 const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
 const lightHelper = new THREE.PointLightHelper(pointLight);
-scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, lightHelperss, pointLight2);
+scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
 
 Array(800).fill().forEach(addStar);
 
@@ -176,7 +192,7 @@ function getPlanetIntersection() {
             }
             cursorOnPlanet = true;
         }
-        else if (cursorOnPlanet) {
+        else {
             if (aimedObj.planet.name != outlinePass.selectedObjects[0].planet.name)
                 resetOutlineAndText();
             spaceShipInRange(aimedObj);
@@ -186,17 +202,21 @@ function getPlanetIntersection() {
         resetOutlineAndText();
 }
 
+let planetInRange = null; 
+
 function spaceShipInRange(obj) {
     if (obj.planet) { 
         if (spaceShip.position.distanceTo(obj.position) < 4 * obj.planet.scale && !inRange) {       
             outlinePass.visibleEdgeColor.set("#00ff00");
             enterPlanetText.textContent = 'Press [E] to land on ' + obj.planet.name;
             inRange = true;
+            planetInRange = obj.planet;
         }
         else if (spaceShip.position.distanceTo(obj.position) >= 4 * obj.planet.scale && inRange) {
             outlinePass.visibleEdgeColor.set("#ffee00");
             enterPlanetText.textContent = '';
             inRange = false;
+            planetInRange = null;
         }
     }
 }
@@ -226,35 +246,126 @@ function planetMovement() {
     });
 }
 
+function startAnimation() {
+    let target = -1298;
+    let duration = 1000;
+    let anim1 = new TWEEN.Tween(spaceShip.position)
+        .to({z: target}, duration)
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(() => {
+            camera.position.copy(new THREE.Vector3(spaceShip.position.x - 10.5 * Math.sin(spaceShip.rotation.y), 4.5, spaceShip.position.z - 10.5 * Math.cos(spaceShip.rotation.y)));
+        })
+        
+        target = -1200;
+        duration = 500;
+        let anim2 = new TWEEN.Tween(spaceShip.position)
+        .to({z: target}, duration)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .onUpdate(() => {
+            camera.position.copy(new THREE.Vector3(spaceShip.position.x - 10.5 * Math.sin(spaceShip.rotation.y), 4.5, spaceShip.position.z - 10.5 * Math.cos(spaceShip.rotation.y)));
+        })
+        
+        target = -1150;
+        duration = 3000;
+        let anim3 = new TWEEN.Tween(spaceShip.position)
+        .to({z: target}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            camera.position.copy(new THREE.Vector3(spaceShip.position.x - 10.5 * Math.sin(spaceShip.rotation.y), 4.5, spaceShip.position.z - 10.5 * Math.cos(spaceShip.rotation.y)));
+        })
+        .onComplete(() => {
+            spaceShipInt.visible = false;
+            gameStart = true;
+        });
+        anim1.chain(anim2, anim3);
+        anim1.start();
+}
+
+// Blur Pass
+const horizontalBlur = new ShaderPass(HorizontalBlurShader);
+const verticalBlur = new ShaderPass(VerticalBlurShader);
+horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
+verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
+horizontalBlur.renderToScreen = true; // Render to a texture
+verticalBlur.renderToScreen = true; // Render to the screen
+horizontalBlur.uniforms.h.value = 0;
+verticalBlur.uniforms.v.value = 0;
+composer.addPass(horizontalBlur);
+composer.addPass(verticalBlur);
+
+let landedOnPlanet = false;
+let targetBlur = 0;
+
+function togglePlanet() {
+    if (!landedOnPlanet)
+        landedOnPlanet = true;
+    else
+        landedOnPlanet = false;
+    toggleMinimapVisibility();
+    resetOutlineAndText();
+    toggleBlurDisplay();
+}
+
+function toggleBlurDisplay() {
+    const duration = 1500;
+    if (targetBlur === 0)
+        targetBlur = 0.002;
+    else
+        targetBlur = 0;
+    new TWEEN.Tween(horizontalBlur.uniforms.h)
+    .to({value: targetBlur}, duration)
+    .easing(TWEEN.Easing.Quadratic.Out)
+    .onComplete(() => {
+    })
+    .start();
+
+    new TWEEN.Tween(verticalBlur.uniforms.v)
+    .to({value: targetBlur}, duration)
+    .easing(TWEEN.Easing.Quadratic.Out)
+    .onComplete(() => {
+    })
+    .start();
+}
 
 document.addEventListener('keydown', (event) => { 
-    if (event.key === 'e' && !gameStart)
-        gameStart = true;
+    if (event.key === 'e' && !gameStart) {
+        console.log("e pressed");
+        startAnimation();
+    }
+    if (event.key === 'e' && inRange)
+        togglePlanet();
 });
-function update() {
-    // displayRay();
-    planetMovement();
-    camMovement();
-    if (!gameStart)
-        return;
-    updateRay(); 
-    getPlanetIntersection();
-    spaceShipMovement();
-}
+
 
 // Bloom Pass
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = 0.1;
-bloomPass.strength = 1;
+bloomPass.strength = 0.2;
 bloomPass.radius = 0.5;
 // composer.addPass(bloomPass);
 
+function update() {
+    // displayRay();
+    if (gameStart && !landedOnPlanet)
+        spaceShipMovement();
+    planetMovement();
+    camMovement();
+    if (gameStart) {
+        updateRay();
+        if (!landedOnPlanet)
+            getPlanetIntersection();
+    }
+        return;
+}
+
 function animate()
 {
+    TWEEN.update();
     requestAnimationFrame( animate )
     // controls.update();
     // UPDATE CAMERA POSITION TO BEHIND THE spaceShip
-    renderMinimap(); // Rendu de la minimap
+    if (!landedOnPlanet)
+        renderMinimap(); // Rendu de la minimap
     update();
     composer.render();
     // renderer.render(scene, camera);
@@ -268,4 +379,4 @@ const checkModelsLoaded = setInterval(() => {
     }
 }, 100);
 
-export {scene, THREE, camera, spaceShip, spaceShipPointLight}
+export {scene, THREE, camera, spaceShip, spaceShipPointLight, landedOnPlanet, planetInRange, planetCam}

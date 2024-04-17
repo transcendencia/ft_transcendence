@@ -1,4 +1,4 @@
-import { THREE, spaceShip, camera, spaceShipPointLight} from "./main.js";
+import { THREE, spaceShip, camera, spaceShipPointLight, landedOnPlanet, planetInRange} from "./main.js";
 
 let leftArrowPressed = false;
 let rightArrowPressed = false;
@@ -54,10 +54,8 @@ document.addEventListener('keypress', (event) => {
         startBoost(); 
 })
 
-let camMinDist = -0.5;
-let camMaxDist = 10;
-let distance = camMinDist;
-let height = 0.1;
+let distance = 10.5;
+let height = 4.5;
 let moveSpeed = 5;
 let rotSpeed = 0.10;
 const tolerance = 0.01; 
@@ -145,25 +143,23 @@ function spaceShipMovement() {
         rotateSpaceShipAnim(0.80);
 
     }
-    camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
     spaceShipPointLight.position.copy(spaceShip.position);
 }
-
-
-let goToThirdPerson = true;
 
 function camMovement() {
     if (!spaceShip)
         return;
-    if (goToThirdPerson && distance < camMaxDist){
-        distance += 1;
-        height += 0.4;
+    if (!landedOnPlanet) {
         camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
+        camera.rotation.y = spaceShip.rotation.y - Math.PI;
     }
-    if (distance >= camMaxDist)
-        goToThirdPerson = false;
-    camera.rotation.y = spaceShip.rotation.y - Math.PI;
+    else {
+        if (!planetInRange)
+            return;
+        const offset = 500 * (planetInRange.scale / 100);    
+        camera.position.copy(new THREE.Vector3(planetInRange.mesh.position.x + offset * Math.sin(planetInRange.mesh.rotation.y), planetInRange.mesh.position.y, planetInRange.mesh.position.z + offset * Math.cos(planetInRange.mesh.rotation.y)));
+        camera.lookAt(planetInRange.mesh.position);
+    }
 }
-
 
 export { spaceShipMovement, camMovement };
