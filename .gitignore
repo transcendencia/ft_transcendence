@@ -10,5 +10,7 @@ venv/
 # .vscode
 *.vscode
 
+/db
+
 #note 
 note 

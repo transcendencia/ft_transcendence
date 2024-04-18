@@ -26,7 +26,12 @@ prune:
 	docker volume prune;
 
 fclean:
-	docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
+	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
+	- @docker ps -aq | xargs docker stop | xargs docker rm
+	- @docker system prune --all --force
+	- @docker volume prune --force
+	- @docker network prune --force
+
 
 re: down
 	${MAKE} all

@@ -21,7 +21,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db:/db
+      - db:/var/lib/postgresql/data
   
   server:
     container_name: server
