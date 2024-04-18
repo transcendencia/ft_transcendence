@@ -30,3 +30,7 @@
 #test on terminal : nc 127.0.0.1 8001 -> try to connect server 
 
 #Si je me connect sur une machine differente il faut preciser : python manage.py runserver 0.0.0.0:8000 
+
+
+#   ALLLER DANS LA TABLE OKKKK
+    #psql -U lciullo -d postgres

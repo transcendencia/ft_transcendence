@@ -10,4 +10,4 @@ ENV POSTGRES_PASSWORD=test
 ENV POSTGRES_DB=db
 
 #debug rules a enlever 
-CMD ["tail", "-f", "/dev/null"]
+#CMD ["tail", "-f", "/dev/null"]
