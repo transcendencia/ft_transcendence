@@ -553,7 +553,7 @@ class Paddle extends THREE.Mesh {
             setTimeout(() => {
                 this.isDashing = false;
                 this.material.color.set(0xffffff);
-            }, 350);
+            }, 50);
                 
         })
         .start();
