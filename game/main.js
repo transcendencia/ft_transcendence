@@ -486,6 +486,9 @@ class Paddle extends THREE.Mesh {
         scene.add(this.light);
         this.defaultLight = this.arena.width * this.arena.length / 7.5;
         this.light.power = this.defaultLight;
+        this.defaultColor = this.material.color.clone();
+        this.superChargingColor = new THREE.Color(0xff6e6e);
+        this.dashingColor = new THREE.Color(0xf4ff69);
         this.light.castShadow = true;
         this.isPowered = false;
         this.isDashing = false;
@@ -519,14 +522,14 @@ class Paddle extends THREE.Mesh {
         }
         if (keyPower)
         {
-            this.material.color.set(0xff6e6e);
+            this.material.color.set(this.superChargingColor);
             this.isPowered = true;
         }
     }
     dash(range, isLeft)
     {
         let targetX;
-        this.material.color.set(0xf4ff69);
+        this.material.color.set(this.dashingColor);
         if (!isLeft)
         {
             targetX = this.position.x + range * 0.016;
@@ -552,7 +555,10 @@ class Paddle extends THREE.Mesh {
         .onComplete(() => {
             setTimeout(() => {
                 this.isDashing = false;
-                this.material.color.set(0xffffff);
+                if (this.isPowered)
+                    this.material.color.set(this.superChargingColor);
+                else
+                    this.material.color.set(this.defaultColor);
             }, 50);
                 
         })
@@ -621,7 +627,7 @@ class Ball extends THREE.Mesh {
     }
     collisionWithLeftPaddle(paddle)
     {
-        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && !this.justCollisioned)
+        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft)
         {
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
@@ -636,16 +642,16 @@ class Ball extends THREE.Mesh {
                 // Update the material color
                 // this.material.color.updateStyleString();
             }
-            setTimeout(() => {
-                this.justCollisioned = false;
-            }, 500);
+            // setTimeout(() => {
+            //     this.justCollisioned = false;
+            // }, 500);
             return true;
         }
         return false;
     }
     collisionWithRightPaddle(paddle)
     {
-        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight && !this.justCollisioned)
+        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight)
         {
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
@@ -659,9 +665,9 @@ class Ball extends THREE.Mesh {
                 // Update the material color
                 // this.material.color.updateStyleString();
             }
-            setTimeout(() => {
-                this.justCollisioned = false;
-            }, 500);
+            // setTimeout(() => {
+            //     this.justCollisioned = false;
+            // }, 500);
             return true;
         }
         return false;
