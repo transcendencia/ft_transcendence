@@ -14,7 +14,7 @@ import { DotScreenShader } from 'three/addons/shaders/DotScreenShader.js';
 
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x050505);
+scene.background = new THREE.Color(0x000020);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000);
 const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
@@ -55,23 +55,23 @@ function addStar(){
 }
 Array(800).fill().forEach(addStar)
 
-let moon;
-const moonLoader = new GLTFLoader();
-moonLoader.load(
-    'moon/scene.gltf',
-    function(gltf) {
-        moon = gltf.scene;
-        moon.scale.set(250,250,250);
-        scene.add(moon);
-        moon.position.set(250, 250, 250);
-    },
-    function(xhr) {
-        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
-    },
-    function (error) {
-        console.error(error);
-    }
-)
+// let moon;
+// const moonLoader = new GLTFLoader();
+// moonLoader.load(
+//     'moon/scene.gltf',
+//     function(gltf) {
+//         moon = gltf.scene;
+//         moon.scale.set(250,250,250);
+//         scene.add(moon);
+//         moon.position.set(250, 250, 250);
+//     },
+//     function(xhr) {
+//         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+//     },
+//     function (error) {
+//         console.error(error);
+//     }
+// )
 
 // HELPERS
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -80,13 +80,16 @@ const axesHelper = new THREE.AxesHelper(50); // Length of axes
 const rightHelper = new THREE.CameraHelper(cameraRight);
 const leftHelper = new THREE.CameraHelper(cameraLeft);
 // scene.add(axesHelper);
-scene.add(gridHelper, ambientLight);
+// scene.add(gridHelper);
 
 // VIEW UTILS
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
-let keys = {
+let lastKeyPressTime = {};
+let lastKeyUpTime = {};
+
+let keyDown = {
     'ArrowLeft': false,
     'ArrowRight': false,
     'ArrowUp': false,
@@ -104,16 +107,66 @@ let keys = {
     'b': false
 };
 
+let keyPress = {
+    'ArrowLeft': false,
+    'ArrowRight': false,
+    'ArrowUp': false,
+    'ArrowDown': false,
+    'w': false,
+    'a': false,
+    's': false,
+    'd': false,
+    ' ': false,
+    'c': false,
+    'o': false,
+    'p': false,
+    'i': false,
+    'g': false,
+    'b': false
+};
+
+let doubleKeyPress = {
+    'ArrowLeft': false,
+    'ArrowRight': false,
+    'a': false,
+    'd': false
+};
+
+document.addEventListener('keypress', (event) => {
+    if (keyPress.hasOwnProperty(event.key)) {
+        keyPress[event.key] = true;
+        setTimeout(() => {
+            keyPress[event.key] = false;
+        }, 1000);
+    }
+});
+
+
 // Event listener for key presses and releases
+
 document.addEventListener('keydown', (event) => {
-    if (keys.hasOwnProperty(event.key)) {
-        keys[event.key] = true;
+    if (keyDown.hasOwnProperty(event.key)) {
+        keyDown[event.key] = true;
+
+        // Check for double presses of specific keys
+        if (doubleKeyPress.hasOwnProperty(event.key)) {
+            if (lastKeyPressTime[event.key] && Date.now() - lastKeyPressTime[event.key] < 200 && Date.now() - lastKeyUpTime[event.key] < 200) {
+                // Double press action for ArrowRight and 'd'
+                // console.log(`Double press detected for ${event.key}`);
+                doubleKeyPress[event.key] = true; // Set to true to indicate a double press
+            } else {
+                doubleKeyPress[event.key] = false; // Reset for next detection
+            }
+            lastKeyPressTime[event.key] = Date.now(); // Update the last press time
+        }
     }
 });
 
 document.addEventListener('keyup', (event) => {
-    if (keys.hasOwnProperty(event.key)) {
-        keys[event.key] = false;
+    if (keyDown.hasOwnProperty(event.key)) {
+        keyDown[event.key] = false;
+        lastKeyUpTime[event.key] = Date.now();
+        doubleKeyPress[event.key] = false;
     }
 });
 
@@ -135,11 +188,11 @@ class Arena extends THREE.Mesh {
         // Create geometry for the arena
         const geometry = new THREE.BoxGeometry(width, height, depth);
         const textureLoader = new THREE.TextureLoader();
-        const texture = textureLoader.load('purplebox.jpeg');
+        // const texture = textureLoader.load('purplebox.jpeg');
         const arenaColor = 0x000000;
         // Create material
         // const material = new THREE.MeshStandardMaterial({ color: 0x8800dd, wireframe: false});
-        const material = new THREE.MeshStandardMaterial({color: 0x101010});
+        const material = new THREE.MeshStandardMaterial({color: 0x101030});
         
         // Call super constructor to set up mesh
         super(geometry, material);
@@ -195,16 +248,16 @@ class Arena extends THREE.Mesh {
             this.ball.rotation.y += 0.1;
         if (this.isActive)
         {
-            this.paddleRight.animatePaddle(keys['ArrowRight'], keys['ArrowLeft'], this, keys['ArrowUp']);
-            this.paddleLeft.animatePaddle(keys['a'], keys['d'], this, keys['w']);
+            this.paddleRight.animatePaddle(doubleKeyPress['ArrowRight'], doubleKeyPress['ArrowLeft'], keyDown['ArrowRight'], keyDown['ArrowLeft'], this, keyDown['ArrowUp']);
+            this.paddleLeft.animatePaddle(doubleKeyPress['a'], doubleKeyPress['d'], keyDown['a'], keyDown['d'], this, keyDown['w']);
         }
-        if (keys[' '])
+        if (keyDown[' '])
         {
             this.ball.speedX = 0;
             this.ball.speedZ = this.ball.initialSpeed;
             this.ball.isRolling = true;
         }
-        if (keys['b'])
+        if (keyDown['b'])
         {
             if (!this.isBeingBlurred)
             {
@@ -212,12 +265,12 @@ class Arena extends THREE.Mesh {
                 this.blurScreen();
             }
         }
-        if (keys['c'])
+        if (keyDown['c'])
         {
             this.paddleLeft.light.power += 0.1;
             this.paddleRight.light.power += 0.1;
         }
-        if (keys['i'])
+        if (keyDown['i'])
         {
             cameraLeft.position.copy(this.position);
             cameraLeft.position.y += this.length * 3;
@@ -227,7 +280,7 @@ class Arena extends THREE.Mesh {
             swapToSplitScreen();
             this.setSplitCameraPositions(camera, cameraLeft);
         }
-        if (keys['p'])
+        if (keyDown['p'])
         {
             swapToFullScreen();
             this.setTopView(camera);
@@ -344,7 +397,11 @@ class Arena extends THREE.Mesh {
         // BALL UP
         let ballUp = new TWEEN.Tween(this.ball.position)
         .to({y: (this.ball.position.y + this.paddleLeft.height * 5), z: winnerPaddle.position.z}, 1500)
-        .easing(TWEEN.Easing.Quadratic.Out);
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            this.ball.rotation.y += 0.1;
+            this.ball.rotation.z += 0.1;
+        });
 
         // BALL TO CAMERA
         let ballToCamera = new TWEEN.Tween(this.ball.position)
@@ -379,6 +436,8 @@ class Arena extends THREE.Mesh {
            this.ball.isgoingRight = true;
            this.ball.isgoingLeft = false;
            this.ball.light.power = this.ball.startingPower;
+           this.ball.bounceCount = 0;
+           this.ball.material.color.set(this.ball.initialColor);
            this.isBeingReset = false;
         });
         ballUp.chain(ballToCamera);
@@ -403,7 +462,7 @@ class Paddle extends THREE.Mesh {
         const geometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
         // Load texture
         const textureLoader = new THREE.TextureLoader();
-        const texture = textureLoader.load('purplebox.jpeg');
+        // const texture = textureLoader.load('purplebox.jpeg');
         // Create material
         const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
@@ -429,9 +488,23 @@ class Paddle extends THREE.Mesh {
         this.light.power = this.defaultLight;
         this.light.castShadow = true;
         this.isPowered = false;
+        this.isDashing = false;
     }
-    animatePaddle(keyRight, keyLeft, arena, keyPower)
+    animatePaddle(doubleKeyPressRight, doubleKeyPressLeft, keyRight, keyLeft, arena, keyPower)
     {
+        if (doubleKeyPressRight && !this.isDashing)
+        {
+            this.isDashing = true;
+            this.dash(arena.width * 16, false);
+            doubleKeyPressRight = false;
+        }
+        if (doubleKeyPressLeft && !this.isDashing)
+        {
+            this.isDashing = true;
+            this.dash(arena.width * -16, true);
+            doubleKeyPressLeft = false;
+        }
+        // Detect normal paddle movement
         if (keyRight && this.position.x + 0.008 <= arena.rightCorner.x)
         {
             this.position.x += 0.016 * arena.length;
@@ -446,9 +519,44 @@ class Paddle extends THREE.Mesh {
         }
         if (keyPower)
         {
-            this.material.color.set(0xff2222);
+            this.material.color.set(0xff6e6e);
             this.isPowered = true;
         }
+    }
+    dash(range, isLeft)
+    {
+        let targetX;
+        this.material.color.set(0xf4ff69);
+        if (!isLeft)
+        {
+            targetX = this.position.x + range * 0.016;
+            if (targetX > this.arena.rightCorner.x)
+                targetX = this.arena.rightCorner.x;
+        }
+        else
+        {
+            targetX = this.position.x + range * 0.016;
+            if (targetX < this.arena.leftCorner.x)
+                targetX = this.arena.leftCorner.x;
+        }
+        if (this.arena.ball.isSupercharging)
+        {
+            new TWEEN.Tween(this.arena.ball.position)
+            .to({x: targetX}, 250)
+            .easing(TWEEN.Easing.Linear.None)
+            .start();
+        }
+        new TWEEN.Tween(this.position)
+        .to({x: targetX}, 250)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onComplete(() => {
+            setTimeout(() => {
+                this.isDashing = false;
+                this.material.color.set(0xffffff);
+            }, 350);
+                
+        })
+        .start();
     }
 }
 
@@ -457,10 +565,10 @@ class Ball extends THREE.Mesh {
     {
         // BALL CREATION
         const size = arena.width * 0.025;
-        const geometry = new THREE.SphereGeometry(size, 32, 16);
+        const geometry = new THREE.SphereGeometry(size, 16, 8);
         const textureLoader = new THREE.TextureLoader();
-        const texture = textureLoader.load('ball.jpg');
-        const material = new THREE.MeshBasicMaterial({color: 0xffffff});
+        // const texture = textureLoader.load('ball.jpg');
+        const material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: false});
         super(geometry, material);
         this.light = new THREE.PointLight(0xffffff);
         scene.add(this.light);
@@ -476,11 +584,14 @@ class Ball extends THREE.Mesh {
         this.speedY = 0;
         this.isgoingLeft = false;
         this.isgoingRight = true;
+        this.initialColor = this.material.color.clone();
+        this.finalColor = new THREE.Color(0xFFFFFF);
         this.zLimit1 = arena.position.z + arena.width / 2;
         this.zLimit2 = arena.position.z - arena.width / 2;
         this.arena = arena;
         this.initialSpeed = this.arena.width / 200;
-        this.isSupercharging
+        this.isSupercharging;
+        this.bounceCount = 0;
         this.justCollisioned = false;
     }
     leftScore(paddle)
@@ -515,6 +626,16 @@ class Ball extends THREE.Mesh {
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
+            this.bounceCount++;
+            console.log("rebounds = " + this.bounceCount)
+            if (this.bounceCount <= 10) {
+                // Calculate the interpolation factor
+                const factor = this.bounceCount / 20;
+                // Perform linear interpolation
+                this.material.color.lerpColors(this.initialColor, this.finalColor, factor);
+                // Update the material color
+                // this.material.color.updateStyleString();
+            }
             setTimeout(() => {
                 this.justCollisioned = false;
             }, 500);
@@ -529,6 +650,15 @@ class Ball extends THREE.Mesh {
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
             this.isgoingLeft = !this.isgoingLeft;
+            this.bounceCount++;
+            if (this.bounceCount <= 10) {
+                // Calculate the interpolation factor
+                const factor = this.bounceCount / 20;
+                // Perform linear interpolation
+                this.material.color.lerpColors(this.initialColor, this.finalColor, factor);
+                // Update the material color
+                // this.material.color.updateStyleString();
+            }
             setTimeout(() => {
                 this.justCollisioned = false;
             }, 500);
@@ -568,6 +698,7 @@ class Ball extends THREE.Mesh {
                     else
                         this.speedZ = this.arena.maxSpeed;
                 }
+                this.speedX = (this.position.x - paddle.position.x) / paddle.width * 0.015 * this.arena.width;
                 this.isSupercharging = false;
                 paddle.isPowered = false;
                 paddle.material.color.set(0xffffff);
@@ -606,6 +737,7 @@ class Ball extends THREE.Mesh {
                     else
                         this.speedZ = this.arena.maxSpeed;
                 }
+                this.speedX = (this.position.x - paddle.position.x) / paddle.width * 0.015 * this.arena.width;
                 this.isSupercharging = false;
                 paddle.isPowered = false;
                 paddle.material.color.set(0xffffff);
@@ -620,6 +752,8 @@ class Ball extends THREE.Mesh {
             this.speedX *= -1;
         this.position.z += this.speedZ;
         this.position.x += this.speedX;
+        if (this.speedZ > 0)
+            this.rotation.x += 0.1;
     }
 }
 
@@ -668,7 +802,7 @@ function swapToFullScreen()
 
 function monitorScreen()
 {
-    if (keys['o'])
+    if (keyDown['o'])
         swapToSplitScreen();
 }
 
