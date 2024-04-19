@@ -10,6 +10,7 @@ import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
+import { DotScreenShader } from 'three/addons/shaders/DotScreenShader.js';
 
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
@@ -45,8 +46,7 @@ renderer2.render(scene, cameraLeft);
 //MOON AND STARS
 function addStar(){
     const geometry = new THREE.SphereGeometry(0.25, 24, 24);
-    const color = new THREE.Color(THREE.MathUtils.randInt(0, 0xffffff));
-    const material = new THREE.MeshStandardMaterial({color: color})
+    const material = new THREE.MeshStandardMaterial({color: 0xffffff})
     const star = new THREE.Mesh( geometry, material);
     const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread( 1000 ));
     
@@ -80,94 +80,41 @@ const axesHelper = new THREE.AxesHelper(50); // Length of axes
 const rightHelper = new THREE.CameraHelper(cameraRight);
 const leftHelper = new THREE.CameraHelper(cameraLeft);
 // scene.add(axesHelper);
-// scene.add(gridHelper, ambientLight);
+scene.add(gridHelper, ambientLight);
 
 // VIEW UTILS
 const controls = new OrbitControls(camera, renderer.domElement);
-let leftArrowPressed = false;
-let rightArrowPressed = false;
-let upArrowPressed = false;
-let downArrowPressed = false;
-let spaceKeyPressed = false;
-let wKeyPressed = false;
-let aKeyPressed = false;
-let sKeyPressed = false;
-let dKeyPressed = false;
-let cKeyPressed = false;
-let oKeyPressed = false;
-let pKeyPressed = false;
-let iKeyPressed = false;
-let gKeyPressed = false;
-let bKeyPressed = false;
+controls.enableDamping = true;
 
-// Event listeners for arrow key presses
+let keys = {
+    'ArrowLeft': false,
+    'ArrowRight': false,
+    'ArrowUp': false,
+    'ArrowDown': false,
+    'w': false,
+    'a': false,
+    's': false,
+    'd': false,
+    ' ': false,
+    'c': false,
+    'o': false,
+    'p': false,
+    'i': false,
+    'g': false,
+    'b': false
+};
+
+// Event listener for key presses and releases
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft')
-        leftArrowPressed = true;
-    if (event.key === 'ArrowRight')
-        rightArrowPressed = true;
-    if (event.key === 'ArrowUp')
-        upArrowPressed = true;
-    if (event.key === 'ArrowDown')
-        downArrowPressed = true;
-    if (event.key === 'w')
-        wKeyPressed = true;
-    if (event.key === 'a')
-        aKeyPressed = true;
-    if (event.key === 's')
-        sKeyPressed = true;    
-    if (event.key === 'd')
-        dKeyPressed = true;
-    if (event.key === ' ')
-        spaceKeyPressed = true;
-    if (event.key === 'c')
-        cKeyPressed = true;
-    if (event.key === 'o')
-        oKeyPressed = true;
-    if (event.key === 'p')
-        pKeyPressed = true;
-    if (event.key === 'i')
-        iKeyPressed = true;
-    if (event.key === 'g')
-        gKeyPressed = true;
-    if (event.key === 'b')
-        bKeyPressed = true;
+    if (keys.hasOwnProperty(event.key)) {
+        keys[event.key] = true;
+    }
 });
 
 document.addEventListener('keyup', (event) => {
-    if (event.key === 'ArrowLeft') {
-        leftArrowPressed = false;
-    } else if (event.key === 'ArrowRight') {
-        rightArrowPressed = false;
+    if (keys.hasOwnProperty(event.key)) {
+        keys[event.key] = false;
     }
-    if (event.key === 'ArrowUp') {
-        upArrowPressed = false;
-    }
-    if (event.key === 'ArrowDown') {
-        downArrowPressed = false;
-    }
-    if (event.key === 'w')
-        wKeyPressed = false;
-    if (event.key === 'a')
-        aKeyPressed = false;
-    if (event.key === 's')
-        sKeyPressed = false;    
-    if (event.key === 'd')
-        dKeyPressed = false;
-    if (event.key === ' ')
-        spaceKeyPressed = false;
-    if (event.key === 'c')
-        cKeyPressed = false;
-    if (event.key === 'o')
-        oKeyPressed = false;
-    if (event.key === 'p')
-        pKeyPressed = false;
-    if (event.key === 'i')
-        iKeyPressed = false;
-    if (event.key === 'g')
-        gKeyPressed = false;
-    if (event.key === 'b')
-        bKeyPressed = false;
 });
 
 function cameraDebug()
@@ -248,16 +195,16 @@ class Arena extends THREE.Mesh {
             this.ball.rotation.y += 0.1;
         if (this.isActive)
         {
-            this.paddleRight.animatePaddle(rightArrowPressed, leftArrowPressed, this, upArrowPressed);
-            this.paddleLeft.animatePaddle(aKeyPressed, dKeyPressed, this, wKeyPressed);
+            this.paddleRight.animatePaddle(keys['ArrowRight'], keys['ArrowLeft'], this, keys['ArrowUp']);
+            this.paddleLeft.animatePaddle(keys['a'], keys['d'], this, keys['w']);
         }
-        if (spaceKeyPressed)
+        if (keys[' '])
         {
             this.ball.speedX = 0;
             this.ball.speedZ = this.ball.initialSpeed;
             this.ball.isRolling = true;
         }
-        if (bKeyPressed)
+        if (keys['b'])
         {
             if (!this.isBeingBlurred)
             {
@@ -265,12 +212,12 @@ class Arena extends THREE.Mesh {
                 this.blurScreen();
             }
         }
-        if (cKeyPressed)
+        if (keys['c'])
         {
             this.paddleLeft.light.power += 0.1;
             this.paddleRight.light.power += 0.1;
         }
-        if (iKeyPressed)
+        if (keys['i'])
         {
             cameraLeft.position.copy(this.position);
             cameraLeft.position.y += this.length * 3;
@@ -280,7 +227,7 @@ class Arena extends THREE.Mesh {
             swapToSplitScreen();
             this.setSplitCameraPositions(camera, cameraLeft);
         }
-        if (pKeyPressed)
+        if (keys['p'])
         {
             swapToFullScreen();
             this.setTopView(camera);
@@ -383,7 +330,6 @@ class Arena extends THREE.Mesh {
     {
         let duration = 1150;
 
-        console.log("glitched");
         loserPaddle.light.power = 0;
         loserPaddle.light.color = new THREE.Color(1, 0, 0);
         winnerPaddle.light.power = 0;
@@ -394,11 +340,10 @@ class Arena extends THREE.Mesh {
             tmpCamera = cameraLeft;
         else
             tmpCamera = camera;
-        // const scareDuration = (tmpCamera.position.z - this.position.z) / this.ball.speedZ * 3;
-        // let ballTargetZ = tmpCamera.position.z + ((this.position.z - tmpCamera.position.z) * 0.2);
+
         // BALL UP
         let ballUp = new TWEEN.Tween(this.ball.position)
-        .to({y: (this.ball.position.y + this.paddleLeft.height * 5), z: this.position.z}, 1500)
+        .to({y: (this.ball.position.y + this.paddleLeft.height * 5), z: winnerPaddle.position.z}, 1500)
         .easing(TWEEN.Easing.Quadratic.Out);
 
         // BALL TO CAMERA
@@ -443,7 +388,6 @@ class Arena extends THREE.Mesh {
         this.ball.isRolling = false;
         this.ball.speedZ = 0;
         this.ball.speedX = 0;
-
     }
 }
 
@@ -566,8 +510,6 @@ class Ball extends THREE.Mesh {
     }
     collisionWithLeftPaddle(paddle)
     {
-        console.log("speed = " + this.speedZ)
-        console.log("max speed = " + this.arena.width / 40);
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && !this.justCollisioned)
         {
             this.justCollisioned = true;
@@ -726,7 +668,7 @@ function swapToFullScreen()
 
 function monitorScreen()
 {
-    if (oKeyPressed)
+    if (keys['o'])
         swapToSplitScreen();
 }
 
@@ -774,6 +716,12 @@ composer1.addPass(arena1.horizontalBlur);
 composer1.addPass(arena1.verticalBlur);
 composer2.addPass(arena1.horizontalBlur);
 composer2.addPass(arena1.verticalBlur);
+
+// dotScreen
+// const effect1 = new ShaderPass( DotScreenShader );
+// 				effect1.uniforms[ 'scale' ].value = 256;
+// 				composer1.addPass( effect1 );
+
 
 function animate()
 {
