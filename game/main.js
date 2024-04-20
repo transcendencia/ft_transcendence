@@ -255,6 +255,7 @@ class Arena extends THREE.Mesh {
         {
             this.ball.speedX = 0;
             this.ball.speedZ = this.ball.initialSpeed;
+            this.ball.isgoingRight = true;
             this.ball.isRolling = true;
         }
         if (keyDown['b'])
@@ -452,36 +453,76 @@ class Arena extends THREE.Mesh {
 
 // PADDLE CLASS
 
-class Paddle extends THREE.Mesh {
+class Paddle extends THREE.Group {
     constructor(arena, left) {
+        super();
+
         // Calculate paddle dimensions based on arena size
         const paddleWidth = arena.width * 0.1; // 20% of arena width
         const paddleHeight = arena.length * 0.05; // 5% of arena height
         const paddleDepth = paddleHeight * 0.25; // 2% of arena depth
-        // Create geometry for the paddle
-        const geometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
-        // Load texture
-        const textureLoader = new THREE.TextureLoader();
-        // const texture = textureLoader.load('purplebox.jpeg');
-        // Create material
-        const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
-        // Call super constructor to set up mesh
-        super(geometry, material);
+       // Create geometry for the paddle
+       const geometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
 
-        // Set position of the paddle on top of the arena
+       // Create material
+       this.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+       // Create paddle mesh
+       this.paddleMesh = new THREE.Mesh(geometry, this.material);
+
+       // Add paddle mesh to the group
+       this.add(this.paddleMesh);
+
+        // Load Blender model
+        const loader = new GLTFLoader();
+        loader.load(
+            'spaceShip/scene.gltf',
+            (gltf) => {
+                const model = gltf.scene;
+                // Position the model relative to the paddle
+                if (!left) {
+                    model.position.set(0, 0, 2); // Adjust position as needed
+                    model.rotation.y = Math.PI;
+                } else {
+                    model.position.set(0, 0, -2); // Adjust position as needed
+                }
+                model.scale.set(0.2, 0.2, 0.2); // Adjust scale as needed
+                // Add the model to the group
+                this.add(model);
+        
+                // Now you can access the position of paddle.paddleMesh
+                console.log("paddle.x: " + this.paddleMesh.position.x);
+            },
+            undefined,
+            (error) => {
+                console.error('Error loading model:', error);
+            }
+        );
+
+        // Set position of the paddle mesh
+        this.paddleMesh.position.set(0, 0, 0);
+
+        // Add paddle mesh to the group
+        this.add(this.paddleMesh);
+
+        // Set position of the group (including both paddle mesh and model)
         const arenaTopY = arena.position.y + arena.height / 2;
-        // this.position.set(arena.position.x, arenaTopY, arena.position.z);
-        this.position.z = arena.position.z + arena.width / 2;
+        this.position.set(
+            arena.position.x,
+            arenaTopY + paddleHeight / 2, // Adjust for paddle height
+            arena.position.z + arena.width / 2
+        );
         if (left)
             this.position.z -= arena.width;
-        this.position.y = arena.position.y + (arena.height / 2) + (paddleHeight / 2);
-        this.position.x = arena.position.x;
-        // Store arena reference
+
         this.width = paddleWidth;
         this.height = paddleHeight;
         this.depth = paddleDepth;
+        // Store arena reference
         this.arena = arena;
+
+        // Add other properties and methods as needed
         this.light = new THREE.PointLight(0x4B4FC5);
         scene.add(this.light);
         this.defaultLight = this.arena.width * this.arena.length / 7.5;
@@ -614,7 +655,7 @@ class Ball extends THREE.Mesh {
     }
     checkCollisionBoxSphere(box, sphere) {
         // Get the bounding box of the box object
-        let boxBox = new THREE.Box3().setFromObject(box);
+        let boxBox = new THREE.Box3().setFromObject(box.paddleMesh);
     
         // Get the bounding sphere of the sphere object
         let sphereSphere = new THREE.Sphere();
@@ -629,22 +670,17 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft)
         {
+            console.log("Collision with left paddle");
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
             this.bounceCount++;
-            console.log("rebounds = " + this.bounceCount)
             if (this.bounceCount <= 10) {
                 // Calculate the interpolation factor
                 const factor = this.bounceCount / 20;
                 // Perform linear interpolation
                 this.material.color.lerpColors(this.initialColor, this.finalColor, factor);
-                // Update the material color
-                // this.material.color.updateStyleString();
             }
-            // setTimeout(() => {
-            //     this.justCollisioned = false;
-            // }, 500);
             return true;
         }
         return false;
@@ -653,6 +689,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight)
         {
+            console.log("Collision with right paddle");
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
             this.isgoingLeft = !this.isgoingLeft;
@@ -662,12 +699,7 @@ class Ball extends THREE.Mesh {
                 const factor = this.bounceCount / 20;
                 // Perform linear interpolation
                 this.material.color.lerpColors(this.initialColor, this.finalColor, factor);
-                // Update the material color
-                // this.material.color.updateStyleString();
             }
-            // setTimeout(() => {
-            //     this.justCollisioned = false;
-            // }, 500);
             return true;
         }
         return false;
@@ -676,8 +708,9 @@ class Ball extends THREE.Mesh {
     {
         if (!paddle.isPowered)
         {
-            let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
-            if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
+            let distanceFromCenter = (this.position.x - paddle.paddleMesh.position.x) / paddle.width;
+            console.log("Distance from center: " + distanceFromCenter);
+            if (distanceFromCenter * (this.position.x - paddle.paddleMesh.position.x) > 0)
                 this.speedX = distanceFromCenter * 0.015 * this.arena.width;
             else
                 this.speedX += distanceFromCenter * 0.015 * this.arena.width;
@@ -704,7 +737,7 @@ class Ball extends THREE.Mesh {
                     else
                         this.speedZ = this.arena.maxSpeed;
                 }
-                this.speedX = (this.position.x - paddle.position.x) / paddle.width * 0.015 * this.arena.width;
+                this.speedX = (this.position.x - paddle.paddleMesh.position.x) / paddle.width * 0.015 * this.arena.width;
                 this.isSupercharging = false;
                 paddle.isPowered = false;
                 paddle.material.color.set(0xffffff);
@@ -716,6 +749,7 @@ class Ball extends THREE.Mesh {
         if (!paddle.isPowered)
         {
             let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
+            console.log("Distance from center: " + distanceFromCenter);
             if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
                 this.speedX = distanceFromCenter * 0.015 * this.arena.width;
             else
