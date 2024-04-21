@@ -107,40 +107,12 @@ let keyDown = {
     'b': false
 };
 
-let keyPress = {
-    'ArrowLeft': false,
-    'ArrowRight': false,
-    'ArrowUp': false,
-    'ArrowDown': false,
-    'w': false,
-    'a': false,
-    's': false,
-    'd': false,
-    ' ': false,
-    'c': false,
-    'o': false,
-    'p': false,
-    'i': false,
-    'g': false,
-    'b': false
-};
-
 let doubleKeyPress = {
     'ArrowLeft': false,
     'ArrowRight': false,
     'a': false,
     'd': false
 };
-
-document.addEventListener('keypress', (event) => {
-    if (keyPress.hasOwnProperty(event.key)) {
-        keyPress[event.key] = true;
-        setTimeout(() => {
-            keyPress[event.key] = false;
-        }, 1000);
-    }
-});
-
 
 // Event listener for key presses and releases
 
@@ -256,6 +228,7 @@ class Arena extends THREE.Mesh {
             this.ball.speedX = 0;
             this.ball.speedZ = this.ball.initialSpeed;
             this.ball.isgoingRight = true;
+            this.ball.isgoingLeft = false;
             this.ball.isRolling = true;
         }
         if (keyDown['b'])
@@ -466,7 +439,7 @@ class Paddle extends THREE.Group {
        const geometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
 
        // Create material
-       this.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+       this.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
 
        // Create paddle mesh
        this.paddleMesh = new THREE.Mesh(geometry, this.material);
@@ -502,9 +475,6 @@ class Paddle extends THREE.Group {
 
         // Set position of the paddle mesh
         this.paddleMesh.position.set(0, 0, 0);
-
-        // Add paddle mesh to the group
-        this.add(this.paddleMesh);
 
         // Set position of the group (including both paddle mesh and model)
         const arenaTopY = arena.position.y + arena.height / 2;
@@ -709,7 +679,6 @@ class Ball extends THREE.Mesh {
         if (!paddle.isPowered)
         {
             let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
-            console.log("Distance from center: " + distanceFromCenter);
             if (distanceFromCenter * (this.position.x - paddle.paddleMesh.position.x) > 0)
                 this.speedX = distanceFromCenter * 0.015 * this.arena.width;
             else
@@ -737,7 +706,7 @@ class Ball extends THREE.Mesh {
                     else
                         this.speedZ = this.arena.maxSpeed;
                 }
-                this.speedX = (this.position.x - paddle.paddleMesh.position.x) / paddle.width * 0.015 * this.arena.width;
+                this.speedX = (this.position.x - paddle.position.x) / paddle.width * 0.015 * this.arena.width;
                 this.isSupercharging = false;
                 paddle.isPowered = false;
                 paddle.material.color.set(0xffffff);
@@ -749,7 +718,6 @@ class Ball extends THREE.Mesh {
         if (!paddle.isPowered)
         {
             let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
-            console.log("Distance from center: " + distanceFromCenter);
             if (distanceFromCenter * (this.position.x - paddle.position.x) > 0)
                 this.speedX = distanceFromCenter * 0.015 * this.arena.width;
             else
