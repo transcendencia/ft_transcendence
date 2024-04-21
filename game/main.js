@@ -708,7 +708,7 @@ class Ball extends THREE.Mesh {
     {
         if (!paddle.isPowered)
         {
-            let distanceFromCenter = (this.position.x - paddle.paddleMesh.position.x) / paddle.width;
+            let distanceFromCenter = (this.position.x - paddle.position.x) / paddle.width;
             console.log("Distance from center: " + distanceFromCenter);
             if (distanceFromCenter * (this.position.x - paddle.paddleMesh.position.x) > 0)
                 this.speedX = distanceFromCenter * 0.015 * this.arena.width;
