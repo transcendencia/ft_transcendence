@@ -439,7 +439,7 @@ class Paddle extends THREE.Group {
        const geometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
 
        // Create material
-       this.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+       this.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
        // Create paddle mesh
        this.paddleMesh = new THREE.Mesh(geometry, this.material);
@@ -447,22 +447,25 @@ class Paddle extends THREE.Group {
        // Add paddle mesh to the group
        this.add(this.paddleMesh);
 
+        // Store the model name
+        this.modelName = 'spaceShip/scene.gltf';
+        this.model;
         // Load Blender model
         const loader = new GLTFLoader();
         loader.load(
-            'spaceShip/scene.gltf',
+            this.modelName,
             (gltf) => {
-                const model = gltf.scene;
-                // Position the model relative to the paddle
+                this.model = gltf.scene;
+                // Position the this.model relative to the paddle
                 if (!left) {
-                    model.position.set(0, 0, 2); // Adjust position as needed
-                    model.rotation.y = Math.PI;
+                    this.model.position.set(0, 0, 2); // Adjust position as needed
+                    this.model.rotation.y = Math.PI;
                 } else {
-                    model.position.set(0, 0, -2); // Adjust position as needed
+                    this.model.position.set(0, 0, -2); // Adjust position as needed
                 }
-                model.scale.set(0.2, 0.2, 0.2); // Adjust scale as needed
-                // Add the model to the group
-                this.add(model);
+                this.model.scale.set(0.2, 0.2, 0.2); // Adjust scale as needed
+                // Add the this.model to the group
+                this.add(this.model);
         
                 // Now you can access the position of paddle.paddleMesh
                 console.log("paddle.x: " + this.paddleMesh.position.x);
@@ -573,6 +576,16 @@ class Paddle extends THREE.Group {
             }, 50);
                 
         })
+        .start();
+        // make the spaceship flip while dashing
+        let targetRotation;
+        if (this.model.rotation.z == 0)
+            targetRotation = Math.PI;
+        else
+            targetRotation = 0;
+        new TWEEN.Tween(this.model.rotation)
+        .to({z: targetRotation}, 250)
+        .easing(TWEEN.Easing.Quadratic.Out)
         .start();
     }
 }
