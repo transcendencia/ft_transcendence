@@ -1,4 +1,5 @@
-import { THREE, spaceShip, camera, spaceShipPointLight, landedOnPlanet, planetInRange} from "./main.js";
+import { THREE, spaceShip, camera, spaceShipPointLight, landedOnPlanet } from "./main.js";
+import {planetInRange} from "./planetIntersection.js";
 
 let leftArrowPressed = false;
 let rightArrowPressed = false;
@@ -146,9 +147,22 @@ function spaceShipMovement() {
     spaceShipPointLight.position.copy(spaceShip.position);
 }
 
+let printed = false;
+
+function cameraDebug()
+{
+    console.log("\n\ncamera.position.x =  " + camera.position.x);
+    console.log("camera.position.y =  " + camera.position.y);
+    console.log("camera.position.z =  " + camera.position.z);
+    console.log("camera.rotation.x =  " + camera.rotation.x);
+    console.log("camera.rotation.y =  " + camera.rotation.y);
+    console.log("camera.rotation.z =  " + camera.rotation.z);
+}
+
 function camMovement() {
     if (!spaceShip)
         return;
+    
     if (!landedOnPlanet) {
         camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
         camera.rotation.y = spaceShip.rotation.y - Math.PI;
@@ -156,10 +170,18 @@ function camMovement() {
     else {
         if (!planetInRange)
             return;
-        const offset = 500 * (planetInRange.scale / 100);    
-        camera.position.copy(new THREE.Vector3(planetInRange.mesh.position.x + offset * Math.sin(planetInRange.mesh.rotation.y), planetInRange.mesh.position.y, planetInRange.mesh.position.z + offset * Math.cos(planetInRange.mesh.rotation.y)));
+        if (!printed) {
+            printed = true;
+        }
+        const offset = 500 * (planetInRange.scale / 100);
+        const SSoffset = offset - distance;   
+        spaceShip.position.copy(new THREE.Vector3(planetInRange.mesh.position.x + SSoffset * Math.sin(planetInRange.mesh.rotation.y), spaceShip.position.y, planetInRange.mesh.position.z + SSoffset * Math.cos(planetInRange.mesh.rotation.y)));
+        spaceShip.rotation.y += planetInRange.rotationSpeed;
+        camera.position.copy(new THREE.Vector3(planetInRange.mesh.position.x + offset * Math.sin(planetInRange.mesh.rotation.y), height, planetInRange.mesh.position.z + offset * Math.cos(planetInRange.mesh.rotation.y)));
         camera.lookAt(planetInRange.mesh.position);
-    }
+        spaceShip.rotation.set(camera.rotation.x, camera.rotation.y + 3, camera.rotation.z);
+}
+    
 }
 
 export { spaceShipMovement, camMovement };
