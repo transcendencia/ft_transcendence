@@ -10,11 +10,12 @@ class Planet {
 		this.scale = scale;
         this.desc = desc;
 		this.orbitMesh = orbitMesh;
-        this.mesh = mesh; // Référence au modèle 3D de la planète
+		this.mesh = mesh; // Référence au modèle 3D de la planète
         this.orbitSpeed = null; // Vitesse de l'orbite de la planète
 		this.initialAngle = null;
 		this.modelLoaded = false; // Angle initial pour la position de la planète
 		this.name = name;
+		this.trajectoryPoints = [];
 		this.initialize();
     }
 	setPlanetInfo() {
@@ -34,10 +35,12 @@ class Planet {
 	setupArena() {
 		this.mesh.position.y = -50;
 		this.orbitMesh.position.y = -50;
+		this.rotationSpeed = this.orbitSpeed * 4;
 	}
 	setupSettings() {
 	}
 	setupTournament() {
+		this.rotationSpeed = this.orbitSpeed * 4;
 	}
 	createHitbox() {
 		const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
