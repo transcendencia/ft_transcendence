@@ -164,7 +164,7 @@ class Arena extends THREE.Mesh {
         const arenaColor = 0x000000;
         // Create material
         // const material = new THREE.MeshStandardMaterial({ color: 0x8800dd, wireframe: false});
-        const material = new THREE.MeshStandardMaterial({color: 0x101030});
+        const material = new THREE.MeshPhongMaterial({color: 0x101030});
         
         // Call super constructor to set up mesh
         super(geometry, material);
