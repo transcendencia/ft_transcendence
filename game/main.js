@@ -580,7 +580,7 @@ class Paddle extends THREE.Group {
         // make the spaceship flip while dashing
         let targetRotation;
         if (this.model.rotation.z == 0)
-            targetRotation = Math.PI;
+            targetRotation = Math.PI * 2;
         else
             targetRotation = 0;
         new TWEEN.Tween(this.model.rotation)
