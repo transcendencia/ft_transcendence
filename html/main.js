@@ -49,7 +49,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     
     // Ajouter la vue de la minimap à votre document HTML
     document.body.appendChild(minimapRenderer.domElement);
-    // minimapRenderer.domElement.style.opacity = '0';
+    minimapRenderer.domElement.style.opacity = '0';
         
     const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
     const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000045 }); 
@@ -112,46 +112,46 @@ export const outlinePass = new OutlinePass(
     camera
     );
     outlinePass.visibleEdgeColor.set("#ffee00");
-outlinePass.edgeStrength = 5;
-outlinePass.edgeGlow = 1;
-outlinePass.edgeThickness = 2;
-composer.addPass(renderPass);
-composer.addPass(outlinePass);
-
-export let cameraDirection = new THREE.Vector3();
-camera.getWorldDirection(cameraDirection);
-
-// LIGHTING
-const pointLight = new THREE.PointLight(0xffffff, 1)
-pointLight.castShadow = true;
-pointLight.position.copy(sun.position);
-pointLight.scale.set(10, 10, 10);
-
-const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
-pointLight2.castShadow = true;
-pointLight2.position.set(0,5,-1300);
-const lightHelperss = new THREE.PointLightHelper(pointLight2);
-
-const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
-spaceShipPointLight.castShadow = true;
-const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
-const lightHelper = new THREE.PointLightHelper(pointLight);
-scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
-
-Array(800).fill().forEach(addStar);
-
-
-
-// function vectorsEqual(v1, v2, threshold = 0.1) {
-    //     return Math.abs(v1.x - v2.x) < threshold &&
-//            Math.abs(v1.y - v2.y) < threshold &&
-//            Math.abs(v1.z - v2.z) < threshold;
-// }
-// let createOrbitsLines = true;
-// let startToCheckPlanetPos = false;
-
-// function allPlanetsFinishedOrbit() {
-//     planets.forEach((planet) => {
+    outlinePass.edgeStrength = 5;
+    outlinePass.edgeGlow = 1;
+    outlinePass.edgeThickness = 2;
+    composer.addPass(renderPass);
+    composer.addPass(outlinePass);
+    
+    export let cameraDirection = new THREE.Vector3();
+    camera.getWorldDirection(cameraDirection);
+    
+    // LIGHTING
+    const pointLight = new THREE.PointLight(0xffffff, 1)
+    pointLight.castShadow = true;
+    pointLight.position.copy(sun.position);
+    pointLight.scale.set(10, 10, 10);
+    
+    const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
+    pointLight2.castShadow = true;
+    pointLight2.position.set(0,5,-1300);
+    const lightHelperss = new THREE.PointLightHelper(pointLight2);
+    
+    const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
+    spaceShipPointLight.castShadow = true;
+    const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
+    const lightHelper = new THREE.PointLightHelper(pointLight);
+    scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
+    
+    Array(800).fill().forEach(addStar);
+    
+    
+    
+    // function vectorsEqual(v1, v2, threshold = 0.1) {
+        //     return Math.abs(v1.x - v2.x) < threshold &&
+        //            Math.abs(v1.y - v2.y) < threshold &&
+        //            Math.abs(v1.z - v2.z) < threshold;
+        // }
+        // let createOrbitsLines = true;
+        // let startToCheckPlanetPos = false;
+        
+        // function allPlanetsFinishedOrbit() {
+            //     planets.forEach((planet) => {
 //         if (vectorsEqual(initialPos[planet], planet.mesh.position))
 //             return false;
 //     });
@@ -159,44 +159,44 @@ Array(800).fill().forEach(addStar);
 // }
 
 // function drawTrajectory() {
-//     let initialPos = [];
-//     planets.forEach((planet) => {
-    //         initialPos[planet] = planet.mesh.position;
-//         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.2);
-//         planet.trajectoryPoints.push(planet.mesh.position.clone());
-//     });
-//     if (allPlanetsFinishedOrbit && createOrbitsLines && startToCheckPlanetPos) {
-//         planets.forEach((planet) => {
-    //             let trajectoryGeometry = new THREE.BufferGeometry().setFromPoints(planet.trajectoryPoints);
-//             let trajectoryMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: 0, opacity: 0.2 });
-//             let trajectoryLine = new THREE.Line(trajectoryGeometry, trajectoryMaterial);
-//             scene.add(trajectoryLine);
-//         });
-//         createOrbitsLines = false;
-//     }
-// }
-
-function planetMovement() {
-    planets.forEach((planet) => {
-
-        planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
-        planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
-        
-        if (planet.name === 'Settings changer') {
-            planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
-            planet.orbitMesh.rotation.x += planet.orbitSpeed;
-        }
-        if (planet.name === 'The tournament™') {
-            planet.mesh.rotation.x += planet.rotationSpeed;
-            planet.mesh.rotation.y += planet.rotationSpeed;
-        }
-        if (planet.name === 'Pong arena') {
-            planet.mesh.rotation.x += planet.rotationSpeed;
-            planet.mesh.rotation.y += planet.rotationSpeed;
-            planet.orbitMesh.rotation.x += planet.rotationSpeed;
-            planet.orbitMesh.rotation.y += planet.rotationSpeed;
-        }
-        if (planet.orbitMesh != null) {
+    //     let initialPos = [];
+    //     planets.forEach((planet) => {
+        //         initialPos[planet] = planet.mesh.position;
+        //         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.2);
+        //         planet.trajectoryPoints.push(planet.mesh.position.clone());
+        //     });
+        //     if (allPlanetsFinishedOrbit && createOrbitsLines && startToCheckPlanetPos) {
+            //         planets.forEach((planet) => {
+                //             let trajectoryGeometry = new THREE.BufferGeometry().setFromPoints(planet.trajectoryPoints);
+                //             let trajectoryMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: 0, opacity: 0.2 });
+                //             let trajectoryLine = new THREE.Line(trajectoryGeometry, trajectoryMaterial);
+                //             scene.add(trajectoryLine);
+                //         });
+                //         createOrbitsLines = false;
+                //     }
+                // }
+                
+                function planetMovement() {
+                    planets.forEach((planet) => {
+                        
+                        planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
+                        planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
+                        
+                        if (planet.name === 'Settings changer') {
+                            planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
+                            planet.orbitMesh.rotation.x += planet.orbitSpeed;
+                        }
+                        if (planet.name === 'The tournament™') {
+                            planet.mesh.rotation.x += planet.rotationSpeed;
+                            planet.mesh.rotation.y += planet.rotationSpeed;
+                        }
+                        if (planet.name === 'Pong arena') {
+                            planet.mesh.rotation.x += planet.rotationSpeed;
+                            planet.mesh.rotation.y += planet.rotationSpeed;
+                            planet.orbitMesh.rotation.x += planet.rotationSpeed;
+                            planet.orbitMesh.rotation.y += planet.rotationSpeed;
+                        }
+                        if (planet.orbitMesh != null) {
             planet.orbitMesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
@@ -207,19 +207,19 @@ function startAnimation() {
     let target = -1298;
     let duration = 1000;
     let anim1 = new TWEEN.Tween(spaceShip.position)
-        .to({z: target}, duration)
-        .easing(TWEEN.Easing.Linear.None)
-        .onUpdate(() => {
-            camera.position.copy(new THREE.Vector3(spaceShip.position.x - 10.5 * Math.sin(spaceShip.rotation.y), 4.5, spaceShip.position.z - 10.5 * Math.cos(spaceShip.rotation.y)));
-        })
-        
-        target = -1200;
-        duration = 500;
-        let anim2 = new TWEEN.Tween(spaceShip.position)
-        .to({z: target}, duration)
-        .easing(TWEEN.Easing.Cubic.InOut)
-        .onUpdate(() => {
-            camera.position.copy(new THREE.Vector3(spaceShip.position.x - 10.5 * Math.sin(spaceShip.rotation.y), 4.5, spaceShip.position.z - 10.5 * Math.cos(spaceShip.rotation.y)));
+    .to({z: target}, duration)
+    .easing(TWEEN.Easing.Linear.None)
+    .onUpdate(() => {
+        camera.position.copy(new THREE.Vector3(spaceShip.position.x - 10.5 * Math.sin(spaceShip.rotation.y), 4.5, spaceShip.position.z - 10.5 * Math.cos(spaceShip.rotation.y)));
+    })
+    
+    target = -1200;
+    duration = 500;
+    let anim2 = new TWEEN.Tween(spaceShip.position)
+    .to({z: target}, duration)
+    .easing(TWEEN.Easing.Cubic.InOut)
+    .onUpdate(() => {
+        camera.position.copy(new THREE.Vector3(spaceShip.position.x - 10.5 * Math.sin(spaceShip.rotation.y), 4.5, spaceShip.position.z - 10.5 * Math.cos(spaceShip.rotation.y)));
         })
         
         target = -1150;
@@ -237,18 +237,22 @@ function startAnimation() {
         });
         anim1.chain(anim2, anim3);
         anim1.start();
-}
-
-document.addEventListener('keydown', (event) => { 
-    if (event.key === 'e' && !gameStart) {
-        enterPlanetText.textContent = ''
-        startAnimation();
     }
-    if (event.key === 'e' && inRange)
+    let container = document.getElementsByClassName("container");
+    
+    document.addEventListener('keydown', (event) => { 
+        if (event.key === 'e' && !gameStart) {
+            toggleBlurDisplay();
+            enterPlanetText.textContent = ''
+            startAnimation();
+        }
+        if (event.key === 'e' && inRange)
         togglePlanet();
     if (event.key === 'u')
-        scene.add(trajectoryLine);
+    scene.add(trajectoryLine);
 });
+
+let targetBlur = 0;
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);
 const verticalBlur = new ShaderPass(VerticalBlurShader);
@@ -256,29 +260,29 @@ horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to nu
 verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
 horizontalBlur.renderToScreen = true; // Render to a texture
 verticalBlur.renderToScreen = true; // Render to the screen
-horizontalBlur.uniforms.h.value = 0;
-verticalBlur.uniforms.v.value = 0;
+horizontalBlur.uniforms.h.value = targetBlur;
+verticalBlur.uniforms.v.value = targetBlur;
 composer.addPass(horizontalBlur);
 composer.addPass(verticalBlur);
 
-let targetBlur = 0;
 
 export function toggleBlurDisplay() {
     const duration = 1500;
     if (targetBlur === 0)
-        targetBlur = 0.002;
-    else
-        targetBlur = 0;
-    new TWEEN.Tween(horizontalBlur.uniforms.h)
-    .to({value: targetBlur}, duration)
-    .easing(TWEEN.Easing.Quadratic.Out)
-    .start();
+    targetBlur = 0.002;
+else 
+targetBlur = 0;
+new TWEEN.Tween(horizontalBlur.uniforms.h)
+.to({value: targetBlur}, duration)
+.easing(TWEEN.Easing.Quadratic.Out)
+.start();
 
-    new TWEEN.Tween(verticalBlur.uniforms.v)
-    .to({value: targetBlur}, duration)
-    .easing(TWEEN.Easing.Quadratic.Out)
-    .start();
+new TWEEN.Tween(verticalBlur.uniforms.v)
+.to({value: targetBlur}, duration)
+.easing(TWEEN.Easing.Quadratic.Out)
+.start();
 }
+
 // Bloom Pass
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = 0.1;
@@ -289,24 +293,24 @@ bloomPass.radius = 0.5;
 function update() {
     // displayRay();
     if (gameStart && !landedOnPlanet) 
-        spaceShipMovement();
-    planetMovement();
-    camMovement();
-    if (gameStart) {
-        updateRay();
-        if (!landedOnPlanet)
-            getPlanetIntersection();
-    }
-    return;
+    spaceShipMovement();
+planetMovement();
+camMovement();
+if (gameStart) {
+    updateRay();
+    if (!landedOnPlanet)
+    getPlanetIntersection();
+}
+return;
 }
 
 function animate()
 {
     TWEEN.update();
     requestAnimationFrame( animate )
-    if (!landedOnPlanet)
-        renderMinimap();
-    update();
+    if (!landedOnPlanet && gameStart)
+    renderMinimap();
+update();
     composer.render();
     // renderer.render(scene, camera);
 }
