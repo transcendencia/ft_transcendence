@@ -53,6 +53,7 @@ function addStar(){
     star.position.set(x, y, z);
     scene.add(star)
 }
+
 Array(800).fill().forEach(addStar)
 
 // let moon;
@@ -479,9 +480,9 @@ class Paddle extends THREE.Group {
 
         // Store the model name
         if (left)
-            this.modelName = 'godzilla/scene.gltf';
+            this.modelName = 'spaceShip/scene.gltf';
         else
-            this.modelName = 'king_kong/scene.gltf';
+            this.modelName = 'spaceShip/scene.gltf';
         this.model;
         // Load Blender model
         const loader = new GLTFLoader();
@@ -497,9 +498,9 @@ class Paddle extends THREE.Group {
                 else
                     this.model.position.set(0, 0, -2); // Adjust position as needed
                 if (left)
-                    this.model.scale.set(0.15, 0.15, 0.15); // Adjust scale as needed
+                    this.model.scale.set(0.2, 0.2, 0.2); // Adjust scale as needed
                 else
-                    this.model.scale.set(0.08, 0.08, 0.08); // Adjust scale as needed
+                    this.model.scale.set(0.2, 0.2, 0.2); // Adjust scale as needed
                 // Add the this.model to the group
                 this.add(this.model);
                 
@@ -711,7 +712,7 @@ class Ball extends THREE.Mesh {
     }
     collisionWithLeftPaddle(paddle)
     {
-        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft)
+        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && Math.abs(this.speedZ) > 0)
         {
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
@@ -742,7 +743,8 @@ class Ball extends THREE.Mesh {
     }
     collisionWithRightPaddle(paddle)
     {
-        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight)
+        explodeParticles(paddle.position);
+        if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight && this.speedZ > 0)
         {
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
@@ -1064,6 +1066,85 @@ composer2.addPass(arena1.verticalBlur);
 // 				effect1.uniforms[ 'scale' ].value = 256;
 // 				composer1.addPass( effect1 );
 
+// Create particle geometry
+let particleGeometry = new THREE.BufferGeometry();
+let positions = [];
+let colors = [];
+
+// Add initial position and color for each particle
+let particleCount = 100; // Number of particles in explosion
+for (let i = 0; i < particleCount; i++) {
+    // Position
+    let x = 0;
+    let y = 0;
+    let z = 0;
+    positions.push(x, y, z);
+
+    // Color (white in this example)
+    colors.push(1, 0, 0);
+}
+
+particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+particleGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+// Create particle material
+let particleMaterial = new THREE.PointsMaterial({
+    size: 0.1, // Adjust size as needed
+    vertexColors: THREE.VertexColors // Enable vertex colors
+});
+
+// Create particle system
+let particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particleSystem);
+
+// Function to trigger particle explosion
+function explodeParticles(position) {
+    let positions = particleGeometry.attributes.position.array;
+    let colors = particleGeometry.attributes.color.array;
+
+    // Set initial position and color for each particle
+    for (let i = 0; i < particleCount; i++) {
+        let index = i * 3;
+
+        // Position
+        positions[index] = position.x;
+        positions[index + 1] = position.y;
+        positions[index + 2] = position.z;
+
+        // Color (white in this example)
+        colors[index] = 1;
+        colors[index + 1] = 1;
+        colors[index + 2] = 1;
+    }
+
+    particleGeometry.attributes.position.needsUpdate = true;
+    particleGeometry.attributes.color.needsUpdate = true;
+}
+
+let particleVelocities = [];
+
+// Initialize particle velocities (for example, random initial velocities)
+for (let i = 0; i < particleCount; i++)
+{
+    let velocity = new THREE.Vector3(
+        (Math.random() - 0.5) * 0.3, // Adjust the range of velocities as needed
+        (Math.random() - 0.5) * 0.3,
+        (Math.random()) * 4
+    );
+    particleVelocities.push(velocity.x, velocity.y, velocity.z);
+}
+
+function updateParticles() {
+    let positions = particleGeometry.attributes.position.array;
+    for (let i = 0; i < particleCount; i++)
+    {
+        let index = i * 3;
+        positions[index] += particleVelocities[index];
+        positions[index + 1] += particleVelocities[index + 1];
+        positions[index + 2] += particleVelocities[index + 2];
+    }
+    particleGeometry.attributes.position.needsUpdate = true;
+}
 
 function animate()
 {
@@ -1071,12 +1152,8 @@ function animate()
     // controls.update();
     TWEEN.update();
     arena1.monitorArena();
-    // monitorScreen();
-    // cameraDebug();
-    // renderer.render(scene, camera);
+    updateParticles();
     composer1.render();
     composer2.render();
-    // renderer1.render(scene, cameraRight);
-    // renderer2.render(scene, cameraLeft);
 }
 animate();
