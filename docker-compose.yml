@@ -21,7 +21,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db:/var/lib/postgresql/data
+      - /home/lciullo/goinfre/database:/var/lib/postgresql/data
+
   
   server:
     container_name: server
@@ -49,16 +50,10 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/lciullo/projet/backend
+      device: /home/lciullo/test/backend
 #device : dossier dans lequel il y l'installation django sur machine hote 
 
-  db:
-    name: db
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: /home/lciullo/projet/db
+#changer de path
 
 networks:
   ft_transcendence:

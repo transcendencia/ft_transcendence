@@ -34,3 +34,15 @@
 
 #   ALLLER DANS LA TABLE OKKKK
     #psql -U lciullo -d postgres
+
+
+      # db:
+  #   name: db
+  #   driver: local
+  #   driver_opts:
+  #     type: 'none'
+  #     o: 'bind'
+  #     device: /home/lciullo/projet/db
+
+    #   volumes:
+    #   - db:/var/lib/postgresql/data
