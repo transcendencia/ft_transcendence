@@ -105,7 +105,6 @@ const composer = new EffectComposer(renderer);
 composer.setSize(window.innerWidth, window.innerHeight);
 const renderPass = new RenderPass( scene, camera );
 
-
 export const outlinePass = new OutlinePass(
     new THREE.Vector2(window.innerWidth, window.innerHeight), 
     scene, 
@@ -238,19 +237,25 @@ function startAnimation() {
         anim1.chain(anim2, anim3);
         anim1.start();
     }
-    let container = document.getElementsByClassName("container");
+let container = document.getElementsByClassName("container");
     
-    document.addEventListener('keydown', (event) => { 
-        if (event.key === 'e' && !gameStart) {
-            toggleBlurDisplay();
-            enterPlanetText.textContent = ''
-            startAnimation();
-        }
-        if (event.key === 'e' && inRange)
+document.addEventListener('keydown', (event) => { 
+    if (event.key === 'e' && !gameStart) {
+        fadeOutContainer();
+        enterPlanetText.textContent = ''
+        toggleBlurDisplay();
+        startAnimation();
+    }
+    if (event.key === 'e' && inRange)
         togglePlanet();
     if (event.key === 'u')
-    scene.add(trajectoryLine);
+        scene.add(trajectoryLine);
 });
+
+function fadeOutContainer() {
+    container.style.transition = 'opacity 1s';
+    container.style.opacity = '0';
+}
 
 let targetBlur = 0;
 

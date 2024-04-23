@@ -4,7 +4,7 @@ import { spaceShip, camera, cameraDirection, scene, outlinePass } from "./main.j
 const planetInfoText = document.getElementById('planetInfoText');
 planetInfoText.textContent = '';
 const enterPlanetText = document.getElementById('enterPlanetText');
-enterPlanetText.textContent = 'Press [E] to start';
+enterPlanetText.textContent = '';
 
 const raycaster = new THREE.Raycaster();
 
