@@ -22,8 +22,6 @@ const cameraLeft = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 camera.position.set(20, 20, 0);
 cameraLeft.lookAt(0, 0, 0);
 
-const enterScoreText = document.getElementById('enterScoreText');
-enterScoreText.textContent = 'AAAAAAAA';
 //RENDERERS
 const renderer = new THREE.WebGLRenderer({ // Renderer for full screen
     canvas: document.querySelector('#c1')
@@ -107,6 +105,7 @@ let keyDown = {
     'o': false,
     'p': false,
     'i': false,
+    'e': false,
     'g': false,
     'b': false,
     '1': false,
@@ -213,11 +212,13 @@ class Arena extends THREE.Mesh {
         this.isBlurred = false;
         this.isBeingBlurred = false;
         this.isBeingReset = false;
+        this.game = new Game(this);
         this.maxSpeed = this.width / 40;
         this.isSplitScreen = false;
     }
     monitorArena()
     {
+        this.game.updateText();
         this.paddleLeft.light.position.copy(this.paddleLeft.position);
         this.paddleRight.light.position.copy(this.paddleRight.position);
         this.paddleLeft.particles.updateParticles();
@@ -263,7 +264,7 @@ class Arena extends THREE.Mesh {
             this.paddleRight.light.power += 0.1;
             this.bot.isPlaying = !this.bot.isPlaying;
         }
-        if (keyDown['i'])
+        if (keyDown['e'])
         {
             // cameraLeft.position.copy(this.position);
             cameraLeft.position.y += this.length * 3;
@@ -272,6 +273,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.lookAt(this.position);
             swapToSplitScreen();
             this.setSplitCameraPositions(camera, cameraLeft);
+            this.game.isPlaying = true;
             this.isSplitScreen = true;
         }
         if (keyDown['p'])
@@ -281,6 +283,18 @@ class Arena extends THREE.Mesh {
         }
         if(keyDown['o'])
             this.paddleRight.changeBlenderModel('godzilla/scene.gltf');
+        if (this.game.leftScore >= this.game.maxScore || this.game.rightScore >= this.game.maxScore)
+        {
+            this.game.isPlaying = false;
+            this.game.isOver = true;
+            setTimeout(() => {
+                this.game.isOver = false;
+                this.game.leftScore = 0;
+                this.game.rightScore = 0;
+                swapToFullScreen();
+                this.setTopView(camera);
+            }, 5000);
+        }
         if (this.bot.isPlaying)
             this.bot.play();
         if (this.ball.collisionWithLeftPaddle(this.paddleLeft))
@@ -290,10 +304,12 @@ class Arena extends THREE.Mesh {
         if (this.ball.rightScore(this.paddleLeft) && !this.isBeingReset)
         {
             this.isBeingReset = true;
+            this.game.rightScore++;
             this.resetPositions(this.paddleLeft, this.paddleRight, false, glitchLeft);
         }
         if (this.ball.leftScore(this.paddleRight) && !this.isBeingReset)
         {
+            this.game.leftScore++;
             this.isBeingReset = true;
             this.resetPositions(this.paddleRight, this.paddleLeft, true, glitchRight);
         }
@@ -352,7 +368,7 @@ class Arena extends THREE.Mesh {
         let targetY = this.position.y + this.height + this.width;
         let targetX = this.position.x;
         let targetZ = this.position.z;
-        const duration = 3500;
+        const duration = 1500;
         new TWEEN.Tween(camera.position)
         .to({x: targetX, y: targetY, z: targetZ}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
@@ -364,6 +380,9 @@ class Arena extends THREE.Mesh {
         new TWEEN.Tween(camera.rotation)
         .to({z: targetZ, x: targetX, y: targetY}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
+        .onComplete(() => {
+            this.isSplitScreen = false;
+        })
         .start();
     }
     resetPositions(loserPaddle, winnerPaddle, leftScored, whichGlitch)
@@ -722,7 +741,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && Math.abs(this.speedZ) > 0)
         {
-            paddle.particles.explodeParticles(paddle.position);
+            paddle.particles.explodeParticles(paddle.position, paddle.material.color);
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
@@ -754,7 +773,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight && this.speedZ > 0)
         {
-            paddle.particles.explodeParticles(paddle.position);
+            paddle.particles.explodeParticles(paddle.position, paddle.material.color);
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
             this.isgoingLeft = !this.isgoingLeft;
@@ -909,6 +928,34 @@ class Bot {
     }
 }
 
+class Game {
+    constructor(arena) {
+        this.leftScore = 0;
+        this.rightScore = 0;
+        this.maxScore = 3;
+        this.isPlaying = false;
+        this.isOver = false;
+        this.arena = arena;
+        this.loserPaddle;
+        this.winnerPaddle;
+        this.enterCenterScoreText = document.getElementById('enterCenterScoreText');
+        enterCenterScoreText.textContent = '';
+        this.enterRightScoreText = document.getElementById('enterRightScoreText');
+        enterRightScoreText.textContent = '';
+        this.enterLeftScoreText = document.getElementById('enterLeftScoreText');
+        enterLeftScoreText.textContent = '';
+    }
+    updateText()
+    {
+        if (this.isPlaying)
+            this.enterCenterScoreText.textContent = this.leftScore + ' - ' + this.rightScore;
+        else if (this.isOver)
+            this.enterCenterScoreText.textContent = 'Game Over, final score: ' + this.leftScore + ' - ' + this.rightScore;
+        if (!this.isPlaying && !this.isOver)
+        this.enterCenterScoreText.textContent = 'Welcome to PONG ! Press E to start a game';
+    }
+}
+
 class Particle {
     constructor(scene, particleCount, left) {
         this.scene = scene;
@@ -968,7 +1015,7 @@ class Particle {
             }
         }
     }
-    explodeParticles(position) {
+    explodeParticles(position, color) {
         for (let i = 0; i < this.particleCount; i++) {
             let index = i * 3;
             this.positions[index] = position.x;
@@ -976,9 +1023,9 @@ class Particle {
             this.positions[index + 2] = position.z;
 
             // Color (white in this example)
-            this.colors[index] = 1;
-            this.colors[index + 1] = 1;
-            this.colors[index + 2] = 1;
+            this.colors[index] = color.r;
+            this.colors[index + 1] = color.g;
+            this.colors[index + 2] = color.b;
         }
 
         this.geometry.attributes.position.needsUpdate = true;
