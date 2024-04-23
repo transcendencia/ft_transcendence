@@ -21,6 +21,9 @@ const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 )
 const cameraLeft = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 camera.position.set(20, 20, 0);
 cameraLeft.lookAt(0, 0, 0);
+
+const enterScoreText = document.getElementById('enterScoreText');
+enterScoreText.textContent = 'AAAAAAAA';
 //RENDERERS
 const renderer = new THREE.WebGLRenderer({ // Renderer for full screen
     canvas: document.querySelector('#c1')
@@ -211,11 +214,14 @@ class Arena extends THREE.Mesh {
         this.isBeingBlurred = false;
         this.isBeingReset = false;
         this.maxSpeed = this.width / 40;
+        this.isSplitScreen = false;
     }
     monitorArena()
     {
         this.paddleLeft.light.position.copy(this.paddleLeft.position);
         this.paddleRight.light.position.copy(this.paddleRight.position);
+        this.paddleLeft.particles.updateParticles();
+        this.paddleRight.particles.updateParticles();
         if (this.ball.isRolling)
             this.ball.monitorMovement();
         this.ball.light.position.copy(this.ball.position);
@@ -266,6 +272,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.lookAt(this.position);
             swapToSplitScreen();
             this.setSplitCameraPositions(camera, cameraLeft);
+            this.isSplitScreen = true;
         }
         if (keyDown['p'])
         {
@@ -533,6 +540,7 @@ class Paddle extends THREE.Group {
         this.scene = scene;
 
         // Add other properties and methods as needed
+        this.particles = new Particle(this.scene, 100, left);
         this.light = new THREE.PointLight(0x4B4FC5);
         scene.add(this.light);
         this.defaultLight = this.arena.width * this.arena.length / 7.5;
@@ -714,6 +722,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && Math.abs(this.speedZ) > 0)
         {
+            paddle.particles.explodeParticles(paddle.position);
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
@@ -743,9 +752,9 @@ class Ball extends THREE.Mesh {
     }
     collisionWithRightPaddle(paddle)
     {
-        explodeParticles(paddle.position);
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight && this.speedZ > 0)
         {
+            paddle.particles.explodeParticles(paddle.position);
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
             this.isgoingLeft = !this.isgoingLeft;
@@ -897,6 +906,92 @@ class Bot {
             this.ownPaddle.position.x += 0.016 * this.arena.length;
         if (this.ownPaddle.position.x > targetX)
             this.ownPaddle.position.x -= 0.016 * this.arena.length;
+    }
+}
+
+class Particle {
+    constructor(scene, particleCount, left) {
+        this.scene = scene;
+        this.particleCount = particleCount;
+
+        // Create particle geometry
+        this.geometry = new THREE.BufferGeometry();
+        this.positions = new Float32Array(this.particleCount * 3);
+        this.colors = new Float32Array(this.particleCount * 3);
+
+        // Add initial position and color for each particle
+        for (let i = 0; i < this.particleCount; i++) {
+            this.positions[i * 3] = 0;
+            this.positions[i * 3 + 1] = 0;
+            this.positions[i * 3 + 2] = 0;
+
+            this.colors[i * 3] = 0;
+            this.colors[i * 3 + 1] = 0;
+            this.colors[i * 3 + 2] = 0;
+        }
+
+        this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
+        this.geometry.setAttribute('color', new THREE.BufferAttribute(this.colors, 3));
+
+        // Create particle material
+        this.material = new THREE.PointsMaterial({
+            size: 0.1, // Adjust size as needed
+            vertexColors: THREE.VertexColors // Enable vertex colors
+        });
+
+        // Create particle system
+        this.particleSystem = new THREE.Points(this.geometry, this.material);
+        this.scene.add(this.particleSystem);
+
+        // Initialize particle velocities (for example, random initial velocities)
+        this.velocities = [];
+        if (left)
+        {
+            for (let i = 0; i < this.particleCount; i++) {
+                let velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * 3,
+                    (Math.random() - 0.5) * 3,
+                    (Math.random()) * 0
+                );
+                this.velocities.push(velocity);
+            }
+        }
+        else
+        {
+            for (let i = 0; i < this.particleCount; i++) {
+                let velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * 3,
+                    (Math.random() - 0.5) * 3,
+                    (Math.random()) * -0
+                );
+                this.velocities.push(velocity);
+            }
+        }
+    }
+    explodeParticles(position) {
+        for (let i = 0; i < this.particleCount; i++) {
+            let index = i * 3;
+            this.positions[index] = position.x;
+            this.positions[index + 1] = position.y;
+            this.positions[index + 2] = position.z;
+
+            // Color (white in this example)
+            this.colors[index] = 1;
+            this.colors[index + 1] = 1;
+            this.colors[index + 2] = 1;
+        }
+
+        this.geometry.attributes.position.needsUpdate = true;
+        this.geometry.attributes.color.needsUpdate = true;
+    }
+    updateParticles() {
+        for (let i = 0; i < this.particleCount; i++) {
+            let index = i * 3;
+            this.positions[index] += this.velocities[i].x;
+            this.positions[index + 1] += this.velocities[i].y;
+            this.positions[index + 2] += this.velocities[i].z;
+        }
+        this.geometry.attributes.position.needsUpdate = true;
     }
 }
 
@@ -1066,85 +1161,6 @@ composer2.addPass(arena1.verticalBlur);
 // 				effect1.uniforms[ 'scale' ].value = 256;
 // 				composer1.addPass( effect1 );
 
-// Create particle geometry
-let particleGeometry = new THREE.BufferGeometry();
-let positions = [];
-let colors = [];
-
-// Add initial position and color for each particle
-let particleCount = 100; // Number of particles in explosion
-for (let i = 0; i < particleCount; i++) {
-    // Position
-    let x = 0;
-    let y = 0;
-    let z = 0;
-    positions.push(x, y, z);
-
-    // Color (white in this example)
-    colors.push(1, 0, 0);
-}
-
-particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-particleGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-// Create particle material
-let particleMaterial = new THREE.PointsMaterial({
-    size: 0.1, // Adjust size as needed
-    vertexColors: THREE.VertexColors // Enable vertex colors
-});
-
-// Create particle system
-let particleSystem = new THREE.Points(particleGeometry, particleMaterial);
-scene.add(particleSystem);
-
-// Function to trigger particle explosion
-function explodeParticles(position) {
-    let positions = particleGeometry.attributes.position.array;
-    let colors = particleGeometry.attributes.color.array;
-
-    // Set initial position and color for each particle
-    for (let i = 0; i < particleCount; i++) {
-        let index = i * 3;
-
-        // Position
-        positions[index] = position.x;
-        positions[index + 1] = position.y;
-        positions[index + 2] = position.z;
-
-        // Color (white in this example)
-        colors[index] = 1;
-        colors[index + 1] = 1;
-        colors[index + 2] = 1;
-    }
-
-    particleGeometry.attributes.position.needsUpdate = true;
-    particleGeometry.attributes.color.needsUpdate = true;
-}
-
-let particleVelocities = [];
-
-// Initialize particle velocities (for example, random initial velocities)
-for (let i = 0; i < particleCount; i++)
-{
-    let velocity = new THREE.Vector3(
-        (Math.random() - 0.5) * 0.3, // Adjust the range of velocities as needed
-        (Math.random() - 0.5) * 0.3,
-        (Math.random()) * 4
-    );
-    particleVelocities.push(velocity.x, velocity.y, velocity.z);
-}
-
-function updateParticles() {
-    let positions = particleGeometry.attributes.position.array;
-    for (let i = 0; i < particleCount; i++)
-    {
-        let index = i * 3;
-        positions[index] += particleVelocities[index];
-        positions[index + 1] += particleVelocities[index + 1];
-        positions[index + 2] += particleVelocities[index + 2];
-    }
-    particleGeometry.attributes.position.needsUpdate = true;
-}
 
 function animate()
 {
@@ -1152,7 +1168,6 @@ function animate()
     // controls.update();
     TWEEN.update();
     arena1.monitorArena();
-    updateParticles();
     composer1.render();
     composer2.render();
 }
