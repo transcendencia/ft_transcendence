@@ -7,6 +7,8 @@ DOCKER_COMPOSE = docker-compose.yml
 # # ---- Launch rules ---- #
 
 all:
+	chmod +x setpath.sh
+	bash setpath.sh
 	docker compose -f ${DOCKER_COMPOSE} up -d --build
 
 
@@ -26,8 +28,7 @@ prune:
 	docker volume prune;
 
 fclean:
-	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
-	- @docker ps -aq | xargs docker stop | xargs docker rm
+	- @docker-compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
 	- @docker system prune --all --force
 	- @docker volume prune --force
 	- @docker network prune --force
