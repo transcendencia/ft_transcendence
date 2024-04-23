@@ -41,11 +41,34 @@
     #c2 {
         order: 2; /* Set the order of #c2 to 2 (display on the right) */
     }
+    /* Style the container */
+    #enterScoreTextContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        background-color: lightblue;
+    }
+    /* Style the text element */
+    #enterScoreText {
+        color: #ffffff;
+        font-size: 30px;
+    }
 </style>
 <body>
     <div id="a">
         <canvas id="c1"></canvas>
         <canvas id="c2"></canvas>
+    </div>
+    <div id="enterScoreTextContainer">
+        <div id="enterScoreText"></div>
+    </div>
+      <div id="scoreInfoContainer">
+        <div id="scoreInfoText"></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script type="module" src="main.js"></script>
