@@ -60,6 +60,7 @@ const minimapCamera = new THREE.OrthographicCamera(
 
     minimapBG.layers.set(1);
     minimapCamera.layers.enable(1);
+    camera.layers.enable(2);
     const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
     const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
     const playerMarker = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -242,8 +243,8 @@ let container = document.getElementsByClassName("container");
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
         fadeOutContainer();
+        console.log("e pressed");
         enterPlanetText.textContent = ''
-        toggleBlurDisplay();
         startAnimation();
     }
     if (event.key === 'e' && inRange)
@@ -253,9 +254,20 @@ document.addEventListener('keydown', (event) => {
 });
 
 function fadeOutContainer() {
-    container.style.transition = 'opacity 1s';
-    container.style.opacity = '0';
+    // Get the container element
+    var container = document.querySelector('.loginPageUI');
+
+    // Get all child elements of the container
+    var children = container.querySelectorAll('*');
+
+    // Apply fade-out effect to each child
+    children.forEach(function(child) {
+        child.style.transition = 'opacity 1s';
+        child.style.opacity = '0';
+    });
 }
+
+
 
 let targetBlur = 0;
 
@@ -298,13 +310,13 @@ bloomPass.radius = 0.5;
 function update() {
     // displayRay();
     if (gameStart && !landedOnPlanet) 
-    spaceShipMovement();
-planetMovement();
-camMovement();
-if (gameStart) {
-    updateRay();
+        spaceShipMovement();
+    planetMovement();
+    camMovement();
+    if (gameStart) {
+        updateRay();
     if (!landedOnPlanet)
-    getPlanetIntersection();
+        getPlanetIntersection();
 }
 return;
 }
@@ -315,7 +327,7 @@ function animate()
     requestAnimationFrame( animate )
     if (!landedOnPlanet && gameStart)
     renderMinimap();
-update();
+    update();
     composer.render();
     // renderer.render(scene, camera);
 }
