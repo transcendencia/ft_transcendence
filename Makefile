@@ -30,11 +30,11 @@ prune:
 
 fclean:
 	- @docker-compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
-	- @docker compose -f ${DOCKER_COMPOSE} stop $$(docker compose ps -qa)
-	- @docker-compose rm $$(docker compose ps -qa)
-	- @docker system prune --all --force
-	- @docker volume prune --force
-	- @docker network prune --force
+# - @docker compose -f ${DOCKER_COMPOSE} stop $$(docker compose ps -qa)
+# - @docker-compose rm $$(docker compose ps -qa)
+# - @docker system prune --all --force
+# - @docker volume prune --force
+# - @docker network prune --force
 
 
 re: down
