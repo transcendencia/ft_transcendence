@@ -7,7 +7,7 @@
     "esp": {
         "loginText": "Usuario",
 		"passwordText": "Contraseña",
-		"loginLanguageText": ""
+		"loginLanguageText": "Elige un idioma"
     },
     "fr": {
         "loginText": "Nom d'Utilisateur",
