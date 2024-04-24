@@ -49,6 +49,8 @@ RUN pip install python-dotenv
 
 RUN pip install psycopg2
 
+CMD ["bash", "ft_transcendence/run_server.sh"]
+
 # # Copy the HTML files to the application directory inside the container
 # COPY html /usr/share/nginx/html/.
 
