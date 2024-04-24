@@ -5,7 +5,7 @@ FROM postgres:16-alpine
 EXPOSE 5432
 
 # Environment variables
-ENV POSTGRES_USER=lciullo
+ENV POSTGRES_USER=cllovio
 ENV POSTGRES_PASSWORD=test
 ENV POSTGRES_DB=db
 

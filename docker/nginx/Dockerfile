@@ -35,6 +35,7 @@ COPY requirements.txt /backend
 
 COPY . /backend/
 
+
 #Update 
 RUN apt-get -y update && apt-get -y upgrade 
 
@@ -55,3 +56,5 @@ CMD ["bash", "ft_transcendence/run_server.sh"]
 
 #Install python on my docker 
 #RUN apt-get install netcat-traditional
+
+CMD ["bash", "ft_transcendence/run_server.sh"]
