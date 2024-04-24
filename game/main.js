@@ -884,7 +884,7 @@ class Ball extends THREE.Mesh {
                 .start();
                 paddle.isPowered = false;
                 paddle.material.color.set(paddle.defaultColor);
-            }, 2500);
+            }, 1500);
         }
     }
     goToRight(paddle)
@@ -928,7 +928,7 @@ class Ball extends THREE.Mesh {
                 .start();
                 paddle.isPowered = false;
                 paddle.material.color.set(paddle.defaultColor);
-            }, 2500);
+            }, 1500);
         }
     }
     monitorMovement()
