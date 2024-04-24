@@ -141,6 +141,8 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+var scorePoints = document.getElementsByClassName("parallelogram");
+
 document.addEventListener('keyup', (event) => {
     if (keyDown.hasOwnProperty(event.key)) {
         keyDown[event.key] = false;
@@ -194,8 +196,6 @@ class Arena extends THREE.Mesh {
         this.length = width;
         this.height = height;
         this.width = depth;
-        this.pointsRight = 0;
-        this.pointsLeft = 0;
         this.paddleRight = new Paddle(this, false);
         this.paddleLeft = new Paddle(this, true);
         this.ball = new Ball(this);
@@ -216,6 +216,21 @@ class Arena extends THREE.Mesh {
         this.maxSpeed = this.width / 40;
         this.isSplitScreen = false;
         this.test = 0.9;
+    }
+    addPoint(side) {
+        if (side === 'left') {
+            scorePoints.item(this.game.leftScore).style.backgroundColor = "#ff0000cc";
+            this.game.leftScore++;
+        }
+        else {
+            scorePoints.item(this.game.rightScore + 3).style.backgroundColor = "#ff0000cc";
+            this.game.rightScore++;
+        }
+    }
+    resetScoreDisplay() {
+        for (let i = 0; i < scorePoints.length; i++) {
+            scorePoints.item(i).style.backgroundColor = "#0008ff51";
+        }
     }
     monitorArena()
     {
@@ -297,13 +312,15 @@ class Arena extends THREE.Mesh {
             this.ball.goToLeft(this.paddleRight);
         if (this.ball.rightScore(this.paddleLeft) && !this.isBeingReset)
         {
-            this.game.rightScore++;
-            this.resetPoint();
+            this.addPoint('right');
+            if (this.game.leftScore < this.game.maxScore && this.game.rightScore < this.game.maxScore)
+                this.resetPoint();
         }
         if (this.ball.leftScore(this.paddleRight) && !this.isBeingReset)
         {
-            this.game.leftScore++;
-            this.resetPoint();
+            this.addPoint('left');
+            if (this.game.leftScore < this.game.maxScore && this.game.rightScore < this.game.maxScore)
+                this.resetPoint();
         }
         if (this.game.rightScore >= this.game.maxScore && !this.isBeingReset)
         {
@@ -389,18 +406,15 @@ class Arena extends THREE.Mesh {
     }
     resetPoint()
     {
-        if (this.game.leftScore < this.game.maxScore && this.game.rightScore < this.game.maxScore)
-        {
-            this.ball.isgoingRight = true;
-            this.ball.isgoingLeft = false;
-            this.ball.speedZ = 0;
-            this.ball.speedX = 0;
-            this.ball.isRolling = false;
-            this.ball.bounceCount = 0;
-            this.ball.material.color.set(this.ball.initialColor);
-            this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
-            this.ball.position.copy(this.ball.startingPoint);
-        }
+        this.ball.isgoingRight = true;
+        this.ball.isgoingLeft = false;
+        this.ball.speedZ = 0;
+        this.ball.speedX = 0;
+        this.ball.isRolling = false;
+        this.ball.bounceCount = 0;
+        this.ball.material.color.set(this.ball.initialColor);
+        this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
+        this.ball.position.copy(this.ball.startingPoint);
     }
     resetPositions(loserPaddle, winnerPaddle, leftScored, whichGlitch)
     {
@@ -450,6 +464,7 @@ class Arena extends THREE.Mesh {
         .to({y: this.ball.startingPoint.y}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
+            this.resetScoreDisplay();
             loserPaddle.light.power = loserPaddle.defaultLight;
            winnerPaddle.light.power = winnerPaddle.defaultLight;
            this.ball.isgoingRight = true;
@@ -467,6 +482,7 @@ class Arena extends THREE.Mesh {
                 swapToFullScreen();
                 this.setTopView(camera);
            }
+
         });
         const powerPaddleLight = new TWEEN.Tween(loserPaddle.light)
         .to({power: loserPaddle.defaultLight}, duration)
