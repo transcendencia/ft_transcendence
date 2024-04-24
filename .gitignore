@@ -12,5 +12,7 @@ venv/
 
 /db
 
+.env
+
 #note 
 note 
