@@ -21,7 +21,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - /home/lciullo/goinfre/test:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
   
   server:
@@ -52,6 +52,8 @@ volumes:
       o: 'bind'
       device: $PWD/backend
 #device : dossier dans lequel il y l'installation django sur machine hote 
+  postgres_data:
+    name: postgres_data
 
 #changer de path
 
