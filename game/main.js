@@ -215,6 +215,7 @@ class Arena extends THREE.Mesh {
         this.game = new Game(this);
         this.maxSpeed = this.width / 40;
         this.isSplitScreen = false;
+        this.test = 0.9;
     }
     monitorArena()
     {
@@ -233,7 +234,7 @@ class Arena extends THREE.Mesh {
             this.paddleLeft.animatePaddle(doubleKeyPress['a'], doubleKeyPress['d'], keyDown['a'], keyDown['d'], this, keyDown['w']);
         if (!this.bot.isPlaying)
             this.paddleRight.animatePaddle(doubleKeyPress['ArrowRight'], doubleKeyPress['ArrowLeft'], keyDown['ArrowRight'], keyDown['ArrowLeft'], this, keyDown['ArrowUp']);
-        if (keyDown[' '])
+        if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling)
         {
             this.ball.speedX = 0;
             this.ball.speedZ = this.ball.initialSpeed;
@@ -287,13 +288,6 @@ class Arena extends THREE.Mesh {
         {
             this.game.isPlaying = false;
             this.game.isOver = true;
-            setTimeout(() => {
-                this.game.isOver = false;
-                this.game.leftScore = 0;
-                this.game.rightScore = 0;
-                swapToFullScreen();
-                this.setTopView(camera);
-            }, 5000);
         }
         if (this.bot.isPlaying)
             this.bot.play();
@@ -443,6 +437,15 @@ class Arena extends THREE.Mesh {
            this.ball.bounceCount = 0;
            this.ball.material.color.set(this.ball.initialColor);
            this.isBeingReset = false;
+           if (this.game.isOver)
+           {
+                this.game.isPlaying = false;
+                this.game.isOver = false;
+                this.game.leftScore = 0;
+                this.game.rightScore = 0;
+                swapToFullScreen();
+                this.setTopView(camera);
+           }
         });
         const powerPaddleLight = new TWEEN.Tween(loserPaddle.light)
         .to({power: loserPaddle.defaultLight}, duration)
@@ -477,7 +480,6 @@ class Arena extends THREE.Mesh {
         this.ball.finalColor = theme.ballFinalColor;
         this.ball.initialColor = theme.ballInitialColor;
         scene.background = new THREE.Color(theme.backgroundColor);
-
     }
 }
 
@@ -559,7 +561,7 @@ class Paddle extends THREE.Group {
         this.scene = scene;
 
         // Add other properties and methods as needed
-        this.particles = new Particle(this.scene, 100, left);
+        this.particles = new Particle(this.scene, 10000, left, this);
         this.light = new THREE.PointLight(0x4B4FC5);
         scene.add(this.light);
         this.defaultLight = this.arena.width * this.arena.length / 7.5;
@@ -644,7 +646,7 @@ class Paddle extends THREE.Group {
             if (targetX < this.arena.leftCorner.x)
                 targetX = this.arena.leftCorner.x;
         }
-        if (this.arena.ball.isSupercharging)
+        if (this.arena.ball.isSupercharging && (this.position.z * this.arena.ball.position.z > 0))
         {
             new TWEEN.Tween(this.arena.ball.position)
             .to({x: targetX}, 250)
@@ -957,15 +959,15 @@ class Game {
 }
 
 class Particle {
-    constructor(scene, particleCount, left) {
+    constructor(scene, particleCount, left, paddle) {
         this.scene = scene;
         this.particleCount = particleCount;
+        this.paddle = paddle;
 
         // Create particle geometry
         this.geometry = new THREE.BufferGeometry();
         this.positions = new Float32Array(this.particleCount * 3);
         this.colors = new Float32Array(this.particleCount * 3);
-
         // Add initial position and color for each particle
         for (let i = 0; i < this.particleCount; i++) {
             this.positions[i * 3] = 0;
@@ -996,9 +998,9 @@ class Particle {
         {
             for (let i = 0; i < this.particleCount; i++) {
                 let velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 3,
-                    (Math.random() - 0.5) * 3,
-                    (Math.random()) * 0
+                    (Math.random() - 0.5) * 0.01,
+                    (Math.random() - 0.5) * 0.01,
+                    (Math.random()) * 8
                 );
                 this.velocities.push(velocity);
             }
@@ -1007,9 +1009,9 @@ class Particle {
         {
             for (let i = 0; i < this.particleCount; i++) {
                 let velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 3,
-                    (Math.random() - 0.5) * 3,
-                    (Math.random()) * -0
+                    (Math.random() - 0.5) * 0.01,
+                    (Math.random() - 0.5) * 0.01,
+                    (Math.random()) * -8
                 );
                 this.velocities.push(velocity);
             }
@@ -1037,6 +1039,16 @@ class Particle {
             this.positions[index] += this.velocities[i].x;
             this.positions[index + 1] += this.velocities[i].y;
             this.positions[index + 2] += this.velocities[i].z;
+            if (this.positions[index + 2] - this.paddle.position.z >= this.paddle.arena.width)
+            {
+                console.log('reset');
+                this.velocities[i].z = 0;
+                this.velocities[i].x = 0;
+                this.velocities[i].y = 0;
+                this.positions[index] = 0;
+                this.positions[index + 1] = 0;
+                this.positions[index + 2] = 0;
+            }
         }
         this.geometry.attributes.position.needsUpdate = true;
     }
