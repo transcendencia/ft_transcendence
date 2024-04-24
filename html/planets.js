@@ -2,7 +2,7 @@ import { THREE, scene } from "./main.js";
 
 
 class Planet {
-	constructor(name, distance, scale, mesh, orbitMesh, hitboxSize, desc) {
+	constructor(name, distance, scale, mesh, orbitMesh, hitboxSize, desc, hitboxColor) {
 		this.scene = scene;
         this.sun = sun;
         this.distance = distance;
@@ -16,6 +16,7 @@ class Planet {
 		this.modelLoaded = false; // Angle initial pour la position de la planète
 		this.name = name;
 		this.trajectoryPoints = [];
+		this.hitboxColor = hitboxColor;
 		this.initialize();
     }
 	setPlanetInfo() {
@@ -44,7 +45,7 @@ class Planet {
 	}
 	createHitbox() {
 		const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
-		const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0, transparent: true});
+		const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0});
 		this.hitbox = new THREE.Mesh(sphereGeometry, sphereMaterial);
 		this.hitbox.scale.set(this.scale + this.hitboxSize, this.scale + this.hitboxSize, this.scale + this.hitboxSize);
 		this.hitbox.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
