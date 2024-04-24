@@ -219,11 +219,11 @@ class Arena extends THREE.Mesh {
     }
     monitorArena()
     {
-        this.game.updateText();
         this.paddleLeft.light.position.copy(this.paddleLeft.position);
         this.paddleRight.light.position.copy(this.paddleRight.position);
         this.paddleLeft.particles.updateParticles();
         this.paddleRight.particles.updateParticles();
+        this.ball.particles.updateParticles();
         if (this.ball.isRolling)
             this.ball.monitorMovement();
         this.ball.light.position.copy(this.ball.position);
@@ -297,13 +297,21 @@ class Arena extends THREE.Mesh {
             this.ball.goToLeft(this.paddleRight);
         if (this.ball.rightScore(this.paddleLeft) && !this.isBeingReset)
         {
-            this.isBeingReset = true;
             this.game.rightScore++;
-            this.resetPositions(this.paddleLeft, this.paddleRight, false, glitchLeft);
+            this.resetPoint();
         }
         if (this.ball.leftScore(this.paddleRight) && !this.isBeingReset)
         {
             this.game.leftScore++;
+            this.resetPoint();
+        }
+        if (this.game.rightScore >= this.game.maxScore && !this.isBeingReset)
+        {
+            this.isBeingReset = true;
+            this.resetPositions(this.paddleLeft, this.paddleRight, false, glitchLeft);
+        }
+        else if (this.game.leftScore >= this.game.maxScore && !this.isBeingReset)
+        {
             this.isBeingReset = true;
             this.resetPositions(this.paddleRight, this.paddleLeft, true, glitchRight);
         }
@@ -379,6 +387,21 @@ class Arena extends THREE.Mesh {
         })
         .start();
     }
+    resetPoint()
+    {
+        if (this.game.leftScore < this.game.maxScore && this.game.rightScore < this.game.maxScore)
+        {
+            this.ball.isgoingRight = true;
+            this.ball.isgoingLeft = false;
+            this.ball.speedZ = 0;
+            this.ball.speedX = 0;
+            this.ball.isRolling = false;
+            this.ball.bounceCount = 0;
+            this.ball.material.color.set(this.ball.initialColor);
+            this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
+            this.ball.position.copy(this.ball.startingPoint);
+        }
+    }
     resetPositions(loserPaddle, winnerPaddle, leftScored, whichGlitch)
     {
         let duration = 1150;
@@ -429,8 +452,6 @@ class Arena extends THREE.Mesh {
         .onComplete(() => {
             loserPaddle.light.power = loserPaddle.defaultLight;
            winnerPaddle.light.power = winnerPaddle.defaultLight;
-           loserPaddle.light.color = new THREE.Color(0.2, 0.2, 0.8);
-           winnerPaddle.light.color = new THREE.Color(0.2, 0.2, 0.8);
            this.ball.isgoingRight = true;
            this.ball.isgoingLeft = false;
            this.ball.light.power = this.ball.startingPower;
@@ -561,7 +582,7 @@ class Paddle extends THREE.Group {
         this.scene = scene;
 
         // Add other properties and methods as needed
-        this.particles = new Particle(this.scene, 10000, left, this);
+        this.particles = new Particle(this.scene, 100, left, this, false);
         this.light = new THREE.PointLight(0x4B4FC5);
         scene.add(this.light);
         this.defaultLight = this.arena.width * this.arena.length / 7.5;
@@ -696,6 +717,7 @@ class Ball extends THREE.Mesh {
         this.light.power = this.startingPower;
         this.light.castShadow = true;
         // ATRIBUTES
+        this.scene = scene;
         this.radius = arena.width * 0.025;
         this.startingPoint = new THREE.Vector3(arena.position.x, arena.position.y + arena.height / 2 + this.radius, arena.position.z);
         this.position.copy(this.startingPoint);
@@ -713,6 +735,8 @@ class Ball extends THREE.Mesh {
         this.isSupercharging;
         this.bounceCount = 0;
         this.justCollisioned = false;
+        this.particles = new Particle(this.scene, 100000, false, this, true);
+
     }
     leftScore(paddle)
     {
@@ -940,26 +964,11 @@ class Game {
         this.arena = arena;
         this.loserPaddle;
         this.winnerPaddle;
-        this.enterCenterScoreText = document.getElementById('enterCenterScoreText');
-        enterCenterScoreText.textContent = '';
-        this.enterRightScoreText = document.getElementById('enterRightScoreText');
-        enterRightScoreText.textContent = '';
-        this.enterLeftScoreText = document.getElementById('enterLeftScoreText');
-        enterLeftScoreText.textContent = '';
-    }
-    updateText()
-    {
-        if (this.isPlaying)
-            this.enterCenterScoreText.textContent = this.leftScore + ' - ' + this.rightScore;
-        else if (this.isOver)
-            this.enterCenterScoreText.textContent = 'Game Over, final score: ' + this.leftScore + ' - ' + this.rightScore;
-        if (!this.isPlaying && !this.isOver)
-        this.enterCenterScoreText.textContent = 'Welcome to PONG ! Press E to start a game';
     }
 }
 
 class Particle {
-    constructor(scene, particleCount, left, paddle) {
+    constructor(scene, particleCount, left, paddle, isBall) {
         this.scene = scene;
         this.particleCount = particleCount;
         this.paddle = paddle;
@@ -970,13 +979,13 @@ class Particle {
         this.colors = new Float32Array(this.particleCount * 3);
         // Add initial position and color for each particle
         for (let i = 0; i < this.particleCount; i++) {
-            this.positions[i * 3] = 0;
-            this.positions[i * 3 + 1] = 0;
-            this.positions[i * 3 + 2] = 0;
+            this.positions[i * 3] = 1;
+            this.positions[i * 3 + 1] = 1;
+            this.positions[i * 3 + 2] = 1;
 
-            this.colors[i * 3] = 0;
-            this.colors[i * 3 + 1] = 0;
-            this.colors[i * 3 + 2] = 0;
+            this.colors[i * 3] = 1;
+            this.colors[i * 3 + 1] = 1;
+            this.colors[i * 3 + 2] = 1;
         }
 
         this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
@@ -991,38 +1000,59 @@ class Particle {
         // Create particle system
         this.particleSystem = new THREE.Points(this.geometry, this.material);
         this.scene.add(this.particleSystem);
-
+        this.isBall = isBall;
+        this.offsetZ;
+        if (!left)
+            this.offsetZ = 2;
+        else
+            this.offsetZ = -2;
+        this.isActive = false;
         // Initialize particle velocities (for example, random initial velocities)
         this.velocities = [];
-        if (left)
+        if (!isBall)
         {
-            for (let i = 0; i < this.particleCount; i++) {
-                let velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.01,
-                    (Math.random() - 0.5) * 0.01,
-                    (Math.random()) * 8
-                );
-                this.velocities.push(velocity);
+            if (!left)
+            {
+                for (let i = 0; i < this.particleCount; i++) {
+                    let velocity = new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.2,
+                        (Math.random() - 0.5) * 0.2,
+                        (Math.random()) * 1
+                    );
+                    this.velocities.push(velocity);
+                }
+            }
+            else
+            {
+                for (let i = 0; i < this.particleCount; i++) {
+                    let velocity = new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.2,
+                        (Math.random() - 0.5) * 0.2,
+                        (Math.random()) * -1
+                    );
+                    this.velocities.push(velocity);
+                }
             }
         }
         else
         {
             for (let i = 0; i < this.particleCount; i++) {
                 let velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.01,
-                    (Math.random() - 0.5) * 0.01,
-                    (Math.random()) * -8
+                    (Math.random() - 0.5) * 6,
+                    (Math.random() - 0.5) * 6,
+                    (Math.random() - 0.5) * 0
                 );
                 this.velocities.push(velocity);
             }
         }
     }
     explodeParticles(position, color) {
+        this.isActive = true;
         for (let i = 0; i < this.particleCount; i++) {
             let index = i * 3;
             this.positions[index] = position.x;
             this.positions[index + 1] = position.y;
-            this.positions[index + 2] = position.z;
+            this.positions[index + 2] = position.z + this.offsetZ;
 
             // Color (white in this example)
             this.colors[index] = color.r;
@@ -1034,23 +1064,25 @@ class Particle {
         this.geometry.attributes.color.needsUpdate = true;
     }
     updateParticles() {
-        for (let i = 0; i < this.particleCount; i++) {
-            let index = i * 3;
-            this.positions[index] += this.velocities[i].x;
-            this.positions[index + 1] += this.velocities[i].y;
-            this.positions[index + 2] += this.velocities[i].z;
-            if (this.positions[index + 2] - this.paddle.position.z >= this.paddle.arena.width)
-            {
-                console.log('reset');
-                this.velocities[i].z = 0;
-                this.velocities[i].x = 0;
-                this.velocities[i].y = 0;
-                this.positions[index] = 0;
-                this.positions[index + 1] = 0;
-                this.positions[index + 2] = 0;
+        if (this.isActive)
+        {
+            for (let i = 0; i < this.particleCount; i++) {
+                let index = i * 3;
+                this.positions[index] += this.velocities[i].x;
+                this.positions[index + 1] += this.velocities[i].y;
+                this.positions[index + 2] += this.velocities[i].z;
+                if (!this.isBall)
+                {
+                    if (Math.abs(this.positions[index + 2]) - Math.abs(this.paddle.position.z) >= this.paddle.arena.length)
+                    {
+                        this.positions[index + 2] = this.paddle.position.z + this.offsetZ;
+                        this.positions[index + 1] = this.paddle.position.y;
+                        this.positions[index] = this.paddle.position.x;
+                    }
+                }
             }
+            this.geometry.attributes.position.needsUpdate = true;
         }
-        this.geometry.attributes.position.needsUpdate = true;
     }
 }
 
