@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -221,18 +220,20 @@ class Arena extends THREE.Mesh {
     }
     addPoint(side) {
         if (side === 'left') {
-            scorePoints.item(this.game.leftScore).style.backgroundColor = "#ff0000cc";
+            scorePoints.item(this.game.leftScore).style.borderColor = "rgb(106, 0, 254)";
             this.game.leftScore++;
         }
         else {
-            scorePoints.item(this.game.rightScore + 3).style.backgroundColor = "#ff0000cc";
+            scorePoints.item(this.game.rightScore + 3).style.borderColor = "rgb(106, 0, 254)";
             this.game.rightScore++;
         }
     }
-    resetScoreDisplay() {
+    resetUI() {
         for (let i = 0; i < scorePoints.length; i++) {
-            scorePoints.item(i).style.backgroundColor = "#0008ff51";
+            scorePoints.item(i).style.borderColor = "#3777ff";
         }
+        speedBar.item(0).style.top = "100%";
+        speedBar.item(0).style.left = "100%";
     }
     monitorArena()
     {
@@ -472,7 +473,7 @@ class Arena extends THREE.Mesh {
         .to({y: this.ball.startingPoint.y}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
-            this.resetScoreDisplay();
+            this.resetUI();
             loserPaddle.light.power = loserPaddle.defaultLight;
            winnerPaddle.light.power = winnerPaddle.defaultLight;
            this.ball.isgoingRight = true;
@@ -751,6 +752,7 @@ class Paddle extends THREE.Group {
 }
 
 const speedBar = document.getElementsByClassName("speedbar");
+const centerRect = document.getElementsByClassName("centerRectangle");
 
 class Ball extends THREE.Mesh {
     constructor(arena)
@@ -788,12 +790,22 @@ class Ball extends THREE.Mesh {
         this.particles = new Particle(this.scene, 100000, false, this, true);
 
     }
+    animateSpeedBar(target) {
+        
+    }
     updateSpeedBar() {
-        console.log(this.speedZ);
-        console.log(this.arena.maxSpeed);
-        console.log(-105 * (Math.abs(this.speedZ)) / this.maxSpeed + 155 + '%');
-        speedBar.item(0).style.top =  -105 * (Math.abs(this.speedZ)) / this.arena.maxSpeed + 155 + '%';
-        speedBar.item(0).style.left = -105 * (Math.abs(this.speedZ)) / this.arena.maxSpeed + 155 + '%';
+        const percent = -95 * (Math.abs(this.speedZ)) / this.arena.maxSpeed + 100;
+        const hue = 240 + ((100 - percent) / 100) * 40;
+        let color = `hsl(${hue}, 100%, 50%)`;
+        for (let i = 0; i < speedBar.length; i++) {
+            if (i === 1)
+                color = `hsl(${hue - 6}, 100%, 50%)`;
+            speedBar.item(i).animate([{
+                top: percent + '%',
+                left: percent + '%',
+                backgroundColor: color,
+            }], {duration: 500, fill: "forwards"})
+        }
     }
     leftScore(paddle)
     {
