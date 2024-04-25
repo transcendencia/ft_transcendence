@@ -240,6 +240,11 @@ class Arena extends THREE.Mesh {
         this.paddleRight.light.position.copy(this.paddleRight.position);
         this.paddleLeft.particles.updateParticles();
         this.paddleRight.particles.updateParticles();
+        if (this.game.isPlaying)
+        {
+            this.paddleLeft.monitorIdleAnimation();
+            this.paddleRight.monitorIdleAnimation();
+        }
         this.ball.particles.updateParticles();
         if (this.ball.isRolling)
             this.ball.monitorMovement();
@@ -338,7 +343,7 @@ class Arena extends THREE.Mesh {
     setSplitCameraPositions(_cameraRight, _cameraLeft)
     {
         const duration = 1500;
-        let targetY = this.position.y + this.height * 3;
+        let targetY = this.position.y + this.height + this.width / 3;
         let targetZ = this.position.z + this.width * 0.85;
         let targetX = this.position.x;
         // Create tweens for each property
@@ -348,7 +353,7 @@ class Arena extends THREE.Mesh {
             .onUpdate(() => {
                 _cameraLeft.lookAt(this.position);
             })
-        targetY = this.position.y + this.height * 3;
+        targetY = this.position.y + this.height  + this.width / 3;
         targetZ = this.position.z - this.width * 0.85;
         targetX = this.position.x;
         // Create tweens for each property
@@ -613,6 +618,8 @@ class Paddle extends THREE.Group {
         this.light.castShadow = true;
         this.isPowered = false;
         this.flippingSpeed = 0.5;
+        this.isGoingUp = true;
+        this.isGoingDown = false;
     }
     async changeBlenderModel(modelName)
     {
@@ -633,6 +640,35 @@ class Paddle extends THREE.Group {
                 console.error('Error loading model:', error);
             }
         );
+    }
+    monitorIdleAnimation()
+    {
+        const animationRange = 0.5;
+        const duration = 1000;
+        if (this.isGoingUp)
+        {
+            this.isGoingUp = false;
+            const targetY = this.model.position.y + animationRange;
+            const upTween = new TWEEN.Tween(this.model.position)
+            .to({y: targetY}, duration)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onComplete(() => {
+                this.isGoingDown = true;
+            })
+            upTween.start();
+        }
+        if (this.isGoingDown)
+        {
+            this.isGoingDown = false;
+            const targetY = this.model.position.y - animationRange;
+            const downTween = new TWEEN.Tween(this.model.position)
+            .to({y: targetY}, duration)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onComplete(() => {
+                this.isGoingUp = true;
+            })
+            downTween.start();
+        }
     }
     animatePaddle(doubleKeyPressRight, doubleKeyPressLeft, keyRight, keyLeft, arena, keyPower)
     {
