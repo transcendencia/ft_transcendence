@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<body>
+
+<table border='1'>
+    <tr>
+      <th>username</th>
+      <th>Position</th>
+    </tr>
+    {% for x in mymembers|dictsort:"position"%}
+      <tr>
+        <td>{{ x.username }}</td>
+        <td>{{ x.position }}</td>
+      </tr>
+    {% endfor %}
+</table>
+
+<ul>
+    {% for x in mymembers %}
+      <li>{{ x.username }}</li>
+    {% endfor %}
+</ul>
+
+{% with username="Tobias" %}
+<h1>Hello {{ username }}, how are you?</h1>
+{% endwith %}
+
+<ul>
+    {% for x in mymembers %}
+        {% if 'paul' in x.username %}
+            <h1>Hello</h1>
+        {% else %}
+            <h1>Bye</h1>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+{% if 'paul' in mymembers.username %}
+  <h1>Hello</h1>
+{% else %}
+  <h1>Bye</h1>
+{% endif %}
+
+{% comment "test" %}
+  <h1>Welcome ladies and gentlemen</h1>
+{% endcomment %}
+
+
+</body>
+</html>

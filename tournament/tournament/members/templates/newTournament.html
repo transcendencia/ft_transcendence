@@ -1,0 +1,49 @@
+{% extends "master.html" %}
+
+{% block title %}
+  Tournament
+{% endblock %}
+
+
+{% block content %}
+</br>
+<table border='1'>
+    <tr>
+      <th>username</th>
+    </tr>
+    {% for x in mymembers %}
+      <tr>
+        <td><a href="#" onclick="addUserToTournament('{{ x.username }}')">{{ x.username }}</a></td>
+      </tr>
+    {% endfor %}
+</table>
+
+<button id="NewUser"><a href="/add_player">Add a player</a></button>
+
+<h2>Players in tournament :</h2>
+<ul id="tournamentPlayer"></ul>
+
+<script>
+    const tournamentPlayer = [];
+
+    function addUserToTournament(username) {
+        if (!tournamentPlayer.includes(username)) {
+            tournamentPlayer.push(username);
+            printTournamentPlayer();
+        }
+    }
+
+    function printTournamentPlayer() {
+        const ul = document.getElementById("tournamentPlayer");
+        ul.innerHTML = ""; // Effacer le contenu actuel de la liste
+
+        tournamentPlayer.forEach(function(username) {
+            const li = document.createElement("li");
+            li.textContent = username;
+            ul.appendChild(li);
+        });
+    }
+</script>
+
+
+{% endblock %}
