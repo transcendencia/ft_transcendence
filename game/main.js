@@ -101,6 +101,7 @@ let keyDown = {
     'd': false,
     ' ': false,
     'c': false,
+    'v': false,
     'o': false,
     'p': false,
     'i': false,
@@ -216,7 +217,71 @@ class Arena extends THREE.Mesh {
         this.game = new Game(this);
         this.maxSpeed = this.width / 40;
         this.isSplitScreen = false;
-        this.test = 0.9;
+        this.isAnimatingCamera = false;
+        this.viewPoint1 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z + this.width * 1);
+        this.viewPoint2 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z + this.width * 1);
+        this.viewPoint3 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
+        this.viewPoint4 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
+    }
+    idleCameraAnimation()
+    {
+        if (!this.isAnimatingCamera)
+        {
+            this.isAnimatingCamera = true;
+            const duration = 5000;
+            // Create tweens for each property
+            const firstTween = new TWEEN.Tween(camera.position)
+                .to({x: this.viewPoint1.x, y: this.viewPoint1.y, z: this.viewPoint1.z}, duration)
+                .easing(TWEEN.Easing.Linear.None)
+                .onUpdate(() => {
+                    camera.lookAt(this.position);
+                })
+                .onComplete(() => {
+                    if (this.isAnimatingCamera)
+                        secondTween.start();
+                })
+            const secondTween = new TWEEN.Tween(camera.position)
+                .to({x: this.viewPoint2.x, y: this.viewPoint2.y, z: this.viewPoint2.z}, duration)
+                .easing(TWEEN.Easing.Linear.None)
+                .onUpdate(() => {
+                    camera.lookAt(this.position);
+                })
+                .onComplete(() => {
+                    if (this.isAnimatingCamera)
+                        thirdTween.start();
+                })
+            const thirdTween = new TWEEN.Tween(camera.position)
+                .to({x: this.viewPoint3.x, y: this.viewPoint3.y, z: this.viewPoint3.z}, duration)
+                .easing(TWEEN.Easing.Linear.None)
+                .onUpdate(() => {
+                    camera.lookAt(this.position);
+                })
+                .onComplete(() => {
+                    if (this.isAnimatingCamera)
+                        fourthTween.start();
+                })
+            const fourthTween = new TWEEN.Tween(camera.position)
+                .to({x: this.viewPoint4.x, y: this.viewPoint4.y, z: this.viewPoint4.z}, duration)
+                .easing(TWEEN.Easing.Linear.None)
+                .onUpdate(() => {
+                    camera.lookAt(this.position);
+                })
+                .onComplete(() => {
+                    if (this.isAnimatingCamera)
+                        fifthTween.start();
+                })
+            const fifthTween = new TWEEN.Tween(camera.position)
+                .to({x: this.viewPoint1.x, y: this.viewPoint1.y, z: this.viewPoint1.z}, duration)
+                .easing(TWEEN.Easing.Linear.None)
+                .onUpdate(() => {
+                    camera.lookAt(this.position);
+                })
+                .onComplete(() => {
+                    if (this.isAnimatingCamera)
+                        secondTween.start();
+                })
+            firstTween.start();
+        }
     }
     addPoint(side) {
         if (side === 'left') {
@@ -246,6 +311,10 @@ class Arena extends THREE.Mesh {
             this.paddleLeft.monitorIdleAnimation();
             this.paddleRight.monitorIdleAnimation();
         }
+        // else
+        //     camera.rotation.z += 0.001;
+        if (keyDown['i'])
+            this.idleCameraAnimation();
         this.ball.particles.updateParticles();
         if (this.ball.isRolling)
             this.ball.monitorMovement();
@@ -291,6 +360,7 @@ class Arena extends THREE.Mesh {
         if (keyDown['e'])
         {
             // cameraLeft.position.copy(this.position);
+            this.isAnimatingCamera = false;
             cameraLeft.position.y += this.length * 3;
             cameraLeft.position.z -= this.length * 3;
             cameraLeft.position.x += this.length * 3;
@@ -491,7 +561,7 @@ class Arena extends THREE.Mesh {
                 swapToFullScreen();
                 this.setTopView(camera);
            }
-
+           this.idleCameraAnimation();
         });
         const powerPaddleLight = new TWEEN.Tween(loserPaddle.light)
         .to({power: loserPaddle.defaultLight}, duration)
@@ -1289,6 +1359,7 @@ function monitorScreen()
 const centerPosition = new THREE.Vector3(0, 0, 0);
 const arena1 = new Arena(centerPosition, 28, 4, 34);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
+arena1.idleCameraAnimation();
 
 let renderPass1 = new RenderPass(scene, camera);
 const composer1 = new EffectComposer( renderer );
