@@ -387,7 +387,7 @@ class Arena extends THREE.Mesh {
             // Create tweens for each property
             const firstTween = new TWEEN.Tween(camera.position)
                 .to({x: this.viewPoint1.x, y: this.viewPoint1.y, z: this.viewPoint1.z}, duration)
-                .easing(TWEEN.Easing.Quadratic.InOut)
+                .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
                         firstTween.stop();
@@ -398,7 +398,7 @@ class Arena extends THREE.Mesh {
                 })
             const secondTween = new TWEEN.Tween(camera.position)
                 .to({x: this.viewPoint2.x, y: this.viewPoint2.y, z: this.viewPoint2.z}, duration)
-                .easing(TWEEN.Easing.Quadratic.InOut)
+                .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
                         secondTween.stop();
@@ -409,7 +409,7 @@ class Arena extends THREE.Mesh {
                 })
             const thirdTween = new TWEEN.Tween(camera.position)
                 .to({x: this.viewPoint3.x, y: this.viewPoint3.y, z: this.viewPoint3.z}, duration)
-                .easing(TWEEN.Easing.Quadratic.InOut)
+                .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
                         thirdTween.stop();
@@ -420,7 +420,7 @@ class Arena extends THREE.Mesh {
                 })
             const fourthTween = new TWEEN.Tween(camera.position)
                 .to({x: this.viewPoint4.x, y: this.viewPoint4.y, z: this.viewPoint4.z}, duration)
-                .easing(TWEEN.Easing.Quadratic.InOut)
+                .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
                         fourthTween.stop();
@@ -431,7 +431,7 @@ class Arena extends THREE.Mesh {
                 })
             const fifthTween = new TWEEN.Tween(camera.position)
                 .to({x: this.viewPoint1.x, y: this.viewPoint1.y, z: this.viewPoint1.z}, duration)
-                .easing(TWEEN.Easing.Quadratic.InOut)
+                .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
                         fifthTween.stop();
