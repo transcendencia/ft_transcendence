@@ -296,9 +296,14 @@ class Arena extends THREE.Mesh {
     resetUI() {
         for (let i = 0; i < scorePoints.length; i++) {
             scorePoints.item(i).style.borderColor = "#3777ff";
+            if (i > 1)
+                return;
+            speedBar.item(i).animate([{
+                top: "100%",
+                left: "100%",
+                backgroundColor: "rgb(9, 0, 187)",
+            }], {duration: 500, fill: "forwards"})
         }
-        speedBar.item(0).style.top = "100%";
-        speedBar.item(0).style.left = "100%";
     }
     monitorArena()
     {
@@ -333,6 +338,7 @@ class Arena extends THREE.Mesh {
             this.ball.isgoingRight = true;
             this.ball.isgoingLeft = false;
             this.ball.isRolling = true;
+            this.ball.updateSpeedBar();
             // this.bot.isPlaying = true;
         }
         if (keyDown['1'])
