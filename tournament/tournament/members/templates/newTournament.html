@@ -23,27 +23,160 @@
 <h2>Players in tournament :</h2>
 <ul id="tournamentPlayer"></ul>
 
+<button id="launch">Launch tournament</button>
+
+<p id="error_msg"></p>
+
+<p id="matchup"></p>
+
+<button id="launchMatch" style="display:none;">Start match</button>
+
+<p id="match"></p>
+
+<p id="result"></p>
+
 <script>
     const tournamentPlayer = [];
 
     function addUserToTournament(username) {
-        if (!tournamentPlayer.includes(username)) {
-            tournamentPlayer.push(username);
+        if (!tournamentPlayer.some(player => player.username === username)) {
+            tournamentPlayer.push({
+              username: username,
+              order: -1,
+              position: 0,
+              round: 1,
+            });
             printTournamentPlayer();
         }
     }
 
     function printTournamentPlayer() {
-        const ul = document.getElementById("tournamentPlayer");
-        ul.innerHTML = ""; // Effacer le contenu actuel de la liste
+      const ul = document.getElementById("tournamentPlayer");
+      ul.innerHTML = "";
 
-        tournamentPlayer.forEach(function(username) {
-            const li = document.createElement("li");
-            li.textContent = username;
-            ul.appendChild(li);
-        });
+      tournamentPlayer.forEach(function(player) {
+          const li = document.createElement("li");
+          li.textContent = "Username: " + player.username + ", Order: " + player.order + ", Position: " + player.position + ", Round: " + player.round;
+          ul.appendChild(li);
+      });
+    }
+
+    let currentMatch = [];
+    let round = 1;
+    let nbMatch;
+
+    function makeMatchup() {
+      const ul = document.getElementById("matchup");
+      ul.innerHTML = "";
+      let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
+      let j = 0;
+      nbMatch = 0;
+      currentMatch = [];
+      if (round != 1){
+        const ul = document.getElementById("result");
+        ul.textContent = "";
+        tournamentPlayer.forEach(function(player){
+          if (player.round + 1 === round)
+            player.position = playersInTournament.length + 1;
+        })
+      }
+      if (playersInTournament.length == 1){
+        tournamentPlayer.forEach(function(player){
+          if (player.position === 0)
+            player.position = 1;
+        })
+        const li = document.createElement("li");
+        li.textContent = playersInTournament[0].username + " have won the tournament!";
+        ul.appendChild(li);
+        launchMatchElement.style.display = "none";
+        return ;
+      }
+      for (let i = 0; i < playersInTournament.length; i += 2) {
+        if (i + 1 >= playersInTournament.length){
+          currentMatch.push([
+            { myRef: playersInTournament[i] }
+          ]);
+        }
+        else{
+          currentMatch.push([
+            { myRef: playersInTournament[i] },
+            { myRef: playersInTournament[i + 1] }
+          ]);
+        }
+        const li = document.createElement("li");
+        if (currentMatch[j][0] && currentMatch[j][1] )
+        li.textContent = currentMatch[j][0].myRef.username + " vs " + currentMatch[j][1].myRef.username;
+        else if (currentMatch[j][0])
+          li.textContent = currentMatch[j][0].myRef.username;
+        ul.appendChild(li);
+        j ++;
+      }
+      round ++;
+    }
+
+    const nbPlayerElement = document.getElementById("nbPlayer");
+    const launchTournamentElement = document.getElementById("launch");
+    const launchMatchElement = document.getElementById("launchMatch");
+
+    launchTournamentElement.addEventListener("click", function() {
+      if (tournamentPlayer.length < 2){
+        const ul = document.getElementById("error_msg");
+        ul.textContent = "Not enough players";
+        return ;
+      }
+      const ul = document.getElementById("error_msg");
+      ul.textContent = "";
+      tournamentPlayer.forEach(function(player){
+        player.order = -1;
+      });
+      tournamentPlayer.forEach(function(player){
+        let newOrder;
+        do {
+          newOrder = Math.floor(Math.random() * tournamentPlayer.length);
+        } while (tournamentPlayer.some(otherPlayer => otherPlayer.order === newOrder));
+        player.order = newOrder;
+      });
+      tournamentPlayer.sort((a, b) => a.order - b.order);
+      makeMatchup();
+      printTournamentPlayer();
+      launchMatchElement.style.display = "inline";
+    });
+
+    launchMatchElement.addEventListener("click", function(){
+      const ul = document.getElementById("match");
+      ul.innerHTML = "";
+      playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == 1);
+      const li = document.createElement("li");
+      if (nbMatch >= currentMatch.length){
+        makeMatchup();
+        printTournamentPlayer();
+        return ; 
+      }
+      else if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
+        li.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
+      else if (currentMatch[nbMatch][0])
+        li.textContent = currentMatch[nbMatch][0].myRef.username;
+      ul.appendChild(li);
+      findWinner();
+      nbMatch ++;
+    });
+
+    function findWinner(){
+      const ul = document.getElementById("result");
+      ul.innerHTML = "";
+      let result = Math.floor(Math.random() * 2);
+      const li = document.createElement("li");
+      if (result === 0){
+        li.textContent = currentMatch[nbMatch][0].myRef.username + " is the winner !";
+        currentMatch[nbMatch][0].myRef.round ++;
+      }
+      else{
+        li.textContent = currentMatch[nbMatch][1].myRef.username + " is the winner !";
+        currentMatch[nbMatch][1].myRef.round ++;
+      }
+      ul.appendChild(li);
+      printTournamentPlayer();
     }
 </script>
-
 
 {% endblock %}
