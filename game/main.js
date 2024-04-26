@@ -220,11 +220,11 @@ class Arena extends THREE.Mesh {
     }
     addPoint(side) {
         if (side === 'left') {
-            scorePoints.item(this.game.leftScore).style.borderColor = "rgb(106, 0, 254)";
+            scorePoints.item(this.game.leftScore).style.borderColor = "rgb(171, 31, 0)";
             this.game.leftScore++;
         }
         else {
-            scorePoints.item(this.game.rightScore + 3).style.borderColor = "rgb(106, 0, 254)";
+            scorePoints.item(this.game.rightScore + 3).style.borderColor = "rgb(171, 31, 0)";
             this.game.rightScore++;
         }
     }
@@ -795,7 +795,7 @@ class Ball extends THREE.Mesh {
     }
     updateSpeedBar() {
         const percent = -95 * (Math.abs(this.speedZ)) / this.arena.maxSpeed + 100;
-        const hue = 240 + ((100 - percent) / 100) * 40;
+        const hue = 10 + (percent / 100) * 60;
         let color = `hsl(${hue}, 100%, 50%)`;
         for (let i = 0; i < speedBar.length; i++) {
             if (i === 1)
