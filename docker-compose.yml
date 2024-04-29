@@ -1,7 +1,4 @@
-
-
 services:
-
   db:
     container_name: postgres
     image: postgres
@@ -9,7 +6,7 @@ services:
     networks:
       - ft_transcendence
     build:
-      dockerfile: docker/Postgres/Dockerfile
+      dockerfile: database/Dockerfile
       args:
        POSTGRES_USER: $POSTGRES_USER
        POSTGRES_PASSWORD: $POSTGRES_PASSWORD
@@ -31,7 +28,7 @@ services:
     networks:
       - ft_transcendence
     build:
-      dockerfile: docker/backend/Dockerfile
+      dockerfile: backend/Dockerfile
     env_file: .env
     restart: on-failure
     ports:
@@ -39,7 +36,7 @@ services:
     depends_on:
       - db
     volumes:
-      - server:/backend
+      - ./backend/:/backend
 
 #ou placer le dossier montee dans le docker /backend docker 
 
