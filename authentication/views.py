@@ -1,10 +1,6 @@
 from django.shortcuts import render
+from django.shortcuts import render
 from . import forms
-# from django.http import HttpResponse
-
-# def hello(request):
-# 	return render(request, 'autentication/hello.html')
-
 from django.contrib.auth import login, authenticate
 
 def login_page(request):
@@ -23,4 +19,4 @@ def login_page(request):
 			else:
 				message = 'Identifiants invalides.'
 	return render(
-		request, 'autentication/login.html', context={'form': form, 'message': message})
+		request, 'html/index.html', context={'form': form, 'message': message})

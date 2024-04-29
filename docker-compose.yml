@@ -31,7 +31,7 @@ services:
     networks:
       - ft_transcendence
     build:
-      dockerfile: docker/nginx/Dockerfile
+      dockerfile: docker/backend/Dockerfile
     env_file: .env
     restart: on-failure
     ports:
