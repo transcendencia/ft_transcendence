@@ -5,9 +5,9 @@ FROM postgres:16-alpine
 EXPOSE 5432
 
 # Environment variables
-ENV POSTGRES_USER=lciullo
-ENV POSTGRES_PASSWORD=test
-ENV POSTGRES_DB=postgres
+# ENV POSTGRES_USER=lciullo
+# ENV POSTGRES_PASSWORD=test
+# ENV POSTGRES_DB=postgres
 
 # COPY /database/ /var/lib/postgresql/data/
 

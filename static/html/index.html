@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+  {% load static %}
+  <img src="{% static 'html/icons/mexicanAlienWhite.png' %}" alt="mexicanAlienWhite">
+  <img src="{% static 'html/icons/frenchAlienWhite.png' %}" alt="frenchAlienWhite">
+  <img src="{% static 'html/icons/englishAlienWhite' %}" alt="englishAlienWhite">
+  <img src="{% static 'html/icons/ES_NU.png' %}" alt="ES_NU">
+  <img src="{% static 'html/icons/FR_NU.png' %}" alt="FR_NU">
+  <img src="{% static 'html/icons/BR_NU.png' %}" alt="BR_NU">  
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sample Website</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="loginPage.css">
+    <link rel="stylesheet" href="{% static 'html/style.css' %}">
+    <link rel="stylesheet" href="{% static 'html/loginPage.css' %}">
     <script type="importmap">
         {
           "imports": {
@@ -27,30 +34,30 @@
         - Login -
         <div class="textBar">
           <input class="text-input" spellcheck="false"></input>
-          <img src="frame.png">
+          <img src="{%static 'html/frame.png' %}">
         </div>
       </div>
       <div class="titleText" id="passwordText">
         - Password -
         <div class="textBar">
           <input class="text-input" spellcheck="false" type="password"></input>
-          <img src="frame.png">
+          <img src="{%static 'html/frame.png' %}">
         </div>
       </div>
     </div>
     <div class="languageColumn" id="loginLanguageText">
       <div class="languageSettings">
         <div class="languageIcon" id="esp">
-          <div class="icon" style="background-image: url('icons/mexicanAlienWhite.png');" ></div>
-          <div class="flag" style="background-image: url('icons/ES_NU.png');"></div>
+          <div class="icon" style="background-image: url('mexicanAlienWhite');" ></div>
+          <div class="flag" style="background-image: url('ES_NU');"></div>
         </div>
         <div class="languageIcon" id="fr">
-          <div class="icon" style="background-image: url('icons/frenchAlienWhite.png');" ></div>
-          <div class="flag" style="background-image: url('icons/FR_NU.png');"></div>
+          <div class="icon" style="background-image: url('frenchAlienWhite');" ></div>
+          <div class="flag" style="background-image: url('FR_NU');"></div>
         </div>
         <div class="languageIcon glow" id="en">
-          <div class="icon" style="background-image: url('icons/englishAlienWhite.png');" ></div>
-          <div class="flag" style="background-image: url('icons/BR_NU.png');"></div>
+          <div class="icon" style="background-image: url('englishAlienWhite');" ></div>
+          <div class="flag" style="background-image: url('BR_NU');"></div>
         </div>
       </div>
       <div class="separator"></div>
@@ -70,7 +77,7 @@
     
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
-    <script type="module" src="main.js"></script>
-    <script type="module" src="loginPage.js"></script>
+    <script type="module" src="{% static 'html/main.js' %}"></script>
+    <script type="module" src="{%static 'html/loginPage.js' %}"></script>
 </body>
 </html>
