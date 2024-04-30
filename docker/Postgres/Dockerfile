@@ -1,16 +1,17 @@
 # Lastest version of PostgreSQL 
-FROM postgres:14-alpine
+FROM postgres:16-alpine
 
 #Port to listen 
 EXPOSE 5432
 
 # Environment variables
 ENV POSTGRES_USER=lciullo
-ENV POSTGRES_PASSWORD=Coucou-69
-ENV POSTGRES_DB=test
+ENV POSTGRES_PASSWORD=test
+ENV POSTGRES_DB=postgres
 
-#run debug 
-ENV LANG=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
+# COPY /database/ /var/lib/postgresql/data/
 
-# CMD ["sleep", "2000"]
+# RUN chmod -R ugo+rx /var/lib/postgresql/data
+
+#debug rules a enlever 
+#CMD ["tail", "-f", "/dev/null"]
