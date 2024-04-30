@@ -2,13 +2,12 @@ import { THREE, scene } from "./main.js";
 
 
 class Planet {
-	constructor(name, distance, scale, mesh, orbitMesh, hitboxSize, desc, hitboxColor) {
+	constructor(name, distance, scale, mesh, orbitMesh, hitboxSize, hitboxColor) {
 		this.scene = scene;
         this.sun = sun;
         this.distance = distance;
 		this.hitboxSize = hitboxSize;
 		this.scale = scale;
-        this.desc = desc;
 		this.orbitMesh = orbitMesh;
 		this.mesh = mesh; // Référence au modèle 3D de la planète
         this.orbitSpeed = null; // Vitesse de l'orbite de la planète
@@ -56,11 +55,11 @@ class Planet {
 		this.setPlanetInfo();
 		if (this.orbitMesh != null)
 			this.setOrbitRingInfo();
-		if (this.name === 'Settings changer')
+		if (this.name === 'Settings')
 			this.setupSettings();
-		if (this.name === 'Pong arena')
+		if (this.name === 'Arena')
 			this.setupArena();
-		if (this.name === 'The tournament™')
+		if (this.name === 'Tournament')
 			this.setupTournament();
 		this.createHitbox();
     }
@@ -79,15 +78,12 @@ sun.position.set(0, -10, 0);
 function setupPlanets(models) {
 	scene.add(sun);
 	const planetData = [
-		{name: 'Pong arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80,
-			desc: "[Name]: Pong arena\n[ID]: PA-0667 \n[Atmosphere]: none \n[Temperature]: -270.45°C"},
-		{name: 'Settings changer', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40,
-			desc: "[Name]: Settings changer \n[ID]: SO-0911 \n[Atmosphere]: CO₂-SO₂-H₂S \n[Temperature]: +127°C"},
-		{name: 'The tournament™', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90,
-			desc: "[Name]: The tournament™ \n[ID]: XR-0720 \n[Atmosphere]: N₂-0₂-Ar-Ne \n[Temperature]: 14°C"},
+		{name: 'Arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80},
+		{name: 'Settings', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40},
+		{name: 'Tournament', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90},
 	]
 	planetData.forEach(data => {
-		const planet = new Planet(data.name, data.distance, data.scale, data.mesh, data.orbitMesh, data.hitboxSize, data.desc);
+		const planet = new Planet(data.name, data.distance, data.scale, data.mesh, data.orbitMesh, data.hitboxSize);
 		planets.push(planet);
 	});
 }

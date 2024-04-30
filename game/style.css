@@ -113,7 +113,7 @@
         position: absolute;
         top: 10%;
         transform-origin: left top;
-        transition: border-color 2s ease;
+        transition: border-color 2s ease, background-color 2s ease;
     }
 
     .glow {
