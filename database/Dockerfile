@@ -4,7 +4,7 @@ FROM postgres:16-alpine3.19
 #Port to listen 
 EXPOSE 5432
 
-# Environment variables
+#Environment variables
 # ENV POSTGRES_USER=lciullo
 # ENV POSTGRES_PASSWORD=test
 # ENV POSTGRES_DB=postgres
