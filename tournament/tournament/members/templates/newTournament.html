@@ -35,6 +35,144 @@
 
 <p id="result"></p>
 
+<div id="bracket" class="theme theme-dark" style="display:none;">
+  <div class="bracket">
+    <div class="column one">
+      <div class="match winner-top">
+        <div id="A1" class="match-top team" style="display:none;">
+          <span id="A1_name" class="name"></span>
+          <span class="score">2</span>
+        </div>
+        <div id="A2" class="match-bottom team" style="display:none;">
+          <span id="A2_name" class="name"></span>
+          <span class="score">1</span>
+        </div>
+        <div id="first-top-top" style="display:none;">
+          <div class="match-lines">
+            <div class="line one"></div>
+            <div class="line two"></div>
+          </div>
+          <div class="match-lines alt">
+            <div class="line one"></div>
+          </div>
+        </div>
+      </div>
+      <div class="match winner-bottom">
+        <div id="A3" class="match-top team" style="display:none;">
+          <span id="A3_name" class="name"></span>
+          <span class="score">1</span>
+        </div>
+        <div id="A4" class="match-bottom team" style="display:none;">
+          <span id="A4_name" class="name"></span>
+          <span class="score">2</span>
+        </div>
+        <div id="first-top-bot" style="display:none;">
+          <div class="match-lines">
+            <div class="line one"></div>
+            <div class="line two"></div>
+          </div>
+          <div class="match-lines alt">
+            <div class="line one"></div>
+          </div>
+        </div>
+      </div>
+      <div class="match winner-top">
+        <div id="A5" class="match-top team" style="display:none;">
+          <span id="A5_name" class="name"></span>
+          <span class="score">2</span>
+        </div>
+        <div id="A6" class="match-bottom team" style="display:none;">
+          <span id="A6_name" class="name"></span>
+          <span class="score">0</span>
+        </div>
+        <div id="first-bot-top" style="display:none;">
+          <div class="match-lines">
+            <div class="line one"></div>
+            <div class="line two"></div>
+          </div>
+          <div class="match-lines alt">
+            <div class="line one"></div>
+          </div>
+        </div>
+      </div>
+      <div class="match winner-top">
+        <div id="A7" class="match-top team" style="display:none;">
+          <span id="A7_name" class="name"></span>
+          <span class="score">2</span>
+        </div>
+        <div id="A8" class="match-bottom team" style="display:none;">
+          <span id="A8_name" class="name"></span>
+          <span class="score">1</span>
+        </div>
+        <div id="first-bot-bot" style="display:none;">
+          <div class="match-lines">
+            <div class="line one"></div>
+            <div class="line two"></div>
+          </div>
+          <div class="match-lines alt">
+            <div class="line one"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="column two">
+      <div class="match winner-bottom">
+        <div id="B1" class="match-top team" style="display:none;">
+          <span id="B1_name" class="name"></span>
+          <span class="score">1</span>
+        </div>
+        <div id="B2" class="match-bottom team" style="display:none;">
+          <span id="B2_name" class="name"></span>
+          <span class="score">2</span>
+        </div>
+        <div id="second-top" class="match-lines" style="display:none;">
+          <div class="line one"></div>
+          <div class="line two"></div>
+        </div>
+        <div id="first-second-top" class="match-lines alt" style="display:none;">
+          <div class="line one"></div>
+        </div>
+      </div>
+      <div class="match winner-bottom">
+        <div id="B3" class="match-top team" style="display:none;">
+          <span id="B3_name" class="name"></span>
+          <span class="score">1</span>
+        </div>
+        <div id="B4" class="match-bottom team" style="display:none;">
+          <span id="B4_name" class="name"></span>
+          <span class="score">2</span>
+        </div>
+        <div id="second-bot" class="match-lines" style="display:none;">
+          <div class="line one"></div>
+          <div class="line two"></div>
+        </div>
+        <div id="first-second-bot" class="match-lines alt" style="display:none;">
+          <div class="line one"></div>
+        </div>
+      </div>
+    </div>
+    <div class="column three">
+      <div class="match winner-top">
+        <div id="C1" class="match-top team" style="display:none;">
+          <span id="C1_name" class="name"></span>
+          <span class="score">3</span>
+        </div>
+        <div id="C2" class="match-bottom team" style="display:none;">
+          <span id="C2_name" class="name"></span>
+          <span class="score">2</span>
+        </div>
+        <div class="match-lines">
+          <div class="line one"></div>
+          <div class="line two"></div>
+        </div>
+        <div id="second-line" class="match-lines alt" style="display:none;">
+          <div class="line one"></div>
+        </div>
+      </div>        
+    </div>
+  </div>
+</div>
+
 <script>
     const tournamentPlayer = [];
 
@@ -59,6 +197,7 @@
           li.textContent = "Username: " + player.username + ", Order: " + player.order + ", Position: " + player.position + ", Round: " + player.round;
           ul.appendChild(li);
       });
+
     }
 
     let currentMatch = [];
@@ -117,11 +256,101 @@
     const nbPlayerElement = document.getElementById("nbPlayer");
     const launchTournamentElement = document.getElementById("launch");
     const launchMatchElement = document.getElementById("launchMatch");
+    const bracketElement = document.getElementById("bracket");
+    
+    const A1Element = document.getElementById("A1");
+    const A2Element = document.getElementById("A2");
+    const A3Element = document.getElementById("A3");
+    const A4Element = document.getElementById("A4");
+    const A5Element = document.getElementById("A5");
+    const A6Element = document.getElementById("A6");
+    const A7Element = document.getElementById("A7");
+    const A8Element = document.getElementById("A8");
+    const B1Element = document.getElementById("B1");
+    const B2Element = document.getElementById("B2");
+    const B3Element = document.getElementById("B3");
+    const B4Element = document.getElementById("B4");
+    const C1Element = document.getElementById("C1");
+    const C2Element = document.getElementById("C2");
+
+    const firstTopTopElement = document.getElementById("first-top-top");
+    const firstTopBotElement = document.getElementById("first-top-bot");
+    const firstSecondTopElement = document.getElementById("first-second-top");
+    const firstBotTopElement = document.getElementById("first-bot-top");
+    const firstBotBotElement = document.getElementById("first-bot-bot");
+    const firstSecondBotElement = document.getElementById("first-second-bot");
+    const secondTopElement = document.getElementById("second-top");
+    const secondBotElement = document.getElementById("second-bot");
+    const secondLineElement = document.getElementById("second-line");
+
+    function printBracket() {
+      if (tournamentPlayer.length > 0){
+        A1Element.style.display = "flex";
+        ul = document.getElementById("A1_name");
+        ul.textContent = tournamentPlayer[0].username;
+        A2Element.style.display = "flex";
+        ul = document.getElementById("A2_name");
+        ul.textContent = tournamentPlayer[1].username;
+      }
+      if (tournamentPlayer.length > 2){
+        A3Element.style.display = "flex";
+        ul = document.getElementById("A3_name");
+        ul.textContent = tournamentPlayer[2].username;
+        A4Element.style.display = "flex";
+        ul = document.getElementById("A4_name");
+        if (tournamentPlayer.length > 3)
+          ul.textContent = tournamentPlayer[3].username;
+        else
+          ul.textContent = "...";
+        B1Element.style.display = "flex";
+        B2Element.style.display = "flex";
+        firstTopTopElement.style.display = "block";
+        firstTopBotElement.style.display = "block";
+        firstSecondTopElement.style.display = "block";
+      }
+      if (tournamentPlayer.length > 4){
+        A5Element.style.display = "flex";
+        ul = document.getElementById("A5_name");
+        ul.textContent = tournamentPlayer[4].username;
+        A6Element.style.display = "flex";
+        ul = document.getElementById("A6_name");
+        if (tournamentPlayer.length > 5)
+          ul.textContent = tournamentPlayer[5].username;
+        else
+          ul.textContent = "...";
+        B3Element.style.display = "flex";
+        B4Element.style.display = "flex";
+        C1Element.style.display = "flex";
+        C2Element.style.display = "flex";
+        firstBotTopElement.style.display = "block";
+        firstSecondBotElement.style.display = "block";
+        secondTopElement.style.display = "block";
+        secondBotElement.style.display = "block";
+        secondLineElement.style.display = "block";
+      }
+      if (tournamentPlayer.length > 6){
+        A7Element.style.display = "flex";
+        ul = document.getElementById("A7_name");
+        ul.textContent = tournamentPlayer[6].username;
+        A8Element.style.display = "flex";
+        ul = document.getElementById("A8_name");
+        if (tournamentPlayer.length > 7)
+          ul.textContent = tournamentPlayer[7].username;
+        else
+          ul.textContent = "...";
+        firstBotBotElement.style.display = "block";
+      }
+    }
 
     launchTournamentElement.addEventListener("click", function() {
       if (tournamentPlayer.length < 2){
         const ul = document.getElementById("error_msg");
         ul.textContent = "Not enough players";
+        return ;
+      }
+      if (tournamentPlayer.length > 8){
+        const ul = document.getElementById("error_msg");
+        ul.textContent = "Too many players";
         return ;
       }
       const ul = document.getElementById("error_msg");
@@ -140,6 +369,8 @@
       makeMatchup();
       printTournamentPlayer();
       launchMatchElement.style.display = "inline";
+      bracketElement.style.display = "inline";
+      printBracket();
     });
 
     launchMatchElement.addEventListener("click", function(){
@@ -162,19 +393,49 @@
     });
 
     function findWinner(){
-      const ul = document.getElementById("result");
+      ul = document.getElementById("result");
       ul.innerHTML = "";
       let result = Math.floor(Math.random() * 2);
       const li = document.createElement("li");
       if (result === 0){
         li.textContent = currentMatch[nbMatch][0].myRef.username + " is the winner !";
         currentMatch[nbMatch][0].myRef.round ++;
+        winner_name = currentMatch[nbMatch][0].myRef.username;
       }
       else{
         li.textContent = currentMatch[nbMatch][1].myRef.username + " is the winner !";
         currentMatch[nbMatch][1].myRef.round ++;
+        winner_name = currentMatch[nbMatch][1].myRef.username;
       }
       ul.appendChild(li);
+      if (round == 2){
+        if (nbMatch == 0){
+          ul = document.getElementById("B1_name");
+          ul.textContent = winner_name;
+        }
+        else if (nbMatch == 1){
+          ul = document.getElementById("B2_name");
+          ul.textContent = winner_name;
+        }
+        else if (nbMatch == 2){
+          ul = document.getElementById("B3_name");
+          ul.textContent = winner_name;
+        }
+        else if (nbMatch == 3){
+          ul = document.getElementById("B4_name");
+          ul.textContent = winner_name;
+        }
+      }
+      if (round == 3){
+        if (nbMatch == 0){
+          ul = document.getElementById("C1_name");
+          ul.textContent = winner_name;
+        }
+        else if (nbMatch == 1){
+          ul = document.getElementById("C2_name");
+          ul.textContent = winner_name;
+        }
+      }
       printTournamentPlayer();
     }
 </script>
