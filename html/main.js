@@ -42,15 +42,15 @@ const minimapCamera = new THREE.OrthographicCamera(
      
     minimapCamera.position.set(sun.position.x + 200, sun.position.y + 500, sun.position.z);
     
-    // Créer une nouvelle instance de rendu pour la minimap
     const minimapRenderer = new THREE.WebGLRenderer();
-    minimapRenderer.setSize(300, 300); // Taille de la minimap (à ajuster selon vos besoins)
-    minimapRenderer.setClearColor(0x000000, 0); // Fond transparent
-    
-    // Ajouter la vue de la minimap à votre document HTML
-    document.body.appendChild(minimapRenderer.domElement);
-    minimapRenderer.domElement.style.opacity = '0';
-        
+    minimapRenderer.setSize(400, 400);
+    minimapRenderer.setClearColor(0x000000, 0); 
+    minimapRenderer.domElement.style.borderRadius = '100%';
+    minimapRenderer.domElement.style.position = 'absolute';
+    minimapRenderer.domElement.style.transform = 'translate(-50%, -50%)';
+    const minimapContainer = document.getElementById('minimapContainer');
+    minimapContainer.appendChild(minimapRenderer.domElement);
+
     const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
     const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000045 }); 
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -77,16 +77,6 @@ function renderMinimap() {
     minimapCamera.lookAt(sun.position);
     minimapRenderer.render(scene, minimapCamera);
 }
-
-
-minimapRenderer.domElement.style.borderRadius = '100%'; // Adjust the radius as needed
-// Position the minimap renderer
-minimapRenderer.domElement.style.position = 'absolute';
-minimapRenderer.domElement.style.top = '10px'; // Adjust vertical position as needed
-minimapRenderer.domElement.style.right = '10px'; // Adjust horizontal position as needed
-
-// Add the minimap renderer to the document body
-document.body.appendChild(minimapRenderer.domElement);
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -182,15 +172,15 @@ export const outlinePass = new OutlinePass(
                         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
                         planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
                         
-                        if (planet.name === 'Settings changer') {
+                        if (planet.name === 'settings change') {
                             planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
                             planet.orbitMesh.rotation.x += planet.orbitSpeed;
                         }
-                        if (planet.name === 'Tournament') {
+                        if (planet.name === 'tournament') {
                             planet.mesh.rotation.x += planet.rotationSpeed;
                             planet.mesh.rotation.y += planet.rotationSpeed;
                         }
-                        if (planet.name === 'Arena') {
+                        if (planet.name === 'arena') {
                             planet.mesh.rotation.x += planet.rotationSpeed;
                             planet.mesh.rotation.y += planet.rotationSpeed;
                             planet.orbitMesh.rotation.x += planet.rotationSpeed;
@@ -300,6 +290,8 @@ new TWEEN.Tween(verticalBlur.uniforms.v)
 .start();
 }
 
+
+
 // Bloom Pass
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = 0.1;
@@ -325,7 +317,7 @@ function animate()
 {
     TWEEN.update();
     requestAnimationFrame( animate )
-    if (!landedOnPlanet && gameStart)
+    if (!landedOnPlanet)
     renderMinimap();
     update();
     composer.render();

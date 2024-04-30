@@ -458,6 +458,7 @@ class Arena extends THREE.Mesh {
     resetUI() {
         for (let i = 0; i < scorePoints.length; i++) {
             scorePoints.item(i).style.borderColor = "#3777ff";
+            scorePoints.item(i).style.backgroundColor = "#0008ff51";
             if (i > 1)
                 continue;
             speedBar.item(i).animate([{
