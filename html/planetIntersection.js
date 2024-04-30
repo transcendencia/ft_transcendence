@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { setTranslatedText, currentLanguage } from './loginPage.js';
 import { spaceShip, camera, cameraDirection, scene, outlinePass } from "./main.js";
 
 const planetInfoText = document.getElementById('planetInfoText');
@@ -27,6 +28,15 @@ export function resetOutlineAndText() {
     cursorOnPlanet = false;
 }
 
+function displayPlanetDesc(planet) {
+    if (planet.name === "Settings")
+        setTranslatedText(currentLanguage, 'settingsPlanetInfo', planetInfoText);
+    else if (planet.name === "Tournament")
+        setTranslatedText(currentLanguage, 'tournamentPlanetInfo', planetInfoText);
+    else if (planet.name === "Arena")
+        setTranslatedText(currentLanguage, 'arenaPlanetInfo', planetInfoText);
+}
+
 export function getPlanetIntersection() {
     const intersects = raycaster.intersectObjects(scene.children, true);
     if (intersects.length > 0) {
@@ -37,7 +47,7 @@ export function getPlanetIntersection() {
             outlinePass.selectedObjects = [];
             if (aimedObj.planet) {
                 outlinePass.selectedObjects = [aimedObj];
-                planetInfoText.textContent = aimedObj.planet.desc;
+                displayPlanetDesc(aimedObj.planet);
             }
             cursorOnPlanet = true;
         }

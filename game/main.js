@@ -327,8 +327,8 @@ class Arena extends THREE.Mesh {
         // const texture = textureLoader.load('purplebox.jpeg');
         const arenaColor = 0x000000;
         // Create material
-        // const material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
-        const material = blueShaderMaterial;
+        const material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
+        // const material = blueShaderMaterial;
         // Call super constructor to set up mesh
         super(geometry, material);
         
@@ -446,10 +446,12 @@ class Arena extends THREE.Mesh {
     addPoint(side) {
         if (side === 'left') {
             scorePoints.item(this.game.leftScore).style.borderColor = "rgb(171, 31, 0)";
+            scorePoints.item(this.game.leftScore).style.backgroundColor = "#ab1f0051";
             this.game.leftScore++;
         }
         else {
             scorePoints.item(this.game.rightScore + 3).style.borderColor = "rgb(171, 31, 0)";
+            scorePoints.item(this.game.rightScore + 3).style.backgroundColor = "#ab1f0051";
             this.game.rightScore++;
         }
     }
@@ -457,7 +459,7 @@ class Arena extends THREE.Mesh {
         for (let i = 0; i < scorePoints.length; i++) {
             scorePoints.item(i).style.borderColor = "#3777ff";
             if (i > 1)
-                return;
+                continue;
             speedBar.item(i).animate([{
                 top: "100%",
                 left: "100%",
@@ -1116,7 +1118,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && Math.abs(this.speedZ) > 0)
         {
-            paddle.shakeCamera(camera, 0.2, 10);
+            // paddle.shakeCamera(camera, 0.2, 10);
             paddle.particles.explodeParticles(paddle.position, paddle.material.color);
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
@@ -1152,7 +1154,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight && this.speedZ > 0)
         {
-            paddle.shakeCamera(cameraLeft, 0.2, 10);
+            // paddle.shakeCamera(cameraLeft, 0.2, 10);
             paddle.particles.explodeParticles(paddle.position, paddle.material.color);
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
@@ -1667,7 +1669,7 @@ function animate()
     // controls.update();
     TWEEN.update();
     arena1.monitorArena();
-    arena1.material.uniforms.time.value += 0.01; // Adjust speed of animation
+    // arena1.material.uniforms.time.value += 0.01; // Adjust speed of animation
     composer1.render();
     composer2.render();
 }

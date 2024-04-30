@@ -186,11 +186,11 @@ export const outlinePass = new OutlinePass(
                             planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
                             planet.orbitMesh.rotation.x += planet.orbitSpeed;
                         }
-                        if (planet.name === 'The tournament™') {
+                        if (planet.name === 'Tournament') {
                             planet.mesh.rotation.x += planet.rotationSpeed;
                             planet.mesh.rotation.y += planet.rotationSpeed;
                         }
-                        if (planet.name === 'Pong arena') {
+                        if (planet.name === 'Arena') {
                             planet.mesh.rotation.x += planet.rotationSpeed;
                             planet.mesh.rotation.y += planet.rotationSpeed;
                             planet.orbitMesh.rotation.x += planet.rotationSpeed;
