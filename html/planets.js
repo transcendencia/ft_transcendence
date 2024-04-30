@@ -55,11 +55,11 @@ class Planet {
 		this.setPlanetInfo();
 		if (this.orbitMesh != null)
 			this.setOrbitRingInfo();
-		if (this.name === 'Settings')
+		if (this.name === 'settings')
 			this.setupSettings();
-		if (this.name === 'Arena')
+		if (this.name === 'arena')
 			this.setupArena();
-		if (this.name === 'Tournament')
+		if (this.name === 'tournament')
 			this.setupTournament();
 		this.createHitbox();
     }
@@ -78,9 +78,9 @@ sun.position.set(0, -10, 0);
 function setupPlanets(models) {
 	scene.add(sun);
 	const planetData = [
-		{name: 'Arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80},
-		{name: 'Settings', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40},
-		{name: 'Tournament', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90},
+		{name: 'arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80},
+		{name: 'settings', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40},
+		{name: 'tournament', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90},
 	]
 	planetData.forEach(data => {
 		const planet = new Planet(data.name, data.distance, data.scale, data.mesh, data.orbitMesh, data.hitboxSize);

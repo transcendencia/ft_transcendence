@@ -26,10 +26,22 @@ function getTranslatedTextPromise(language, textElem) {
         });
 }
 
-export function setTranslatedText(language, textElemString, textElem) {
+export function setTranslatedText(language, textElemString, textElem, prefix = '', suffix = '', callback = null) {
     getTranslatedTextPromise(language, textElemString)
         .then(text => {
-            textElem.textContent = text;
+            textElem.textContent = prefix + text + suffix;
+            if (callback)
+                callback();
+    })
+    .catch(error => {
+        console.error('Error:', error); // Handle errors
+    });
+}
+
+export function addTranslatedText(language, textElemString, textElem, prefix = ' ', suffix = '') {
+    getTranslatedTextPromise(language, textElemString)
+        .then(text => {
+            textElem.textContent += prefix + text + suffix;
     })
     .catch(error => {
         console.error('Error:', error); // Handle errors
@@ -55,9 +67,9 @@ const passwordText = document.getElementById('passwordText');
 const loginLanguageText = document.getElementById('loginLanguageText');
 
 async function changeText(id) {
-    setTranslatedText(id, "loginText", loginText.childNodes[0]);
-    setTranslatedText(id, "passwordText", passwordText.childNodes[0]);
-    setTranslatedText(id, "loginLanguageText", loginLanguageText.childNodes[4]);
+    setTranslatedText(id, "loginText", loginText.childNodes[0], '- ', ' - ');
+    setTranslatedText(id, "passwordText", passwordText.childNodes[0], '- ', ' - ');
+    setTranslatedText(id, "loginLanguageText", loginLanguageText.childNodes[4], '- ', ' - ');
 }
 
 // Loop through each language icon element and add a click event listener
