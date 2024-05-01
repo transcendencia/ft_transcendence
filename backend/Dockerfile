@@ -37,7 +37,7 @@ COPY . /backend/
 
 
 #Update 
-RUN apt-get -y update && apt-get -y upgrade 
+RUN apt-get -y update && apt-get -y upgrade && apt install netcat-traditional
 
 RUN	pip install --upgrade pip
 
