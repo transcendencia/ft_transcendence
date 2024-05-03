@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { addTranslatedText ,setTranslatedText, currentLanguage } from './loginPage.js';
 import { spaceShip, camera, cameraDirection, scene, outlinePass } from "./main.js";
 
 const planetInfoText = document.getElementById('planetInfoText');
@@ -27,6 +28,23 @@ export function resetOutlineAndText() {
     cursorOnPlanet = false;
 }
 
+function triggerAnimation() {
+    var element = document.getElementById('planetInfoText');
+    element.classList.remove('show'); // Remove 'hide' class
+    void element.offsetWidth;
+    element.classList.add('show'); // Add 'show' class
+}
+
+function displayPlanetDesc(planet) {
+    if (planet.name === "settings")
+        setTranslatedText(currentLanguage, 'settingsPlanetInfo', planetInfoText);
+    else if (planet.name === "tournament")
+        setTranslatedText(currentLanguage, 'tournamentPlanetInfo', planetInfoText);
+    else if (planet.name === "arena")
+        setTranslatedText(currentLanguage, 'arenaPlanetInfo', planetInfoText);
+    triggerAnimation();
+}
+
 export function getPlanetIntersection() {
     const intersects = raycaster.intersectObjects(scene.children, true);
     if (intersects.length > 0) {
@@ -34,12 +52,12 @@ export function getPlanetIntersection() {
         if (!aimedObj.planet)
             return;
         if (!cursorOnPlanet) {
+            cursorOnPlanet = true; 
             outlinePass.selectedObjects = [];
             if (aimedObj.planet) {
                 outlinePass.selectedObjects = [aimedObj];
-                planetInfoText.textContent = aimedObj.planet.desc;
+                displayPlanetDesc(aimedObj.planet);
             }
-            cursorOnPlanet = true;
         }
         else {
             if (aimedObj.planet.name != outlinePass.selectedObjects[0].planet.name)
@@ -64,7 +82,8 @@ function spaceShipInRange(obj) {
     if (obj.planet) { 
         if (spaceShip.position.distanceTo(obj.position) < 4 * obj.planet.scale && !inRange) {       
             outlinePass.visibleEdgeColor.set("#00ff00");
-            enterPlanetText.textContent = 'Press [E] to land on ' + obj.planet.name;
+            setTranslatedText(currentLanguage, 'enterPlanetText', enterPlanetText, '', '', function () {
+                addTranslatedText(currentLanguage, obj.planet.name + 'PlanetName', enterPlanetText, ' - ', ' -')});
             inRange = true;
             planetInRange = obj.planet;
         }
