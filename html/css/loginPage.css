@@ -1,3 +1,7 @@
+.loginPageUI {
+    transition: opacity 1s;
+}
+
 .container {
     position: fixed;
     top: 55%;
@@ -142,8 +146,11 @@
 
 @font-face {
     font-family: 'Space'; 
-    src: url('fonts/SPACE.ttf') format('truetype');
+    src: url('../assets/fonts/SPACE.ttf') format('truetype');
 }
+
+
+
 
 .text-input {
     position: absolute;
