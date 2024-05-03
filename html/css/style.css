@@ -25,10 +25,9 @@ body {
     order: 1; /* Set the order of #c1 to 1 (display on the left) */
 }
 
-
-/* Style the container */
 #enterPlanetTextContainer {
     display: flex;
+    width: 100%;
     justify-content: center;
     align-items: center;
     position: fixed;
@@ -37,71 +36,24 @@ body {
     transform: translate(-50%, -50%);
 }
 
-/* Style the text element */
 #enterPlanetText {
     color: #00ff00;
-    font-size: 30px;
+    font-size: 20px;
     font-family: "Space";
 }
 
-#minimapContainer {
-    position: relative;
-    padding: 210px;
-}
-
-#planetInfoContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: "Space";
-    flex-direction: column;
-}
-
-
-#planetInfoContainer img:first-child {
-    transform: scaleY(-1) scaleX(-1) scale(0.9); /* Flip the image vertically */
-}
-
-#planetInfoContainer img {
-    transform: scale(0.9); /* Flip the image vertically */
-}
-
-#planetInfoText {
-    font-size: 1em;
-    letter-spacing: 5px;
-    border-right: 5px solid white;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 65%;
-    
-    color: #ffffff;
-}
-
-#planetInfoText.show {
-    animation:
-    typing 2s steps(20),
-    cursor .4s step-end infinite alternate;
-}
-@keyframes cursor {
-    50% { border-color: transparent;}
-}
-
-@keyframes typing {
-    from { width: 0; }
-}
-
-.shadowfilter {
-    filter: drop-shadow(0px 0px 20px #0724ff);
-}
-
-.rightSideContainer {
-    display: flex;
-    align-items: center;
+.coloredPanel {
     position: fixed;
-    top: 1%;
-    right: 0%;
-    font-family: "Space";
-    flex-direction: column;
+    border: 10px solid white;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 166, 0, 0.178);
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    z-index: -5;
+    opacity: 0;
+    transition: opacity 1s;
 }
 
 /* Style the dot */

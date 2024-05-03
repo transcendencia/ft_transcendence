@@ -1,9 +1,8 @@
 import * as THREE from 'three';
-import { addTranslatedText ,setTranslatedText, currentLanguage } from './loginPage.js';
+import {currentLanguage, getTranslatedText } from './loginPage.js';
 import { spaceShip, camera, cameraDirection, scene, outlinePass } from "./main.js";
 
-const planetInfoText = document.getElementById('planetInfoText');
-planetInfoText.textContent = '';
+const planetInfoLines = document.getElementsByClassName('planetInfoText');
 const enterPlanetText = document.getElementById('enterPlanetText');
 enterPlanetText.textContent = '';
 
@@ -21,28 +20,46 @@ export function updateRay() {
 export let inRange = false;
 let cursorOnPlanet = false;
 
+var elements = document.getElementsByClassName('planetInfoText');
+
 export function resetOutlineAndText() {
-    planetInfoText.textContent = '';
+    for (var i = 1; i < 4; i++)
+        elements[i].textContent = '';
     enterPlanetText.textContent = '';
     outlinePass.selectedObjects = [];
     cursorOnPlanet = false;
+    stopAnimation();
 }
 
-function triggerAnimation() {
-    var element = document.getElementById('planetInfoText');
-    element.classList.remove('show'); // Remove 'hide' class
-    void element.offsetWidth;
-    element.classList.add('show'); // Add 'show' class
-}
+let timeouts = []; // To store setTimeout identifiers
 
 function displayPlanetDesc(planet) {
-    if (planet.name === "settings")
-        setTranslatedText(currentLanguage, 'settingsPlanetInfo', planetInfoText);
-    else if (planet.name === "tournament")
-        setTranslatedText(currentLanguage, 'tournamentPlanetInfo', planetInfoText);
-    else if (planet.name === "arena")
-        setTranslatedText(currentLanguage, 'arenaPlanetInfo', planetInfoText);
-    triggerAnimation();
+    stopAnimation();
+
+    for (let i = 1; i < 4; i++) {
+        const timeout = setTimeout(function(index) {
+            if (planet.name === "settings")
+                planetInfoLines[index].textContent = getTranslatedText("settingsPlanetInfo" + index);
+            else if (planet.name === "tournament")
+                planetInfoLines[index].textContent = getTranslatedText("tournamentPlanetInfo" + index);
+            else if (planet.name === "arena")
+                planetInfoLines[index].textContent = getTranslatedText("arenaPlanetInfo" + index);
+            const element = elements[index];
+            element.classList.remove('typeWriting'); 
+            void element.offsetWidth;
+            element.classList.add('typeWriting');
+            if (index != 3)
+                element.style.borderRight = 'none';
+        }, (i - 1) * 500, i);
+        
+        timeouts.push(timeout);
+    }
+}
+
+function stopAnimation() {
+    timeouts.forEach(timeout => clearTimeout(timeout));
+    timeouts = [];
+    console.log("stop");
 }
 
 export function getPlanetIntersection() {
@@ -82,8 +99,7 @@ function spaceShipInRange(obj) {
     if (obj.planet) { 
         if (spaceShip.position.distanceTo(obj.position) < 4 * obj.planet.scale && !inRange) {       
             outlinePass.visibleEdgeColor.set("#00ff00");
-            setTranslatedText(currentLanguage, 'enterPlanetText', enterPlanetText, '', '', function () {
-                addTranslatedText(currentLanguage, obj.planet.name + 'PlanetName', enterPlanetText, ' - ', ' -')});
+            enterPlanetText.textContent = getTranslatedText("enterPlanetText") + ' - ' + obj.planet.name + ' -';
             inRange = true;
             planetInRange = obj.planet;
         }
