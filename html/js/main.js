@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import {spaceShip, spaceShipInt, allModelsLoaded} from "./objs.js";
 import { addStar } from "./stars.js";
 import { sun, planets } from "./planets.js";
-import { getPlanetIntersection, updateRay, inRange } from "./planetIntersection.js"
-import {landedOnPlanet, togglePlanet} from "./enterPlanet.js"
+import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
+import {landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
@@ -12,7 +12,6 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-
 
 let gameStart = false;
 const renderer = new THREE.WebGLRenderer({
@@ -24,7 +23,7 @@ scene.background = new THREE.Color(0x000020);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
-const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
+const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
 // Define the size of the minimap
 const minimapWidth = 200; // Adjust as needed
@@ -43,7 +42,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     minimapCamera.position.set(sun.position.x + 200, sun.position.y + 500, sun.position.z);
     
     const minimapRenderer = new THREE.WebGLRenderer();
-    minimapRenderer.setSize(400, 400);
+    minimapRenderer.setSize(window.innerWidth * 0.15, window.innerWidth * 0.15);
     minimapRenderer.setClearColor(0x000000, 0); 
     minimapRenderer.domElement.style.borderRadius = '100%';
     minimapRenderer.domElement.style.position = 'absolute';
@@ -78,18 +77,25 @@ function renderMinimap() {
     minimapRenderer.render(scene, minimapCamera);
 }
 
+let languageData
+
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.render(scene, camera);
 
-export function toggleMinimapVisibility() {
-    if (landedOnPlanet) {
-        minimapRenderer.domElement.style.transition = 'opacity 1s';
-        minimapRenderer.domElement.style.opacity = '0';
-    }
-    else {
-        minimapRenderer.domElement.style.transition = 'opacity 1s';
-        minimapRenderer.domElement.style.opacity = '1';
+const rightSideContainer = document.getElementById("rsCont");
+let rsContVisible = false;
+const loginPageContainer = document.querySelector(".loginPageUI");
+
+export function toggleRSContainerVisibility() {
+    if (rsContVisible) {
+        rightSideContainer.style.transition = 'right 0.5s ease-in-out';
+        rightSideContainer.style.right = '-50%';
+        rsContVisible = false;
+    } else {
+        rightSideContainer.style.transition = 'right 0.5s ease-in-out';
+        rightSideContainer.style.right = '0%';
+        rsContVisible = true;
     }
 }
 const composer = new EffectComposer(renderer);
@@ -172,7 +178,7 @@ export const outlinePass = new OutlinePass(
                         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
                         planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
                         
-                        if (planet.name === 'settings change') {
+                        if (planet.name === 'settings') {
                             planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
                             planet.orbitMesh.rotation.x += planet.orbitSpeed;
                         }
@@ -223,41 +229,35 @@ function startAnimation() {
         .onComplete(() => {
             spaceShipInt.visible = false;
             gameStart = true;
-            toggleMinimapVisibility();
+            toggleRSContainerVisibility();
         });
         anim1.chain(anim2, anim3);
         anim1.start();
     }
-let container = document.getElementsByClassName("container");
-    
+
+let pauseGame = false;
+
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
-        fadeOutContainer();
+        loginPageContainer.style.opacity = 0;
         console.log("e pressed");
-        enterPlanetText.textContent = ''
         startAnimation();
     }
     if (event.key === 'e' && inRange)
         togglePlanet();
     if (event.key === 'u')
-        scene.add(trajectoryLine);
+        triggerInfiniteAnim();
+    if (event.key == 'Escape') {
+        if (landedOnPlanet) {
+            togglePlanet();
+            return;
+        }
+        toggleRSContainerVisibility();
+        toggleBlurDisplay(true);
+        resetOutlineAndText();
+        pauseGame ? pauseGame = false : pauseGame = true;
+    }
 });
-
-function fadeOutContainer() {
-    // Get the container element
-    var container = document.querySelector('.loginPageUI');
-
-    // Get all child elements of the container
-    var children = container.querySelectorAll('*');
-
-    // Apply fade-out effect to each child
-    children.forEach(function(child) {
-        child.style.transition = 'opacity 1s';
-        child.style.opacity = '0';
-    });
-}
-
-
 
 let targetBlur = 0;
 
@@ -272,22 +272,24 @@ verticalBlur.uniforms.v.value = targetBlur;
 composer.addPass(horizontalBlur);
 composer.addPass(verticalBlur);
 
+const coloredPanel = document.querySelector(".coloredPanel");
 
-export function toggleBlurDisplay() {
+export function toggleBlurDisplay(displayColoredPanel = false) {
     const duration = 1500;
-    if (targetBlur === 0)
-    targetBlur = 0.002;
-else 
-targetBlur = 0;
-new TWEEN.Tween(horizontalBlur.uniforms.h)
-.to({value: targetBlur}, duration)
-.easing(TWEEN.Easing.Quadratic.Out)
-.start();
+    targetBlur === 0 ? targetBlur = 0.002 : targetBlur = 0;
 
-new TWEEN.Tween(verticalBlur.uniforms.v)
-.to({value: targetBlur}, duration)
-.easing(TWEEN.Easing.Quadratic.Out)
-.start();
+    new TWEEN.Tween(horizontalBlur.uniforms.h)
+    .to({value: targetBlur}, duration)
+    .easing(TWEEN.Easing.Quadratic.Out)
+    .start();
+
+    new TWEEN.Tween(verticalBlur.uniforms.v)
+    .to({value: targetBlur}, duration)
+    .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+    if (displayColoredPanel) {
+        targetBlur === 0 ? coloredPanel.style.opacity = "0" : coloredPanel.style.opacity = "1";
+    }
 }
 
 
@@ -301,6 +303,8 @@ bloomPass.radius = 0.5;
 
 function update() {
     // displayRay();
+    if (pauseGame)
+        return;
     if (gameStart && !landedOnPlanet) 
         spaceShipMovement();
     planetMovement();
@@ -318,7 +322,7 @@ function animate()
     TWEEN.update();
     requestAnimationFrame( animate )
     if (!landedOnPlanet)
-    renderMinimap();
+        renderMinimap();
     update();
     composer.render();
     // renderer.render(scene, camera);

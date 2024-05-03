@@ -147,7 +147,6 @@ function spaceShipMovement() {
     spaceShipPointLight.position.copy(spaceShip.position);
 }
 
-let printed = false;
 
 function cameraDebug()
 {
@@ -170,9 +169,6 @@ function camMovement() {
     else {
         if (!planetInRange)
             return;
-        if (!printed) {
-            printed = true;
-        }
         const offset = 500 * (planetInRange.scale / 100);
         const SSoffset = offset - distance;   
         spaceShip.position.copy(new THREE.Vector3(planetInRange.mesh.position.x + SSoffset * Math.sin(planetInRange.mesh.rotation.y), spaceShip.position.y, planetInRange.mesh.position.z + SSoffset * Math.cos(planetInRange.mesh.rotation.y)));

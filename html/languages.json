@@ -1,39 +1,62 @@
 {
     "en": {
         "loginText": "Login",
-		"passwordText": "Password",
+        "passwordText": "Password",
         "loginLanguageText": "Choose a language",
-        "settingsPlanetInfo":  "[Name]: Settings \n[ID]: SO-0911 \n[Atmosphere]: CO₂-SO₂ \n[Temperature]: +127°C",
-        "tournamentPlanetInfo": "[Name]: The tournament™ \n[ID]: XR-0720 \n[Atmosphere]: N₂-0₂-Ar-Ne \n[Temperature]: +14°C",
-        "arenaPlanetInfo": "[Name]: Pong arena",
         "enterPlanetText": "Press [E] to select",
+
+        "settingsPlanetInfo1": "[Name]: Settings",
+        "settingsPlanetInfo2": "[ID]: SO-0911",
+        "settingsPlanetInfo3": "[Temperature]: +127°C",
+        "tournamentPlanetInfo1": "[Name]: Galaxy Cup",
+        "tournamentPlanetInfo2": "[ID]: XR-0720",
+        "tournamentPlanetInfo3": "[Temperature]: +14.6°C",
+        "arenaPlanetInfo1": "[Name]: Pong arena",
+        "arenaPlanetInfo2": "[ID]: PA-0667",
+        "arenaPlanetInfo3": "[Temperature]: -269°C",
+
         "settingsPlanetName": "Settings",
-        "tournamentPlanetName": "The tournament™",
-        "arenaPlanetName": "Pong arena"
+        "arenaPlanetName": "Pong arena",
+        "tournamentPlanetName": "Galaxy Cup"
     },
     "esp": {
         "loginText": "Usuario",
 		"passwordText": "Contraseña",
         "loginLanguageText": "Elige un idioma",
-        "settingsPlanetInfo":  "[Nombre]: Ajustes \n[ID]: SO-0911 \n[atmósfera]: CO₂-SO₂ \n[Temperatura]: +127°C",
-        "tournamentPlanetInfo": "[Nombre]: The tournament™ \n[ID]: XR-0720 \n[atmósfera]: N₂-0₂-Ar-Ne \n[Temperatura]: +14°C",
-        "arenaPlanetInfo": "[Nombre]: Pong arena\n[ID]: PA-0667 \n[atmósfera]: none \n[Temperatura]: -270.45°C",
         "enterPlanetText": "Presiona [E] para seleccionar",
+
+        "settingsPlanetInfo1": "[Nombre] Ajustes",
+        "settingsPlanetInfo2": "[ID] SO-0911",
+        "settingsPlanetInfo3": "[temperatura] +127°C",
+        "tournamentPlanetInfo1": "[Nombre] Copa Galaxia",
+        "tournamentPlanetInfo2": "[ID] XR-0720",
+        "tournamentPlanetInfo3": "[Temperatura] +14.6°C",
+        "arenaPlanetInfo1": "[Nombre] Pong arena",
+        "arenaPlanetInfo2": "[ID] PA-0667",
+        "arenaPlanetInfo3": "[Temperatura] -269°C",
+
         "settingsPlanetName": "Ajustes",
-        "tournamentPlanetName": "The tournament™",
-        "arenaPlanetName": "Pong arena"
+        "arenaPlanetName": "Pong arena",
+        "tournamentPlanetName": "Copa Galaxia"
     },
     "fr": {
         "loginText": "Nom d'Utilisateur",
-		"passwordText": "Mot de Passe",
-        "loginLanguageText": "Choisis une langue",
-        "settingsPlanetInfo":  "[Nom]: Réglages \n[ID]: SO-0911 \n[Atmosphère]: CO₂-SO₂ \n[Température]: +127°C",
-        "tournamentPlanetInfo": "[Nom]: The tournament™ \n[ID]: XR-0720 \n[Atmosphère]: N₂-0₂-Ar-Ne \n[Température]: +14°C",
-        "arenaPlanetInfo": "[Nom]: Arène Pong\n[ID]: PA-0667 \n[Atmosphère]: Aucune \n[Température]: -270.45°C",
+        "passwordText": "Mot de Passe",
         "enterPlanetText": "Appuie sur [E] pour selectionner",
-        "settingsPlanetName": "Réglages",
-        "tournamentPlanetName": "The tournament™",
-        "arenaPlanetName": "Arène Pong"
+        "loginLanguageText": "Choisis une langue",
+
+        "settingsPlanetInfo1": "[Nom]: Reglages",
+        "settingsPlanetInfo2": "[ID]: SO-0911",
+        "settingsPlanetInfo3": "[Temperature]: +127°C",
+        "tournamentPlanetInfo1": "[Nom]: Coupe Galaxie",
+        "tournamentPlanetInfo2": "[ID]: XR-0720",
+        "tournamentPlanetInfo3": "[Temperature]: +14.6°C",
+        "arenaPlanetInfo1": "[Nom]: Arene Pong",
+        "arenaPlanetInfo2": "[ID]: PA-0667",
+        "arenaPlanetInfo3": "[Temperature]: -269°C",
+
+        "settingsPlanetName": "Reglages",
+        "arenaPlanetName": "Arene pong",
+        "tournamentPlanetName": "Coupe Galaxie"
     }
-    
 }
