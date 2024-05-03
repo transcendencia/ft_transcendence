@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sample Website</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.129.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.129.0/examples/jsm/"
+          }
+        }
+      </script>
+</head>
+
+<body>
+    <div id="a">
+        <canvas id="c1"></canvas>
+        <canvas id="c2"></canvas>
+    </div>
+
+    <div class="bluebar glow"></div>
+    <div class="scoreUI">
+        <div class="centerRectangle glow" style="border-color: rgb(171, 31, 0); box-shadow: rgb(171, 31, 0);">
+            <div class="speedbar"></div>
+            <div class="speedbar" style="animation-delay: 250ms;"></div>
+        </div>
+        <div class="asset">
+            <img src="../assets/scoreUI.png" class="shadowfilter">
+            <div class="parallelogram glow" style="left: 90%;"></div>
+            <div class="parallelogram glow" style="left: 101%;"></div>
+            <div class="parallelogram glow" style="left: 112%;;"></div>
+        </div>
+        <div class="asset" style="transform: scaleX(-1);">
+            <img src="../assets/scoreUI.png" class="shadowfilter">
+            <div class="parallelogram glow" style="left: 90%;"></div>
+            <div class="parallelogram glow" style="left: 101%;"></div>
+            <div class="parallelogram glow" style="left: 112%;;"></div>
+        </div>
+    </div> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/7/Stats.js"></script>
+    <script type="module" src="../js/main.js"></script>
+</body>
+</html>
