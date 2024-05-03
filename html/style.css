@@ -41,34 +41,78 @@ body {
 #enterPlanetText {
     color: #00ff00;
     font-size: 30px;
+    font-family: "Space";
 }
 
-/* Style the container */
+#minimapContainer {
+    position: relative;
+    padding: 210px;
+}
+
 #planetInfoContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed;
-    top: 38%;
-    right: 2%;
+    font-family: "Space";
+    flex-direction: column;
 }
 
-/* Style the text element */
+
+#planetInfoContainer img:first-child {
+    transform: scaleY(-1) scaleX(-1) scale(0.9); /* Flip the image vertically */
+}
+
+#planetInfoContainer img {
+    transform: scale(0.9); /* Flip the image vertically */
+}
+
 #planetInfoText {
+    font-size: 1em;
+    letter-spacing: 5px;
+    border-right: 5px solid white;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 65%;
+    
     color: #ffffff;
-    font-size: 20px;
-    white-space: pre-line;
 }
 
- /* Style the dot */
- .dot {
-    width: 5px;
-    height: 5px;
-    background-color: white;
-    opacity: 0.4;
-    border-radius: 50%;
+#planetInfoText.show {
+    animation:
+    typing 2s steps(20),
+    cursor .4s step-end infinite alternate;
+}
+@keyframes cursor {
+    50% { border-color: transparent;}
+}
+
+@keyframes typing {
+    from { width: 0; }
+}
+
+.shadowfilter {
+    filter: drop-shadow(0px 0px 20px #0724ff);
+}
+
+.rightSideContainer {
+    display: flex;
+    align-items: center;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 1%;
+    right: 0%;
+    font-family: "Space";
+    flex-direction: column;
+}
+
+/* Style the dot */
+.dot {
+   width: 5px;
+   height: 5px;
+   background-color: white;
+   opacity: 0.4;
+   border-radius: 50%;
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
 }
