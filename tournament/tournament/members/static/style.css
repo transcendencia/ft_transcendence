@@ -1,6 +1,43 @@
 body {
-  background: #0e1217;
   color: #e3e8ef;
+  font-family: sans-serif;
+}
+
+table {
+  margin: 10px 20px;
+}
+
+button {
+  color: #ffffff;
+  background-color: #080b0e;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+  background-color: #1c1f25;
+  color: #79c7c3;
+}
+
+button:active {
+  background-color: #2e333d; 
+  color: #1bc5bd;
+}
+
+a{
+  color: #ffffff;
+  text-decoration: none;
+}
+
+a:hover{
+  color: #79c7c3;
+}
+
+a:active{
+  color: #1bc5bd;
 }
 
 .bracket {
@@ -130,15 +167,15 @@ body {
   background: #36404e;
 }
 .theme-dark .team {
-  background: #182026;
-  border-color: #232c36;
-  color: #6b798c;
-}
-.theme-dark .winner-top .match-top,
-.theme-dark .winner-bottom .match-bottom {
   background: #232c36;
   color: #e3e8ef;
   border-color: #36404e;
+}
+.theme-dark .winner-top .match-bottom,
+.theme-dark .winner-bottom .match-top {
+  background: #182026;
+  border-color: #232c36;
+  color: #6b798c;
   z-index: 1;
 }
 .theme-dark .winner-top .match-top .score,
