@@ -20,4 +20,4 @@ db.sqlite3
 note 
 
 #backend
-/backend/ft_transcendence/server/__pycache__/
+/backend/backend/__pycache__/
