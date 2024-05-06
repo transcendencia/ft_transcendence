@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   {% load static %}
-  <img src="{% static 'html/icons/mexicanAlienWhite.png' %}" alt="mexicanAlienWhite">
-  <img src="{% static 'html/icons/frenchAlienWhite.png' %}" alt="frenchAlienWhite">
-  <img src="{% static 'html/icons/englishAlienWhite' %}" alt="englishAlienWhite">
-  <img src="{% static 'html/icons/ES_NU.png' %}" alt="ES_NU">
-  <img src="{% static 'html/icons/FR_NU.png' %}" alt="FR_NU">
-  <img src="{% static 'html/icons/BR_NU.png' %}" alt="BR_NU">  
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -27,7 +21,7 @@
   <div class="loginPageUI">
     <div class="title">
       TRANSCENDENCIA
-      <img src="spaceshipIcon.png">
+      <img src="{% static 'html/spaceshipIcon.png' %}">
     </div>
     <div class="container">
       <div class="titleText" id="loginText">
@@ -48,16 +42,16 @@
     <div class="languageColumn" id="loginLanguageText">
       <div class="languageSettings">
         <div class="languageIcon" id="esp">
-          <div class="icon" style="background-image: url('mexicanAlienWhite');" ></div>
-          <div class="flag" style="background-image: url('ES_NU');"></div>
+          <div class="icon" style="background-image: url('../static/html/icons/mexicanAlienWhite.png');" ></div>
+          <div class="flag" style="background-image: url('../static/html/icons/ES_NU.png');"></div>
         </div>
         <div class="languageIcon" id="fr">
-          <div class="icon" style="background-image: url('frenchAlienWhite');" ></div>
-          <div class="flag" style="background-image: url('FR_NU');"></div>
+          <div class="icon" style="background-image: url('../static/html/icons/frenchAlienWhite.png');" ></div>
+          <div class="flag" style="background-image: url('../static/html/icons/FR_NU.png');"></div>
         </div>
         <div class="languageIcon glow" id="en">
-          <div class="icon" style="background-image: url('englishAlienWhite');" ></div>
-          <div class="flag" style="background-image: url('BR_NU');"></div>
+          <div class="icon" style="background-image: url('../static/html/icons/englishAlienWhite.png');" ></div>
+          <div class="flag" style="background-image: url('../static/html/icons/BR_NU.png');"></div>
         </div>
       </div>
       <div class="separator"></div>

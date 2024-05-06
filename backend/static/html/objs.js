@@ -8,7 +8,7 @@ let spaceShipLoaded = false;
 
 const spaceShipLoader = new GLTFLoader();
 spaceShipLoader.load(
-    'spaceShip/scene.gltf',
+    'static/html/spaceShip/scene.gltf',
     function(gltf) {
         spaceShip = gltf.scene;
         spaceShip.scale.set(0.1,0.1,0.1);
@@ -28,7 +28,7 @@ let spaceShipInt;
 let spaceShipIntLoaded = false;
 
 spaceShipLoader.load(
-    'blender/spaceshipInterior.glb',
+    'static/html/blender/spaceshipInterior.glb',
     function(gltf) {
         spaceShipInt = gltf.scene;
         spaceShipInt.scale.set(1,1,1);
@@ -47,11 +47,11 @@ spaceShipLoader.load(
     );
     
 let modelsData = [
-    {name: 'arena', filePath: 'blender/arena.glb', loaded: false},
-    {name: 'arenaRing', filePath: 'blender/arenaRing.glb', loaded: false},
-    {name: 'settings', filePath: 'blender/settingsPlanet.glb', loaded: false},
-    {name: 'settingsRing', filePath: 'blender/settingsPlanetRing.glb', loaded: false},
-    {name: 'tournament', filePath: 'blender/tournamentPlanet.glb', loaded: false},
+    {name: 'arena', filePath: 'static/html/blender/arena.glb', loaded: false},
+    {name: 'arenaRing', filePath: 'static/html/blender/arenaRing.glb', loaded: false},
+    {name: 'settings', filePath: 'static/html/blender/settingsPlanet.glb', loaded: false},
+    {name: 'settingsRing', filePath: 'static/html/blender/settingsPlanetRing.glb', loaded: false},
+    {name: 'tournament', filePath: 'static/html/blender/tournamentPlanet.glb', loaded: false},
 ];
     
 let models = [];
