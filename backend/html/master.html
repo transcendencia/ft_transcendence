@@ -3,14 +3,14 @@
 <html>
 <head>
   <link rel="stylesheet" href="{% static 'tournament/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'html/css/planetPage.css' %}">
   <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
 
   <div class="topnav">
-    <a href="/">HOME</a> |
     <a href="/add_player">ADD A PLAYER</a> |
-    <a href="/new_tournament">CREATE A TOURNAMENT</a>
+    <a href="/tournament">CREATE A TOURNAMENT</a>
   </div>
 
 {% block content %}

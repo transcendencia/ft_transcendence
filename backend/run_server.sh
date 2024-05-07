@@ -32,8 +32,6 @@ then
     echo "PostgreSQL started"
 fi
 
-
-# python manage.py makemigrations
 python manage.py makemigrations
 python manage.py migrate
 python manage.py collectstatic --noinput
