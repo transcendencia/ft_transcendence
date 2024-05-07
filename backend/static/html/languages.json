@@ -1,0 +1,62 @@
+{
+    "en": {
+        "loginText": "Login",
+        "passwordText": "Password",
+        "loginLanguageText": "Choose a language",
+        "enterPlanetText": "Press [E] to select",
+
+        "settingsPlanetInfo1": "[Name]: Settings",
+        "settingsPlanetInfo2": "[ID]: SO-0911",
+        "settingsPlanetInfo3": "[Temperature]: +127°C",
+        "tournamentPlanetInfo1": "[Name]: Galaxy Cup",
+        "tournamentPlanetInfo2": "[ID]: XR-0720",
+        "tournamentPlanetInfo3": "[Temperature]: +14.6°C",
+        "arenaPlanetInfo1": "[Name]: Pong arena",
+        "arenaPlanetInfo2": "[ID]: PA-0667",
+        "arenaPlanetInfo3": "[Temperature]: -269°C",
+
+        "settingsPlanetName": "Settings",
+        "arenaPlanetName": "Pong arena",
+        "tournamentPlanetName": "Galaxy Cup"
+    },
+    "esp": {
+        "loginText": "Usuario",
+		"passwordText": "Contraseña",
+        "loginLanguageText": "Elige un idioma",
+        "enterPlanetText": "Presiona [E] para seleccionar",
+
+        "settingsPlanetInfo1": "[Nombre] Ajustes",
+        "settingsPlanetInfo2": "[ID] SO-0911",
+        "settingsPlanetInfo3": "[temperatura] +127°C",
+        "tournamentPlanetInfo1": "[Nombre] Copa Galaxia",
+        "tournamentPlanetInfo2": "[ID] XR-0720",
+        "tournamentPlanetInfo3": "[Temperatura] +14.6°C",
+        "arenaPlanetInfo1": "[Nombre] Pong arena",
+        "arenaPlanetInfo2": "[ID] PA-0667",
+        "arenaPlanetInfo3": "[Temperatura] -269°C",
+
+        "settingsPlanetName": "Ajustes",
+        "arenaPlanetName": "Pong arena",
+        "tournamentPlanetName": "Copa Galaxia"
+    },
+    "fr": {
+        "loginText": "Nom d'Utilisateur",
+        "passwordText": "Mot de Passe",
+        "enterPlanetText": "Appuie sur [E] pour selectionner",
+        "loginLanguageText": "Choisis une langue",
+
+        "settingsPlanetInfo1": "[Nom]: Reglages",
+        "settingsPlanetInfo2": "[ID]: SO-0911",
+        "settingsPlanetInfo3": "[Temperature]: +127°C",
+        "tournamentPlanetInfo1": "[Nom]: Coupe Galaxie",
+        "tournamentPlanetInfo2": "[ID]: XR-0720",
+        "tournamentPlanetInfo3": "[Temperature]: +14.6°C",
+        "arenaPlanetInfo1": "[Nom]: Arene Pong",
+        "arenaPlanetInfo2": "[ID]: PA-0667",
+        "arenaPlanetInfo3": "[Temperature]: -269°C",
+
+        "settingsPlanetName": "Reglages",
+        "arenaPlanetName": "Arene pong",
+        "tournamentPlanetName": "Coupe Galaxie"
+    }
+}

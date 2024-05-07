@@ -1,0 +1,35 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://dj8juyx5a3ljo"
+path.s3tc="res://.godot/imported/wz_mv_greenbay_body_normal.png-46eca76a86dc66e26329a4a870902276.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+
+[deps]
+
+source_file="res://42/ft_transcendence/game/godzilla/textures/wz_mv_greenbay_body_normal.png"
+dest_files=["res://.godot/imported/wz_mv_greenbay_body_normal.png-46eca76a86dc66e26329a4a870902276.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=1
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=1
+roughness/src_normal="res://42/ft_transcendence/game/godzilla/textures/wz_mv_greenbay_body_normal.png"
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0
