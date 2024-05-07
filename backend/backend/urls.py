@@ -24,9 +24,6 @@ import authentication.views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', authentication.views.login_page, name='login'),
-    path('tournament/', authentication.views.main, name='main'),
     path('add_player/', authentication.views.add_member, name='add_member'),
-    path('new_tournament/', authentication.views.result, name='new_tournament'),
-    path('new_tournament/details/<int:id>', authentication.views.details, name='details'),
-    path('testing/', authentication.views.testing, name='testing'),
+    path('tournament/', authentication.views.result, name='new_tournament'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

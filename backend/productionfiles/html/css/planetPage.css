@@ -8,7 +8,7 @@
 	opacity: 0;
 }
 
-.square {
+.background {
 	background-color: #4a65ff1f;
 	border-radius: 5px;
 	border: 2px solid #3777ff;
@@ -20,9 +20,16 @@
 	left: 50%;;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 	text-align: center;
+	overflow: hidden;
 }
 
+.page {
+	border: solid 5px wheat;
+	height: 90%;
+	width: 90%;
+}
 .planetPanel img:first-child{
 	transform: rotate(180deg) translateX(12vh);
 }

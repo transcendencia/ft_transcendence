@@ -292,8 +292,6 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
     }
 }
 
-
-
 // Bloom Pass
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = 0.1;
