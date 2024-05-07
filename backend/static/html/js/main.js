@@ -3,7 +3,7 @@ import {spaceShip, spaceShipInt, allModelsLoaded} from "./objs.js";
 import { addStar } from "./stars.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange } from "./planetIntersection.js"
-import {landedOnPlanet, togglePlanet} from "./enterPlanet.js"
+import {landedOnPlanet, togglePlanet} from "./enterPlanet.js
 import { spaceShipMovement, camMovement} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
