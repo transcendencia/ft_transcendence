@@ -8,7 +8,7 @@ RUN  rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d
 
 # # Copy the built frontend files into the Nginx default HTML directory
-# COPY html /usr/share/nginx/html
+COPY html /usr/share/nginx/html
 
 
 
