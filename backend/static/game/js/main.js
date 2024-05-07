@@ -725,9 +725,9 @@ class Paddle extends THREE.Group {
 
         // Store the model name
         if (left)
-            this.modelName = '../models/spaceShip/scene.gltf';
+            this.modelName = 'static/game/models/spaceShip/scene.gltf';
         else
-            this.modelName = '../models/spaceShip/scene.gltf';
+            this.modelName = 'static/game/models/spaceShip/scene.gltf';
         this.model;
         // Load Blender model
         const loader = new GLTFLoader();
