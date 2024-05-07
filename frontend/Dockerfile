@@ -1,18 +1,17 @@
-FROM nginx:stable-alpine3.17
+FROM nginx:stable-alpine
 
-#Port to listen 
 EXPOSE 443
 
-# COPY nginx.conf /etc/nginx/nginx.conf
+RUN  rm /etc/nginx/conf.d/default.conf
 
-# # Specify the directory where the application code will be mounted inside the container
-# ENV APP_DIR=/usr/share/nginx/html
+# Copy custom Nginx configuration file to the container
+COPY nginx.conf /etc/nginx/conf.d
 
-# # Set the working directory
-# WORKDIR $APP_DIR
+# # Copy the built frontend files into the Nginx default HTML directory
+# COPY html /usr/share/nginx/html
 
-# # Copy the HTML files to the application directory inside the container
-# COPY html /usr/share/nginx/html/.
 
-# # Define a default command to run when the container starts
+
+
+# Command to start Nginx within the container
 CMD ["nginx", "-g", "daemon off;"]

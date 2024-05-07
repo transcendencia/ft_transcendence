@@ -35,7 +35,6 @@ COPY requirements.txt /backend
 
 COPY . /backend/
 
-
 #Update 
 RUN apt-get -y update && apt-get -y upgrade && apt install netcat-traditional
 
