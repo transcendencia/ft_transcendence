@@ -36,7 +36,7 @@ geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
     size,
     vertexColors: true,
     map: new THREE.TextureLoader().load(
-      "../assets/circle.png"
+      "static/game/assets/circle.png"
     ),
   });
   const points = new THREE.Points(geo, mat);
