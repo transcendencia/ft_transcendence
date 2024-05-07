@@ -11,6 +11,7 @@ import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { DotScreenShader } from 'three/addons/shaders/DotScreenShader.js';
 import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
+import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import getStarfield from "./starField.js"
 import getNebula from './nebula.js';
 import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
@@ -49,7 +50,75 @@ renderer2.render(scene, cameraLeft);
 // const torus = new THREE.Mesh(geometry, material);
 // scene.add(torus);
 
-const starField = getStarfield({numStars: 1000, size: 1});
+
+// LOADING SCREEN
+class LoadingScreen {
+    constructor() {
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000);
+        this.renderer = new THREE.WebGLRenderer({ // Renderer for full screen
+            canvas: document.querySelector('#c1'),
+            antialias: false
+        });
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.composer = new EffectComposer(this.renderer);
+        this.renderPass = new RenderPass(this.scene, this.camera);
+        this.composer.addPass(this.renderPass);
+        this.cameraInitialZ = 3;
+        this.cameraCloseZ = 0.5;
+        this.cameraFarZ = 150;
+        this.camera.position.z = 3;
+        this.ico = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 0), new THREE.MeshBasicMaterial({color: 0x3777ff, wireframe: true}));
+        this.ico.position.set(0, -0.25, 0);
+        this.xSpeedInitial = 0.005;
+        this.ySpeedInitial = 0.01;
+        this.xSpeedFinal = 0.11;
+        this.ySpeedFinal = 0.1;
+        this.isAnimatingCamera = true;
+        this.loading = true;
+        this.scene.add(this.ico);
+        this.light = new THREE.PointLight(0xffffff, 1);
+        this.light.position.set(0, 0, 5);
+        this.scene.add(this.light);
+    }
+    loadingComplete()
+    {
+        if (this.isAnimatingCamera)
+        {
+            this.isAnimatingCamera = false;
+            console.log("wsh")
+            const duration = 4000;
+            new TWEEN.Tween(this)
+                .to({xSpeedInitial: this.xSpeedFinal , ySpeedInitial: this.ySpeedFinal, cameraInitialZ: this.cameraCloseZ}, duration)
+                .easing(TWEEN.Easing.Linear.None)
+                .onUpdate(() => {
+                    console.log("wsh");
+                    this.camera.position.z = this.cameraInitialZ;
+                })
+                .onComplete(() => {
+                    new TWEEN.Tween(this)
+                        .to({cameraInitialZ: this.cameraFarZ}, duration / 3)
+                        .easing(TWEEN.Easing.Linear.None)
+                        .onUpdate(() => {
+                            this.camera.position.z = this.cameraInitialZ;
+                        })
+                        .onComplete(() => {
+                            this.loading = false;
+                        })
+                        .start();
+                })
+                .start();
+            // closeTween.start();
+            // closeTween.chain(farTween);
+        }
+    }
+}
+const loadingScreen = new LoadingScreen();
+
+
+// SPACE DECORATION
+const starField = getStarfield({numStars: 1000, size: 0.5});
 
 const nebula1 = getNebula({
     hue : 0.6,
@@ -59,7 +128,7 @@ const nebula1 = getNebula({
     sat : 0.8,
     size : 220,
     z : 0,
-    x : -320, 
+    x : -320,
 });
 
 const nebula2 = getNebula({
@@ -468,7 +537,7 @@ class Arena extends THREE.Mesh {
             this.setTopView(camera);
         }
         if(keyDown['o'])
-            this.paddleRight.changeBlenderModel('godzilla/scene.gltf');
+            this.paddleRight.changeBlenderModel('static/game/models/godzilla/scene.gltf');
         if (this.game.leftScore >= this.game.maxScore || this.game.rightScore >= this.game.maxScore)
         {
             this.game.isPlaying = false;
@@ -725,9 +794,9 @@ class Paddle extends THREE.Group {
 
         // Store the model name
         if (left)
-            this.modelName = 'static/game/models/spaceShip/scene.gltf';
+            this.modelName = '../../static/game/models/spaceShip/scene.gltf';
         else
-            this.modelName = 'static/game/models/spaceShip/scene.gltf';
+            this.modelName = '../../static/game/models/spaceShip/scene.gltf';
         this.model;
         // Load Blender model
         const loader = new GLTFLoader();
@@ -1548,6 +1617,13 @@ composer1.addPass(arena1.verticalBlur);
 composer2.addPass(arena1.horizontalBlur);
 composer2.addPass(arena1.verticalBlur);
 
+// after image pass
+let afterimagePass = new AfterimagePass();
+afterimagePass.uniforms.damp.value = 0.90;
+composer1.addPass(afterimagePass);
+loadingScreen.composer.addPass(afterimagePass);
+loadingScreen.composer.addPass(bloomPass);
+
 // // dotScreen
 // const effect1 = new ShaderPass( DotScreenShader );
 // 				effect1.uniforms[ 'scale' ].value = 256;
@@ -1579,7 +1655,6 @@ function shakeCamera(camera, intensity, duration) {
     update();
 }
 
-
 let fpsInterval = 1000 / 75; // 60 FPS
 let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
 let lastUpdateTime = performance.now();
@@ -1595,11 +1670,22 @@ function animate()
     if (elapsed < fpsInterval) return; // Skip if too big FPS
     else
     {
-        TWEEN.update();
-        arena1.monitorArena();
-        // arena1.material.uniforms.time.value += 0.1; // Adjust speed of animation
-        composer1.render();
-        composer2.render();
+        if (!loadingScreen.loading)
+        {
+            TWEEN.update();
+            arena1.monitorArena();
+            // arena1.material.uniforms.time.value += 0.1; // Adjust speed of animation
+            composer1.render();
+            composer2.render();
+        }
+        else
+        {
+            if (keyDown['o'])
+                loadingScreen.loadingComplete();
+            loadingScreen.ico.rotation.y += loadingScreen.ySpeedInitial;
+            loadingScreen.ico.rotation.x += loadingScreen.xSpeedInitial;
+            loadingScreen.composer.render();
+        }
     }
 
     stats.update(); // Update Three.js stats

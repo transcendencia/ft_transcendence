@@ -19,3 +19,6 @@ def login_page(request):
 				message = 'Identifiants invalides.'
 	return render(
 		request, 'index.html', context={'form': form, 'message': message})
+
+def game(request):
+	return render(request, 'index_game.html')
