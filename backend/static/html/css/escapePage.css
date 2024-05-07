@@ -8,7 +8,7 @@
     top: 50%;
     left: 50%;
     transition: opacity 1s;
-    z-index: 1;
+    z-index: -1;
 }
 
 
@@ -94,13 +94,15 @@
 .userInfoCont {
     font-family: "computer";
     color: red;
-    font-size: 50px;
+    font-size: 35px;
     padding: 1vh;
     border-radius: 100px;
-    background-color: #3776ff75;
-    border: 5px solid #3777ff;
+    background-color: rgb(20, 20, 20);
+
+    border: 4px solid #3777ff;
+
     height: 30px;
-    width: 300px;
+    width: 250px;
     display: flex; /* Add display flex */
     align-items: center; /* Vertically center the items */
 }
@@ -109,8 +111,9 @@
     width: 80px; /* Adjust width as needed */
     height: 80px; /* Adjust height as needed */
     border-radius: 50%; /* Make the container circular */
-    border: 5px solid #3777ff; /* Border properties */
-    background-color: #3776ff8a; /* Background color */
+    border: 4px solid #3777ff;
+    background-color: rgb(20, 20, 20);
+    /* Background color */
 	margin-right: 10px; /* Add margin to push it away from the text */
 	margin-left: -20px;
     display: flex; /* Add display flex */
