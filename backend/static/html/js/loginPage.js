@@ -42,9 +42,10 @@ const loginLanguageText = document.getElementById('loginLanguageText');
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
         addGlow(icon.id);
-        
-        console.log(languageFile);
         currentLanguage = icon.id;
+        loginText.childNodes[0].textContent = getTranslatedText('loginText');
+        passwordText.childNodes[0].textContent = getTranslatedText('passwordText');
+        loginLanguageText.childNodes[4].textContent = getTranslatedText('loginLanguageText');
         languageIcons.forEach(function(otherIcon) {
             if (otherIcon !== icon) {
                 removeGlow(otherIcon.id);
