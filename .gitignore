@@ -5,9 +5,9 @@
 venv/
 
 #DATABASE
-/backend/ft_transcendence/db.sqlite3
+db.sqlite3
 
-/backend/ft_transcendence/server/__pycache__/
+/__pycache__/
 
 # .vscode
 *.vscode
@@ -20,4 +20,4 @@ venv/
 note 
 
 #backend
-/backend/ft_transcendence/server/__pycache__/
+/backend/backend/__pycache__/
