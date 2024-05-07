@@ -1,7 +1,7 @@
 export let currentLanguage = 'en';
 let languageFile;
 
-fetch('languages.json')
+fetch('static/html/languages.json')
     .then(response => response.json())
     .then(data => {
         languageFile = data;
