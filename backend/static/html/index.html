@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css/loginPage.css">
     <link rel="stylesheet" href="css/rsContainer.css">
     <link rel="stylesheet" href="css/planetPage.css">
+    <link rel="stylesheet" href="css/escapePage.css">
+    <link rel="stylesheet" href="css/arenaPage.css">
     <script type="importmap">
         {
           "imports": {
@@ -19,7 +21,7 @@
       </script>
 </head>
 <body>
-  <div class="loginPageUI">
+  <!-- <div class="loginPageUI">
     <div class="title">
       TRANSCENDENCIA
       <img src="assets/icons/spaceshipIcon.png">
@@ -58,7 +60,7 @@
       <div class="separator"></div>
       - Choose a language -
     </div>
-  </div>
+  </div> -->
   
     <div id="a">
       <canvas id="c1"></canvas>
@@ -68,26 +70,57 @@
     <div id="enterPlanetTextContainer">
       <div id="enterPlanetText"></div>
     </div>
+
     <div id="rsCont" class="rightSideContainer">
       <div id="minimapContainer"></div>
       <div id="planetInfoLine0" class="planetInfoText redShadowfilter" style="text-align: center;border: none;font-size: 30px;;"> CODEX </div>
       <div id="planetInfoContainer">
-        <img src="../game/scoreUI.png" class="blueShadowfilter">
+        <img src="assets/icons/scoreUI.png" class="blueShadowfilter">
         <div id="planetInfoLine1" class="planetInfoText redShadowfilter"></div>
         <div id="planetInfoLine2" class="planetInfoText redShadowfilter"></div>
         <div id="planetInfoLine3" class="planetInfoText redShadowfilter"></div>
-        <img src="../game/scoreUI.png" class="blueShadowfilter">
+        <img src="assets/icons/scoreUI.png" class="blueShadowfilter">
       </div>
     </div>
     <div class="dot"></div>
 
     <div class="planetPanel">
-      <img src="../game/scoreUI.png" class="blueShadowfilter">
-      <img src="../game/scoreUI.png" class="blueShadowfilter">
-      <div class="square blueShadowfilter"> 
-        <div id="planetTitle" class="planetInfoText redShadowfilter" style="text-align: center;border: none;font-size: 40px; top: 5%;"></div>
-      </div>
+      <img src="assets/icons/scoreUI.png" class="blueShadowfilter">
+      <img src="assets/icons/scoreUI.png" class="blueShadowfilter">
+      <div class="background blueShadowfilter">
+        <div class="leftColumn">
+    
+    <div style="font-size: 20px; font-family: 'space'; color: white;"> User list </div>
+          <div class="userlistBackground"></div>
+        </div>
+        <div class="rightColumn">
+          <div style="font-size: 50px; font-family: 'space'; color: white;"> Arena </div>
+          <div class="thirdPlayerCont">
+            <div class="plusPlayer">+</div>
+          </div>
+          <div class="playerFieldRow">
+            <div class="elemCont">
+              <div class="userInfoCont">
+                <div class="profilePic">
+                  <img src="assets/icons/ES_NU.png">
+                </div>
+              AtomiK
+              </div>
+            </div>
+            <img src="assets/icons/spaceshipIcon.png" style="transform: scale(0.08) rotate(90deg); margin: -250px">
+            <div class="elemCont">
+              <div class="pongField redshadowfilter"></div>
+            </div>
+            <img src="assets/icons/spaceshipIcon.png" style="transform: scale(0.08) rotate(-90deg); margin: -250px">
+            <div class="elemCont">
+              <div class="thirdPlayerCont">
+                <div class="plusPlayer">+</div>
+              </div>
+            </div>
+          </div> 
     </div>
+  </div>
+</div> 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script type="module" src="js/main.js"></script>

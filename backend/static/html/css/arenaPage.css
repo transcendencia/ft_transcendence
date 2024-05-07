@@ -1,0 +1,83 @@
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 20%;
+    text-align: center;
+}
+
+.leftColumn img {
+    transform: rotate(90deg) scale(0.5);
+}
+
+.userlistBackground {
+    background-color: #000f61b2;
+	border-radius: 5px;
+	border: 4px solid #3777ff;
+    margin-left: 20px;
+    height: 80%;
+    width: 90%;
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 80%;
+}
+
+.plusPlayer {
+    font-family: "computer";
+    font-size: 150px;
+    color: white;
+    background-color: rgb(20, 20, 20);
+    border: 5px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+}
+
+.elemCont {
+    height: 100%;
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.plusPlayer:hover {
+    background-color: rgb(200, 200, 200);
+}
+
+.thirdPlayerCont {
+    margin-top: 2%;
+    height: 15%;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.playerFieldRow {
+    height: 25%;
+    width: 95%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+.pongField {
+    background-color: #ff000053;
+    border-radius: 5px;
+    border: 4px solid #ff3737;
+    width: 90%;
+    height: 90%;
+}

@@ -6,7 +6,7 @@ import { resetOutline, resetOutlineAndText, planetInRange } from "./planetInters
 export let landedOnPlanet = false;
 
 var planetPanel = document.querySelector(".planetPanel");
-var square = document.querySelector(".square");
+var background = document.querySelector(".background");
 var images = document.querySelectorAll(".planetPanel img");
 let anim;
 
@@ -18,11 +18,11 @@ export function togglePanelDisplay() {
         planetPanel.style.animation = "roll 2s forwards";
         images[0].style.animation = "moveImageRight 2s forwards";
         images[1].style.animation = "moveImageLeft 2s forwards";
-        square.style.animation = "expandBG 2s forwards";
+        background.style.animation = "expandBG 2s forwards";
     } else {
         images[0].style.animation = "moveImageRightreverse 1s forwards";
         images[1].style.animation = "moveImageLeftreverse 1s forwards";
-        square.style.animation = "expandBGreverse 1s forwards"
+        background.style.animation = "expandBGreverse 1s forwards"
         anim = setTimeout(function() {planetPanel.style.animation = "";
     }, 2000)
     }
@@ -54,7 +54,7 @@ export function togglePlanet() {
         resetRotations();
         landedOnPlanet = false;
     }
-    toggleRSContainerVisibility();
+    // toggleRSContainerVisibility();
     resetOutlineAndText();
     toggleBlurDisplay();
     togglePanelDisplay();

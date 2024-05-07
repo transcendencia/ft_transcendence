@@ -8,85 +8,96 @@
 	opacity: 0;
 }
 
-.square {
+.background {
+	padding: 10px;
 	background-color: #4a65ff1f;
 	border-radius: 5px;
-	border: 2px solid #3777ff;
+	border: 4px solid #3777ff;
 	width: 0;
-	height: 10%;
+	height: 5%;
 	position: absolute;
 	transform: translate(-50%, -50%) rotate(-90deg);
 	top: 50%;
 	left: 50%;;
 	display: flex;
 	justify-content: center;
-	text-align: center;
+	align-items: center;
+	flex-direction: row;
+	overflow: hidden;
 }
 
 .planetPanel img:first-child{
 	transform: rotate(180deg) translateX(12vh);
 }
 
-.planetPanel img{
-	transform: translateX(12vh);
 
+.planetPanel .profilePic img:first-child{
+	transform: none;
 }
+
+.planetPanel .leftColumn img:first-child{
+	transform: rotate(180deg) scale(0.5) scaleX(-1);
+}
+
+.planetPanel img:nth-child(2){
+	transform: translateX(12vh);
+}
+
 
 @keyframes roll {
 	1%{opacity: 1;}
 	100% {opacity: 1;transform: translate(-50%, -50%) rotate(450deg) scale(1);}
-	
 }
 
 @keyframes moveImageLeft {
 	0% {opacity: 0;}
 	40% {opacity: 1; transform: translateX(12vh);}
-	90% {opacity: 1;transform: translateX(-15vh);}
-    100% {opacity: 1;transform: translateY(35vw) translateX(-15vh);}
+	90% {opacity: 1;transform: translateX(-23vh);}
+    100% {opacity: 1;transform: translateY(35vw) translateX(-21vh);}
 }
 
 @keyframes moveImageRight {
 	0% {opacity: 0;}
 	40% {opacity: 1;transform: rotate(180deg) translateX(12vh);}
-	90% {opacity: 1;transform: rotate(180deg) translateX(-15vh);}
-    100% {opacity: 1;transform: rotate(180deg) translateY(35vw) translateX(-15vh);}
+	90% {opacity: 1;transform: rotate(180deg) translateX(-21vh);}
+    100% {opacity: 1;transform: rotate(180deg) translateY(35vw) translateX(-21vh);}
 }
 
 @keyframes expandBG {
-	0% {height: 0%; width: 1.5vw;}
-	40% {height: 0%; width: 1.5vw;}
-	90% {height: 75vh; width: 1.5vw;}
+	0% {height: 0%; width: 1vw;}
+	40% {height: 0%; width: 1vw;}
+	90% {height: 75vh; width: 1vw;}
 	100% {width: 70vw; height: 75vh}
 }
 
 @keyframes moveImageLeftreverse {
 	100% {opacity: 0;}
 	60% {opacity: 1;transform: translateX(12vh);}
-	10% {opacity: 1;transform: translateX(-15vh);}
-    0% {opacity: 1;transform: translateY(35vw) translateX(-15vh);}
+	10% {opacity: 1;transform: translateX(-21vh);}
+    0% {opacity: 1;transform: translateY(35vw) translateX(-21vh);}
 }
 
 @keyframes moveImageRightreverse {
 	100% {opacity: 0;}
 	60% {opacity: 1; transform: rotate(180deg) translateX(12vh);}
-	10% {opacity: 1;transform: rotate(180deg) translateX(-15vh);}
-    0% {opacity: 1;transform: translateY(-35vw) rotate(180deg) translateX(-15vh);}
+	10% {opacity: 1;transform: rotate(180deg) translateX(-21vh);}
+    0% {opacity: 1;transform: translateY(-35vw) rotate(180deg) translateX(-21vh);}
 }
 
 @keyframes upDownImgR {
-	0% {transform: translateX(-15vh) translateY(35vw)}
-	100% {transform: translateX(-12vh) translateY(35vw)}
+	0% {transform: translateX(-21vh) translateY(35vw)}
+	100% {transform: translateX(-23vh) translateY(35vw)}
 }
 
 @keyframes upDownImgL {
-	0% {transform: rotate(180deg) translateX(-15vh) translateY(35vw)}
-	100% {transform: rotate(180deg) translateX(-12vh) translateY(35vw)}
+	0% {transform: rotate(180deg) translateX(-21vh) translateY(35vw)}
+	100% {transform: rotate(180deg) translateX(-23vh) translateY(35vw)}
 }
 
 @keyframes expandBGreverse {
 	0% {height: 75vh; width: 70vw;}
-    10% {height: 75vh; width: 1.5vw;}
-	60% {height: 0%; width: 1.5vw; border: 2px solid #3777ff;}
-	100% {height: 0%; width: 1.5vw; border: none;}
+    10% {height: 75vh; width: 1vw;}
+	60% {height: 0%; width: 1vw; border: 2px solid #3777ff;}
+	100% {height: 0%; width: 1vw; border: none;}
 }
 

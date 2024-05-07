@@ -75,8 +75,8 @@
 .flag {
     background-size: 50%;
     position: absolute;
-    width: 139%;
-    height: 139%;
+    width: 143%;
+    height: 143%;
     background-size: contain;
     background-position: center;
     opacity: 0; /* Initially hide the flag */

@@ -42,7 +42,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     minimapCamera.position.set(sun.position.x + 200, sun.position.y + 500, sun.position.z);
     
     const minimapRenderer = new THREE.WebGLRenderer();
-    minimapRenderer.setSize(window.innerWidth * 0.15, window.innerWidth * 0.15);
+    minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
     minimapRenderer.setClearColor(0x000000, 0); 
     minimapRenderer.domElement.style.borderRadius = '100%';
     minimapRenderer.domElement.style.position = 'absolute';
@@ -239,9 +239,10 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
-        loginPageContainer.style.opacity = 0;
-        console.log("e pressed");
-        startAnimation();
+        // loginPageContainer.style.opacity = 0;
+        // console.log("e pressed");
+        // startAnimation();
+        togglePlanet();
     }
     if (event.key === 'e' && inRange)
         togglePlanet();
