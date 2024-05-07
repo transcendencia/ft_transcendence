@@ -45,6 +45,8 @@ RUN pip install --no-cache-dir -r ./requirements.txt
 
 RUN pip install django
 
+RUN pip install whitenoise
+
 RUN pip install python-dotenv
 
 RUN pip install psycopg2
