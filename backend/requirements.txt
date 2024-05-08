@@ -4,3 +4,7 @@ backports.zoneinfo==0.2.1
 Django==4.2.11
 sqlparse==0.5.0
 typing-extensions==4.11.0
+whitenoise==6.6.0
+python-dotenv==1.0.1
+fastapi==0.111.0
+uvicorn==0.29.0

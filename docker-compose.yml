@@ -18,8 +18,8 @@ services:
     volumes:
       - database_volume:/var/lib/postgresql/data
 
-  backend:
-    container_name: backend
+  server:
+    container_name: server
     networks:
       - ft_transcendence
     build:
@@ -35,23 +35,9 @@ services:
     volumes:
       - ./backend/:/backend
 
-  frontend:
-    container_name: nginx
-    networks:
-      - ft_transcendence
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    env_file: .env
-    restart: on-failure
-    ports:
-      - "4430:443"
-    depends_on:
-    -  backend
-
 volumes:
-  backend:
-    name: backend
+  server_volume:
+    name: server_volume
     driver: local
     driver_opts:
       type: 'none'
