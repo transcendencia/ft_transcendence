@@ -65,22 +65,31 @@ class LoadingScreen {
         this.composer = new EffectComposer(this.renderer);
         this.renderPass = new RenderPass(this.scene, this.camera);
         this.composer.addPass(this.renderPass);
-        this.cameraInitialZ = 3;
-        this.cameraCloseZ = 0.5;
-        this.cameraFarZ = 150;
-        this.camera.position.z = 3;
-        this.ico = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 0), new THREE.MeshBasicMaterial({color: 0x3777ff, wireframe: true}));
+        this.cameraInitialZ = 8;
+        this.cameraCloseZ = 4;
+        this.cameraFarZ = 500;
+        this.camera.position.z = this.cameraInitialZ;
+        this.ico = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 0), new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true}));
+        this.ico2 = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 0), new THREE.MeshStandardMaterial({color: 0xffffff}));
         this.ico.position.set(0, -0.25, 0);
+        this.ico2.position.set(0, -0.25, 0);
+        this.bigXspeed = 0.005;
+        this.bigYspeed = 0.015;
         this.xSpeedInitial = 0.005;
-        this.ySpeedInitial = 0.01;
+        this.ySpeedInitial = 0.015;
         this.xSpeedFinal = 0.11;
         this.ySpeedFinal = 0.1;
         this.isAnimatingCamera = true;
         this.loading = true;
         this.scene.add(this.ico);
-        this.light = new THREE.PointLight(0xffffff, 1);
-        this.light.position.set(0, 0, 5);
-        this.scene.add(this.light);
+        this.scene.add(this.ico2);
+        this.light = new THREE.PointLight(0xffffff, 0.4);
+        this.light2 = new THREE.PointLight(0xffffff, 0.4);
+        this.light3 = new THREE.PointLight(0xffffff, 0.5);
+        this.light.position.set(0, 5, 0);
+        this.light2.position.set(0, -5, 0);
+        this.light3.position.set(0, 0, 5);
+        this.scene.add(this.light, this.light2, this.light3);
     }
     loadingComplete()
     {
@@ -88,20 +97,20 @@ class LoadingScreen {
         {
             this.isAnimatingCamera = false;
             console.log("wsh")
-            const duration = 4000;
+            const duration = 2500;
             new TWEEN.Tween(this)
                 .to({xSpeedInitial: this.xSpeedFinal , ySpeedInitial: this.ySpeedFinal, cameraInitialZ: this.cameraCloseZ}, duration)
-                .easing(TWEEN.Easing.Linear.None)
+                .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     console.log("wsh");
                     this.camera.position.z = this.cameraInitialZ;
                 })
                 .onComplete(() => {
-                    new TWEEN.Tween(this)
-                        .to({cameraInitialZ: this.cameraFarZ}, duration / 3)
+                    new TWEEN.Tween(this.camera.position)
+                        .to({z: this.cameraFarZ}, duration)
                         .easing(TWEEN.Easing.Linear.None)
                         .onUpdate(() => {
-                            this.camera.position.z = this.cameraInitialZ;
+                            // this.camera.position.z = this.cameraInitialZ;
                         })
                         .onComplete(() => {
                             this.loading = false;
@@ -109,9 +118,15 @@ class LoadingScreen {
                         .start();
                 })
                 .start();
-            // closeTween.start();
-            // closeTween.chain(farTween);
         }
+    }
+    animate()
+    {
+        this.ico.rotation.y += this.bigYspeed * 2;
+        this.ico.rotation.x += this.bigXspeed * 2;
+        this.ico2.rotation.y -= this.ySpeedInitial;
+        this.ico2.rotation.x += this.xSpeedInitial;
+        this.composer.render();
     }
 }
 const loadingScreen = new LoadingScreen();
@@ -303,7 +318,7 @@ const blueShaderMaterial = new THREE.ShaderMaterial({
 
 //ARENA CLASS
 class Arena extends THREE.Mesh {
-    constructor(centerPosition, width, height, depth)
+    constructor(centerPosition, width, height, depth, loadingScreen)
     {
 
         // Create geometry for the arena
@@ -357,6 +372,7 @@ class Arena extends THREE.Mesh {
         this.maxSpeed = this.width / 40;
         this.isSplitScreen = false;
         this.isAnimatingCamera = false;
+        this.loadingScreen = loadingScreen;
         this.viewPoint1 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z + this.width * 1);
         this.viewPoint2 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z + this.width * 1);
         this.viewPoint3 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
@@ -717,12 +733,18 @@ class Arena extends THREE.Mesh {
             this.isBeingReset = false;
             if (this.game.isOver)
             {
-                 this.game.isPlaying = false;
-                 this.game.isOver = false;
-                 this.game.leftScore = 0;
-                 this.game.rightScore = 0;
-                 swapToFullScreen();
-                 this.setTopView(camera);
+                this.game.isPlaying = false;
+                this.game.isOver = false;
+                this.game.leftScore = 0;
+                this.game.rightScore = 0;
+                swapToFullScreen();
+                this.setTopView(camera);
+                this.loadingScreen.loading = true;
+                this.loadingScreen.cameraInitialZ = 8;
+                this.loadingScreen.camera.position.z = this.loadingScreen.cameraInitialZ;
+                this.loadingScreen.xSpeedInitial = 0.005;
+                this.loadingScreen.ySpeedInitial = 0.015;
+                this.loadingScreen.isAnimatingCamera = true;
             }
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
@@ -1556,7 +1578,7 @@ function monitorScreen()
 }
 
 const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 28, 1.7, 34);
+const arena1 = new Arena(centerPosition, 28, 1.7, 34, loadingScreen);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
 arena1.idleCameraAnimation();
 
@@ -1620,8 +1642,8 @@ composer2.addPass(arena1.verticalBlur);
 // after image pass
 let afterimagePass = new AfterimagePass();
 afterimagePass.uniforms.damp.value = 0.90;
-composer1.addPass(afterimagePass);
-loadingScreen.composer.addPass(afterimagePass);
+// composer1.addPass(afterimagePass);
+// loadingScreen.composer.addPass(afterimagePass);
 loadingScreen.composer.addPass(bloomPass);
 
 // // dotScreen
@@ -1629,33 +1651,7 @@ loadingScreen.composer.addPass(bloomPass);
 // 				effect1.uniforms[ 'scale' ].value = 256;
 // 				composer1.addPass( effect1 );
 
-
-function shakeCamera(camera, intensity, duration) {
-    const originalPosition = camera.position.clone();
-    const shake = new THREE.Vector3();
-    let time = 0;
-
-    function update() {
-        time += 1;
-        if (time > duration) {
-            camera.position.copy(originalPosition);
-            return;
-        }
-
-        shake.set(
-            Math.random() * intensity - intensity / 2,
-            Math.random() * intensity - intensity / 2,
-            Math.random() * intensity - intensity / 2
-        );
-
-        camera.position.add(shake);
-        requestAnimationFrame(update);
-    }
-
-    update();
-}
-
-let fpsInterval = 1000 / 75; // 60 FPS
+let fpsInterval = 1000 / 120; // 120 FPS
 let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
 let lastUpdateTime = performance.now();
 
@@ -1665,14 +1661,14 @@ function animate()
     requestAnimationFrame( animate );
     // controls.update();
 
-    let now = performance.now();
-    let elapsed = now - lastUpdateTime;
-    if (elapsed < fpsInterval) return; // Skip if too big FPS
-    else
+    // let now = performance.now();
+    // let elapsed = now - lastUpdateTime;
+    // if (elapsed < fpsInterval) return; // Skip if too big FPS
+    // else
     {
+        TWEEN.update();
         if (!loadingScreen.loading)
         {
-            TWEEN.update();
             arena1.monitorArena();
             // arena1.material.uniforms.time.value += 0.1; // Adjust speed of animation
             composer1.render();
@@ -1680,16 +1676,14 @@ function animate()
         }
         else
         {
-            if (keyDown['o'])
+            if (keyDown['g'])
                 loadingScreen.loadingComplete();
-            loadingScreen.ico.rotation.y += loadingScreen.ySpeedInitial;
-            loadingScreen.ico.rotation.x += loadingScreen.xSpeedInitial;
-            loadingScreen.composer.render();
+            loadingScreen.animate();
         }
     }
 
-    stats.update(); // Update Three.js stats
-    lastUpdateTime = now - (elapsed % fpsInterval);
-    stats.time = performance.now();
+    // stats.update(); // Update Three.js stats
+    // lastUpdateTime = now - (elapsed % fpsInterval);
+    // stats.time = performance.now();
 }
 animate();
