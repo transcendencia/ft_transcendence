@@ -116,11 +116,6 @@
         transition: border-color 2s ease, background-color 2s ease;
     }
 
-    .glow {
-        border-color: #3777ff; /* Change border color to the shine color */
-        box-shadow: 0 0 100px #0724ff; /* Add a white shadow */
-    }
-
     .shadowfilter {
         filter: drop-shadow(0px 0px 20px #0724ff);
     }

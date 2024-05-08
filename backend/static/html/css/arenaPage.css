@@ -8,15 +8,6 @@
     text-align: center;
 }
 
-.userlistBackground {
-    background-color: #000f61b2;
-	border-radius: 5px;
-	border: 4px solid #3777ff;
-    margin-left: 20px;
-    height: 80%;
-    width: 90%;
-}
-
 .rightColumn {
     display: flex;
     flex-direction: column;
@@ -24,6 +15,67 @@
     align-items: center;
     height: 100%;
     width: 80%;
+}
+
+.userlistBackground {
+    background-color: #000f61b2;
+    border-radius: 5px;
+    border: 4px solid #3777ff;
+    height: 80%;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+@keyframes shadowBlink {
+    100% {box-shadow: 0 0 40px rgba(171, 80, 0, 255)}
+    0% {box-shadow: 0 0 40px rgba(171, 0, 0, 0)}
+}
+
+.userTile {
+    margin: 3%;
+    width: 95%;
+    height: 8%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.textContainer {
+    margin-left: -5px;
+    border-radius: 5px;
+    border: 2px solid rgba(55, 118, 255, 0.39);
+    border-left: none;
+    background-color: #00000031;
+    font-size: 15px;
+    font-family: "space";
+    text-align: center;
+    color: #3777ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 95%;
+    width: 80%;
+}
+
+.imgContainer {
+    border-radius: 5px;
+    border: 4px solid rgba(55, 118, 255, 0.39);
+    height: 100%;
+    width: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.imgContainer img{
+    height: 100%;
+    width: auto;
 }
 
 .plusPlayer {
@@ -42,7 +94,7 @@
 }
 
 .plusPlayer:hover {
-    background-color: rgb(80,80, 80);
+    background-color: rgb(50,50,50);
 }
 
 .movingSpaceShip1 {

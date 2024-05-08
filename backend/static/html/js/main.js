@@ -246,8 +246,6 @@ document.addEventListener('keydown', (event) => {
     }
     if (event.key === 'e' && inRange)
         togglePlanet();
-    if (event.key === 'u')
-        triggerInfiniteAnim();
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
             togglePlanet();

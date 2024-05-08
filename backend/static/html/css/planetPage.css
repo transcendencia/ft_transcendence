@@ -26,7 +26,7 @@
 	overflow: hidden;
 }
 
-.planetPanel img:first-child{
+/* .planetPanel img:first-child{
 	transform: rotate(180deg) translateX(12vh);
 }
 
@@ -41,7 +41,7 @@
 
 .planetPanel img:nth-child(2){
 	transform: translateX(12vh);
-}
+} */
 
 
 @keyframes roll {

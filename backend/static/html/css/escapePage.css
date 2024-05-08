@@ -92,9 +92,9 @@
 }
 
 .userInfoCont {
-    font-family: "computer";
+    font-family: "space";
     color: red;
-    font-size: 35px;
+    font-size: 15px;
     padding: 1vh;
     border-radius: 100px;
     background-color: rgb(20, 20, 20);
