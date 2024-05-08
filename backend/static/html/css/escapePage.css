@@ -123,6 +123,6 @@
 }
 
 .profilePic img {
-    width: 100%; /* Make the image fill the container */
+    width: auto; /* Make the image fill the container */
     height: 100%; /* Make the image fill the container */
 }

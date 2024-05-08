@@ -17,6 +17,10 @@
     width: 80%;
 }
 
+.rightColumn > * {
+    /* border: 5px solid violet; */
+}
+
 .userlistBackground {
     background-color: #000f61b2;
     border-radius: 5px;
@@ -27,6 +31,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    overflow: hidden;
 }
 
 @keyframes shadowBlink {
@@ -98,21 +103,25 @@
 }
 
 .movingSpaceShip1 {
+    margin-right: -20px;
+    border-right: 5px solid white;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50px;
+    height: 40px;
     width: 50px;
     animation: moveUpDown 2s infinite alternate linear;
 }
 
 .movingSpaceShip2 {
+    margin-left: -20px;
+    border-left: 5px solid white;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50px;
+    height: 40px;
     width: 50px;
-    animation: moveUpDown 2s infinite alternate 1.4s linear;
+    animation: moveUpDown 2s infinite alternate 2s linear;
 }
 
 @keyframes moveUpDown {
@@ -120,21 +129,29 @@
     100% {transform: translateY(-50px); /* Move up by 50px */}
   }
 
+  @keyframes ballMoveLeftRight {
+    0% {transform: translateX(135px); /* Initial position */}
+    100% {transform: translateX(-135px); /* Move up by 50px */}
+  }
+
+
 .elemCont {
     height: 100%;
     width: 30%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 .thirdPlayerCont {
-    margin-top: 2%;
+    margin: 2%;
     height: 15%;
     width: 90%;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .playerFieldRow {
@@ -152,6 +169,18 @@
 	border: 4px solid #3777ff;
     width: 90%;
     height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.ball {
+    background-color: #ffffff;
+	border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    animation: ballMoveLeftRight 2s linear infinite 0.9s alternate;
 }
 
 @keyframes unrollBG {
