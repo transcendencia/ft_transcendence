@@ -80,7 +80,7 @@ class LoadingScreen {
         this.xSpeedFinal = 0.11;
         this.ySpeedFinal = 0.1;
         this.isAnimatingCamera = true;
-        this.loading = true;
+        this.loading = false;
         this.scene.add(this.ico);
         this.scene.add(this.ico2);
         this.light = new THREE.PointLight(0xffffff, 0.4);
@@ -96,13 +96,11 @@ class LoadingScreen {
         if (this.isAnimatingCamera)
         {
             this.isAnimatingCamera = false;
-            console.log("wsh")
             const duration = 2500;
             new TWEEN.Tween(this)
                 .to({xSpeedInitial: this.xSpeedFinal , ySpeedInitial: this.ySpeedFinal, cameraInitialZ: this.cameraCloseZ}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
-                    console.log("wsh");
                     this.camera.position.z = this.cameraInitialZ;
                 })
                 .onComplete(() => {
@@ -226,6 +224,7 @@ let keyDown = {
     ' ': false,
     'c': false,
     'v': false,
+    'n': false,
     'o': false,
     'p': false,
     'i': false,
@@ -369,6 +368,7 @@ class Arena extends THREE.Mesh {
         this.isBeingBlurred = false;
         this.isBeingReset = false;
         this.game = new Game(this);
+        this.thirdPlayer = new ThirdPlayer(this);
         this.maxSpeed = this.width / 40;
         this.isSplitScreen = false;
         this.isAnimatingCamera = false;
@@ -1298,6 +1298,107 @@ class Ball extends THREE.Mesh {
     }
 }
 
+class ThirdPlayer extends THREE.Group {
+    constructor(arena) {
+        super(); // Call the parent constructor
+        this.arena = arena;
+        this.ball = undefined; // Initialize the ball as undefined initially
+
+        // Define spaceship in the outer scope
+        let spaceship;
+
+        // Load the spaceship model asynchronously
+        const loader = new GLTFLoader();
+        loader.load(
+            '../../static/game/models/spaceShip/scene.gltf',
+            (gltf) => {
+                spaceship = gltf.scene; // Assign the loaded model to spaceship
+                // Position the spaceship relative to the arena
+                spaceship.rotation.y = Math.PI / 2;
+                // spaceship.position.set(-this.arena.width / 2 - 2, this.arena.height, 0);
+                // Scale the spaceship as needed
+                spaceship.scale.set(0.4, 0.4, 0.4);
+                // Add the spaceship to the group
+                this.add(spaceship);
+                this.position.set(-this.arena.width / 2 - 2, this.arena.height, 0);
+                // Create a sphere representing the ball
+                this.ball = new THREE.SphereGeometry(0.5, 32, 32); // Adjust size and segments as needed
+                const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff88ff }); // Red color for the ball
+                this.ballMesh = new THREE.Mesh(this.ball, ballMaterial);
+                // Position the ball in front of the spaceship
+                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+                // Add the ball to the group
+                this.add(this.ballMesh);
+                this.mouse = new THREE.Vector2();
+                this.raycaster = new THREE.Raycaster();
+
+                // Now that spaceship is defined, add the rotationchange event listener
+                spaceship.addEventListener('rotationchange', () => {
+                    // Calculate the new position for the ball based on the spaceship's rotation
+                    // This is a simplified example; you might need to adjust the calculation based on your specific requirements
+                    const newPosition = new THREE.Vector3();
+                    newPosition.copy(this.ballMesh.position);
+                    newPosition.applyQuaternion(spaceship.quaternion);
+                    this.ballMesh.position.copy(newPosition);
+                });
+            },
+            undefined,
+            (error) => {
+                console.error('Error loading model:', error);
+                // Handle the error appropriately
+            }
+        );
+    }
+    monitorThirdPlayerMovement() {
+        if (keyDown['v'])
+            this.rotation.y += 0.1;
+        if (keyDown['n'])
+            this.rotation.y -= 0.1;
+    }
+    // updateSpaceshipDirection() {
+    //     // Update the mouse position
+    //     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    //     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    
+    //     // Update the picking ray with the camera and mouse position
+    //     raycaster.setFromCamera(mouse, camera);
+    
+    //     // Calculate objects intersecting the picking ray
+    //     const intersects = this.raycaster.intersectObjects(scene.children);
+    
+    //     // If there's an intersection, update the spaceship's rotation
+    //     if (intersects.length > 0) {
+    //         const direction = intersects[0].point.clone().sub(camera.position).normalize();
+    //         this.rotation.y = Math.atan2(direction.z, direction.x);
+    //     }
+    // }
+}
+
+// Assuming you have a camera and a renderer set up
+
+
+// Function to update the spaceship's direction based on the mouse position
+function updateSpaceshipDirection() {
+    // Update the mouse position
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+
+    // Calculate objects intersecting the picking ray
+    const intersects = raycaster.intersectObjects(scene.children);
+
+    // If there's an intersection, update the spaceship's rotation
+    if (intersects.length > 0) {
+        const direction = intersects[0].point.clone().sub(camera.position).normalize();
+        spaceship.rotation.y = Math.atan2(direction.z, direction.x);
+    }
+}
+
+// Add the event listener to the renderer's DOM element
+renderer.domElement.addEventListener('mousemove', updateSpaceshipDirection, false);
+
 class Bot {
     constructor(arena, ownPaddle, enemyPaddle)
     {
@@ -1331,6 +1432,7 @@ class Game {
         this.maxScore = 3;
         this.isPlaying = false;
         this.isOver = false;
+        this.thirdPlayer = true;
         this.arena = arena;
         this.loserPaddle;
         this.winnerPaddle;
@@ -1579,7 +1681,7 @@ function monitorScreen()
 
 const centerPosition = new THREE.Vector3(0, 0, 0);
 const arena1 = new Arena(centerPosition, 28, 1.7, 34, loadingScreen);
-scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball);
+scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball, arena1.thirdPlayer);
 arena1.idleCameraAnimation();
 
 let renderPass1 = new RenderPass(scene, camera);
@@ -1670,6 +1772,8 @@ function animate()
         if (!loadingScreen.loading)
         {
             arena1.monitorArena();
+            arena1.thirdPlayer.monitorThirdPlayerMovement();
+            // arena1.thirdPlayer.updateSpaceshipDirection();
             // arena1.material.uniforms.time.value += 0.1; // Adjust speed of animation
             composer1.render();
             composer2.render();
