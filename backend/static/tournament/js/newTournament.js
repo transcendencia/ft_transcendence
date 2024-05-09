@@ -20,7 +20,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
     if (anim)
         clearTimeout(anim);
     if (landedOnPlanet) {
-        console.log("landed On");
         anim = setTimeout(function () {triggerInfiniteAnim()}, 2000);
         planetPanel.style.animation = "roll 2s forwards";
         images[0].style.animation = "moveImageRight 2s forwards";
@@ -28,7 +27,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
         square.style.animation = "expandBG 2s forwards";
         landedOnPlanet = 0;
     } else {
-        console.log("landed Off");
         images[0].style.animation = "moveImageRightreverse 1s forwards";
         images[1].style.animation = "moveImageLeftreverse 1s forwards";
         square.style.animation = "expandBGreverse 1s forwards"
@@ -45,9 +43,8 @@ const usernameLinks = document.querySelectorAll('.username-link');
 
   document.addEventListener('keydown', (event) => { 
     if (event.key === 'e')
-        console.log("press e");
         togglePanelDisplay();
-    });
+  });
 
   const tournamentPlayer = [];
 
@@ -62,7 +59,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
           printTournamentPlayer();
       }
   }
-  
+
   function printTournamentPlayer() {
     const tbody = document.querySelector("#tournamentTable tbody");
     tbody.innerHTML = "";
@@ -116,6 +113,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
         if (player.position === 0)
           player.position = 1;
       })
+      nextMatchElement.style.display = "none";
       const li = document.createElement("p");
       li.textContent = playersInTournament[0].username + " have won the tournament!";
       ul.appendChild(li);
@@ -167,6 +165,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
   const launchTournamentElement = document.getElementById("launch");
   const launchMatchElement = document.getElementById("launchMatch");
   const bracketElement = document.getElementById("bracket");
+  const nextMatchElement = document.getElementById("next-match");
   
   
   const A1Element = document.getElementById("A1");
@@ -262,6 +261,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
   
   //launch the tournament when there is the right amount of players
   //create the matchup / print the bracket structure
+
   launchTournamentElement.addEventListener("click", function() {
     if (tournamentPlayer.length < 2){
       const ul = document.getElementById("error_msg");
@@ -287,9 +287,13 @@ const usernameLinks = document.querySelectorAll('.username-link');
     });
     tournamentPlayer.sort((a, b) => a.order - b.order);
     makeMatchup();
+    document.querySelectorAll('.before-launch').forEach(function(el) {
+      el.style.display = 'none';
+   });
     printTournamentPlayer();
     launchMatchElement.style.display = "inline";
     bracketElement.style.display = "inline";
+    nextMatchElement.style.display = "inline";
     printBracket();
   });
   
