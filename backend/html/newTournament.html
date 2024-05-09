@@ -12,188 +12,191 @@
   <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
   <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
   <div class="background blueShadowfilter"> 
-    
-  <div>
-    <table border='1' id="userTable">
-      <tr>
-        <th>username</th>
-      </tr>
-      {% for x in mymembers %}
-      <tr>
-        <td><a href="#" class="username-link">{{ x.username }}</a></td>
-      </tr>
-      {% endfor %}
-    </table>
-    
-    <button id="NewUser"><a href="/add_player">Add a player</a></button>
-    
-    <h2>Players in tournament :</h2>
-    
-    <p id="tournamentPlayer"></p>
-    
-    <div id="tableContainer">
-      <table id="tournamentTable">
-        <tbody>
-        </tbody>
-      </table>
-    </div>
-    
-    <button id="launch">Launch tournament</button>
-    
-    <p id="error_msg"></p>
-    
-    <p id="matchup"></p>
-    
-    <button id="launchMatch" style="display:none;">Start match</button>
-    
-    <p id="match"></p>
-    
-    <p id="result"></p>
-    
-    <div id="bracket" class="theme theme-dark" style="display:none;">
-      <div class="bracket">
-        <div class="column one">
-          <div id="A1-A2-match" class="match">
-            <div id="A1" class="match-top team" style="display:none;">
-              <span id="A1_name" class="name"></span>
-              <span id="A1_score" class="score"></span>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 square maClasse">
+          <div class="before-launch">
+            <h2>Players in tournament :</h2>
+            <div id="tableContainer">
+              <table id="tournamentTable">
+                <tbody>
+                </tbody>
+              </table>
             </div>
-            <div id="A2" class="match-bottom team" style="display:none;">
-              <span id="A2_name" class="name"></span>
-              <span id="A2_score" class="score"></span>
+            <p id="error_msg"></p>
+            <button id="launch" class="bottom">Launch tournament</button>
+          </div>
+          <!-- when the tournament is launch -->
+          <div id="bracket" class="theme theme-dark" style="display:none;">
+            <div class="bracket">
+              <div class="column one">
+                <div id="A1-A2-match" class="match">
+                  <div id="A1" class="match-top team" style="display:none;">
+                    <span id="A1_name" class="name"></span>
+                    <span id="A1_score" class="score"></span>
+                  </div>
+                  <div id="A2" class="match-bottom team" style="display:none;">
+                    <span id="A2_name" class="name"></span>
+                    <span id="A2_score" class="score"></span>
+                  </div>
+                  <div id="first-top-top" style="display:none;">
+                    <div class="match-lines">
+                      <div class="line one"></div>
+                      <div class="line two"></div>
+                    </div>
+                    <div class="match-lines alt">
+                      <div class="line one"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="A3-A4-match" class="match">
+                  <div id="A3" class="match-top team" style="display:none;">
+                    <span id="A3_name" class="name"></span>
+                    <span id="A3_score" class="score"></span>
+                  </div>
+                  <div id="A4" class="match-bottom team" style="display:none;">
+                    <span id="A4_name" class="name"></span>
+                    <span id="A4_score" class="score"></span>
+                  </div>
+                  <div id="first-top-bot" style="display:none;">
+                    <div class="match-lines">
+                      <div class="line one"></div>
+                      <div class="line two"></div>
+                    </div>
+                    <div class="match-lines alt">
+                      <div class="line one"></div>
+                    </div>
+                  </div>
+                </div>
+            <div id="A5-A6-match" class="match">
+              <div id="A5" class="match-top team" style="display:none;">
+                <span id="A5_name" class="name"></span>
+                <span id="A5_score" class="score"></span>
+              </div>
+              <div id="A6" class="match-bottom team" style="display:none;">
+                <span id="A6_name" class="name"></span>
+                <span id="A6_score" class="score"></span>
+              </div>
+              <div id="first-bot-top" style="display:none;">
+                <div class="match-lines">
+                  <div class="line one"></div>
+                  <div class="line two"></div>
+                </div>
+                <div class="match-lines alt">
+                  <div class="line one"></div>
+                </div>
+              </div>
             </div>
-            <div id="first-top-top" style="display:none;">
+            <div id="A7-A8-match" class="match">
+              <div id="A7" class="match-top team" style="display:none;">
+                <span id="A7_name" class="name"></span>
+                <span id="A7_score" class="score"></span>
+              </div>
+              <div id="A8" class="match-bottom team" style="display:none;">
+                <span id="A8_name" class="name"></span>
+                <span id="A8_score" class="score"></span>
+              </div>
+              <div id="first-bot-bot" style="display:none;">
+                <div class="match-lines">
+                  <div class="line one"></div>
+                  <div class="line two"></div>
+                </div>
+                <div class="match-lines alt">
+                  <div class="line one"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column two">
+            <div id="B1-B2-match" class="match">
+              <div id="B1" class="match-top team" style="display:none;">
+                <span id="B1_name" class="name"></span>
+                <span id="B1_score" class="score"></span>
+              </div>
+              <div id="B2" class="match-bottom team" style="display:none;">
+                <span id="B2_name" class="name"></span>
+                <span id="B2_score" class="score"></span>
+              </div>
+              <div id="second-top" class="match-lines" style="display:none;">
+                <div class="line one"></div>
+                <div class="line two"></div>
+              </div>
+              <div id="first-second-top" class="match-lines alt" style="display:none;">
+                <div class="line one"></div>
+              </div>
+            </div>
+            <div id="B3-B4-match" class="match">
+              <div id="B3" class="match-top team" style="display:none;">
+                <span id="B3_name" class="name"></span>
+                <span id="B3_score" class="score"></span>
+              </div>
+              <div id="B4" class="match-bottom team" style="display:none;">
+                <span id="B4_name" class="name"></span>
+                <span id="B4_score" class="score"></span>
+              </div>
+              <div id="second-bot" class="match-lines" style="display:none;">
+                <div class="line one"></div>
+                <div class="line two"></div>
+              </div>
+              <div id="first-second-bot" class="match-lines alt" style="display:none;">
+                <div class="line one"></div>
+              </div>
+            </div>
+          </div>
+          <div class="column three">
+            <div id="C1-C2-match" class="match">
+              <div id="C1" class="match-top team" style="display:none;">
+                <span id="C1_name" class="name"></span>
+                <span id="C1_score" class="score"></span>
+              </div>
+              <div id="C2" class="match-bottom team" style="display:none;">
+                <span id="C2_name" class="name"></span>
+                <span id="C2_score" class="score"></span>
+              </div>
               <div class="match-lines">
                 <div class="line one"></div>
                 <div class="line two"></div>
               </div>
-              <div class="match-lines alt">
+              <div id="second-line" class="match-lines alt" style="display:none;">
                 <div class="line one"></div>
               </div>
+            </div>        
+          </div>
             </div>
           </div>
-          <div id="A3-A4-match" class="match">
-            <div id="A3" class="match-top team" style="display:none;">
-              <span id="A3_name" class="name"></span>
-              <span id="A3_score" class="score"></span>
+        </div>
+        <div class="col-md-3 square">
+          <div class="container">
+            <div class="before-launch">
+              <ul class="responsive-table">
+                <li class="table-header">
+                  <div class="col col-1">Players</div>
+                </li>
+                {% for x in mymembers %}
+                <li class="table-row">
+                  <div class="col col-1"><img class="icon" src="{% static 'tournament/img/th.jpg' %}"></div>
+                  <div class="col col-2"><a href="#" class="username-link">{{ x.username }}</a></div>
+                </li>
+                {% endfor %}
+              </ul>
+              <button id="NewUser" class="bottom"><a href="/add_player">Add a player</a></button>
             </div>
-            <div id="A4" class="match-bottom team" style="display:none;">
-              <span id="A4_name" class="name"></span>
-              <span id="A4_score" class="score"></span>
-            </div>
-            <div id="first-top-bot" style="display:none;">
-              <div class="match-lines">
-                <div class="line one"></div>
-                <div class="line two"></div>
-              </div>
-              <div class="match-lines alt">
-                <div class="line one"></div>
-              </div>
-            </div>
           </div>
-      <div id="A5-A6-match" class="match">
-        <div id="A5" class="match-top team" style="display:none;">
-          <span id="A5_name" class="name"></span>
-          <span id="A5_score" class="score"></span>
-        </div>
-        <div id="A6" class="match-bottom team" style="display:none;">
-          <span id="A6_name" class="name"></span>
-          <span id="A6_score" class="score"></span>
-        </div>
-        <div id="first-bot-top" style="display:none;">
-          <div class="match-lines">
-            <div class="line one"></div>
-            <div class="line two"></div>
-          </div>
-          <div class="match-lines alt">
-            <div class="line one"></div>
-          </div>
+          <!-- when the tournament is ready to be played -->
+          <h2 id="next-match" style="display:none;">Next match to be played:</h2>
+          <p id="matchup"></p>
+          <button id="launchMatch" class="bottom" style="display:none;">Start match</button>
+          <p id="match"></p>
+          <p id="result"></p>
         </div>
       </div>
-      <div id="A7-A8-match" class="match">
-        <div id="A7" class="match-top team" style="display:none;">
-          <span id="A7_name" class="name"></span>
-          <span id="A7_score" class="score"></span>
-        </div>
-        <div id="A8" class="match-bottom team" style="display:none;">
-          <span id="A8_name" class="name"></span>
-          <span id="A8_score" class="score"></span>
-        </div>
-        <div id="first-bot-bot" style="display:none;">
-          <div class="match-lines">
-            <div class="line one"></div>
-            <div class="line two"></div>
-          </div>
-          <div class="match-lines alt">
-            <div class="line one"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="column two">
-      <div id="B1-B2-match" class="match">
-        <div id="B1" class="match-top team" style="display:none;">
-          <span id="B1_name" class="name"></span>
-          <span id="B1_score" class="score"></span>
-        </div>
-        <div id="B2" class="match-bottom team" style="display:none;">
-          <span id="B2_name" class="name"></span>
-          <span id="B2_score" class="score"></span>
-        </div>
-        <div id="second-top" class="match-lines" style="display:none;">
-          <div class="line one"></div>
-          <div class="line two"></div>
-        </div>
-        <div id="first-second-top" class="match-lines alt" style="display:none;">
-          <div class="line one"></div>
-        </div>
-      </div>
-      <div id="B3-B4-match" class="match">
-        <div id="B3" class="match-top team" style="display:none;">
-          <span id="B3_name" class="name"></span>
-          <span id="B3_score" class="score"></span>
-        </div>
-        <div id="B4" class="match-bottom team" style="display:none;">
-          <span id="B4_name" class="name"></span>
-          <span id="B4_score" class="score"></span>
-        </div>
-        <div id="second-bot" class="match-lines" style="display:none;">
-          <div class="line one"></div>
-          <div class="line two"></div>
-        </div>
-        <div id="first-second-bot" class="match-lines alt" style="display:none;">
-          <div class="line one"></div>
-        </div>
-      </div>
-    </div>
-    <div class="column three">
-      <div id="C1-C2-match" class="match">
-        <div id="C1" class="match-top team" style="display:none;">
-          <span id="C1_name" class="name"></span>
-          <span id="C1_score" class="score"></span>
-        </div>
-        <div id="C2" class="match-bottom team" style="display:none;">
-          <span id="C2_name" class="name"></span>
-          <span id="C2_score" class="score"></span>
-        </div>
-        <div class="match-lines">
-          <div class="line one"></div>
-          <div class="line two"></div>
-        </div>
-        <div id="second-line" class="match-lines alt" style="display:none;">
-          <div class="line one"></div>
-        </div>
-      </div>        
     </div>
   </div>
 </div>
+    
 
-<p id="allMatch" ></p>
+<!-- <p id="allMatch" ></p> -->
 
 <script type="module" src="{% static 'tournament/js/newTournament.js' %}"></script>
-
-</div>
-</div>
-</div>
 
 {% endblock %}
