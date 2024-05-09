@@ -26,20 +26,24 @@
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
     </div>
     <div class="container">
-      <div class="titleText" id="loginText">
-        - Login -
-        <div class="textBar">
-          <input class="text-input" spellcheck="false"></input>
-          <img src="{%static 'html/assets/icons/frame.png' %}">
+      <form method="post" action=""> <!-- Modifier l'attribut action avec l'URL correcte du backend -->
+        {% csrf_token %}
+        <div class="titleText" id="loginText">
+          - Login -
+          <div class="textBar">
+            <input class="text-input" name="username" spellcheck="false"> <!-- Utiliser un champ de texte pour le login, avec l'attribut name -->
+            <img src="{% static 'html/assets/icons/frame.png' %}">
+          </div>
         </div>
-      </div>
-      <div class="titleText" id="passwordText">
-        - Password -
-        <div class="textBar">
-          <input class="text-input" spellcheck="false" type="password"></input>
-          <img src="{%static 'html/assets/icons/frame.png' %}">
+        <div class="titleText" id="passwordText">
+          - Password -
+          <div class="textBar">
+            <input class="text-input" name="password" spellcheck="false" type="password"> <!-- Utiliser un champ de mot de passe, avec l'attribut name -->
+            <img src="{% static 'html/assets/icons/frame.png' %}">
+          </div>
         </div>
-      </div>
+        <button type="submit">Submit</button> <!-- Ajouter un bouton de soumission -->
+      </form>
     </div>
     <div class="languageColumn" id="loginLanguageText">
       <div class="languageSettings">

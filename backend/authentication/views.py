@@ -8,22 +8,24 @@ from .models import Member
 from .forms import MemberForm
 
 def login_page(request):
-	form = forms.LoginForm()
-	message = ''
-	if request.method == 'POST':
-		form = forms.LoginForm(request.POST)
-		if form.is_valid():
-			user = authenticate(
-				username=form.cleaned_data['username'],
-				password=form.cleaned_data['password'],
-			)
-			if user is not None:
-				login(request, user)
-				message = f'Bonjour, {user.username}! Vous êtes connecté.'
-			else:
-				message = 'Identifiants invalides.'
-	return render(
-		request, 'index.html', context={'form': form, 'message': message})
+    form = forms.LoginForm()
+    message = ''
+    if request.method == 'POST':
+        form = forms.LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(
+                username=form.cleaned_data['username'],
+                password=form.cleaned_data['password'],
+            )
+            if user is not None:
+                login(request, user)
+                message = f'Bonjour, {user.username}! Vous êtes connecté.'
+                print("Vous etes connectes!")
+            else:
+                message = 'Identifiants invalides.'
+                print("Identifiants invalides") # Ajouter ce print pour vérifier
+    return render(
+        request, 'index.html', context={'form': form, 'message': message})
 
 
 def add_member(request):
