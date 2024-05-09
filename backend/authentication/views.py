@@ -6,7 +6,9 @@ from django.template import loader
 from django.shortcuts import render, redirect
 from .models import Member
 from .forms import MemberForm
+from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 
+@csrf_protect
 def login_page(request):
     form = forms.LoginForm()
     message = ''
@@ -20,10 +22,10 @@ def login_page(request):
             if user is not None:
                 login(request, user)
                 message = f'Bonjour, {user.username}! Vous êtes connecté.'
-                print("Vous etes connectes!")
             else:
                 message = 'Identifiants invalides.'
-                print("Identifiants invalides") # Ajouter ce print pour vérifier
+        else:
+            message = 'Login or Password empty'
     return render(
         request, 'index.html', context={'form': form, 'message': message})
 
