@@ -72,8 +72,8 @@ class LoadingScreen {
         this.camera.position.z = this.cameraInitialZ;
         this.ico = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 0), new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true}));
         this.ico2 = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 0), new THREE.MeshStandardMaterial({color: 0xffffff}));
-        this.ico.position.set(0, -0.25, 0);
-        this.ico2.position.set(0, -0.25, 0);
+        this.ico.position.set(0, 0, 0);
+        this.ico2.position.set(0, 0, 0);
         this.bigXspeed = 0.005;
         this.bigYspeed = 0.015;
         this.xSpeedInitial = 0.005;
@@ -97,7 +97,7 @@ class LoadingScreen {
         if (this.isAnimatingCamera)
         {
             this.isAnimatingCamera = false;
-            const duration = 2500;
+            const duration = 500;
             new TWEEN.Tween(this) // ROTATION ACCELERATION AND CAMERA GETTING CLOSE
                 .to({xSpeedInitial: this.xSpeedFinal , ySpeedInitial: this.ySpeedFinal, cameraInitialZ: this.cameraCloseZ}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
@@ -138,7 +138,6 @@ class LoadingScreen {
         this.ico.rotation.x += this.bigXspeed * 2;
         this.ico2.rotation.y -= this.ySpeedInitial;
         this.ico2.rotation.x += this.xSpeedInitial;
-        console.log("position.z = " + this.camera.position.z);
         this.composer.render();
     }
     activateLoadingScreen()
@@ -252,6 +251,7 @@ let keyDown = {
     'n': false,
     'o': false,
     'p': false,
+    'l': false,
     'i': false,
     'u': false,
     'e': false,
@@ -300,7 +300,8 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
-var blueBar = document.getElementsByClassName("bluebar");
+const blueBar = document.getElementsByClassName("bluebar");
+const scoreUI = document.getElementsByClassName("scoreUI");
 
 function cameraDebug()
 {
@@ -393,6 +394,7 @@ class Arena extends THREE.Mesh {
         this.isBlurred = false;
         this.isBeingBlurred = false;
         this.isBeingReset = false;
+        this.scene = scene;
         this.game = new Game(this);
         this.thirdPlayer = new ThirdPlayer(this);
         this.maxSpeed = this.width / 40;
@@ -572,6 +574,7 @@ class Arena extends THREE.Mesh {
             this.setSplitCameraPositions(camera, cameraLeft);
             this.game.isPlaying = true;
             this.isSplitScreen = true;
+            scoreUI[0].style.opacity = 1;
         }
         if (keyDown['p'])
         {
@@ -715,7 +718,7 @@ class Arena extends THREE.Mesh {
             tmpCamera = cameraLeft;
         else
             tmpCamera = camera;
-
+        scoreUI[0].style.opacity = 0;
         // BALL UP
         let ballUp = new TWEEN.Tween(this.ball.position)
         .to({y: (this.ball.position.y + this.paddleLeft.height * 5), z: winnerPaddle.position.z}, 1500)
@@ -1106,7 +1109,7 @@ class Ball extends THREE.Mesh {
         this.isSupercharging;
         this.bounceCount = 0;
         this.justCollisioned = false;
-        this.particles = new Particle(this.scene, 100000, false, this, true);
+        this.particles = new Particle(this.scene, 10000, false, this, true);
 
     }
     animateSpeedBar(target) {
@@ -1332,7 +1335,10 @@ class ThirdPlayer extends THREE.Group {
         super(); // Call the parent constructor
         this.arena = arena;
         this.ball = undefined; // Initialize the ball as undefined initially
-
+        this.ballInitialPosition = new THREE.Vector3(1.5, 0, 0); // Set the initial position of the ball
+        this.shootDirection = new THREE.Vector2(0, 0);
+        this.leftShootDirection = new THREE.Vector2(0, 0);
+        this.rightShootDirection = new THREE.Vector2(0, 0);
         // Define spaceship in the outer scope
         let spaceship;
 
@@ -1351,32 +1357,54 @@ class ThirdPlayer extends THREE.Group {
                 this.add(spaceship);
                 this.position.set(-this.arena.width / 2 - 2, this.arena.height, 0);
                 // Create a sphere representing the ball
-                this.ball = new THREE.SphereGeometry(0.5, 32, 32); // Adjust size and segments as needed
-                const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff88ff }); // Red color for the ball
-                this.ballMesh = new THREE.Mesh(this.ball, ballMaterial);
-                // Position the ball in front of the spaceship
-                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
-                // Add the ball to the group
-                this.add(this.ballMesh);
-                this.mouse = new THREE.Vector2();
-                this.camera = arena.camera;
-                this.isPlaying = false;
-                this.raycaster = new THREE.Raycaster();
+                
+                        // Create a buffer geometry point
+                const bufferGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0.1, 0, 0)]);
+                const bufferMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }); // Make it invisible
+                this.buffer = new THREE.Mesh(bufferGeometry, bufferMaterial);
+                this.bulletGeometry = new THREE.CylinderGeometry(0.25, 0.25, 1.5, 32, 1, false); // Adjust size and segments as needed
+                this.ballGeometry = new THREE.SphereGeometry(1, 32, 32); // Adjust size and segments as needed
+                const bulletLeftMaterial = new THREE.MeshBasicMaterial({ color: 0xffbb12 , opacity: 1, transparent: true}); // Red color for the ball
+                const bulletRightMaterial = new THREE.MeshBasicMaterial({ color: 0xffbb12 , opacity: 1, transparent: true}); // Red color for the ball
+                const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff88ff, opacity: 1, transparent: true }); // Red color for the ball
+                this.bulletLeft = new THREE.Mesh(this.bulletGeometry, bulletLeftMaterial);
+                this.bulletRight = new THREE.Mesh(this.bulletGeometry, bulletRightMaterial);
+                this.ballMesh = new THREE.Mesh(this.ballGeometry, ballMaterial);
+                this.bulletLeft.rotation.z = Math.PI / 2;
+                this.bulletRight.rotation.z = Math.PI / 2;
 
-                // Now that spaceship is defined, add the rotationchange event listener
-                spaceship.addEventListener('rotationchange', () => {
-                    // Calculate the new position for the ball based on the spaceship's rotation
-                    // This is a simplified example; you might need to adjust the calculation based on your specific requirements
-                    const newPosition = new THREE.Vector3();
-                    newPosition.copy(this.ballMesh.position);
-                    newPosition.applyQuaternion(spaceship.quaternion);
-                    this.ballMesh.position.copy(newPosition);
-                });
+                // Position the ball and bullets in front of the spaceship
+                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+                this.bulletLeft.position.set(4, -0.5, -2); // Adjust position as needed
+                this.bulletRight.position.set(4, -0.5, 2); // Adjust position as needed
+                this.buffer.position.set(1, 0, 0);
+                // Add the ball and bullets to the group
+                this.add(this.ballMesh, this.bulletLeft, this.bulletRight, this.buffer);
+                // this.add(this.ballMesh);
+                this.direction = new THREE.Vector2(0, 0);
+                this.camera = arena.camera;
+                this.scene = arena.scene;
+                this.isPlaying = false;
+                this.ballAttached = true;
+                this.bulletLeftAttached = true;
+                this.bulletRightAttached = true;
+                this.isAnimating = false;
 
                 // Add event listener to track mouse movement
                 window.addEventListener('mousemove', (event) => {
                     if (this.isPlaying)
                         this.monitorShipRotation(event);
+                });
+                window.addEventListener('mousedown', (event) => {
+                    if (event.button === 0 && this.isPlaying && this.bulletLeftAttached) // Check if left mouse button (button 0) is clicked
+                        this.shootBullet(this.bulletLeft);
+                    if (event.button === 1 && this.isPlaying) // Wheel click (button 1)
+                        this.shootBall();
+                    if (event.button === 2 &&  this.isPlaying && this.bulletRightAttached) // Right mouse button (button 2)
+                        this.shootBullet(this.bulletRight);
+                });
+                window.addEventListener('contextmenu', (event) => {
+                    event.preventDefault(); // Prevent default context menu
                 });
             },
             undefined,
@@ -1392,35 +1420,119 @@ class ThirdPlayer extends THREE.Group {
         if (keyDown['n'])
             this.rotation.y -= 0.1;
     }
+
     monitorShipRotation(event) {
         // Calculate the position of the ship's center relative to the screen
         const shipPosition = new THREE.Vector3();
         this.getWorldPosition(shipPosition);
-    
+
         // Calculate the position of the mouse relative to the screen
         const mousePosition = new THREE.Vector3(
             (event.clientX / window.innerWidth) * 2 - 1,
             -(event.clientY / window.innerHeight) * 2 + 1,
             0.5
         );
-    
         // Unproject the mouse position to the world space using the parent's camera
-        if (this.camera) {
+        if (this.camera)
             mousePosition.unproject(this.camera);
-        } else {
-            console.error("Camera is not defined.");
-            return;
-        }
-    
         // Calculate the direction vector from the ship's position to the mouse position
         const direction = new THREE.Vector3();
         direction.subVectors(mousePosition, shipPosition).normalize();
-    
+
         // Calculate the angle between the ship's forward direction and the direction vector to the mouse
         const angle = Math.atan2(direction.x, direction.z);
-    
         // Rotate the ship towards the mouse
-        this.rotation.y = (angle * 48);
+        this.direction.set(direction.x, direction.z * 30);
+        this.rotation.y = (angle * 52);
+    }
+    shootBall() {
+        if (this.ballAttached) {
+            this.ballAttached = false;
+            this.temporarilyDetachBall();
+            // calculate vector from ship to ball
+            this.shootDirection = new THREE.Vector2(this.ballMesh.position.x - this.position.x, this.ballMesh.position.z - this.position.z).normalize();
+            setTimeout(() => {
+                this.resetBall();
+            }, 1250);
+        }
+    }
+    shootBullet(bullet) {
+        const bufferPosition = new THREE.Vector3();
+        this.buffer.getWorldPosition(bufferPosition);
+        bullet.rotation.y = this.rotation.y;
+        this.temporarilyDetachBullet(bullet);
+        if (bullet === this.bulletLeft)
+        {
+            this.bulletLeftAttached = false;
+            this.leftShootDirection = new THREE.Vector2(bufferPosition.x - this.position.x, bufferPosition.z - this.position.z).normalize();
+        }
+        else if (bullet === this.bulletRight)
+        {
+            this.bulletRightAttached = false;
+            this.rightShootDirection = new THREE.Vector2(bufferPosition.x - this.position.x, bufferPosition.z - this.position.z).normalize();
+        }
+        setTimeout(() => {
+            this.resetBullet(bullet);
+        }, 500);
+    }
+    monitorProjectilesMovement() {
+        if (!this.ballAttached) {
+            this.ballMesh.position.x += this.shootDirection.x * 0.7;
+            this.ballMesh.position.z += this.shootDirection.y * 0.7;
+        }
+        if (!this.bulletLeftAttached) {
+            this.bulletLeft.position.x += this.leftShootDirection.x * 2;
+            this.bulletLeft.position.z += this.leftShootDirection.y * 2;
+        }
+        if (!this.bulletRightAttached) {
+            this.bulletRight.position.x += this.rightShootDirection.x * 2;
+            this.bulletRight.position.z += this.rightShootDirection.y * 2;
+        }
+    }
+    temporarilyDetachBall() {
+        const ballPosition = new THREE.Vector3();
+        this.ballMesh.getWorldPosition(ballPosition);
+        console.log("wsh");
+        this.remove(this.ballMesh);
+        // Add the ball to the scene directly
+        this.ballMesh.position.copy(ballPosition);
+        scene.add(this.ballMesh); // Assuming "scene" is the three.js scene object
+    }
+    temporarilyDetachBullet(bullet) {
+        const bulletPosition = new THREE.Vector3();
+        bullet.getWorldPosition(bulletPosition);
+        this.remove(bullet);
+        bullet.position.copy(bulletPosition);
+        scene.add(bullet);
+    }
+    resetBall() {
+        this.ballAttached = true;
+        this.ballMesh.material.opacity = 0;
+        this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+        this.add(this.ballMesh);
+        new TWEEN.Tween(this.ballMesh.material)
+        .to({opacity: 1}, 500)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+    }
+    resetBullet(bullet) {
+        bullet.material.opacity = 0;
+        if (bullet === this.bulletLeft)
+        {
+            this.bulletLeftAttached = true;
+            bullet.position.set(4, -0.5, -2); // Adjust position as needed
+        }
+        else
+        {
+            this.bulletRightAttached = true;
+            bullet.position.set(4, -0.5, 2); // Adjust position as needed
+        }
+        this.add(bullet);
+        new TWEEN.Tween(bullet.material)
+        .to({opacity: 1}, 500)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+        bullet.rotation.y = 0;
     }
 }
 
@@ -1798,6 +1910,7 @@ function animate()
         {
             arena1.monitorArena();
             arena1.thirdPlayer.monitorThirdPlayerMovement();
+            arena1.thirdPlayer.monitorProjectilesMovement();
             if (arena1.thirdPlayer.isPlaying)
                 controls.enabled = false;
             // arena1.material.uniforms.time.value += 0.1; // Adjust speed of animation
