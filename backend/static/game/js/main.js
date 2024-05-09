@@ -57,9 +57,10 @@ class LoadingScreen {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000);
         this.renderer = new THREE.WebGLRenderer({ // Renderer for full screen
-            canvas: document.querySelector('#c1'),
+            canvas: document.querySelector('#c3'),
             antialias: false
         });
+        this.scene.background = new THREE.Color(0x000020);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.composer = new EffectComposer(this.renderer);
@@ -67,7 +68,7 @@ class LoadingScreen {
         this.composer.addPass(this.renderPass);
         this.cameraInitialZ = 8;
         this.cameraCloseZ = 4;
-        this.cameraFarZ = 500;
+        this.cameraFarZ = 250;
         this.camera.position.z = this.cameraInitialZ;
         this.ico = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 0), new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true}));
         this.ico2 = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 0), new THREE.MeshStandardMaterial({color: 0xffffff}));
@@ -80,7 +81,7 @@ class LoadingScreen {
         this.xSpeedFinal = 0.11;
         this.ySpeedFinal = 0.1;
         this.isAnimatingCamera = true;
-        this.loading = false;
+        this.loading = true;
         this.scene.add(this.ico);
         this.scene.add(this.ico2);
         this.light = new THREE.PointLight(0xffffff, 0.4);
@@ -97,21 +98,34 @@ class LoadingScreen {
         {
             this.isAnimatingCamera = false;
             const duration = 2500;
-            new TWEEN.Tween(this)
+            new TWEEN.Tween(this) // ROTATION ACCELERATION AND CAMERA GETTING CLOSE
                 .to({xSpeedInitial: this.xSpeedFinal , ySpeedInitial: this.ySpeedFinal, cameraInitialZ: this.cameraCloseZ}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     this.camera.position.z = this.cameraInitialZ;
                 })
                 .onComplete(() => {
-                    new TWEEN.Tween(this.camera.position)
-                        .to({z: this.cameraFarZ}, duration)
+                    new TWEEN.Tween(this.camera.position) // CAMERA GETTING FAR
+                        .to({z: this.cameraFarZ}, duration / 2)
                         .easing(TWEEN.Easing.Linear.None)
                         .onUpdate(() => {
                             // this.camera.position.z = this.cameraInitialZ;
                         })
                         .onComplete(() => {
                             this.loading = false;
+                            // Fade in the main renderer (c1)
+                            new TWEEN.Tween({ opacity: 0 }) // FADE IN C1
+                                .to({ opacity: 1 }, duration)
+                                .easing(TWEEN.Easing.Quadratic.Out)
+                                .onStart(() => {
+                                    // document.getElementById('c1').style.display = 'block';
+                                    document.getElementById('c3').style.display = 'none';
+                                })
+                                .onUpdate((obj) => {
+                                    document.getElementById('c1').style.opacity = obj.opacity;
+                                })
+                                .start();
+                        
                         })
                         .start();
                 })
@@ -124,7 +138,18 @@ class LoadingScreen {
         this.ico.rotation.x += this.bigXspeed * 2;
         this.ico2.rotation.y -= this.ySpeedInitial;
         this.ico2.rotation.x += this.xSpeedInitial;
+        console.log("position.z = " + this.camera.position.z);
         this.composer.render();
+    }
+    activateLoadingScreen()
+    {
+        this.loading = true;
+        this.isAnimatingCamera = true;
+        document.getElementById('c3').style.display = 'block';
+        this.cameraInitialZ = 8;
+        this.camera.position.z = this.cameraInitialZ;
+        this.xSpeedInitial = 0.005;
+        this.ySpeedInitial = 0.015;
     }
 }
 const loadingScreen = new LoadingScreen();
@@ -351,6 +376,7 @@ class Arena extends THREE.Mesh {
         this.length = width;
         this.height = height;
         this.width = depth;
+        this.camera = camera;
         this.paddleRight = new Paddle(this, false);
         this.paddleLeft = new Paddle(this, true);
         this.ball = new Ball(this);
@@ -593,6 +619,8 @@ class Arena extends THREE.Mesh {
     setSplitCameraPositions(_cameraRight, _cameraLeft)
     {
         const duration = 1500;
+
+        this.thirdPlayer.isPlaying = false;
         let targetY = this.position.y + this.height + this.width / 3;
         let targetZ = this.position.z + this.width * 0.85;
         let targetX = this.position.x;
@@ -658,6 +686,7 @@ class Arena extends THREE.Mesh {
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
             this.isSplitScreen = false;
+            this.thirdPlayer.isPlaying = true;
         })
         .start();
     }
@@ -739,12 +768,12 @@ class Arena extends THREE.Mesh {
                 this.game.rightScore = 0;
                 swapToFullScreen();
                 this.setTopView(camera);
-                this.loadingScreen.loading = true;
-                this.loadingScreen.cameraInitialZ = 8;
-                this.loadingScreen.camera.position.z = this.loadingScreen.cameraInitialZ;
-                this.loadingScreen.xSpeedInitial = 0.005;
-                this.loadingScreen.ySpeedInitial = 0.015;
-                this.loadingScreen.isAnimatingCamera = true;
+                this.loadingScreen.activateLoadingScreen();
+                // this.loadingScreen.cameraInitialZ = 8;
+                // this.loadingScreen.camera.position.z = this.loadingScreen.cameraInitialZ;
+                // this.loadingScreen.xSpeedInitial = 0.005;
+                // this.loadingScreen.ySpeedInitial = 0.015;
+                // this.loadingScreen.isAnimatingCamera = true;
             }
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
@@ -1330,6 +1359,8 @@ class ThirdPlayer extends THREE.Group {
                 // Add the ball to the group
                 this.add(this.ballMesh);
                 this.mouse = new THREE.Vector2();
+                this.camera = arena.camera;
+                this.isPlaying = false;
                 this.raycaster = new THREE.Raycaster();
 
                 // Now that spaceship is defined, add the rotationchange event listener
@@ -1340,6 +1371,12 @@ class ThirdPlayer extends THREE.Group {
                     newPosition.copy(this.ballMesh.position);
                     newPosition.applyQuaternion(spaceship.quaternion);
                     this.ballMesh.position.copy(newPosition);
+                });
+
+                // Add event listener to track mouse movement
+                window.addEventListener('mousemove', (event) => {
+                    if (this.isPlaying)
+                        this.monitorShipRotation(event);
                 });
             },
             undefined,
@@ -1355,49 +1392,37 @@ class ThirdPlayer extends THREE.Group {
         if (keyDown['n'])
             this.rotation.y -= 0.1;
     }
-    // updateSpaceshipDirection() {
-    //     // Update the mouse position
-    //     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    //     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    monitorShipRotation(event) {
+        // Calculate the position of the ship's center relative to the screen
+        const shipPosition = new THREE.Vector3();
+        this.getWorldPosition(shipPosition);
     
-    //     // Update the picking ray with the camera and mouse position
-    //     raycaster.setFromCamera(mouse, camera);
+        // Calculate the position of the mouse relative to the screen
+        const mousePosition = new THREE.Vector3(
+            (event.clientX / window.innerWidth) * 2 - 1,
+            -(event.clientY / window.innerHeight) * 2 + 1,
+            0.5
+        );
     
-    //     // Calculate objects intersecting the picking ray
-    //     const intersects = this.raycaster.intersectObjects(scene.children);
+        // Unproject the mouse position to the world space using the parent's camera
+        if (this.camera) {
+            mousePosition.unproject(this.camera);
+        } else {
+            console.error("Camera is not defined.");
+            return;
+        }
     
-    //     // If there's an intersection, update the spaceship's rotation
-    //     if (intersects.length > 0) {
-    //         const direction = intersects[0].point.clone().sub(camera.position).normalize();
-    //         this.rotation.y = Math.atan2(direction.z, direction.x);
-    //     }
-    // }
-}
-
-// Assuming you have a camera and a renderer set up
-
-
-// Function to update the spaceship's direction based on the mouse position
-function updateSpaceshipDirection() {
-    // Update the mouse position
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    // Update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera);
-
-    // Calculate objects intersecting the picking ray
-    const intersects = raycaster.intersectObjects(scene.children);
-
-    // If there's an intersection, update the spaceship's rotation
-    if (intersects.length > 0) {
-        const direction = intersects[0].point.clone().sub(camera.position).normalize();
-        spaceship.rotation.y = Math.atan2(direction.z, direction.x);
+        // Calculate the direction vector from the ship's position to the mouse position
+        const direction = new THREE.Vector3();
+        direction.subVectors(mousePosition, shipPosition).normalize();
+    
+        // Calculate the angle between the ship's forward direction and the direction vector to the mouse
+        const angle = Math.atan2(direction.x, direction.z);
+    
+        // Rotate the ship towards the mouse
+        this.rotation.y = (angle * 48);
     }
 }
-
-// Add the event listener to the renderer's DOM element
-renderer.domElement.addEventListener('mousemove', updateSpaceshipDirection, false);
 
 class Bot {
     constructor(arena, ownPaddle, enemyPaddle)
@@ -1773,7 +1798,8 @@ function animate()
         {
             arena1.monitorArena();
             arena1.thirdPlayer.monitorThirdPlayerMovement();
-            // arena1.thirdPlayer.updateSpaceshipDirection();
+            if (arena1.thirdPlayer.isPlaying)
+                controls.enabled = false;
             // arena1.material.uniforms.time.value += 0.1; // Adjust speed of animation
             composer1.render();
             composer2.render();
