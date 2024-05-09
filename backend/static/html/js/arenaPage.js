@@ -6,6 +6,7 @@ const plusButtons = document.querySelectorAll(".plusPlayer");
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
+userlistTitle.textContent = getTranslatedText('userlistTitle');
 
 let plusClicked = false;
 

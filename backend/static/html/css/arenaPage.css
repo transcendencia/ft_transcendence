@@ -9,9 +9,10 @@
 }
 
 .rightColumn {
+    /* border: 5px solid wheat; */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     height: 100%;
     width: 80%;
@@ -145,8 +146,8 @@
 }
 
 .thirdPlayerCont {
-    margin: 2%;
-    height: 15%;
+    margin: 1%;
+    height: 30%;
     width: 90%;
     display: flex;
     justify-content: center;
@@ -154,13 +155,50 @@
     flex-direction: column;
 }
 
-.playerFieldRow {
-    height: 25%;
+.rightColumnRow {
+    height: 45%;
     width: 95%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
+}
+
+.optionButton {
+    border-radius: 5px;
+    margin: 25px;
+    height: 75px;
+    width: 150px;
+    background-color: rgb(20, 20, 20);
+    border: 5px solid white;
+}
+
+.choosePlayerCont {
+    border-radius: 5px;
+    height: 80%;
+    width: 98%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #000f61b2;
+    border: 5px solid #3777ff;
+}
+
+.startButton {
+    text-align: center;
+    font-size: 30px;
+    color: white;
+    font-family: 'Space';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    margin: 25px;
+    height: 125px;
+    width: 250px;
+    background-color: rgb(161, 0, 0);
+    border: 5px solid rgb(255, 255, 255);
 }
 
 .pongField {
@@ -172,7 +210,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 
 .ball {
