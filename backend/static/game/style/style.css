@@ -6,10 +6,11 @@
     #a {
         display: flex;
         flex-direction: row;
-        background-color: #333; /* Set background color to black/gray space color */
+        background-color: #000020; /* Set background color to black/gray space color */
         width: 100vw; /* Use viewport width for container */
         height: 100vh; /* Use viewport height for container */
     }
+
 
     #c1, #c2 {
         width: 100%; /* Each canvas takes up 50% of the window width */
