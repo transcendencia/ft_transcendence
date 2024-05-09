@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { currentLanguage, getTranslatedText } from './loginPage.js';
+import { translateArenaPageTexts } from "./translatePages.js";
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
 
@@ -58,4 +58,6 @@ export function togglePlanet() {
     resetOutlineAndText();
     toggleBlurDisplay();
     togglePanelDisplay();
+    console.log("oui");
+    translateArenaPageTexts();
 }

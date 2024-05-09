@@ -1,4 +1,4 @@
-export let currentLanguage = 'en';
+export let currentLanguage = 'esp';
 let languageFile;
 
 fetch('languages.json')

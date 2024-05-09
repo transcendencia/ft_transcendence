@@ -126,7 +126,6 @@ export const outlinePass = new OutlinePass(
     const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
     pointLight2.castShadow = true;
     pointLight2.position.set(0,5,-1300);
-    const lightHelperss = new THREE.PointLightHelper(pointLight2);
     
     const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
     spaceShipPointLight.castShadow = true;
@@ -240,7 +239,6 @@ let pauseGame = false;
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
         // loginPageContainer.style.opacity = 0;
-        // console.log("e pressed");
         // startAnimation();
         togglePlanet();
     }

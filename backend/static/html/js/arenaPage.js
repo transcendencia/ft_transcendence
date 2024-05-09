@@ -6,9 +6,10 @@ const plusButtons = document.querySelectorAll(".plusPlayer");
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
-userlistTitle.textContent = getTranslatedText('userlistTitle');
+userlistTitle.textContent = getTranslatedText('userlist');
 
 let plusClicked = false;
+const botID = 0;
 
 const blue = '#3777ff';
 const purple = 'rgb(164, 67, 255)'
@@ -17,7 +18,7 @@ const lightGrey = '#323232';
 
 function Glow() {
     userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-    userlist.style.borderColor = '#ffb30e';
+    userlist.style.borderColor = '#ffb30eff';
     userlist.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
     userTiles.forEach((tile, i) => {
         if (profileAdded[i])
@@ -25,11 +26,74 @@ function Glow() {
         const tileChildren = tile.querySelectorAll(":scope > *");
         tileChildren.forEach(function(element) {
             element.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-            element.style.borderColor = '#ffb30e';
+            element.style.borderColor = '#ffb30eff';
             element.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
         });
     });
 }
+
+let powerupActive = true;
+let mapCounter = 0;
+
+function togglePowerups(image) {
+    if (!powerupActive) {
+        image.parentNode.querySelector('.buttonCont').style.borderColor = 'rgb(79, 226, 0)';
+        image.parentNode.querySelector('.buttonCont').style.backgroundColor = 'rgba(38, 255, 0, 0.374)';
+        image.parentNode.querySelector('.buttonCont').style.color = 'rgb(79, 226, 0)';
+        image.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('enabled');
+        powerupActive = true;
+    }
+    else {
+        image.parentNode.querySelector('.buttonCont').style.borderColor = 'red';
+        image.parentNode.querySelector('.buttonCont').style.backgroundColor = 'rgba(255, 0, 0, 0.374)';
+        image.parentNode.querySelector('.buttonCont').style.color = 'red';
+        image.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('disabled');
+        powerupActive = false;
+    }
+}
+
+function handleMaps(buttonHeader, imgIndex) {
+    if (imgIndex === 0){
+        mapCounter--;
+        if (mapCounter === -1)
+        mapCounter = 3;
+        }
+    else {
+        mapCounter++;    
+        if (mapCounter === 4)
+        mapCounter = 0;
+        } 
+    if (mapCounter === 0)
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Arabic';
+    if (mapCounter === 1)
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Blue';
+    if (mapCounter === 2)
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'City';
+    if (mapCounter === 3)
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Desert';
+}
+
+const buttonHeaders = document.querySelectorAll('.buttonTitle');
+buttonHeaders.forEach((buttonHeader, index) => {
+    
+    const images = buttonHeader.querySelectorAll('img');
+    images.forEach((image, imgIndex) => {
+        image.addEventListener('mouseenter', function () {
+            image.classList.add('lightblueShadowfilter');
+        });
+        image.addEventListener('mouseleave', function () {
+            image.classList.remove('lightblueShadowfilter');
+        });
+        image.addEventListener('click', function () {
+            console.log(imgIndex);
+            if (index === 0)
+                togglePowerups(buttonHeader);
+            if (index === 1)
+                handleMaps(buttonHeader, imgIndex);
+        });
+    });
+});
+
 
 function resetGlow() {
     userlist.style.borderColor = blue;
@@ -49,19 +113,19 @@ function resetGlow() {
 } 
 
 function resetAddingMode() {
-    userlistTitle.textContent = getTranslatedText('userlistTitle');
+    userlistTitle.textContent = getTranslatedText('userlist');
     plusClicked = 0;
     plusButtons.forEach(function(otherPlusButton) {
         otherPlusButton.style.pointerEvents = 'auto';
     });
-    profileAdded[userTiles.length - 1] = false;
+    profileAdded[botID] = false;
 }
 
 function setAddingMode(plusButton, i) {
-    userlistTitle.textContent = getTranslatedText('userlistTitle2');
+    userlistTitle.textContent = getTranslatedText('chooseProfile');
     if (i === 0) {
         plusClicked = 1;
-        profileAdded[userTiles.length - 1] = true;
+        profileAdded[botID] = true;
     }
     else plusClicked = 2;
     plusButtons.forEach(function(otherPlusButton) {
@@ -71,7 +135,7 @@ function setAddingMode(plusButton, i) {
     });
 }
 
-userlistTitle.textContent = getTranslatedText('userlistTitle');
+userlistTitle.textContent = getTranslatedText('userlist');
 plusButtons.forEach(function(plusButton, i) {
     plusButton.addEventListener('click', function () {
         if (!plusClicked) {
@@ -100,7 +164,7 @@ plusButtons.forEach(function(plusButton, i) {
 let profileAdded = [];
 
 function isBot(i) {
-    return (i === userTiles.length - 1)
+    return (i === botID)
 }
 
 function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
@@ -109,7 +173,7 @@ function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
     userInfoCont.style.borderColor = 'red';
     userInfoCont.style.fontSize = '25px';
     userInfoCont.style.fontFamily = 'computer';
-    userInfoCont.childNodes[1].textContent = 'remove player';
+    userInfoCont.childNodes[1].textContent = getTranslatedText('removePlayer');
 }
 
 function resetUserInfoVisual(userInfoCont, clonedImg, profilePic, tileText, i, tile) {
@@ -170,7 +234,7 @@ userTiles.forEach((tile, i) => {
             newObj.userInfoCont.addEventListener('click', function() {
                 resetToPlusButton(newObj.userInfoCont, oldObj, textCont);
                 profileAdded[i] = false;
-                profileAdded[userTiles.length - 1] = false;
+                profileAdded[botID] = false;
             });
         }
     });

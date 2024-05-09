@@ -19,8 +19,18 @@
         "arenaPlanetName": "Pong arena",
         "tournamentPlanetName": "Galaxy Cup",
         
-        "userlistTitle": "User list",
-        "userlistTitle2": "Choose a profile"
+        "userlist": "User list",
+        "chooseProfile": "Choose a profile",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "arenaTitle": "Arena",
+        "player3": "Player 3",
+        "player2": "Player 2",
+        "player1": "Player 1",
+        "powerups": "Powerups",
+        "maps": "Maps",
+        "start": "Start",
+        "removePlayer": "Remove player"
     },
     "esp": {
         "loginText": "Usuario",
@@ -41,9 +51,20 @@
         "settingsPlanetName": "Ajustes",
         "arenaPlanetName": "Pong arena",
         "tournamentPlanetName": "Copa Galaxia",
-
-        "userlistTitle": "Usuario list",
-        "userlistTitle2": "Elige un perfil"
+        
+        "userlist": "Lista de usuarios",
+        "chooseProfile": "Elige un perfil",
+        "enabled": "Activado",
+        "disabled": "Desactivado",
+        "arenaTitle": "Arena",
+        "player3": "Jugador 3",
+        "player2": "Jugador 2",
+        "player1": "Jugador 1",
+        "powerups": "Poderes",
+        "maps": "Mapas",
+        "start": "Comenzar",
+        "removePlayer": "Eliminar"
+        
     },
     "fr": {
         "loginText": "Nom d'Utilisateur",
@@ -65,7 +86,17 @@
         "arenaPlanetName": "Arene pong",
         "tournamentPlanetName": "Coupe Galaxie",
 
-        "userlistTitle": "Liste des utilisateurs",
-        "userlistTitle2": "Choisis un profile"
+        "userlist": "Liste des utilisateurs",
+        "chooseProfile": "Choisis un profile",
+        "enabled": "Activé",
+        "disabled": "Desactivé",
+        "arenaTitle": "Arene",
+        "player3": "Joueur 3",
+        "player2": "Joueur 2",
+        "player1": "Joueur 1",
+        "powerups": "Pouvoirs",
+        "maps": "Cartes",
+        "start": "Commencer",
+        "removePlayer": "Supprimer"
     }
 }

@@ -18,7 +18,7 @@
     width: 80%;
 }
 
-.rightColumn > * {
+.rightColumn * {
     /* border: 5px solid violet; */
 }
 
@@ -26,18 +26,14 @@
     background-color: #000f61b2;
     border-radius: 5px;
     border: 4px solid #3777ff;
-    height: 80%;
+    height: 80%; /* Adjust the height as needed */
     width: 90%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    overflow: hidden;
-}
-
-@keyframes shadowBlink {
-    100% {box-shadow: 0 0 40px rgba(171, 80, 0, 255)}
-    0% {box-shadow: 0 0 40px rgba(171, 0, 0, 0)}
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Enable vertical scrolling */
 }
 
 .userTile {
@@ -50,10 +46,17 @@
     align-items: center;
 }
 
+
+@keyframes shadowBlink {
+    100% {box-shadow: 0 0 40px rgba(171, 80, 0, 255)}
+    0% {box-shadow: 0 0 40px rgba(171, 0, 0, 0)}
+}
+
+
 .textContainer {
     margin-left: -5px;
     border-radius: 5px;
-    border: 2px solid rgba(55, 118, 255, 0.39);
+    border: 4px solid rgba(55, 118, 255, 0.39);
     border-left: none;
     background-color: #00000031;
     font-size: 15px;
@@ -104,7 +107,7 @@
 }
 
 .movingSpaceShip1 {
-    margin-right: -20px;
+    margin-right: -35px;
     border-right: 5px solid white;
     display: flex;
     justify-content: center;
@@ -115,7 +118,7 @@
 }
 
 .movingSpaceShip2 {
-    margin-left: -20px;
+    margin-left: -35px;
     border-left: 5px solid white;
     display: flex;
     justify-content: center;
@@ -131,8 +134,8 @@
   }
 
   @keyframes ballMoveLeftRight {
-    0% {transform: translateX(135px); /* Initial position */}
-    100% {transform: translateX(-135px); /* Move up by 50px */}
+    0% {transform: translateX(165px); /* Initial position */}
+    100% {transform: translateX(-165px); /* Move up by 50px */}
   }
 
 
@@ -146,8 +149,7 @@
 }
 
 .thirdPlayerCont {
-    margin: 1%;
-    height: 30%;
+    height: 40%;
     width: 90%;
     display: flex;
     justify-content: center;
@@ -156,7 +158,9 @@
 }
 
 .rightColumnRow {
-    height: 45%;
+    /* border: 2px solid wheat; */
+    padding: 0;
+    height: 50%;
     width: 95%;
     display: flex;
     justify-content: space-between;
@@ -164,25 +168,73 @@
     flex-direction: row;
 }
 
+.buttonsCont {
+    margin: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 20%;
+    width: 98%;
+}
+
 .optionButton {
     border-radius: 5px;
     margin: 25px;
-    height: 75px;
-    width: 150px;
-    background-color: rgb(20, 20, 20);
-    border: 5px solid white;
+    height: 90%;
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+.buttonTitle {
+    border-radius: 15px ;
+    border: 5px solid #3777ff;
+    background-color: #000f61b2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Space';
+    height: 20%;
+    width: 75%;
+    font-size: 20px;
+    color: white;
+    z-index: 99;
+}
+
+.buttonTitle img {
+    height: 120%;
+    width: auto;
+}
+
+.buttonCont {
+    color: #ffac37;
+    margin-top: -5px;
+    border-radius: 5px;
+    border: 4px solid #3777ff;
+    border-top: none;
+    background-color: rgba(52, 103, 255, 0.374);
+    font-size: 20px;
+    font-family: 'Space';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 80%;
+    width: 65%;
 }
 
 .choosePlayerCont {
     border-radius: 5px;
-    height: 80%;
+    height: 40%;
     width: 98%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: #000f61b2;
-    border: 5px solid #3777ff;
 }
 
 .startButton {
@@ -195,10 +247,15 @@
     justify-content: center;
     border-radius: 5px;
     margin: 25px;
-    height: 125px;
-    width: 250px;
+    height: 10%;
+    width: 25%;
     background-color: rgb(161, 0, 0);
     border: 5px solid rgb(255, 255, 255);
+}
+
+.startButton:hover {
+    background-color: rgb(194, 0, 0);
+    box-shadow: 0 0 40px #be1c00;
 }
 
 .pongField {
