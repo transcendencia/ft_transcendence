@@ -60,7 +60,7 @@ class LoadingScreen {
             canvas: document.querySelector('#c3'),
             antialias: false
         });
-        this.scene.background = new THREE.Color(0x000020);
+        this.scene.background = new THREE.Color(0x000010);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.composer = new EffectComposer(this.renderer);
@@ -1452,7 +1452,7 @@ class ThirdPlayer extends THREE.Group {
                 this.ballGeometry = new THREE.SphereGeometry(0.8, 32, 32); // Adjust size and segments as needed
                 const bulletLeftMaterial = new THREE.MeshBasicMaterial({ color: this.bulletColor , opacity: 1, transparent: true}); // Red color for the ball
                 const bulletRightMaterial = new THREE.MeshBasicMaterial({ color: this.bulletColor , opacity: 1, transparent: true}); // Red color for the ball
-                const ballMaterial = new THREE.MeshBasicMaterial({ color: this.ballColor, opacity: 1, transparent: true }); // Red color for the ball
+                const ballMaterial = new THREE.MeshStandardMaterial({ color: this.ballColor, opacity: 1, transparent: true }); // Red color for the ball
                 this.bulletLeft = new THREE.Mesh(this.bulletGeometry, bulletLeftMaterial);
                 this.bulletRight = new THREE.Mesh(this.bulletGeometry, bulletRightMaterial);
                 this.ballMesh = new THREE.Mesh(this.ballGeometry, ballMaterial);
@@ -1538,7 +1538,7 @@ class ThirdPlayer extends THREE.Group {
             this.shootDirection = new THREE.Vector2(this.ballMesh.position.x - this.position.x, this.ballMesh.position.z - this.position.z).normalize();
             setTimeout(() => {
                 this.resetBall();
-            }, 1250);
+            }, 2250);
         }
     }
     shootBullet(bullet) {
@@ -1558,7 +1558,7 @@ class ThirdPlayer extends THREE.Group {
         }
         setTimeout(() => {
             this.resetBullet(bullet);
-        }, 500);
+        }, 1500);
     }
     monitorProjectilesMovement() {
         if (!this.ballAttached) {
@@ -1583,39 +1583,45 @@ class ThirdPlayer extends THREE.Group {
         if (!this.ballAttached) {
             if (this.checkCollisionBallPaddle(this.arena.paddleLeft))
             {
-                this.resetBall();
                 this.arena.paddleLeft.swapPaddleControls();
+                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+                this.ballMesh.material.opacity = 0;
             }
             if (this.checkCollisionBallPaddle(this.arena.paddleRight))
             {
-                this.resetBall();
                 this.arena.paddleRight.swapPaddleControls();
+                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+                this.ballMesh.material.opacity = 0;
             }
         }
         // BULLET LEFT COLLISIONS
         if (!this.bulletLeftAttached) {
             if (this.checkCollisionBulletPaddle(this.bulletLeft, this.arena.paddleLeft))
             {
-                this.resetBullet(this.bulletLeft);
                 this.arena.paddleLeft.slowDown();
+                this.bulletLeft.position.set(4, -0.5, -2); // Adjust position as needed
+                this.bulletLeft.material.opacity = 0;
             }
             if (this.checkCollisionBulletPaddle(this.bulletLeft, this.arena.paddleRight))
             {
-                this.resetBullet(this.bulletLeft);
                 this.arena.paddleRight.slowDown();
+                this.bulletLeft.position.set(4, -0.5, -2); // Adjust position as needed
+                this.bulletLeft.material.opacity = 0;
             }
         }
         // BULLET RIGHT COLLISIONS
         if (!this.bulletRightAttached) {
             if (this.checkCollisionBulletPaddle(this.bulletRight, this.arena.paddleLeft))
             {
-                this.resetBullet(this.bulletRight);
                 this.arena.paddleLeft.slowDown();
+                this.bulletRight.position.set(4, -0.5, 2); // Adjust position as needed
+                this.bulletRight.material.opacity = 0;
             }
             if (this.checkCollisionBulletPaddle(this.bulletRight, this.arena.paddleRight))
             {
-                this.resetBullet(this.bulletRight);
                 this.arena.paddleRight.slowDown();
+                this.bulletRight.position.set(4, -0.5, 2); // Adjust position as needed
+                this.bulletRight.material.opacity = 0;
             }
         }
 
