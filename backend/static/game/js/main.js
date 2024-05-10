@@ -516,9 +516,9 @@ class Arena extends THREE.Mesh {
         if (this.ball.isRolling)
             this.ball.rotation.y += 0.1;
         if (this.isActive)
-            this.paddleLeft.animatePaddle(doubleKeyPress['a'], doubleKeyPress['d'], keyDown['a'], keyDown['d'], this, keyDown['w']);
+            this.paddleLeft.animatePaddle(this);
         if (!this.bot.isPlaying)
-            this.paddleRight.animatePaddle(doubleKeyPress['ArrowRight'], doubleKeyPress['ArrowLeft'], keyDown['ArrowRight'], keyDown['ArrowLeft'], this, keyDown['ArrowUp']);
+            this.paddleRight.animatePaddle(this);
         if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling)
         {
             this.ball.speedX = 0;
@@ -569,6 +569,8 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
+            this.paddleLeft.changePaddleControls(false);
+            this.paddleRight.changePaddleControls(false);
             cameraLeft.lookAt(this.position);
             swapToSplitScreen();
             this.setSplitCameraPositions(camera, cameraLeft);
@@ -580,9 +582,11 @@ class Arena extends THREE.Mesh {
         {
             swapToFullScreen();
             this.setTopView(camera);
+            this.paddleLeft.changePaddleControls(true);
+            this.paddleRight.changePaddleControls(true);
         }
         if(keyDown['o'])
-            this.paddleRight.changeBlenderModel('static/game/models/godzilla/scene.gltf');
+            this.paddleRight.changeBlenderModel('../../static/game/models/godzilla/scene.gltf');
         if (this.game.leftScore >= this.game.maxScore || this.game.rightScore >= this.game.maxScore)
         {
             this.game.isPlaying = false;
@@ -894,9 +898,17 @@ class Paddle extends THREE.Group {
         {
             this.position.z -= arena.width;
             this.camera = cameraLeft;
+            this.rightKey = 'a';
+            this.leftKey = 'd';
+            this.chargeKey = 'w';
         }
         else
+        {
             this.camera = camera;
+            this.rightKey = 'ArrowRight';
+            this.leftKey = 'ArrowLeft';
+            this.chargeKey = 'ArrowUp';
+        }
         this.width = paddleWidth;
         this.height = paddleHeight;
         this.depth = paddleDepth;
@@ -919,6 +931,7 @@ class Paddle extends THREE.Group {
         this.flippingSpeed = 0.5;
         this.isGoingUp = true;
         this.isGoingDown = false;
+
     }
     shakeCamera(camera, intensity, duration) {
         const originalPosition = camera.position.clone();
@@ -993,30 +1006,30 @@ class Paddle extends THREE.Group {
             downTween.start();
         }
     }
-    animatePaddle(doubleKeyPressRight, doubleKeyPressLeft, keyRight, keyLeft, arena, keyPower)
+    animatePaddle(arena)
     {
-        if (doubleKeyPressRight && this.canDash) {
+        if (doubleKeyPress[this.rightKey] && this.canDash) {
             this.canDash = false;
             this.dash(arena.width * 20, false);
-            doubleKeyPressRight = false;
+            doubleKeyPress[this.rightKey] = false;
         }
-        if (doubleKeyPressLeft && this.canDash) {
+        if (doubleKeyPress[this.leftKey] && this.canDash) {
             this.canDash = false;
             this.dash(arena.width * -20, true);
-            doubleKeyPressLeft = false;
+            doubleKeyPress[this.leftKey] = false;
         }
         // Detect normal paddle movement
-        if (keyRight && this.position.x + 0.008 <= arena.rightCorner.x) {
+        if (keyDown[this.rightKey] && this.position.x + 0.008 <= arena.rightCorner.x) {
             this.position.x += 0.016 * arena.length;
             if (arena.ball.isSupercharging && (this.position.z * arena.ball.position.z > 0))
                 arena.ball.position.x += 0.016 * arena.length;
         }
-        if (keyLeft && this.position.x - 0.008 >= arena.leftCorner.x) {
+        if (keyDown[this.leftKey] && this.position.x - 0.008 >= arena.leftCorner.x) {
             this.position.x -= 0.016 * arena.length;
             if (arena.ball.isSupercharging && (this.position.z * arena.ball.position.z > 0))
                 arena.ball.position.x -= 0.016 * arena.length;
         }
-        if (keyPower)
+        if (keyDown[this.chargeKey])
         {
             this.material.color.set(this.superChargingColor);
             this.isPowered = true;
@@ -1070,6 +1083,45 @@ class Paddle extends THREE.Group {
             this.canDash = true;
         })
         .start();
+    }
+    changePaddleControls(toTopView)
+    {
+        if (toTopView)
+        {
+            if (this.left)
+            {
+                this.rightKey = 'w';
+                this.leftKey = 's';
+                this.chargeKey = 'd';
+            }
+            else
+            {
+                this.rightKey = 'ArrowUp';
+                this.leftKey = 'ArrowDown';
+                this.chargeKey = 'ArrowLeft';
+            }
+        }
+        else
+        {
+            if (this.left)
+            {
+                this.rightKey = 'a';
+                this.leftKey = 'd';
+                this.chargeKey = 'w';
+            }
+            else
+            {
+                this.rightKey = 'ArrowRight';
+                this.leftKey = 'ArrowLeft';
+                this.chargeKey = 'ArrowUp';
+            }
+        }
+    }
+    swapPaddleControls()
+    {
+        const tmp = this.leftKey;
+        this.leftKey = this.rightKey;
+        this.rightKey = tmp;
     }
 }
 
@@ -1173,7 +1225,6 @@ class Ball extends THREE.Mesh {
             // make the spaceship do a backflip
             if (!paddle.isPowered)
             {
-                console.log(this.speedZ);
                 let targetPosition;
                 let initialPosition = paddle.model.position.z;
                 targetPosition = paddle.model.position.z - 2 * -this.speedZ;
@@ -1420,7 +1471,6 @@ class ThirdPlayer extends THREE.Group {
         if (keyDown['n'])
             this.rotation.y -= 0.1;
     }
-
     monitorShipRotation(event) {
         // Calculate the position of the ship's center relative to the screen
         const shipPosition = new THREE.Vector3();
