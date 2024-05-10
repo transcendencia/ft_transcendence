@@ -378,6 +378,7 @@ class Arena extends THREE.Mesh {
         this.height = height;
         this.width = depth;
         this.camera = camera;
+        this.thirdPlayer = new ThirdPlayer(this);
         this.paddleRight = new Paddle(this, false);
         this.paddleLeft = new Paddle(this, true);
         this.ball = new Ball(this);
@@ -396,7 +397,6 @@ class Arena extends THREE.Mesh {
         this.isBeingReset = false;
         this.scene = scene;
         this.game = new Game(this);
-        this.thirdPlayer = new ThirdPlayer(this);
         this.maxSpeed = this.width / 40;
         this.isSplitScreen = false;
         this.isAnimatingCamera = false;
@@ -924,8 +924,13 @@ class Paddle extends THREE.Group {
         this.defaultLight = this.arena.width * this.arena.length / 7.5;
         this.light.power = this.defaultLight;
         this.defaultColor = this.material.color.clone();
+        this.untouchedDefaultColor = this.material.color.clone();
         this.superChargingColor = new THREE.Color(0xff6e6e);
+        this.invertedColor = this.arena.thirdPlayer.ballColor.clone();
+        this.slowedColor = this.arena.thirdPlayer.bulletColor.clone();
         this.dashingColor = new THREE.Color(0xf4ff69);
+        this.defaultSpeed = 0.016;
+        this.moveSpeed = 0.016;
         this.light.castShadow = true;
         this.isPowered = false;
         this.flippingSpeed = 0.5;
@@ -1019,15 +1024,15 @@ class Paddle extends THREE.Group {
             doubleKeyPress[this.leftKey] = false;
         }
         // Detect normal paddle movement
-        if (keyDown[this.rightKey] && this.position.x + 0.008 <= arena.rightCorner.x) {
-            this.position.x += 0.016 * arena.length;
+        if (keyDown[this.rightKey] && this.position.x + (this.moveSpeed / 2) <= arena.rightCorner.x) {
+            this.position.x += this.moveSpeed * arena.length;
             if (arena.ball.isSupercharging && (this.position.z * arena.ball.position.z > 0))
-                arena.ball.position.x += 0.016 * arena.length;
+                arena.ball.position.x += this.moveSpeed * arena.length;
         }
-        if (keyDown[this.leftKey] && this.position.x - 0.008 >= arena.leftCorner.x) {
-            this.position.x -= 0.016 * arena.length;
+        if (keyDown[this.leftKey] && this.position.x - (this.moveSpeed / 2) >= arena.leftCorner.x) {
+            this.position.x -= this.moveSpeed * arena.length;
             if (arena.ball.isSupercharging && (this.position.z * arena.ball.position.z > 0))
-                arena.ball.position.x -= 0.016 * arena.length;
+                arena.ball.position.x -= this.moveSpeed * arena.length;
         }
         if (keyDown[this.chargeKey])
         {
@@ -1041,7 +1046,7 @@ class Paddle extends THREE.Group {
     {
         let targetX;
         this.material.color.set(this.dashingColor);
-        targetX = this.position.x + range * 0.016;
+        targetX = this.position.x + range * this.moveSpeed;
         if (!isLeft) {
             if (targetX > this.arena.rightCorner.x)
                 targetX = this.arena.rightCorner.x;
@@ -1122,6 +1127,34 @@ class Paddle extends THREE.Group {
         const tmp = this.leftKey;
         this.leftKey = this.rightKey;
         this.rightKey = tmp;
+        if (!this.isPowered)
+            this.material.color.set(this.invertedColor);
+        this.defaultColor.set(this.invertedColor);
+
+        setTimeout(() => {
+            const tmp = this.leftKey;
+            this.leftKey = this.rightKey;
+            this.rightKey = tmp;
+            this.defaultColor.set(this.untouchedDefaultColor);
+            if (!this.isPowered)
+                this.material.color.set(this.defaultColor);
+        }, 5000);
+    }
+    slowDown()
+    {
+        if (this.moveSpeed === this.defaultSpeed)
+        {
+            this.moveSpeed *= 0.6;
+        if (!this.isPowered)
+            this.material.color.set(this.slowedColor);
+        this.defaultColor.set(this.slowedColor);
+        setTimeout(() => {
+            if (!this.isPowered)
+                this.material.color.set(this.untouchedDefaultColor);
+            this.defaultColor.set(this.untouchedDefaultColor);
+            this.moveSpeed = this.defaultSpeed;
+        }, 5000);
+        }
     }
 }
 
@@ -1390,6 +1423,8 @@ class ThirdPlayer extends THREE.Group {
         this.shootDirection = new THREE.Vector2(0, 0);
         this.leftShootDirection = new THREE.Vector2(0, 0);
         this.rightShootDirection = new THREE.Vector2(0, 0);
+        this.ballColor = new THREE.Color(0x31FBF3); // Set the color of the ball
+        this.bulletColor = new THREE.Color(0xffbb12); // Set the color of the bullets
         // Define spaceship in the outer scope
         let spaceship;
 
@@ -1415,9 +1450,9 @@ class ThirdPlayer extends THREE.Group {
                 this.buffer = new THREE.Mesh(bufferGeometry, bufferMaterial);
                 this.bulletGeometry = new THREE.CylinderGeometry(0.25, 0.25, 1.5, 32, 1, false); // Adjust size and segments as needed
                 this.ballGeometry = new THREE.SphereGeometry(0.8, 32, 32); // Adjust size and segments as needed
-                const bulletLeftMaterial = new THREE.MeshBasicMaterial({ color: 0xffbb12 , opacity: 1, transparent: true}); // Red color for the ball
-                const bulletRightMaterial = new THREE.MeshBasicMaterial({ color: 0xffbb12 , opacity: 1, transparent: true}); // Red color for the ball
-                const ballMaterial = new THREE.MeshBasicMaterial({ color: 0x31FBF3, opacity: 1, transparent: true }); // Red color for the ball
+                const bulletLeftMaterial = new THREE.MeshBasicMaterial({ color: this.bulletColor , opacity: 1, transparent: true}); // Red color for the ball
+                const bulletRightMaterial = new THREE.MeshBasicMaterial({ color: this.bulletColor , opacity: 1, transparent: true}); // Red color for the ball
+                const ballMaterial = new THREE.MeshBasicMaterial({ color: this.ballColor, opacity: 1, transparent: true }); // Red color for the ball
                 this.bulletLeft = new THREE.Mesh(this.bulletGeometry, bulletLeftMaterial);
                 this.bulletRight = new THREE.Mesh(this.bulletGeometry, bulletRightMaterial);
                 this.ballMesh = new THREE.Mesh(this.ballGeometry, ballMaterial);
@@ -1529,24 +1564,68 @@ class ThirdPlayer extends THREE.Group {
         if (!this.ballAttached) {
             this.ballMesh.position.x += this.shootDirection.x * 0.7;
             this.ballMesh.position.z += this.shootDirection.y * 0.7;
+
         }
         if (!this.bulletLeftAttached) {
             this.bulletLeft.position.x += this.leftShootDirection.x * 2;
             this.bulletLeft.position.z += this.leftShootDirection.y * 2;
+
         }
         if (!this.bulletRightAttached) {
             this.bulletRight.position.x += this.rightShootDirection.x * 2;
             this.bulletRight.position.z += this.rightShootDirection.y * 2;
         }
+        this.monitorCollisions();
+    }
+    monitorCollisions() {
+
+        // BALL COLLISIONS
+        if (!this.ballAttached) {
+            if (this.checkCollisionBallPaddle(this.arena.paddleLeft))
+            {
+                this.resetBall();
+                this.arena.paddleLeft.swapPaddleControls();
+            }
+            if (this.checkCollisionBallPaddle(this.arena.paddleRight))
+            {
+                this.resetBall();
+                this.arena.paddleRight.swapPaddleControls();
+            }
+        }
+        // BULLET LEFT COLLISIONS
+        if (!this.bulletLeftAttached) {
+            if (this.checkCollisionBulletPaddle(this.bulletLeft, this.arena.paddleLeft))
+            {
+                this.resetBullet(this.bulletLeft);
+                this.arena.paddleLeft.slowDown();
+            }
+            if (this.checkCollisionBulletPaddle(this.bulletLeft, this.arena.paddleRight))
+            {
+                this.resetBullet(this.bulletLeft);
+                this.arena.paddleRight.slowDown();
+            }
+        }
+        // BULLET RIGHT COLLISIONS
+        if (!this.bulletRightAttached) {
+            if (this.checkCollisionBulletPaddle(this.bulletRight, this.arena.paddleLeft))
+            {
+                this.resetBullet(this.bulletRight);
+                this.arena.paddleLeft.slowDown();
+            }
+            if (this.checkCollisionBulletPaddle(this.bulletRight, this.arena.paddleRight))
+            {
+                this.resetBullet(this.bulletRight);
+                this.arena.paddleRight.slowDown();
+            }
+        }
+
     }
     temporarilyDetachBall() {
         const ballPosition = new THREE.Vector3();
         this.ballMesh.getWorldPosition(ballPosition);
-        console.log("wsh");
         this.remove(this.ballMesh);
-        // Add the ball to the scene directly
         this.ballMesh.position.copy(ballPosition);
-        scene.add(this.ballMesh); // Assuming "scene" is the three.js scene object
+        scene.add(this.ballMesh);
     }
     temporarilyDetachBullet(bullet) {
         const bulletPosition = new THREE.Vector3();
@@ -1583,6 +1662,33 @@ class ThirdPlayer extends THREE.Group {
         .easing(TWEEN.Easing.Quadratic.Out)
         .start();
         bullet.rotation.y = 0;
+    }
+    checkCollisionBallPaddle(paddle) {
+        // Get the bounding box of the box object
+        let paddle1Box = new THREE.Box3().setFromObject(paddle.paddleMesh);
+
+        // Get the bounding sphere of the sphere object
+        let sphereSphere = new THREE.Sphere();
+        this.ballMesh.geometry.computeBoundingSphere();
+        sphereSphere.copy(this.ballMesh.geometry.boundingSphere);
+        sphereSphere.applyMatrix4(this.ballMesh.matrixWorld);
+    
+        // Check for intersection between the box and sphere bounding volumes
+        return paddle1Box.intersectsSphere(sphereSphere);
+    }
+    checkCollisionBulletPaddle(bullet, paddle) {
+        // Get the bounding box of the box object
+        const boxBox = new THREE.Box3().setFromObject(paddle.paddleMesh);
+    
+        // Get the bounding cylinder of the cylinder object
+        const cylinderSphere = new THREE.Sphere();
+        const cylinderGeometry = bullet.geometry;
+        const cylinderMatrixWorld = bullet.matrixWorld;
+        cylinderGeometry.computeBoundingSphere();
+        cylinderSphere.copy(cylinderGeometry.boundingSphere).applyMatrix4(cylinderMatrixWorld);
+    
+        // Check for intersection between the box and cylinder bounding volumes
+        return boxBox.intersectsSphere(cylinderSphere);
     }
 }
 
