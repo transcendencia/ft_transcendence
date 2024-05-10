@@ -1355,7 +1355,7 @@ class ThirdPlayer extends THREE.Group {
                 spaceship.scale.set(0.4, 0.4, 0.4);
                 // Add the spaceship to the group
                 this.add(spaceship);
-                this.position.set(-this.arena.width / 2 - 2, this.arena.height, 0);
+                this.position.set(-this.arena.width / 2 - 3, this.arena.height, 0);
                 // Create a sphere representing the ball
                 
                         // Create a buffer geometry point
@@ -1363,10 +1363,10 @@ class ThirdPlayer extends THREE.Group {
                 const bufferMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }); // Make it invisible
                 this.buffer = new THREE.Mesh(bufferGeometry, bufferMaterial);
                 this.bulletGeometry = new THREE.CylinderGeometry(0.25, 0.25, 1.5, 32, 1, false); // Adjust size and segments as needed
-                this.ballGeometry = new THREE.SphereGeometry(1, 32, 32); // Adjust size and segments as needed
+                this.ballGeometry = new THREE.SphereGeometry(0.8, 32, 32); // Adjust size and segments as needed
                 const bulletLeftMaterial = new THREE.MeshBasicMaterial({ color: 0xffbb12 , opacity: 1, transparent: true}); // Red color for the ball
                 const bulletRightMaterial = new THREE.MeshBasicMaterial({ color: 0xffbb12 , opacity: 1, transparent: true}); // Red color for the ball
-                const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff88ff, opacity: 1, transparent: true }); // Red color for the ball
+                const ballMaterial = new THREE.MeshBasicMaterial({ color: 0x31FBF3, opacity: 1, transparent: true }); // Red color for the ball
                 this.bulletLeft = new THREE.Mesh(this.bulletGeometry, bulletLeftMaterial);
                 this.bulletRight = new THREE.Mesh(this.bulletGeometry, bulletRightMaterial);
                 this.ballMesh = new THREE.Mesh(this.ballGeometry, ballMaterial);
