@@ -97,7 +97,7 @@ class LoadingScreen {
         if (this.isAnimatingCamera)
         {
             this.isAnimatingCamera = false;
-            const duration = 500;
+            const duration = 2500;
             new TWEEN.Tween(this) // ROTATION ACCELERATION AND CAMERA GETTING CLOSE
                 .to({xSpeedInitial: this.xSpeedFinal , ySpeedInitial: this.ySpeedFinal, cameraInitialZ: this.cameraCloseZ}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
@@ -527,7 +527,6 @@ class Arena extends THREE.Mesh {
             this.ball.isgoingLeft = false;
             this.ball.isRolling = true;
             this.ball.updateSpeedBar();
-            this.bot.isPlaying = true;
         }
         if (keyDown['1'])
         {
@@ -575,6 +574,7 @@ class Arena extends THREE.Mesh {
             swapToSplitScreen();
             this.setSplitCameraPositions(camera, cameraLeft);
             this.game.isPlaying = true;
+            this.bot.isPlaying = true;
             this.isSplitScreen = true;
             scoreUI[0].style.opacity = 1;
         }
@@ -1178,6 +1178,7 @@ class Ball extends THREE.Mesh {
         this.light.castShadow = true;
         // ATRIBUTES
         this.scene = scene;
+        this.arena = arena;
         this.radius = arena.width * 0.025;
         this.startingPoint = new THREE.Vector3(arena.position.x, arena.position.y + arena.height / 2 + this.radius, arena.position.z);
         this.position.copy(this.startingPoint);
@@ -1186,10 +1187,11 @@ class Ball extends THREE.Mesh {
         this.isgoingLeft = false;
         this.isgoingRight = false;
         this.initialColor = this.material.color.clone();
+        this.invertedColor = this.arena.thirdPlayer.ballColor.clone();
+        this.speedColor = this.arena.thirdPlayer.bulletColor.clone();
         this.finalColor = new THREE.Color(0xFFFFFF);
         this.zLimit1 = arena.position.z + arena.width / 2;
         this.zLimit2 = arena.position.z - arena.width / 2;
-        this.arena = arena;
         this.initialSpeed = this.arena.width / 200;
         this.isSupercharging;
         this.bounceCount = 0;
@@ -1409,8 +1411,27 @@ class Ball extends THREE.Mesh {
             this.speedX *= -1;
         this.position.z += this.speedZ;
         this.position.x += this.speedX;
-        if (this.speedZ > 0)
-            this.rotation.x += 0.1;
+    }
+    invertMovement()
+    {
+        this.speedZ *= -1;
+        this.isgoingLeft = !this.isgoingLeft;
+        this.isgoingRight = !this.isgoingRight;
+        this.material.color.set(this.invertedColor);
+        setTimeout(() => {
+            this.material.color.set(this.initialColor);
+        }, 500);
+    }
+    increaseSpeed()
+    {
+        this.speedZ *= 1.8;
+        this.speedX *= 1.8;
+        this.material.color.set(this.speedColor);
+        setTimeout(() => {
+            this.material.color.set(this.initialColor);
+            this.speedZ /= 1.8;
+            this.speedX /= 1.8;
+        }, 500);
     }
 }
 
@@ -1593,6 +1614,12 @@ class ThirdPlayer extends THREE.Group {
                 this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
                 this.ballMesh.material.opacity = 0;
             }
+            if (this.checkCollisionBallBall(this.arena.ball))
+            {
+                this.arena.ball.invertMovement();
+                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+                this.ballMesh.material.opacity = 0;
+            }
         }
         // BULLET LEFT COLLISIONS
         if (!this.bulletLeftAttached) {
@@ -1608,6 +1635,12 @@ class ThirdPlayer extends THREE.Group {
                 this.bulletLeft.position.set(4, -0.5, -2); // Adjust position as needed
                 this.bulletLeft.material.opacity = 0;
             }
+            if (this.checkCollisionBulletBall(this.bulletLeft))
+            {
+                this.arena.ball.increaseSpeed();
+                this.bulletLeft.position.set(4, -0.5, -2); // Adjust position as needed
+                this.bulletLeft.material.opacity = 0;
+            }
         }
         // BULLET RIGHT COLLISIONS
         if (!this.bulletRightAttached) {
@@ -1620,6 +1653,12 @@ class ThirdPlayer extends THREE.Group {
             if (this.checkCollisionBulletPaddle(this.bulletRight, this.arena.paddleRight))
             {
                 this.arena.paddleRight.slowDown();
+                this.bulletRight.position.set(4, -0.5, 2); // Adjust position as needed
+                this.bulletRight.material.opacity = 0;
+            }
+            if (this.checkCollisionBulletBall(this.bulletRight))
+            {
+                this.arena.ball.increaseSpeed();
                 this.bulletRight.position.set(4, -0.5, 2); // Adjust position as needed
                 this.bulletRight.material.opacity = 0;
             }
@@ -1695,6 +1734,34 @@ class ThirdPlayer extends THREE.Group {
     
         // Check for intersection between the box and cylinder bounding volumes
         return boxBox.intersectsSphere(cylinderSphere);
+    }
+    checkCollisionBallBall(ball) {
+        // Get the bounding sphere of the sphere objects
+        const sphere1Sphere = new THREE.Sphere();
+        const sphere2Sphere = new THREE.Sphere();
+        this.ballMesh.geometry.computeBoundingSphere();
+        ball.geometry.computeBoundingSphere();
+        sphere1Sphere.copy(this.ballMesh.geometry.boundingSphere).applyMatrix4(this.ballMesh.matrixWorld);
+        sphere2Sphere.copy(ball.geometry.boundingSphere).applyMatrix4(ball.matrixWorld);
+    
+        // Check for intersection between the sphere bounding volumes
+        return sphere1Sphere.intersectsSphere(sphere2Sphere);
+    }
+    checkCollisionBulletBall(cylinder) {
+        // Get the bounding cylinder of the cylinder object
+        const cylinderSphere = new THREE.Sphere();
+        const cylinderGeometry = cylinder.geometry;
+        const cylinderMatrixWorld = cylinder.matrixWorld;
+        cylinderGeometry.computeBoundingSphere();
+        cylinderSphere.copy(cylinderGeometry.boundingSphere).applyMatrix4(cylinderMatrixWorld);
+    
+        // Get the bounding sphere of the sphere object
+        const sphereSphere = new THREE.Sphere();
+        this.arena.ball.geometry.computeBoundingSphere();
+        sphereSphere.copy(this.arena.ball.geometry.boundingSphere).applyMatrix4(this.arena.ball.matrixWorld);
+    
+        // Check for intersection between the cylinder and sphere bounding volumes
+        return cylinderSphere.intersectsSphere(sphereSphere);
     }
 }
 
