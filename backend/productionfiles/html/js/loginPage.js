@@ -53,3 +53,23 @@ languageIcons.forEach(function(icon) {
         });
     });
 });
+
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    var formData = new FormData(this);
+    fetch(this.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('messageContainer').innerText = data.message;
+    })
+    .catch(error => {
+        console.error('Une erreur s\'est produite:', error);
+    });
+});

@@ -23,7 +23,8 @@ import authentication.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', authentication.views.login_page, name='login'),
+    path('', authentication.views.index, name='index'),
+    path('login/', authentication.views.login_page, name='login'),
     path('tournament/', authentication.views.main, name='main'),
     path('add_player/', authentication.views.add_member, name='add_member'),
     path('new_tournament/', authentication.views.result, name='new_tournament'),

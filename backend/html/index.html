@@ -26,25 +26,26 @@
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
     </div>
     <div class="container">
-      <form method="post" action=""> <!-- Modifier l'attribut action avec l'URL correcte du backend -->
+      <div id="messageContainer" class="loginMessage"></div>
+      <form id="loginForm" method="post" action="login/">
         {% csrf_token %}
+        <!-- <p class="loginMessage">{{ message }}</p> -->
         <div class="titleText" id="loginText">
           - Login -
           <div class="textBar">
-            <input class="text-input" name="username" spellcheck="false"> <!-- Utiliser un champ de texte pour le login, avec l'attribut name -->
+            <input class="text-input" name="username" spellcheck="false">
             <img src="{% static 'html/assets/icons/frame.png' %}">
           </div>
         </div>
         <div class="titleText" id="passwordText">
           - Password -
           <div class="textBar">
-            <input class="text-input" name="password" spellcheck="false" type="password"> <!-- Utiliser un champ de mot de passe, avec l'attribut name -->
+            <input class="text-input" name="password" spellcheck="false" type="password">
             <img src="{% static 'html/assets/icons/frame.png' %}">
           </div>
         </div>
-        <button type="submit">Submit</button> <!-- Ajouter un bouton de soumission -->
+        <button type="submit" style="display: none;">Submit</button>
       </form>
-      <p>{{ message }}</p>
     </div>
     <div class="languageColumn" id="loginLanguageText">
       <div class="languageSettings">

@@ -7,28 +7,28 @@ from django.shortcuts import render, redirect
 from .models import Member
 from .forms import MemberForm
 from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
+import json
+from django.http import JsonResponse
 
-@csrf_protect
+def index(request):
+  return render(request, 'index.html')
+
+# @csrf_protect
 def login_page(request):
-    form = forms.LoginForm()
-    message = ''
     if request.method == 'POST':
-        form = forms.LoginForm(request.POST)
-        if form.is_valid():
-            user = authenticate(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password'],
-            )
-            if user is not None:
-                login(request, user)
-                message = f'Bonjour, {user.username}! Vous êtes connecté.'
-            else:
-                message = 'Identifiants invalides.'
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return  JsonResponse({'status': "succes", 'message': "You are now logged in!\nPress [E] to enter a new galaxie"})
         else:
-            message = 'Login or Password empty'
-    return render(
-        request, 'index.html', context={'form': form, 'message': message})
+            return  JsonResponse({'status': "failure", 'message': "Username and/or password invalid"})
+    else:
+      return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
+# def sign_up(request):
 
 def add_member(request):
   if request.method == 'POST':
