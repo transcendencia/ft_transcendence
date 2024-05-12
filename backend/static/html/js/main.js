@@ -42,7 +42,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     minimapCamera.position.set(sun.position.x + 200, sun.position.y + 500, sun.position.z);
     
     const minimapRenderer = new THREE.WebGLRenderer();
-    minimapRenderer.setSize(window.innerWidth * 0.15, window.innerWidth * 0.15);
+    minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
     minimapRenderer.setClearColor(0x000000, 0); 
     minimapRenderer.domElement.style.borderRadius = '100%';
     minimapRenderer.domElement.style.position = 'absolute';
@@ -126,7 +126,6 @@ export const outlinePass = new OutlinePass(
     const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
     pointLight2.castShadow = true;
     pointLight2.position.set(0,5,-1300);
-    const lightHelperss = new THREE.PointLightHelper(pointLight2);
     
     const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
     spaceShipPointLight.castShadow = true;
@@ -239,14 +238,12 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
-        loginPageContainer.style.opacity = 0;
-        console.log("e pressed");
-        startAnimation();
+        // loginPageContainer.style.opacity = 0;
+        // startAnimation();
+        togglePlanet();
     }
     if (event.key === 'e' && inRange)
         togglePlanet();
-    if (event.key === 'u')
-        triggerInfiniteAnim();
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
             togglePlanet();
@@ -291,6 +288,8 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
         targetBlur === 0 ? coloredPanel.style.opacity = "0" : coloredPanel.style.opacity = "1";
     }
 }
+
+
 
 // Bloom Pass
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );

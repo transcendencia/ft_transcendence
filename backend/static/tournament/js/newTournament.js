@@ -61,24 +61,40 @@ const usernameLinks = document.querySelectorAll('.username-link');
   }
 
   function printTournamentPlayer() {
-    const tbody = document.querySelector("#tournamentTable tbody");
-    tbody.innerHTML = "";
+    const tournamentTable = document.querySelector("#tournamentTable");
+    tournamentTable.innerHTML = "";
     tournamentPlayer.forEach(function(player) {
-      const row = tbody.insertRow();
-      const cell1 = row.insertCell();
-      cell1.textContent = player.username;
-      const cell2 = row.insertCell();
-      cell2.innerHTML = '<a href="#">-</a>';
-      cell2.addEventListener("click", function() {
-        const index = tournamentPlayer.indexOf(player);
-        if (index !== -1) {
-          tournamentPlayer.splice(index, 1);
-          printTournamentPlayer();
-        }
-      });
+      const divRow = document.createElement("div");
+      divRow.classList.add("userTile");
+      
+      
+      const divUsername = document.createElement("div");
+      divUsername.classList.add("textContainer")
+      divUsername.textContent = player.username;
+      divRow.appendChild(divUsername);
+
+      const divImg = document.createElement("div");
+      divImg.classList.add("imgContainer");
+      divRow.appendChild(divImg);
+
+    // const divAction = document.createElement("div");
+    // const actionLink = document.createElement("a");
+    // actionLink.href = "#";
+    // actionLink.textContent = "-";
+    // divAction.appendChild(actionLink);
+    // divRow.appendChild(divAction);
+
+    // actionLink.addEventListener("click", function() {
+    //   const index = tournamentPlayer.indexOf(player);
+    //   if (index !== -1) {
+    //     tournamentPlayer.splice(index, 1);
+    //     printTournamentPlayer();
+    //   }
+    // });
+      tournamentTable.appendChild(divRow);
     });
   }
-  
+
   let currentMatch = [];
   let allMatch = [];
   let round = 1;
@@ -118,7 +134,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
       li.textContent = playersInTournament[0].username + " have won the tournament!";
       ul.appendChild(li);
       launchMatchElement.style.display = "none";
-      printAllResult();
+      // printAllResult();
       return ;
     }
   
