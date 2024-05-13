@@ -14,7 +14,9 @@ import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import getStarfield from "./starField.js"
 import getNebula from './nebula.js';
-import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
+// import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
+import { vertexShader, vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
+import { fragmentShader, fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
@@ -51,6 +53,41 @@ renderer2.render(scene, cameraLeft);
 // scene.add(torus);
 
 
+const shaderBallMaterial = new THREE.MeshStandardMaterial({
+    onBeforeCompile: (shader) => {
+      // storing a reference to the shader object
+      shaderBallMaterial.userData.shader = shader
+
+      // uniforms
+      shader.uniforms.uTime = { value: 0 }
+
+      const parsVertexString = /* glsl */ `#include <displacementmap_pars_vertex>`
+      shader.vertexShader = shader.vertexShader.replace(
+        parsVertexString,
+        parsVertexString + vertexPars
+      )
+
+      const mainVertexString = /* glsl */ `#include <displacementmap_vertex>`
+      shader.vertexShader = shader.vertexShader.replace(
+        mainVertexString,
+        mainVertexString + vertexMain
+      )
+
+      const mainFragmentString = /* glsl */ `#include <normal_fragment_maps>`
+      const parsFragmentString = /* glsl */ `#include <bumpmap_pars_fragment>`
+      shader.fragmentShader = shader.fragmentShader.replace(
+        parsFragmentString,
+        parsFragmentString + fragmentPars
+      )
+      shader.fragmentShader = shader.fragmentShader.replace(
+        mainFragmentString,
+        mainFragmentString + fragmentMain
+      )
+    },
+  });
+
+shaderBallMaterial.userData.shader = { uniforms: { uTime: { value: 0 } } };
+
 // LOADING SCREEN
 class LoadingScreen {
     constructor() {
@@ -66,12 +103,13 @@ class LoadingScreen {
         this.composer = new EffectComposer(this.renderer);
         this.renderPass = new RenderPass(this.scene, this.camera);
         this.composer.addPass(this.renderPass);
-        this.cameraInitialZ = 8;
+        this.cameraInitialZ = 4;
         this.cameraCloseZ = 4;
         this.cameraFarZ = 250;
         this.camera.position.z = this.cameraInitialZ;
+
         this.ico = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 0), new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true}));
-        this.ico2 = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 0), new THREE.MeshStandardMaterial({color: 0xffffff}));
+        this.ico2 = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 400), shaderBallMaterial);
         this.ico.position.set(0, 0, 0);
         this.ico2.position.set(0, 0, 0);
         this.bigXspeed = 0.005;
@@ -85,8 +123,8 @@ class LoadingScreen {
         this.scene.add(this.ico);
         this.scene.add(this.ico2);
         this.light = new THREE.PointLight(0xffffff, 0.4);
-        this.light2 = new THREE.PointLight(0xffffff, 0.4);
-        this.light3 = new THREE.PointLight(0xffffff, 0.5);
+        this.light2 = new THREE.PointLight(0x0000ff, 0.4);
+        this.light3 = new THREE.PointLight(0x0000ff, 0.3);
         this.light.position.set(0, 5, 0);
         this.light2.position.set(0, -5, 0);
         this.light3.position.set(0, 0, 5);
@@ -138,6 +176,7 @@ class LoadingScreen {
         this.ico.rotation.x += this.bigXspeed * 2;
         this.ico2.rotation.y -= this.ySpeedInitial;
         this.ico2.rotation.x += this.xSpeedInitial;
+        shaderBallMaterial.userData.shader.uniforms.uTime.value = performance.now() / 2000;
         this.composer.render();
     }
     activateLoadingScreen()
@@ -313,33 +352,33 @@ function cameraDebug()
     console.log("camera.rotation.z =  " + camera.rotation.z);
 }
 
-const greenShaderMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-        time: { value: 0.0 },
-        resolution: { value: new THREE.Vector2() }
-    },
-    vertexShader: vertexShader,
-    fragmentShader: greenFragmentShader
-});
+// const greenShaderMaterial = new THREE.ShaderMaterial({
+//     uniforms: {
+//         time: { value: 0.0 },
+//         resolution: { value: new THREE.Vector2() }
+//     },
+//     vertexShader: vertexShader,
+//     fragmentShader: greenFragmentShader
+// });
 
-// Create shader materials
-const redShaderMaterial = new THREE.ShaderMaterial({
-    vertexShader: vertexShader,
-    fragmentShader: redFragmentShader,
-    uniforms: {
-        time: { value: 0 },
-        color: { value: new THREE.Color(0xffffff) } // Default color
-    }
-});
+// // Create shader materials
+// const redShaderMaterial = new THREE.ShaderMaterial({
+//     vertexShader: vertexShader,
+//     fragmentShader: redFragmentShader,
+//     uniforms: {
+//         time: { value: 0 },
+//         color: { value: new THREE.Color(0xffffff) } // Default color
+//     }
+// });
 
-const blueShaderMaterial = new THREE.ShaderMaterial({
-    vertexShader: vertexShader,
-    fragmentShader: blueFragmentShader,
-    uniforms: {
-        time: { value: 0 },
-        color: { value: new THREE.Color(0xffffff) } // Default color
-    }
-});
+// const blueShaderMaterial = new THREE.ShaderMaterial({
+//     vertexShader: vertexShader,
+//     fragmentShader: blueFragmentShader,
+//     uniforms: {
+//         time: { value: 0 },
+//         color: { value: new THREE.Color(0xffffff) } // Default color
+//     }
+// });
 
 //ARENA CLASS
 class Arena extends THREE.Mesh {
@@ -528,21 +567,21 @@ class Arena extends THREE.Mesh {
             this.ball.isRolling = true;
             this.ball.updateSpeedBar();
         }
-        if (keyDown['1'])
-        {
-            this.material = blueShaderMaterial;
-            scene.background = new THREE.Color(0x000010);
-        }
-        if (keyDown['2'])
-        {
-            this.material = greenShaderMaterial;
-            scene.background = new THREE.Color(0x001000);
-        }
-        if (keyDown['3'])
-        {
-            this.material = redShaderMaterial;
-            scene.background = new THREE.Color(0x100000);
-        }
+        // if (keyDown['1'])
+        // {
+        //     this.material = blueShaderMaterial;
+        //     scene.background = new THREE.Color(0x000010);
+        // }
+        // if (keyDown['2'])
+        // {
+        //     this.material = greenShaderMaterial;
+        //     scene.background = new THREE.Color(0x001000);
+        // }
+        // if (keyDown['3'])
+        // {
+        //     this.material = redShaderMaterial;
+        //     scene.background = new THREE.Color(0x100000);
+        // }
         if (keyDown['4'])  
             this.changeTheme(new Theme4());
         if (keyDown['b'])
@@ -581,7 +620,7 @@ class Arena extends THREE.Mesh {
         if (keyDown['p'])
         {
             swapToFullScreen();
-            this.setTopView(camera);
+            this.setTopView(camera, false);
             this.paddleLeft.changePaddleControls(true);
             this.paddleRight.changePaddleControls(true);
         }
@@ -674,7 +713,7 @@ class Arena extends THREE.Mesh {
 
         .start();
     }
-    setTopView(camera)
+    setTopView(camera, gameEnded)
     {
         let targetY = this.position.y + this.height + this.width;
         let targetX = this.position.x;
@@ -693,7 +732,8 @@ class Arena extends THREE.Mesh {
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
             this.isSplitScreen = false;
-            this.thirdPlayer.isPlaying = true;
+            if (!gameEnded)
+                    this.thirdPlayer.isPlaying = true;
         })
         .start();
     }
@@ -714,6 +754,7 @@ class Arena extends THREE.Mesh {
     {
         let duration = 1150;
 
+        this.thirdPlayer.isPlaying = false;
         loserPaddle.light.power = 0;
         winnerPaddle.light.power = 0;
         this.ball.light.power = 0;
@@ -774,13 +815,8 @@ class Arena extends THREE.Mesh {
                 this.game.leftScore = 0;
                 this.game.rightScore = 0;
                 swapToFullScreen();
-                this.setTopView(camera);
+                this.setTopView(camera, true);
                 this.loadingScreen.activateLoadingScreen();
-                // this.loadingScreen.cameraInitialZ = 8;
-                // this.loadingScreen.camera.position.z = this.loadingScreen.cameraInitialZ;
-                // this.loadingScreen.xSpeedInitial = 0.005;
-                // this.loadingScreen.ySpeedInitial = 0.015;
-                // this.loadingScreen.isAnimatingCamera = true;
             }
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
@@ -2119,7 +2155,7 @@ loadingScreen.composer.addPass(bloomPass);
 // 				effect1.uniforms[ 'scale' ].value = 256;
 // 				composer1.addPass( effect1 );
 
-let fpsInterval = 1000 / 120; // 120 FPS
+let fpsInterval = 1000 / 75; // 120 FPS
 let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
 let lastUpdateTime = performance.now();
 
@@ -2129,10 +2165,10 @@ function animate()
     requestAnimationFrame( animate );
     // controls.update();
 
-    // let now = performance.now();
-    // let elapsed = now - lastUpdateTime;
-    // if (elapsed < fpsInterval) return; // Skip if too big FPS
-    // else
+    let now = performance.now();
+    let elapsed = now - lastUpdateTime;
+    if (elapsed < fpsInterval) return; // Skip if too big FPS
+    else
     {
         TWEEN.update();
         if (!loadingScreen.loading)
@@ -2154,8 +2190,8 @@ function animate()
         }
     }
 
-    // stats.update(); // Update Three.js stats
-    // lastUpdateTime = now - (elapsed % fpsInterval);
-    // stats.time = performance.now();
+    stats.update(); // Update Three.js stats
+    lastUpdateTime = now - (elapsed % fpsInterval);
+    stats.time = performance.now();
 }
 animate();
