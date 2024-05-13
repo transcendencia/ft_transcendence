@@ -47,6 +47,8 @@ RUN pip install django
 
 RUN pip install whitenoise
 
+RUN pip install django-cors-headers
+
 RUN pip install python-dotenv
 
 RUN pip install psycopg2

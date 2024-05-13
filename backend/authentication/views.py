@@ -13,6 +13,9 @@ from django.http import JsonResponse
 def index(request):
   return render(request, 'index.html')
 
+# def signup_page_render(request):
+#   return render(request, 'signup.html')
+
 # @csrf_protect
 def login_page(request):
     if request.method == 'POST':
@@ -28,7 +31,24 @@ def login_page(request):
     else:
       return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
-# def sign_up(request):
+def check_auth(request):
+    if request.user.is_authenticated:
+        print("User authentifier")
+        return JsonResponse({'ok': True})
+    else:
+        print("USer pas authentifier")
+        return JsonResponse({'ok': False})
+
+def signup_page(request):
+    form = forms.SignupForm()
+    if request.method == 'POST':
+        form = forms.SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect(settings.LOGIN_REDIRECT_URL)
+    return render(request, 'authentication/signup.html', context={'form': form})
+
 
 def add_member(request):
   if request.method == 'POST':

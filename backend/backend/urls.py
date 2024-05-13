@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', authentication.views.index, name='index'),
     path('login/', authentication.views.login_page, name='login'),
+    path('check_auth/', authentication.views.check_auth, name='check_auth'),
     path('tournament/', authentication.views.main, name='main'),
     path('add_player/', authentication.views.add_member, name='add_member'),
     path('new_tournament/', authentication.views.result, name='new_tournament'),

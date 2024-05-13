@@ -62,7 +62,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         method: "POST",
         body: formData,
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest' //a changer
         }
     })
     .then(response => response.json())

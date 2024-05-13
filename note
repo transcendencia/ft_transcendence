@@ -1,0 +1,11 @@
+#Create a user in the docker python
+# docker exec -it server bash
+# python manage.py shell
+# from authentication.models import User
+# User.objects.create_user(username='TOTO', password='1234')
+
+#Local Storage to keep user logged in even if he close the window
+# https://deryatanriverdi.medium.com/how-to-user-localstorage-to-keep-user-logged-in-and-out-8fd1e6e46712
+
+#Authentication token
+# https://getstream.io/chat/docs/javascript/tokens_and_authentication/
