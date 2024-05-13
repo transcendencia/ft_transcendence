@@ -56,7 +56,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
             position: 0,
             round: 1,
           });
-          printTournamentPlayer();
+          // printTournamentPlayer();
       }
   }
 
@@ -101,7 +101,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
   let nbMatch;
   
   function makeMatchup() {
-    const ul = document.getElementById("matchup");
+    const ul = document.getElementById("match");
     ul.innerHTML = "";
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
     let j = 0;
@@ -112,7 +112,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
       );
     })
     currentMatch = [];
-  
     //put final position for players who lost
     if (round != 1){
       const ul = document.getElementById("result");
@@ -122,7 +121,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
           player.position = playersInTournament.length + 1;
       })
     }
-  
     //put final position for the winner
     if (playersInTournament.length == 1){
       tournamentPlayer.forEach(function(player){
@@ -137,7 +135,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
       // printAllResult();
       return ;
     }
-  
     //put matchup in currentMatch variable
     for (let i = 0; i < playersInTournament.length; i += 2) {
       if (i + 1 >= playersInTournament.length){
@@ -156,14 +153,14 @@ const usernameLinks = document.querySelectorAll('.username-link');
           -1
         ]);
       }
-      const li = document.createElement("p");
-      if (currentMatch[j][0] && currentMatch[j][1] )
-      li.textContent = currentMatch[j][0].myRef.username + " vs " + currentMatch[j][1].myRef.username;
-      else if (currentMatch[j][0])
-        li.textContent = currentMatch[j][0].myRef.username;
-      ul.appendChild(li);
       j ++;
     }
+    const li = document.createElement("p");
+    if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
+      li.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
+    else if (currentMatch[nbMatch][0])
+      li.textContent = currentMatch[nbMatch][0].myRef.username;
+    ul.appendChild(li);
     round ++;
   }
   
@@ -306,36 +303,27 @@ const usernameLinks = document.querySelectorAll('.username-link');
     document.querySelectorAll('.before-launch').forEach(function(el) {
       el.style.display = 'none';
    });
-    printTournamentPlayer();
+    // printTournamentPlayer();
     launchMatchElement.style.display = "inline";
     bracketElement.style.display = "inline";
     nextMatchElement.style.display = "inline";
+    const leftColumnElement = document.getElementById("leftColumn");
+    const midColumnElement = document.getElementById("midColumn");
+    const rightColumnElement = document.getElementById("rightColumn");
+    leftColumnElement.style.width = "0%";
+    midColumnElement.style.width = "30%";
+    rightColumnElement.style.width = "70%";
     printBracket();
   });
-  
+
   launchMatchElement.addEventListener("click", function(){
-    const ul = document.getElementById("match");
-    ul.innerHTML = "";
-    let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == 1);
-    const li = document.createElement("p");
-    if (nbMatch >= currentMatch.length){
-      makeMatchup();
-      printTournamentPlayer();
-      return ; 
-    }
-    else if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
-      li.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
-    else if (currentMatch[nbMatch][0])
-      li.textContent = currentMatch[nbMatch][0].myRef.username;
-    ul.appendChild(li);
     findWinner();
-    nbMatch ++;
   });
   
   function findWinner(){
     let ul = document.getElementById("result");
     ul.innerHTML = "";
-    const li = document.createElement("p");
+    let li = document.createElement("p");
     let winner_name;
     if (!currentMatch[nbMatch][1]){
       li.textContent = currentMatch[nbMatch][0].myRef.username + " is the winner !";
@@ -452,5 +440,71 @@ const usernameLinks = document.querySelectorAll('.username-link');
       ul = document.getElementById("C2_score");
       ul.textContent = currentMatch[nbMatch][3];
     }
-    printTournamentPlayer();
+    //print the nextMatch
+    nbMatch ++;
+    ul = document.getElementById("match");
+    ul.innerHTML = "";
+    li = document.createElement("p");
+    if (nbMatch >= currentMatch.length){
+      makeMatchup();
+      return ; 
+    }
+    else if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
+      li.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
+    else if (currentMatch[nbMatch][0])
+      li.textContent = currentMatch[nbMatch][0].myRef.username;
+    ul.appendChild(li);
+    // printTournamentPlayer();
   }
+
+const plusPlayerTournament = document.querySelectorAll(".plusPlayerTournament");
+
+function resetAddingMode() {
+  console.log("resetAddingMode");
+  userlistTitle.textContent = getTranslatedText('userlist');
+  plusClicked = 0;
+  plusPlayerTournament.forEach(function(otherPlusButton) {
+      otherPlusButton.style.pointerEvents = 'auto';
+  });
+  profileAdded[botID] = false;
+}
+
+function setAddingMode(plusButton, i) {
+  userlistTitle.textContent = getTranslatedText('chooseProfile');
+  if (i === 0) {
+      plusClicked = 1;
+      profileAdded[botID] = true;
+  }
+  else plusClicked = 2;
+  plusPlayerTournament.forEach(function(otherPlusButton) {
+      if (otherPlusButton !== plusButton) {
+          otherPlusButton.style.pointerEvents = 'none';
+      }
+  });
+}
+
+plusPlayerTournament.forEach(function(plusButton, i) {
+  console.log("forEach");
+  plusButton.addEventListener('click', function () {
+      if (!plusClicked) {
+          setAddingMode(plusButton, i);
+          Glow();
+          plusButton.style.backgroundColor = lightGrey; 
+      }
+      else {
+          resetAddingMode(plusButton);
+          resetGlow();
+          plusButton.style.backgroundColor = grey;
+      }
+  });
+  //Hovering
+  plusButton.addEventListener('mouseenter', function () {
+      if (!plusClicked)
+          plusButton.style.backgroundColor = lightGrey;
+  });
+
+  plusButton.addEventListener('mouseleave', function () {
+      if (!plusClicked)
+          plusButton.style.backgroundColor = grey;
+  });
+});
