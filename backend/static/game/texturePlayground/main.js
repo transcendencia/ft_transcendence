@@ -28,7 +28,7 @@ document.body.appendChild(renderer.domElement);
 
 
 // Create a ball geometry
-const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+const geometry = new THREE.DodecahedronGeometry(5, 20);
 console.log(geometry.attributes)
 // Create a standard material
 const material = new THREE.MeshStandardMaterial({
