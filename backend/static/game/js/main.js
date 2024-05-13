@@ -254,7 +254,7 @@ class LoadingScreen {
                     this.spaceShipGoingDown = true;
                 })
                 .onUpdate(() => {
-                    if (this.isAnimatingCamera)
+                    if (!this.isAnimatingCamera)
                         tweenGoingDown.stop();
                 })
                 .onComplete(() => {
