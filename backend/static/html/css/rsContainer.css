@@ -5,7 +5,7 @@
 }
 
 .rightSideContainer {
-	border: 5px solid wheat;
+	/* border: 5px solid wheat; */
 	display: flex;
 	align-items: center;
 	position: fixed;

@@ -238,9 +238,9 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
-        // loginPageContainer.style.opacity = 0;
-        // startAnimation();
-        togglePlanet();
+        loginPageContainer.style.opacity = 0;
+        startAnimation();
+        // togglePlanet();
     }
     if (event.key === 'e' && inRange)
         togglePlanet();
