@@ -192,31 +192,30 @@
       </div>
     </div>
   </div> -->
-  <div class="background blueShadowfilter">
-    <div class="leftColumn">
-      <div id= "userlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white;"> User list </div>
-      <div class="userlistBackground before-launch">
-        <div class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
-          <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
-          <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
-        </div>
-        {% for x in mymembers %}
-          <div class="userTile">
-            <div class="imgContainer"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
-            <div class="textContainer username-link">{{ x.username }}</div>
-          </div>
-        {% endfor %}
-      </div>
-      <h2 id="next-match" style="display:none;">Next match to be played:</h2>
-      <p id="matchup"></p>
-      <button id="launchMatch" class="bottom" style="display:none;">Start match</button>
-      <p id="match"></p>
-      <p id="result"></p>
+  <div class="background blueShadowfilter" style="flex-direction: column;">
+    <div class="titleTournament">
+      <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div>
     </div>
-    <div class="rightColumn">
-      <div id="arenaTitleText" class="before-launch" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div>
+    <div class="secondLine">
+      <div id="leftColumn" class="leftColumn">
+        <div id= "userlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white;"> User list </div>
+        <div class="userlistBackground before-launch">
+          <div class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
+            <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
+            <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
+          </div>
+          {% for x in mymembers %}
+            <div class="userTile">
+              <div class="imgContainer"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
+              <div class="textContainer username-link">{{ x.username }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    <div id="midColumn" class="rightColumn">
+      <!-- <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div> -->
       <div class="addPlayerToTournament before-launch">
-        <div class="miniGame">
+        <!-- <div class="miniGame">
           <div class="movingSpaceShip3">
             <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}" style="transform: scale(0.08) rotate(90deg);">
           </div>
@@ -226,17 +225,85 @@
           <div class="movingSpaceShip4">
             <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}" style="transform: scale(0.08) rotate(-90deg);">
           </div>
-        </div>
-        <div class="rightColumnRowMiddle">
-          <div id="tournamentTable" class="userlistTournament"></div>
-          <div class="elemCont">
+        </div> -->
+        <div class="elemCont1">
+          <div class="addPlayer">
             <div class="plusPlayer">+</div>
-            <div id="player2Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Add a player </div>
+            <div id="player1TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 1 </div>
+          </div>
+          <div class="addPlayer">
+            <div class="plusPlayer">+</div>
+            <div id="player2TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 2 </div>
+          </div>
+          <div class="addPlayer">
+            <div class="plusPlayer">+</div>
+            <div id="player3TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 3 </div>
+          </div>
+        </div>
+        <div class="elemCont1">
+          <div class="addPlayer">
+            <div class="plusPlayer">+</div>
+            <div id="player4TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 4 </div>
+          </div>
+          <div class="addPlayer">
+            <div class="plusPlayer">+</div>
+            <div id="player5TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 5 </div>
+          </div>
+          <div class="addPlayer">
+            <div class="plusPlayer">+</div>
+            <div id="player6TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 6 </div>
+          </div>
+        </div>
+        <div class="elemCont1">
+          <div class="addPlayer">
+            <div class="plusPlayer">+</div>
+            <div id="player7TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 7 </div>
+          </div>
+          <div class="addPlayer">
+            <div class="plusPlayer">+</div>
+            <div id="player8TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 8 </div>
           </div>
         </div>
       </div> 
       <div id="launch" class="startButton before-launch">Start</div>
       <div id="error_msg" class="before-launch"></div>
+      <!-- when the tournament is launch -->
+      <h2 id="next-match" style="display:none;">Next match to be played:</h2>
+      <p id="match"></p>
+      <div id="launchMatch" class="startMatchButton" style="display:none;">Start match</div>
+      <p id="result"></p>
+    </div>
+    <div id="rightColumn" class="rightColumnTournament">
+      <div class="buttonsContVert before-launch">
+        <div class="optionButtonVert">
+          <div class="buttonTitle">
+            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1); z-index: 5;">
+            <div id="powerupsText">
+              Powerups
+          </div>
+          <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
+          </div>
+        <div id="enabledText" class="buttonCont" style="border: 4px solid rgb(79, 226, 0); background-color: rgba(38, 255, 0, 0.374); color: rgb(79, 226, 0);">Enabled</div>
+        </div>
+        <div class="optionButtonVert">
+          <div class="buttonTitle">
+            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
+          <div id="mapsText">
+              Maps
+          </div>
+            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
+          </div>
+          <div class="buttonCont">Arabic</div>
+        </div>
+        <div class="optionButtonVert">
+          <div class="buttonTitle">
+            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
+              ?
+            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
+          </div>
+          <div class="buttonCont"></div>
+        </div>
+      </div>
       <div id="bracket" class="theme theme-dark before-launch" style="display:none;">
         <div class="bracket">
           <div class="column one">
@@ -375,37 +442,6 @@
         </div>
       </div>
     </div>
-    <div class="centerColumn">
-      <div class="buttonsContVert before-launch">
-        <div class="optionButtonVert">
-          <div class="buttonTitle">
-            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1); z-index: 5;">
-            <div id="powerupsText">
-              Powerups
-          </div>
-          <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
-          </div>
-        <div id="enabledText" class="buttonCont" style="border: 4px solid rgb(79, 226, 0); background-color: rgba(38, 255, 0, 0.374); color: rgb(79, 226, 0);">Enabled</div>
-        </div>
-        <div class="optionButtonVert">
-          <div class="buttonTitle">
-            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
-          <div id="mapsText">
-              Maps
-          </div>
-            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
-          </div>
-          <div class="buttonCont">Arabic</div>
-        </div>
-        <div class="optionButtonVert">
-          <div class="buttonTitle">
-            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
-              ?
-            <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
-          </div>
-          <div class="buttonCont"></div>
-        </div>
-      </div>
     </div>
   </div>
 </div>

@@ -4,17 +4,61 @@ body {
   background-color: #040607;
 }
 
+.backgroundTournament {
+	flex-direction: column;
+}
+
+.secondLine {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90%;
+  width: 100%;
+  text-align: center;
+  flex-direction: row;
+}
+
 .square {
   border: 2px solid red;
 }
 
-.centerColumn {
+.titleTournament {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10%;
+  width: 100%;
+  text-align: center;
+}
+
+.leftColumnTournament {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 20%;
+  text-align: center;
+}
+
+.centerColumnTournament {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 50%;
+  text-align: center;
+}
+
+.rightColumnTournament {
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
-  width: 25%;
+  width: 30%;
   text-align: center;
 }
 
@@ -72,17 +116,6 @@ body {
   animation: ballMoveLeftRight1 2s linear infinite 0.9s alternate;
 }
 
-.rightColumnRowMiddle {
-  padding-left: 15px;
-  border: 1px solid red;
-  height: 70%;
-  width: 95%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-}
-
 .userlistTournament {
   background-color: #000f61b2;
   border-radius: 5px;
@@ -95,6 +128,56 @@ body {
   align-items: center;
   overflow-y: auto; /* Enable vertical scrolling */
   overflow-x: hidden; /* Enable vertical scrolling */
+}
+
+.elemCont1 {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.addPlayer{
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  font-family: 'Space';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+p{
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  font-family: 'Space';
+}
+
+.startMatchButton {
+  text-align: center;
+  /* position: fixed; */
+  font-size: 25px;
+  color: white;
+  font-family: 'Space';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  padding: 10px 0px;
+  background-color: rgb(161, 0, 0);
+  border: 5px solid rgb(255, 255, 255);
+}
+
+.startMatchButton:hover {
+  background-color: rgb(194, 0, 0);
+  box-shadow: 0 0 40px #be1c00;
 }
 
 .buttonsContVert {
@@ -194,10 +277,6 @@ a:hover{
 
 a:active{
   color: #1bc5bd;
-}
-
-h2 {
-   font-size: 18px;
 }
 
 .bracket {
@@ -354,6 +433,7 @@ h2 {
 /* Dark Theme */
 .theme-dark {
   border-color: #040607;
+  font-family: 'Space';
 }
 
 .theme-dark .match-lines .line {
@@ -361,7 +441,8 @@ h2 {
 }
 
 .theme-dark .team {
-  background: #232c36;
+  background: #3777ff;
+  background: #000f61b2;
   color: #e3e8ef;
   border-color: #36404e;
 }
@@ -376,7 +457,7 @@ h2 {
 
 .theme-dark .winner-top .match-top .score,
 .theme-dark .winner-bottom .match-bottom .score {
-  color: #03d9ce;
+  color: #3777ff;
 }
 
 .theme-dark .match .seed {
