@@ -28,7 +28,7 @@ document.body.appendChild(renderer.domElement);
 
 
 // Create a ball geometry
-const geometry = new THREE.IcosahedronGeometry(10, 400);
+const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
 console.log(geometry.attributes)
 // Create a standard material
 const material = new THREE.MeshStandardMaterial({
@@ -87,7 +87,7 @@ renderer.setClearColor(0x101114);
 // Render function
 function render() {
     requestAnimationFrame(render);
-    ball.material.userData.shader.uniforms.uTime.value += 0.001;
+    ball.material.userData.shader.uniforms.uTime.value += 0.01;
     renderer.render(scene, camera);
 }
 
