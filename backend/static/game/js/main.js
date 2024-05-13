@@ -105,78 +105,164 @@ class LoadingScreen {
         this.composer.addPass(this.renderPass);
         this.cameraInitialZ = 4;
         this.cameraCloseZ = 4;
-        this.cameraFarZ = 250;
+        this.cameraFarZ = 45;
         this.camera.position.z = this.cameraInitialZ;
 
-        this.ico = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 0), new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true}));
-        this.ico2 = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 400), shaderBallMaterial);
-        this.ico.position.set(0, 0, 0);
+        const loader = new GLTFLoader();
+        loader.load('../../static/game/models/spaceShip/scene.gltf', (gltf) => {
+            this.spaceShip = gltf.scene; // Assign the loaded model to this.spaceShip
+            this.spaceShip.scale.set(0.03, 0.03, 0.03); // Scale the spaceship
+            this.spaceShip.position.set(0, -1, 2); // Set the position of the spaceship
+            this.spaceShip.rotation.y = Math.PI; // Rotate the spaceship
+            this.scene.add(this.spaceShip); // Add the spaceship to the scene
+        }, undefined, (error) => {
+            console.error('An error occurred while loading the spaceship model:', error);
+        });
+        this.spaceShipGoingUp = true;
+        this.spaceShipGoingDown = false;
+        this.isAnimatingSpaceship = false;
+        this.ico2 = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 20), shaderBallMaterial);
         this.ico2.position.set(0, 0, 0);
         this.bigXspeed = 0.005;
         this.bigYspeed = 0.015;
         this.xSpeedInitial = 0.005;
         this.ySpeedInitial = 0.015;
-        this.xSpeedFinal = 0.11;
-        this.ySpeedFinal = 0.1;
+        this.xSpeedFinal = 0.011;
+        this.ySpeedFinal = 0.035;
         this.isAnimatingCamera = true;
         this.loading = true;
-        this.scene.add(this.ico);
+        this.iterations = 0;
         this.scene.add(this.ico2);
-        this.light = new THREE.PointLight(0xffffff, 0.4);
-        this.light2 = new THREE.PointLight(0x0000ff, 0.4);
-        this.light3 = new THREE.PointLight(0x0000ff, 0.3);
+        this.light = new THREE.PointLight(0x3155ef, 0.5);
+        this.light2 = new THREE.PointLight(0x3155ef, 0.5);
+        this.light3 = new THREE.PointLight(0x3155ef, 0.35);
+        this.light4 = new THREE.PointLight(0xffffff, 0.35);
+        this.icoLight = new THREE.PointLight(0xffffff, 0.5);
+        this.lightInitialPower = this.light.power;
+        this.light2InitialPower = this.light2.power;
+        this.light3InitialPower = this.light3.power;
+        this.icoLightInitialPower = this.icoLight.power;
         this.light.position.set(0, 5, 0);
         this.light2.position.set(0, -5, 0);
         this.light3.position.set(0, 0, 5);
-        this.scene.add(this.light, this.light2, this.light3);
+        this.light4.position.set(0, 0, -5);
+        this.icoLight.position.set(0, 4, 0);
+        this.scene.add(this.light, this.light2, this.light3, this.icoLight, this.light4);
+        this.stars = []; // Store all stars added to the scene
+        this.addStars(2000);
+
     }
-    loadingComplete()
-    {
-        if (this.isAnimatingCamera)
-        {
+    addStar() {
+        const geometry = new THREE.SphereGeometry(0.125, 12, 12);
+        const material = new THREE.MeshStandardMaterial({color: 0xffffff});
+        const star = new THREE.Mesh(geometry, material);
+        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(200));
+
+        star.position.set(x, y, z);
+        this.scene.add(star);
+        this.stars.push(star); // Add the star to the stars array
+    }
+    addStars(numStars) {
+        Array(numStars).fill().forEach(this.addStar.bind(this));
+    }
+    loadingComplete() {
+        if (this.isAnimatingCamera) {
             this.isAnimatingCamera = false;
+            this.iterations = 0;
             const duration = 2500;
-            new TWEEN.Tween(this) // ROTATION ACCELERATION AND CAMERA GETTING CLOSE
-                .to({xSpeedInitial: this.xSpeedFinal , ySpeedInitial: this.ySpeedFinal, cameraInitialZ: this.cameraCloseZ}, duration)
-                .easing(TWEEN.Easing.Quadratic.Out)
-                .onUpdate(() => {
+    
+            // ROTATION ACCELERATION AND BRIGHTNESS
+            const tween1 = new TWEEN.Tween(this)
+               .to({ xSpeedInitial: this.xSpeedFinal, ySpeedInitial: this.ySpeedFinal, cameraInitialZ: this.cameraCloseZ }, duration / 2)
+               .easing(TWEEN.Easing.Quadratic.Out)
+               .onUpdate(() => {
                     this.camera.position.z = this.cameraInitialZ;
-                })
+                    this.light.power *= 1.015;
+                    this.light2.power *= 1.015;
+                    this.light3.power *= 1.015;
+                    this.icoLight.power *= 1.015;
+                    this.iterations++;
+                });
+
+
+            // make the ship go in the ball
+            const tween2 = new TWEEN.Tween(this.spaceShip.position)
+                .to({ x: 0, y: 0, z: -1 }, duration)
+                .easing(TWEEN.Easing.Linear.None)
+                .onUpdate(() => {
+                    console.log("wsh");
+                    this.spaceShip.scale.x -= 0.0004;
+                    this.spaceShip.scale.y -= 0.0004;
+                    this.spaceShip.scale.z -= 0.0004;
+                });
+
+            // GET FAR FROM BALL
+            const tween3 = new TWEEN.Tween(this.camera.position)
+                .to({ z: this.cameraFarZ }, duration / 2)
+                .easing(TWEEN.Easing.Linear.None)
                 .onComplete(() => {
-                    new TWEEN.Tween(this.camera.position) // CAMERA GETTING FAR
-                        .to({z: this.cameraFarZ}, duration / 2)
-                        .easing(TWEEN.Easing.Linear.None)
-                        .onUpdate(() => {
-                            // this.camera.position.z = this.cameraInitialZ;
-                        })
-                        .onComplete(() => {
-                            this.loading = false;
-                            // Fade in the main renderer (c1)
-                            new TWEEN.Tween({ opacity: 0 }) // FADE IN C1
-                                .to({ opacity: 1 }, duration)
-                                .easing(TWEEN.Easing.Quadratic.Out)
-                                .onStart(() => {
-                                    // document.getElementById('c1').style.display = 'block';
-                                    document.getElementById('c3').style.display = 'none';
-                                })
-                                .onUpdate((obj) => {
-                                    document.getElementById('c1').style.opacity = obj.opacity;
-                                })
-                                .start();
-                        
-                        })
-                        .start();
+                    this.loading = false;
+                });
+                
+            // FADE OUT LOADING SCREEN FADE IN GAME
+            const tween4 = new TWEEN.Tween({ opacity: 0 })
+                .to({ opacity: 1 }, duration)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .onStart(() => {
+                    document.getElementById('c3').style.display = 'none';
                 })
-                .start();
+                .onUpdate((obj) => {
+                    document.getElementById('c1').style.opacity = obj.opacity;
+                });
+
+            // Chain the tweens together
+            tween1.chain(tween2);
+            tween2.chain(tween3);
+            tween3.chain(tween4);
+            tween1.start();
         }
     }
     animate()
     {
-        this.ico.rotation.y += this.bigYspeed * 2;
-        this.ico.rotation.x += this.bigXspeed * 2;
         this.ico2.rotation.y -= this.ySpeedInitial;
         this.ico2.rotation.x += this.xSpeedInitial;
-        shaderBallMaterial.userData.shader.uniforms.uTime.value = performance.now() / 2000;
+        shaderBallMaterial.userData.shader.uniforms.uTime.value = performance.now() / 10000;
+        this.stars.forEach(star => {
+            star.position.z += 2; // Increase Z position by 0.01
+            if (star.position.z > 100) {
+                star.position.z = -100; // Reset position to -100
+            }
+        });
+
+        if (!this.isAnimatingSpaceship && this.spaceShip)
+        {
+            const duration = 1000;
+            this.isAnimatingSpaceship = true;
+            const tweenGoingUp = new TWEEN.Tween(this.spaceShip.position)
+                .to({y: -0.95}, duration)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .onStart(() => {
+                    this.spaceShipGoingUp = true;
+                })
+                .onComplete(() => {
+                    tweenGoingDown.start();
+                });
+            const tweenGoingDown = new TWEEN.Tween(this.spaceShip.position)
+                .to({y: -1}, duration)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .onStart(() => {
+                    this.spaceShipGoingDown = true;
+                })
+                .onUpdate(() => {
+                    if (this.isAnimatingCamera)
+                        tweenGoingDown.stop();
+                })
+                .onComplete(() => {
+                    tweenGoingUp.start();
+                });
+            tweenGoingUp.start();
+        }
+
         this.composer.render();
     }
     activateLoadingScreen()
@@ -184,10 +270,14 @@ class LoadingScreen {
         this.loading = true;
         this.isAnimatingCamera = true;
         document.getElementById('c3').style.display = 'block';
-        this.cameraInitialZ = 8;
+        this.cameraInitialZ = 4;
         this.camera.position.z = this.cameraInitialZ;
         this.xSpeedInitial = 0.005;
         this.ySpeedInitial = 0.015;
+        this.light.power = this.lightInitialPower;
+        this.light2.power = this.light2InitialPower;
+        this.light3.power = this.light3InitialPower;
+        this.icoLight.power = this.icoLightInitialPower;
     }
 }
 const loadingScreen = new LoadingScreen();
@@ -454,7 +544,7 @@ class Arena extends THREE.Mesh {
             const duration = 5000;
             // Create tweens for each property
             const firstTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint1.x, y: this.viewPoint1.y, z: this.viewPoint1.z}, duration)
+                .to({x: this.viewPoint1.x / 1.5, y: this.viewPoint1.y / 1.5, z: this.viewPoint1.z / 1.5}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -465,7 +555,7 @@ class Arena extends THREE.Mesh {
                     secondTween.start();
                 })
             const secondTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint2.x, y: this.viewPoint2.y, z: this.viewPoint2.z}, duration)
+                .to({x: this.viewPoint2.x / 1.5, y: this.viewPoint2.y / 1.5, z: this.viewPoint2.z / 1.5}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -476,7 +566,7 @@ class Arena extends THREE.Mesh {
                     thirdTween.start();
                 })
             const thirdTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint3.x, y: this.viewPoint3.y, z: this.viewPoint3.z}, duration)
+                .to({x: this.viewPoint3.x / 1.5, y: this.viewPoint3.y / 1.5, z: this.viewPoint3.z / 1.5}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -487,7 +577,7 @@ class Arena extends THREE.Mesh {
                     fourthTween.start();
                 })
             const fourthTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint4.x, y: this.viewPoint4.y, z: this.viewPoint4.z}, duration)
+                .to({x: this.viewPoint4.x / 1.5, y: this.viewPoint4.y / 1.5, z: this.viewPoint4.z / 1.5}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -498,7 +588,7 @@ class Arena extends THREE.Mesh {
                     fifthTween.start();
                 })
             const fifthTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint1.x, y: this.viewPoint1.y, z: this.viewPoint1.z}, duration)
+                .to({x: this.viewPoint1.x / 1.5, y: this.viewPoint1.y / 1.5, z: this.viewPoint1.z / 1.5}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -2155,20 +2245,20 @@ loadingScreen.composer.addPass(bloomPass);
 // 				effect1.uniforms[ 'scale' ].value = 256;
 // 				composer1.addPass( effect1 );
 
-let fpsInterval = 1000 / 75; // 120 FPS
-let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
-let lastUpdateTime = performance.now();
+// let fpsInterval = 1000 / 75; // 120 FPS
+// let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
+// let lastUpdateTime = performance.now();
 
 function animate()
 {
-    let deltaTime = (performance.now() - stats.time) / 1000;
+    // let deltaTime = (performance.now() - stats.time) / 1000;
     requestAnimationFrame( animate );
     // controls.update();
 
-    let now = performance.now();
-    let elapsed = now - lastUpdateTime;
-    if (elapsed < fpsInterval) return; // Skip if too big FPS
-    else
+    // let now = performance.now();
+    // let elapsed = now - lastUpdateTime;
+    // if (elapsed < fpsInterval) return; // Skip if too big FPS
+    // else
     {
         TWEEN.update();
         if (!loadingScreen.loading)
@@ -2190,8 +2280,8 @@ function animate()
         }
     }
 
-    stats.update(); // Update Three.js stats
-    lastUpdateTime = now - (elapsed % fpsInterval);
-    stats.time = performance.now();
+    // stats.update(); // Update Three.js stats
+    // lastUpdateTime = now - (elapsed % fpsInterval);
+    // stats.time = performance.now();
 }
 animate();
