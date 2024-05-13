@@ -4,7 +4,7 @@ import { addStar } from "./stars.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
-import { spaceShipMovement, camMovement} from './movement.js';
+import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
@@ -13,7 +13,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 
-let gameStart = false;
+export let gameStart = false;
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c1')
 });
@@ -170,7 +170,7 @@ export const outlinePass = new OutlinePass(
                 //         createOrbitsLines = false;
                 //     }
                 // }
-                
+
                 function planetMovement() {
                     planets.forEach((planet) => {
                         
@@ -238,9 +238,7 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
-        // loginPageContainer.style.opacity = 0;
         startAnimation();
-        // togglePlanet();
     }
     if (event.key === 'e' && inRange)
         togglePlanet();
@@ -304,8 +302,8 @@ function update() {
         return;
     if (gameStart && !landedOnPlanet) 
         spaceShipMovement();
-    planetMovement();
     camMovement();
+    planetMovement();
     if (gameStart) {
         updateRay();
     if (!landedOnPlanet)
@@ -330,6 +328,7 @@ const checkModelsLoaded = setInterval(() => {
         clearInterval(checkModelsLoaded);
         animate();
         camMovement();
+        initializeCamera();
     }
 }, 100);
 

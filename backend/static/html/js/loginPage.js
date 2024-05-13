@@ -1,3 +1,6 @@
+import { moveCameraToCockpit } from "./signUpPage.js";
+import { showPage } from "./showPages.js";
+
 export let currentLanguage = 'esp';
 let languageFile;
 
@@ -44,8 +47,12 @@ var languageIcons = document.querySelectorAll('.languageIcon');
 const loginText = document.getElementById('loginText');
 const passwordText = document.getElementById('passwordText');
 const loginLanguageText = document.getElementById('loginLanguageText');
-const signupHereButton = document.querySelector('actionCont');
+const signupHereButton = document.querySelector('.actionCont');
 
+signupHereButton.addEventListener('click', function() {
+    moveCameraToCockpit();
+    showPage('signUpPage');
+});
 
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {

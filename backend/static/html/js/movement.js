@@ -1,4 +1,4 @@
-import { THREE, spaceShip, camera, spaceShipPointLight, landedOnPlanet } from "./main.js";
+import { THREE, spaceShip, camera, spaceShipPointLight, landedOnPlanet, gameStart } from "./main.js";
 import {planetInRange} from "./planetIntersection.js";
 
 let leftArrowPressed = false;
@@ -158,11 +158,16 @@ function cameraDebug()
     console.log("camera.rotation.z =  " + camera.rotation.z);
 }
 
+export function initializeCamera() {
+    camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
+    camera.rotation.y = spaceShip.rotation.y - Math.PI;
+}
+
 function camMovement() {
     if (!spaceShip)
         return;
     
-    if (!landedOnPlanet) {
+    if (!landedOnPlanet && gameStart) {
         camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
         camera.rotation.y = spaceShip.rotation.y - Math.PI;
     }
