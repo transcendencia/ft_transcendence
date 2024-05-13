@@ -21,17 +21,21 @@
       </script>
 </head>
 <body>
-  <div class="loginPageUI">
+  <!-- LOGIN PAGE -->
+  <div class="loginPage page">
     <div class="title">
       TRANSCENDENCIA
       <img src="assets/icons/spaceshipIcon.png">
     </div>
-    <div class="container">
+    <div class="inputContainer">
       <div class="titleText" id="loginText">
         - Login -
         <div class="textBar">
           <input class="text-input" spellcheck="false"></input>
           <img src="assets/icons/frame.png">
+        </div>
+        <div class="littleMsgCont">
+          <div class="newToTheGame">New to the game ?<div class="actionCont lightblueShadowfilter">Sign Up Here</div></div>
         </div>
       </div>
       <div class="titleText" id="passwordText">
@@ -40,6 +44,9 @@
           <input class="text-input" spellcheck="false" type="password"></input>
           <img src="assets/icons/frame.png">
         </div>
+        <div class="littleMsgCont">
+        <div class="actionCont lightblueShadowfilter"> Forgot password ?</div>
+      </div>
       </div>
     </div>
     <div class="languageColumn" id="loginLanguageText">
@@ -62,15 +69,24 @@
     </div>
   </div>
 
+  <!-- <div class="signUpPage page">
+    
+  </div> -->
+
+  <!-- CANVAS -->
     <div id="a">
       <canvas id="c1"></canvas>
     </div>
     
     <div class="coloredPanel"></div>
+
     <div id="enterPlanetTextContainer">
       <div id="enterPlanetText"></div>
     </div>
 
+    <div class="dot"></div>
+
+    <!-- PLANET INFOS & MAP -->
     <div id="rsCont" class="rightSideContainer">
       <div id="minimapContainer"></div>
       <div id="planetInfoLine0" class="planetInfoText redShadowfilter" style="text-align: center;border: none;font-size: 30px;;"> CODEX </div>
@@ -82,8 +98,8 @@
         <img src="assets/icons/scoreUI.png" class="blueShadowfilter">
       </div>
     </div>
-    <div class="dot"></div>
 
+    <!-- ARENA PLANET -->
     <div class="planetPanel">
       <img src="assets/icons/scoreUI.png" class="blueShadowfilter">
       <img src="assets/icons/scoreUI.png" class="blueShadowfilter">
@@ -207,6 +223,8 @@
         </div>
       </div>
     </div> 
+
+    <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/arenaPage.js"></script>

@@ -85,7 +85,7 @@ renderer.render(scene, camera);
 
 const rightSideContainer = document.getElementById("rsCont");
 let rsContVisible = false;
-const loginPageContainer = document.querySelector(".loginPageUI");
+const loginPageContainer = document.querySelector(".loginPage");
 
 export function toggleRSContainerVisibility() {
     if (rsContVisible) {
@@ -238,7 +238,7 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
-        loginPageContainer.style.opacity = 0;
+        // loginPageContainer.style.opacity = 0;
         startAnimation();
         // togglePlanet();
     }

@@ -115,6 +115,7 @@
     height: 40px;
     width: 50px;
     animation: moveUpDown 2s infinite alternate linear;
+    z-index: 1;
 }
 
 .movingSpaceShip2 {
@@ -126,6 +127,7 @@
     height: 40px;
     width: 50px;
     animation: moveUpDown 2s infinite alternate 2s linear;
+    z-index: 1;
 }
 
 @keyframes moveUpDown {

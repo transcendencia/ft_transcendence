@@ -44,6 +44,8 @@ var languageIcons = document.querySelectorAll('.languageIcon');
 const loginText = document.getElementById('loginText');
 const passwordText = document.getElementById('passwordText');
 const loginLanguageText = document.getElementById('loginLanguageText');
+const signupHereButton = document.querySelector('actionCont');
+
 
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {

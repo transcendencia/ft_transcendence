@@ -1,18 +1,68 @@
-.loginPageUI {
+.loginPage {
+    /* border: 5px solid violet; */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1); /* Scale up by 2 times */
+    display: flex;
+    flex-direction: column; /* Display children vertically */
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden; /* Ensure text input doesn't overflow */
+    border-radius: 5px;
+    width :80%;
+    height: 99%;
     transition: opacity 1s;
 }
 
-.container {
-    position: fixed;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1.4); /* Scale up by 2 times */
+.loginPage * {
+    /* border: 5px solid wheat; */
+}
+
+.inputContainer {
+    margin-top: -40px;
     display: flex;
     flex-direction: column; /* Display children vertically */
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* Ensure text input doesn't overflow */
-    border-radius: 5px;
+    height: 40%;
+    transform: scale(1.5);
+}
+
+.newToTheGame {
+    width: 97%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 12px;
+}
+
+.actionCont {
+    margin-left: 10px;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(232, 252, 252);
+
+    font-size: 12px;
+    z-index: 5;
+    cursor: default;
+}
+
+.littleMsgCont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-family: "Space";
+    text-shadow: none;
+}
+
+.actionCont:hover {
+    color: rgb(176, 255, 255);
+
 }
 
 .separator {
@@ -21,11 +71,18 @@
     background-color: white;
 }
 
+.errorMessageCont {
+    pointer-events: none;
+    margin-top: -30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: red; /* Set text color */
+    font-size: 10px; /* Set font size */
+    font-family: 'Space'; /* Set font family */
+}
+
 .languageColumn {
-    position: fixed;
-    top: 90%;
-    left: 50%;
-    transform: translate(-50%, -50%) ;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -35,16 +92,20 @@
     font-weight: bold; /* Set font weight */
     text-align: center; /* Center align text */
     font-family: "Space";
+    height: 15%;
+    width: 30%;
 }
 
 .languageSettings {
+    width: 100%;
+    height: 80%;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
 }
 
 .languageIcon {
-    margin: 0px 50px 30px 50px;
+    margin: 0px 30px 0px 30px;
     border-radius: 5px;
     width: 60px;
     height: 60px;
@@ -54,7 +115,6 @@
     align-items: center;
     transform: rotate(45deg);
     border: solid 5px white;
-    position: relative;
     transition: box-shadow 0.5s ease, border-color 0.5s ease;
 }
 
@@ -93,29 +153,23 @@
     opacity: 0; /* Show the flag on hover */
 }
 
-
-
 .title {
-    font-size: 2000%;
+    font-size: 100px;
     font-family: "Space";
-    position: fixed;
-    top: 15%;
-    left: 50%;
     color: white;
-    transform: translate(-50%, -50%) scale(0.2); /* Scale up by 2 times */
     display: flex;
     flex-direction: column; /* Display children vertically */
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     overflow: hidden; /* Ensure text input doesn't overflow */
     border-radius: 5px;
     text-shadow: 
-        -10px -10px 0 black,  
-         10px -10px 0 black,
-        -10px  10px 0 black,
-         10px  10px 0 black;
+        -5px -5px 0 black,  
+         5px -5px 0 black,
+        -5px  5px 0 black,
+         5px  5px 0 black;
+    height: 25%;
 }
-
 
 .titleText {
     margin: 30px 30px 30px 30px;
@@ -130,8 +184,13 @@
          2px  2px 0 black;
 }
 
+.title img {
+    margin: -200px;
+    transform: scale(0.3);
+}
+
 .textBar {
-    margin: 0px 10px 0px 10px;
+    margin: 0px 10px 5px 10px;
     top: 50%;
     left: 50%;
     height: 43px * 1.8; /* Double the height */
@@ -148,9 +207,6 @@
     font-family: 'Space'; 
     src: url('../assets/fonts/SPACE.ttf') format('truetype');
 }
-
-
-
 
 .text-input {
     position: absolute;
