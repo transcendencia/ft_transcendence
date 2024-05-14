@@ -143,6 +143,7 @@ class LoadingScreen {
         this.light3.position.set(0, 0, 5);
         this.light4.position.set(0, 0, -5);
         this.icoLight.position.set(0, 4, 0);
+        this.starSpeed = 2;
         this.scene.add(this.light, this.light2, this.light3, this.icoLight, this.light4);
         this.stars = []; // Store all stars added to the scene
         this.addStars(2000);
@@ -208,6 +209,9 @@ class LoadingScreen {
             const tween3 = new TWEEN.Tween(this.camera.position)
                 .to({ z: this.cameraFarZ }, duration / 2)
                 .easing(TWEEN.Easing.Linear.None)
+                .onStart(() => {
+                    this.starSpeed = 1;
+                })
                 .onComplete(() => {
                     this.loading = false;
                 });
@@ -237,7 +241,7 @@ class LoadingScreen {
         this.ico2.rotation.x += this.xSpeedInitial;
         shaderBallMaterial.userData.shader.uniforms.uTime.value = performance.now() / 10000;
         this.stars.forEach(star => {
-            star.position.z += 2; // Increase Z position by 0.01
+            star.position.z += this.starSpeed; // Increase Z position by 0.01
             if (star.position.z > 100) {
                 star.position.z = -100; // Reset position to -100
             }
@@ -271,7 +275,6 @@ class LoadingScreen {
                 });
             tweenGoingUp.start();
         }
-
         this.composer.render();
     }
     activateLoadingScreen()
@@ -522,7 +525,7 @@ class Arena extends THREE.Mesh {
             const duration = 5000;
             // Create tweens for each property
             const firstTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint1.x / 1.5, y: this.viewPoint1.y / 1.5, z: this.viewPoint1.z / 1.5}, duration)
+                .to({x: this.viewPoint1.x / 1, y: this.viewPoint1.y / 1, z: this.viewPoint1.z / 1}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -533,7 +536,7 @@ class Arena extends THREE.Mesh {
                     secondTween.start();
                 })
             const secondTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint2.x / 1.5, y: this.viewPoint2.y / 1.5, z: this.viewPoint2.z / 1.5}, duration)
+                .to({x: this.viewPoint2.x / 1, y: this.viewPoint2.y / 1, z: this.viewPoint2.z / 1}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -544,7 +547,7 @@ class Arena extends THREE.Mesh {
                     thirdTween.start();
                 })
             const thirdTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint3.x / 1.5, y: this.viewPoint3.y / 1.5, z: this.viewPoint3.z / 1.5}, duration)
+                .to({x: this.viewPoint3.x / 1, y: this.viewPoint3.y / 1, z: this.viewPoint3.z / 1}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -555,7 +558,7 @@ class Arena extends THREE.Mesh {
                     fourthTween.start();
                 })
             const fourthTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint4.x / 1.5, y: this.viewPoint4.y / 1.5, z: this.viewPoint4.z / 1.5}, duration)
+                .to({x: this.viewPoint4.x / 1, y: this.viewPoint4.y / 1, z: this.viewPoint4.z / 1}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -566,7 +569,7 @@ class Arena extends THREE.Mesh {
                     fifthTween.start();
                 })
             const fifthTween = new TWEEN.Tween(camera.position)
-                .to({x: this.viewPoint1.x / 1.5, y: this.viewPoint1.y / 1.5, z: this.viewPoint1.z / 1.5}, duration)
+                .to({x: this.viewPoint1.x / 1, y: this.viewPoint1.y / 1, z: this.viewPoint1.z / 1}, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     if (!this.isAnimatingCamera)
@@ -1322,7 +1325,7 @@ class Ball extends THREE.Mesh {
         this.bounceCount = 0;
         this.justCollisioned = false;
         this.particles = new Particle(this.scene, 1000, false, this, true);
-        this.trailParticles = new TrailParticles(this.scene, this, 80);
+        this.trailParticles = new TrailParticles(this.scene, this, 50);
 
     }
     updateSpeedBar() {
@@ -1446,9 +1449,9 @@ class Ball extends THREE.Mesh {
             else
                 this.speedZ *= -1;
             if (paddle.isDashingRight)
-                this.acceleration += this.accelerationStrength * this.speedZ;
+                this.acceleration = this.accelerationStrength * this.speedZ;
             else if (paddle.isDashingLeft)
-                this.acceleration += -this.accelerationStrength * this.speedZ;
+                this.acceleration = -this.accelerationStrength * this.speedZ;
             else
                 this.acceleration = 0;
             this.updateSpeedBar();
@@ -1458,6 +1461,7 @@ class Ball extends THREE.Mesh {
             this.isSupercharging = true;
             const tmpSpeed = this.speedZ;
             this.speedZ = 0;
+            this.acceleration = 0;
             this.speedX = 0;
             setTimeout(() => {
                 if (Math.abs(this.tmpSpeed) * 1.5 >= this.arena.maxSpeed)
@@ -1498,9 +1502,9 @@ class Ball extends THREE.Mesh {
             else
                 this.speedZ *= -1;
             if (paddle.isDashingRight)
-                this.acceleration += -this.accelerationStrength * this.speedZ;
+                this.acceleration = -this.accelerationStrength * this.speedZ;
             else if (paddle.isDashingLeft)
-                this.acceleration += this.accelerationStrength * this.speedZ;
+                this.acceleration = this.accelerationStrength * this.speedZ;
             else
                 this.acceleration = 0;
             this.updateSpeedBar();
@@ -1511,6 +1515,7 @@ class Ball extends THREE.Mesh {
             const tmpSpeed = this.speedZ;
             this.speedZ = 0;
             this.speedX = 0;
+            this.acceleration = 0;
             setTimeout(() => {
                 if (Math.abs(this.tmpSpeed) * 1.5 >= this.arena.maxSpeed)
                     this.speedZ = tmpSpeed * -1;
@@ -1547,6 +1552,7 @@ class Ball extends THREE.Mesh {
         this.position.x += this.speedX;
         this.speedX += this.acceleration;
         this.trailParticles.updateTrail();
+        console.log("speedZ: " + this.speedZ);
     }
     invertMovement()
     {
@@ -1560,63 +1566,66 @@ class Ball extends THREE.Mesh {
     }
     increaseSpeed()
     {
-        this.speedZ *= 1.8;
-        this.speedX *= 1.8;
+        const hasToDivide = Math.abs(this.speedZ) > 0;
+        this.speedZ *= 1.5;
+        this.speedX *= 1.5;
         this.material.color.set(this.speedColor);
         setTimeout(() => {
             this.material.color.set(this.initialColor);
-            this.speedZ /= 1.8;
-            this.speedX /= 1.8;
+            if (hasToDivide)
+            {
+                this.speedZ /= 1.5;
+                this.speedX /= 1.5;
+            }
         }, 500);
     }
 }
 
 class TrailParticles {
-    constructor(scene, ball, maxParticles = 100) {
+    constructor(scene, ball, maxParticles = 15) {
         this.scene = scene;
         this.ball = ball; // Store the ball object
         this.maxParticles = maxParticles;
-        this.trailParticles = [];
-        this.createTrailParticles();
-    }
-    createTrailParticles() {
-        const geometry = new THREE.BufferGeometry();
-        const material = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 });
+        this.trailSpheres = [];
 
-        const positions = new Float32Array(this.maxParticles * 3); // Each position has x, y, z coordinates
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-        this.trailParticles = new THREE.Line(geometry, material);
-        this.scene.add(this.trailParticles);
+        // Create trail spheres
+        for (let i = 0; i < this.maxParticles; i++) {
+            const invertedIndex = this.maxParticles - i;
+            const sphereSize = invertedIndex * (ball.geometry.parameters.radius / this.maxParticles); // Calculate inverted sphere size
+            const trailSphere = new THREE.Mesh(
+                new THREE.SphereGeometry(sphereSize, 32, 32),
+                new THREE.MeshBasicMaterial({ color: 0xD5f719, transparent: true, opacity: 0.3 })
+            );
+            this.scene.add(trailSphere);
+            this.trailSpheres.push(trailSphere);
+        }
     }
+
     updateTrail() {
-        const positions = this.trailParticles.geometry.attributes.position.array;
-        const trailLength = positions.length / 3;
-
-        // Shift positions by one index to make space for the new position
-        for (let i = positions.length - 1; i >= 3; i -= 3) {
-            positions[i] = positions[i - 3];
-            positions[i - 1] = positions[i - 4];
-            positions[i - 2] = positions[i - 5];
+        // Update positions and sizes of trail spheres
+        for (let i = this.trailSpheres.length - 1; i > 0; i--) {
+            const previousSphere = this.trailSpheres[i - 1];
+            const currentSphere = this.trailSpheres[i];
+            currentSphere.position.copy(previousSphere.position);
+            const invertedIndex = this.trailSpheres.length - i;
+            const sphereSize = invertedIndex * (this.ball.geometry.parameters.radius / this.maxParticles);
+            currentSphere.scale.set(sphereSize, sphereSize, sphereSize);
         }
 
-        // Add the new position at the beginning
-        const newPosition = this.ball.position.clone();
-        positions[0] = newPosition.x;
-        positions[1] = newPosition.y;
-        positions[2] = newPosition.z;
-
-        // Update the buffer geometry
-        this.trailParticles.geometry.attributes.position.needsUpdate = true;
+        // Set position and size of the first sphere to the ball's position
+        this.trailSpheres[0].position.copy(this.ball.position);
+        const sphereSize = this.ball.geometry.parameters.radius;
+        this.trailSpheres[0].scale.set(sphereSize, sphereSize, sphereSize);
     }
+
     regroupTrail() {
-        const positions = this.trailParticles.geometry.attributes.position.array;
-        for (let i = 0; i < positions.length; i += 3) {
-            positions[i] = this.ball.position.x;
-            positions[i + 1] = this.ball.position.y;
-            positions[i + 2] = this.ball.position.z;
+        // Regroup trail spheres
+        for (let i = 0; i < this.trailSpheres.length; i++) {
+            this.trailSpheres[i].position.copy(this.ball.arena.position);
+            const invertedIndex = this.trailSpheres.length - i;
+            const sphereSize = invertedIndex * (this.ball.geometry.parameters.radius / this.maxParticles);
+            this.trailSpheres[i].scale.set(sphereSize, sphereSize, sphereSize);
         }
-        this.trailParticles.geometry.attributes.position.needsUpdate = true;
     }
 }
 
