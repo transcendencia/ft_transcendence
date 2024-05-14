@@ -12,8 +12,6 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { DotScreenShader } from 'three/addons/shaders/DotScreenShader.js';
 import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
-import getStarfield from "./starField.js"
-import getNebula from './nebula.js';
 // import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
 import { vertexShader, vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentShader, fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
@@ -169,8 +167,32 @@ class LoadingScreen {
             this.iterations = 0;
             const duration = 2500;
     
+            // Ship recall before going in the ball
+            const targetZ = this.spaceShip.position.z + 1;
+            const targetY = this.spaceShip.position.y + 0.5;
+            const targetRotationX = Math.PI / 4;
+            const tweenRecall = new TWEEN.Tween(this.spaceShip.position)
+                .to({y: targetY, z: targetZ }, duration / 4)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .onUpdate(() => {
+                    this.spaceShip.rotation.x -= 0.01;
+                });
+            const tweenResetOrientation = new TWEEN.Tween(this.spaceShip.rotation)
+                .to({x: 0}, duration / 2)
+                .easing(TWEEN.Easing.Quadratic.Out);
+
+            // make the ship go in the ball
+            const tween1 = new TWEEN.Tween(this.spaceShip.position)
+                .to({ x: 0, y: 0, z: -1 }, duration)
+                .easing(TWEEN.Easing.Linear.None)
+                .onUpdate(() => {
+                    this.spaceShip.scale.x -= 0.0004;
+                    this.spaceShip.scale.y -= 0.0004;
+                    this.spaceShip.scale.z -= 0.0004;
+                });
+
             // ROTATION ACCELERATION AND BRIGHTNESS
-            const tween1 = new TWEEN.Tween(this)
+            const tween2 = new TWEEN.Tween(this)
                .to({ xSpeedInitial: this.xSpeedFinal, ySpeedInitial: this.ySpeedFinal, cameraInitialZ: this.cameraCloseZ }, duration)
                .easing(TWEEN.Easing.Quadratic.Out)
                .onUpdate(() => {
@@ -180,17 +202,6 @@ class LoadingScreen {
                     this.light3.power *= 1.02;
                     this.icoLight.power *= 1.02;
                     this.iterations++;
-                });
-
-
-            // make the ship go in the ball
-            const tween2 = new TWEEN.Tween(this.spaceShip.position)
-                .to({ x: 0, y: 0, z: -1 }, duration)
-                .easing(TWEEN.Easing.Linear.None)
-                .onUpdate(() => {
-                    this.spaceShip.scale.x -= 0.0004;
-                    this.spaceShip.scale.y -= 0.0004;
-                    this.spaceShip.scale.z -= 0.0004;
                 });
 
             // GET FAR FROM BALL
@@ -213,10 +224,11 @@ class LoadingScreen {
                 });
 
             // Chain the tweens together
-            tween1.chain(tween3);
-            tween2.chain(tween1);
+            tweenRecall.chain(tween1, tweenResetOrientation);
+            tween1.chain(tween2);
+            tween2.chain(tween3);
             tween3.chain(tween4);
-            tween2.start();
+            tweenRecall.start();
         }
     }
     animate()
@@ -1235,8 +1247,7 @@ class Paddle extends THREE.Group {
         const tmp = this.leftKey;
         this.leftKey = this.rightKey;
         this.rightKey = tmp;
-        if (!this.isPowered)
-            this.material.color.set(this.invertedColor);
+        this.material.color.set(this.invertedColor);
         this.defaultColor.set(this.invertedColor);
 
         setTimeout(() => {
@@ -1246,7 +1257,9 @@ class Paddle extends THREE.Group {
             this.defaultColor.set(this.untouchedDefaultColor);
             if (!this.isPowered)
                 this.material.color.set(this.defaultColor);
-        }, 5000);
+            else
+                this.material.color.set(this.superChargingColor);
+        }, 1000);
     }
     slowDown()
     {
@@ -1261,7 +1274,7 @@ class Paddle extends THREE.Group {
                 this.material.color.set(this.untouchedDefaultColor);
             this.defaultColor.set(this.untouchedDefaultColor);
             this.moveSpeed = this.defaultSpeed;
-        }, 5000);
+        }, 1000);
         }
     }
 }
@@ -1433,9 +1446,9 @@ class Ball extends THREE.Mesh {
             else
                 this.speedZ *= -1;
             if (paddle.isDashingRight)
-                this.acceleration = this.accelerationStrength * this.speedZ;
+                this.acceleration += this.accelerationStrength * this.speedZ;
             else if (paddle.isDashingLeft)
-                this.acceleration = -this.accelerationStrength * this.speedZ;
+                this.acceleration += -this.accelerationStrength * this.speedZ;
             else
                 this.acceleration = 0;
             this.updateSpeedBar();
@@ -1485,9 +1498,9 @@ class Ball extends THREE.Mesh {
             else
                 this.speedZ *= -1;
             if (paddle.isDashingRight)
-                this.acceleration = -this.accelerationStrength * this.speedZ;
+                this.acceleration += -this.accelerationStrength * this.speedZ;
             else if (paddle.isDashingLeft)
-                this.acceleration = this.accelerationStrength * this.speedZ;
+                this.acceleration += this.accelerationStrength * this.speedZ;
             else
                 this.acceleration = 0;
             this.updateSpeedBar();
