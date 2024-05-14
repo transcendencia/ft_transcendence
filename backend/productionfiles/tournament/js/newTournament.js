@@ -10,17 +10,15 @@ const usernameLinks = document.querySelectorAll('.username-link');
 
   let landedOnPlanet = 1;
 
-    var planetPanel = document.querySelector(".planetPanel");
-    var square = document.querySelector(".background");
-    var images = document.querySelectorAll(".planetPanel img");
-    let anim;
-
+  var planetPanel = document.querySelector(".planetPanel");
+  var square = document.querySelector(".background");
+  var images = document.querySelectorAll(".planetPanel img");
+  let anim;
 
   function togglePanelDisplay() {
     if (anim)
         clearTimeout(anim);
     if (landedOnPlanet) {
-        console.log("landed On");
         anim = setTimeout(function () {triggerInfiniteAnim()}, 2000);
         planetPanel.style.animation = "roll 2s forwards";
         images[0].style.animation = "moveImageRight 2s forwards";
@@ -28,7 +26,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
         square.style.animation = "expandBG 2s forwards";
         landedOnPlanet = 0;
     } else {
-        console.log("landed Off");
         images[0].style.animation = "moveImageRightreverse 1s forwards";
         images[1].style.animation = "moveImageLeftreverse 1s forwards";
         square.style.animation = "expandBGreverse 1s forwards"
@@ -36,7 +33,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
         landedOnPlanet = 1;
     }, 2000)
     }
-    }
+  }
 
     function triggerInfiniteAnim() {
         images[0].style.animation = "upDownImgL 2s infinite alternate ease-in-out";
@@ -45,9 +42,8 @@ const usernameLinks = document.querySelectorAll('.username-link');
 
   document.addEventListener('keydown', (event) => { 
     if (event.key === 'e')
-        console.log("press e");
         togglePanelDisplay();
-    });
+  });
 
   const tournamentPlayer = [];
 
@@ -59,36 +55,52 @@ const usernameLinks = document.querySelectorAll('.username-link');
             position: 0,
             round: 1,
           });
-          printTournamentPlayer();
+          // printTournamentPlayer();
       }
   }
-  
+
   function printTournamentPlayer() {
-    const tbody = document.querySelector("#tournamentTable tbody");
-    tbody.innerHTML = "";
+    const tournamentTable = document.querySelector("#tournamentTable");
+    tournamentTable.innerHTML = "";
     tournamentPlayer.forEach(function(player) {
-      const row = tbody.insertRow();
-      const cell1 = row.insertCell();
-      cell1.textContent = player.username;
-      const cell2 = row.insertCell();
-      cell2.innerHTML = '<a href="#">-</a>';
-      cell2.addEventListener("click", function() {
-        const index = tournamentPlayer.indexOf(player);
-        if (index !== -1) {
-          tournamentPlayer.splice(index, 1);
-          printTournamentPlayer();
-        }
-      });
+      const divRow = document.createElement("div");
+      divRow.classList.add("userTile");
+      
+      
+      const divUsername = document.createElement("div");
+      divUsername.classList.add("textContainer")
+      divUsername.textContent = player.username;
+      divRow.appendChild(divUsername);
+
+      const divImg = document.createElement("div");
+      divImg.classList.add("imgContainer");
+      divRow.appendChild(divImg);
+
+    // const divAction = document.createElement("div");
+    // const actionLink = document.createElement("a");
+    // actionLink.href = "#";
+    // actionLink.textContent = "-";
+    // divAction.appendChild(actionLink);
+    // divRow.appendChild(divAction);
+
+    // actionLink.addEventListener("click", function() {
+    //   const index = tournamentPlayer.indexOf(player);
+    //   if (index !== -1) {
+    //     tournamentPlayer.splice(index, 1);
+    //     printTournamentPlayer();
+    //   }
+    // });
+      tournamentTable.appendChild(divRow);
     });
   }
-  
+
   let currentMatch = [];
   let allMatch = [];
   let round = 1;
   let nbMatch;
   
   function makeMatchup() {
-    const ul = document.getElementById("matchup");
+    const ul = document.getElementById("match");
     ul.innerHTML = "";
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
     let j = 0;
@@ -99,7 +111,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
       );
     })
     currentMatch = [];
-  
     //put final position for players who lost
     if (round != 1){
       const ul = document.getElementById("result");
@@ -109,21 +120,20 @@ const usernameLinks = document.querySelectorAll('.username-link');
           player.position = playersInTournament.length + 1;
       })
     }
-  
     //put final position for the winner
     if (playersInTournament.length == 1){
       tournamentPlayer.forEach(function(player){
         if (player.position === 0)
           player.position = 1;
       })
+      nextMatchElement.style.display = "none";
       const li = document.createElement("p");
       li.textContent = playersInTournament[0].username + " have won the tournament!";
       ul.appendChild(li);
       launchMatchElement.style.display = "none";
-      printAllResult();
+      // printAllResult();
       return ;
     }
-  
     //put matchup in currentMatch variable
     for (let i = 0; i < playersInTournament.length; i += 2) {
       if (i + 1 >= playersInTournament.length){
@@ -142,14 +152,14 @@ const usernameLinks = document.querySelectorAll('.username-link');
           -1
         ]);
       }
-      const li = document.createElement("p");
-      if (currentMatch[j][0] && currentMatch[j][1] )
-      li.textContent = currentMatch[j][0].myRef.username + " vs " + currentMatch[j][1].myRef.username;
-      else if (currentMatch[j][0])
-        li.textContent = currentMatch[j][0].myRef.username;
-      ul.appendChild(li);
       j ++;
     }
+    const li = document.createElement("p");
+    if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
+      li.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
+    else if (currentMatch[nbMatch][0])
+      li.textContent = currentMatch[nbMatch][0].myRef.username;
+    ul.appendChild(li);
     round ++;
   }
   
@@ -167,8 +177,18 @@ const usernameLinks = document.querySelectorAll('.username-link');
   const launchTournamentElement = document.getElementById("launch");
   const launchMatchElement = document.getElementById("launchMatch");
   const bracketElement = document.getElementById("bracket");
+  const nextMatchElement = document.getElementById("next-match");
   
   
+  const thirdA1Element = document.getElementById("third-A1");
+  const thirdA2Element = document.getElementById("third-A2");
+  const thirdA3Element = document.getElementById("third-A3");
+  const thirdA4Element = document.getElementById("third-A4");
+  const thirdB1Element = document.getElementById("third-B1");
+  const thirdB2Element = document.getElementById("third-B2");
+  const thirdC1Element = document.getElementById("third-C1");
+
+
   const A1Element = document.getElementById("A1");
   const A2Element = document.getElementById("A2");
   const A3Element = document.getElementById("A3");
@@ -209,6 +229,8 @@ const usernameLinks = document.querySelectorAll('.username-link');
       A2Element.style.display = "flex";
       ul = document.getElementById("A2_name");
       ul.textContent = tournamentPlayer[1].username;
+      // if (thirdPlayerMode)
+      thirdA1Element.style.display = "flex";
     }
     if (tournamentPlayer.length > 2){
       A3Element.style.display = "flex";
@@ -220,8 +242,12 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = tournamentPlayer[3].username;
       else
         ul.textContent = "...";
+      // if (thirdPlayerMode)
+      thirdA2Element.style.display = "flex";
       B1Element.style.display = "flex";
       B2Element.style.display = "flex";
+      // if (thirdPlayerMode)
+      thirdB1Element.style.display = "flex";
       firstTopTopElement.style.display = "block";
       firstTopBotElement.style.display = "block";
       firstSecondTopElement.style.display = "block";
@@ -236,10 +262,16 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = tournamentPlayer[5].username;
       else
         ul.textContent = "...";
+      // if (thirdPlayerMode)
+      thirdA3Element.style.display = "flex";
       B3Element.style.display = "flex";
       B4Element.style.display = "flex";
+      // if (thirdPlayerMode)
+      thirdB2Element.style.display = "flex";
       C1Element.style.display = "flex";
       C2Element.style.display = "flex";
+      // if (thirdPlayerMode)
+      thirdC1Element.style.display = "flex";
       firstBotTopElement.style.display = "block";
       firstSecondBotElement.style.display = "block";
       secondTopElement.style.display = "block";
@@ -256,14 +288,17 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = tournamentPlayer[7].username;
       else
         ul.textContent = "...";
+      // if (thirdPlayerMode)
+      thirdA4Element.style.display = "flex";
       firstBotBotElement.style.display = "block";
     }
   }
   
   //launch the tournament when there is the right amount of players
   //create the matchup / print the bracket structure
+
   launchTournamentElement.addEventListener("click", function() {
-    if (tournamentPlayer.length < 2){
+    if (tournamentPlayer.length < 3){
       const ul = document.getElementById("error_msg");
       ul.textContent = "Not enough players";
       return ;
@@ -287,35 +322,34 @@ const usernameLinks = document.querySelectorAll('.username-link');
     });
     tournamentPlayer.sort((a, b) => a.order - b.order);
     makeMatchup();
-    printTournamentPlayer();
+    document.querySelectorAll('.before-launch').forEach(function(el) {
+      el.style.display = 'none';
+   });
+    // printTournamentPlayer();
     launchMatchElement.style.display = "inline";
     bracketElement.style.display = "inline";
+    nextMatchElement.style.display = "inline";
+    const leftColumnElement = document.getElementById("leftColumn");
+    const midColumnElement = document.getElementById("midColumn");
+    const rightColumnElement = document.getElementById("rightColumn");
+    const resultElement = document.getElementById("result");
+    const matchElement = document.getElementById("match");
+    resultElement.style.display = "flex";
+    matchElement.style.display = "flex";
+    leftColumnElement.style.width = "0%";
+    midColumnElement.style.width = "30%";
+    rightColumnElement.style.width = "70%";
     printBracket();
   });
-  
+
   launchMatchElement.addEventListener("click", function(){
-    const ul = document.getElementById("match");
-    ul.innerHTML = "";
-    let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == 1);
-    const li = document.createElement("p");
-    if (nbMatch >= currentMatch.length){
-      makeMatchup();
-      printTournamentPlayer();
-      return ; 
-    }
-    else if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
-      li.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
-    else if (currentMatch[nbMatch][0])
-      li.textContent = currentMatch[nbMatch][0].myRef.username;
-    ul.appendChild(li);
     findWinner();
-    nbMatch ++;
   });
   
   function findWinner(){
     let ul = document.getElementById("result");
     ul.innerHTML = "";
-    const li = document.createElement("p");
+    let li = document.createElement("p");
     let winner_name;
     if (!currentMatch[nbMatch][1]){
       li.textContent = currentMatch[nbMatch][0].myRef.username + " is the winner !";
@@ -342,6 +376,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
       }
     }
     ul.appendChild(li);
+    ul.style.display = "flex";
     if (round == 2){
       if (nbMatch == 0){
         let ul = document.getElementById("B1_name");
@@ -432,5 +467,72 @@ const usernameLinks = document.querySelectorAll('.username-link');
       ul = document.getElementById("C2_score");
       ul.textContent = currentMatch[nbMatch][3];
     }
-    printTournamentPlayer();
+    //print the nextMatch
+    nbMatch ++;
+    ul = document.getElementById("match");
+    ul.innerHTML = "";
+    li = document.createElement("p");
+    if (nbMatch >= currentMatch.length){
+      makeMatchup();
+      return ; 
+    }
+    else if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
+      li.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
+    else if (currentMatch[nbMatch][0])
+      li.textContent = currentMatch[nbMatch][0].myRef.username;
+    ul.appendChild(li);
+    ul.style.display = "flex";
+    // printTournamentPlayer();
   }
+
+const plusPlayerTournament = document.querySelectorAll(".plusPlayerTournament");
+
+function resetAddingMode() {
+  console.log("resetAddingMode");
+  userlistTitle.textContent = getTranslatedText('userlist');
+  plusClicked = 0;
+  plusPlayerTournament.forEach(function(otherPlusButton) {
+      otherPlusButton.style.pointerEvents = 'auto';
+  });
+  profileAdded[botID] = false;
+}
+
+function setAddingMode(plusButton, i) {
+  userlistTitle.textContent = getTranslatedText('chooseProfile');
+  if (i === 0) {
+      plusClicked = 1;
+      profileAdded[botID] = true;
+  }
+  else plusClicked = 2;
+  plusPlayerTournament.forEach(function(otherPlusButton) {
+      if (otherPlusButton !== plusButton) {
+          otherPlusButton.style.pointerEvents = 'none';
+      }
+  });
+}
+
+plusPlayerTournament.forEach(function(plusButton, i) {
+  console.log("forEach");
+  plusButton.addEventListener('click', function () {
+      if (!plusClicked) {
+          setAddingMode(plusButton, i);
+          Glow();
+          plusButton.style.backgroundColor = lightGrey; 
+      }
+      else {
+          resetAddingMode(plusButton);
+          resetGlow();
+          plusButton.style.backgroundColor = grey;
+      }
+  });
+  //Hovering
+  plusButton.addEventListener('mouseenter', function () {
+      if (!plusClicked)
+          plusButton.style.backgroundColor = lightGrey;
+  });
+
+  plusButton.addEventListener('mouseleave', function () {
+      if (!plusClicked)
+          plusButton.style.backgroundColor = grey;
+  });
+});

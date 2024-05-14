@@ -10,11 +10,10 @@ const usernameLinks = document.querySelectorAll('.username-link');
 
   let landedOnPlanet = 1;
 
-    var planetPanel = document.querySelector(".planetPanel");
-    var square = document.querySelector(".background");
-    var images = document.querySelectorAll(".planetPanel img");
-    let anim;
-
+  var planetPanel = document.querySelector(".planetPanel");
+  var square = document.querySelector(".background");
+  var images = document.querySelectorAll(".planetPanel img");
+  let anim;
 
   function togglePanelDisplay() {
     if (anim)
@@ -34,7 +33,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
         landedOnPlanet = 1;
     }, 2000)
     }
-    }
+  }
 
     function triggerInfiniteAnim() {
         images[0].style.animation = "upDownImgL 2s infinite alternate ease-in-out";
@@ -181,6 +180,15 @@ const usernameLinks = document.querySelectorAll('.username-link');
   const nextMatchElement = document.getElementById("next-match");
   
   
+  const thirdA1Element = document.getElementById("third-A1");
+  const thirdA2Element = document.getElementById("third-A2");
+  const thirdA3Element = document.getElementById("third-A3");
+  const thirdA4Element = document.getElementById("third-A4");
+  const thirdB1Element = document.getElementById("third-B1");
+  const thirdB2Element = document.getElementById("third-B2");
+  const thirdC1Element = document.getElementById("third-C1");
+
+
   const A1Element = document.getElementById("A1");
   const A2Element = document.getElementById("A2");
   const A3Element = document.getElementById("A3");
@@ -221,6 +229,8 @@ const usernameLinks = document.querySelectorAll('.username-link');
       A2Element.style.display = "flex";
       ul = document.getElementById("A2_name");
       ul.textContent = tournamentPlayer[1].username;
+      // if (thirdPlayerMode)
+      thirdA1Element.style.display = "flex";
     }
     if (tournamentPlayer.length > 2){
       A3Element.style.display = "flex";
@@ -232,8 +242,12 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = tournamentPlayer[3].username;
       else
         ul.textContent = "...";
+      // if (thirdPlayerMode)
+      thirdA2Element.style.display = "flex";
       B1Element.style.display = "flex";
       B2Element.style.display = "flex";
+      // if (thirdPlayerMode)
+      thirdB1Element.style.display = "flex";
       firstTopTopElement.style.display = "block";
       firstTopBotElement.style.display = "block";
       firstSecondTopElement.style.display = "block";
@@ -248,10 +262,16 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = tournamentPlayer[5].username;
       else
         ul.textContent = "...";
+      // if (thirdPlayerMode)
+      thirdA3Element.style.display = "flex";
       B3Element.style.display = "flex";
       B4Element.style.display = "flex";
+      // if (thirdPlayerMode)
+      thirdB2Element.style.display = "flex";
       C1Element.style.display = "flex";
       C2Element.style.display = "flex";
+      // if (thirdPlayerMode)
+      thirdC1Element.style.display = "flex";
       firstBotTopElement.style.display = "block";
       firstSecondBotElement.style.display = "block";
       secondTopElement.style.display = "block";
@@ -268,6 +288,8 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = tournamentPlayer[7].username;
       else
         ul.textContent = "...";
+      // if (thirdPlayerMode)
+      thirdA4Element.style.display = "flex";
       firstBotBotElement.style.display = "block";
     }
   }
@@ -276,7 +298,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
   //create the matchup / print the bracket structure
 
   launchTournamentElement.addEventListener("click", function() {
-    if (tournamentPlayer.length < 2){
+    if (tournamentPlayer.length < 3){
       const ul = document.getElementById("error_msg");
       ul.textContent = "Not enough players";
       return ;

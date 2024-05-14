@@ -32,6 +32,7 @@ body {
 }
 
 .leftColumnTournament {
+  border: 5px solid wheat;
   padding-top: 20px;
   display: flex;
   flex-direction: column;
@@ -42,23 +43,25 @@ body {
 }
 
 .centerColumnTournament {
+  border: 5px solid wheat;
   padding-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100%;
-  width: 50%;
+  width: 60%;
   text-align: center;
 }
 
 .rightColumnTournament {
+  border: 5px solid wheat;
   padding-top: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
-  width: 30%;
+  width: 20%;
   text-align: center;
 }
 
@@ -143,6 +146,19 @@ body {
   padding-right: 50px;
 }
 
+.errorMsg{
+  height: 3%;
+  width: 100%;
+}
+
+.matchInfo{
+  height: 10%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 h2 {
   text-align: center;
   font-size: 18px;
@@ -158,11 +174,11 @@ p{
   font-size: 15px;
   color: white;
   font-family: 'Space';
+  padding-top: 5px;
 }
 
 .startMatchButton {
   text-align: center;
-  /* position: fixed; */
   font-size: 25px;
   color: white;
   font-family: 'Space';
@@ -208,10 +224,6 @@ button {
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s, color 0.3s;
-}
-
-p {
-  padding-top: 5px;
 }
 
 .responsive-table {
