@@ -1,10 +1,11 @@
 import * as THREE from 'three';
+import { showPage } from './showPages.js';
 import {spaceShip, spaceShipInt, allModelsLoaded} from "./objs.js";
 import { addStar } from "./stars.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
-import { spaceShipMovement, camMovement} from './movement.js';
+import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
@@ -13,7 +14,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 
-let gameStart = false;
+export let gameStart = false;
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c1')
 });
@@ -42,7 +43,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     minimapCamera.position.set(sun.position.x + 200, sun.position.y + 500, sun.position.z);
     
     const minimapRenderer = new THREE.WebGLRenderer();
-    minimapRenderer.setSize(window.innerWidth * 0.15, window.innerWidth * 0.15);
+    minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
     minimapRenderer.setClearColor(0x000000, 0); 
     minimapRenderer.domElement.style.borderRadius = '100%';
     minimapRenderer.domElement.style.position = 'absolute';
@@ -85,7 +86,7 @@ renderer.render(scene, camera);
 
 const rightSideContainer = document.getElementById("rsCont");
 let rsContVisible = false;
-const loginPageContainer = document.querySelector(".loginPageUI");
+const loginPageContainer = document.querySelector(".loginPage");
 
 export function toggleRSContainerVisibility() {
     if (rsContVisible) {
@@ -126,7 +127,6 @@ export const outlinePass = new OutlinePass(
     const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
     pointLight2.castShadow = true;
     pointLight2.position.set(0,5,-1300);
-    const lightHelperss = new THREE.PointLightHelper(pointLight2);
     
     const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
     spaceShipPointLight.castShadow = true;
@@ -136,63 +136,59 @@ export const outlinePass = new OutlinePass(
     
     Array(800).fill().forEach(addStar);
     
-    
-    
     // function vectorsEqual(v1, v2, threshold = 0.1) {
-        //     return Math.abs(v1.x - v2.x) < threshold &&
-        //            Math.abs(v1.y - v2.y) < threshold &&
-        //            Math.abs(v1.z - v2.z) < threshold;
-        // }
-        // let createOrbitsLines = true;
-        // let startToCheckPlanetPos = false;
-        
-        // function allPlanetsFinishedOrbit() {
-            //     planets.forEach((planet) => {
-//         if (vectorsEqual(initialPos[planet], planet.mesh.position))
-//             return false;
-//     });
-//     return true;
-// }
+    //     return Math.abs(v1.x - v2.x) < threshold &&
+    //            Math.abs(v1.y - v2.y) < threshold &&
+    //            Math.abs(v1.z - v2.z) < threshold;
+    // }
+    // let createOrbitsLines = true;
+    // let startToCheckPlanetPos = false;
+    
+    // function allPlanetsFinishedOrbit() {
+        //     planets.forEach((planet) => {
+    //         if (vectorsEqual(initialPos[planet], planet.mesh.position))
+    //             return false;
+    //     });
+    //     return true;
+    // }
 
-// function drawTrajectory() {
+    // function drawTrajectory() {
     //     let initialPos = [];
     //     planets.forEach((planet) => {
-        //         initialPos[planet] = planet.mesh.position;
-        //         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.2);
-        //         planet.trajectoryPoints.push(planet.mesh.position.clone());
-        //     });
-        //     if (allPlanetsFinishedOrbit && createOrbitsLines && startToCheckPlanetPos) {
-            //         planets.forEach((planet) => {
-                //             let trajectoryGeometry = new THREE.BufferGeometry().setFromPoints(planet.trajectoryPoints);
-                //             let trajectoryMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: 0, opacity: 0.2 });
-                //             let trajectoryLine = new THREE.Line(trajectoryGeometry, trajectoryMaterial);
-                //             scene.add(trajectoryLine);
-                //         });
-                //         createOrbitsLines = false;
-                //     }
-                // }
-                
-                function planetMovement() {
-                    planets.forEach((planet) => {
-                        
-                        planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
-                        planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
-                        
-                        if (planet.name === 'settings') {
-                            planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
-                            planet.orbitMesh.rotation.x += planet.orbitSpeed;
-                        }
-                        if (planet.name === 'tournament') {
-                            planet.mesh.rotation.x += planet.rotationSpeed;
-                            planet.mesh.rotation.y += planet.rotationSpeed;
-                        }
-                        if (planet.name === 'arena') {
-                            planet.mesh.rotation.x += planet.rotationSpeed;
-                            planet.mesh.rotation.y += planet.rotationSpeed;
-                            planet.orbitMesh.rotation.x += planet.rotationSpeed;
-                            planet.orbitMesh.rotation.y += planet.rotationSpeed;
-                        }
-                        if (planet.orbitMesh != null) {
+    //         initialPos[planet] = planet.mesh.position;
+    //         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.2);
+    //         planet.trajectoryPoints.push(planet.mesh.position.clone());
+    //     });
+    //     if (allPlanetsFinishedOrbit && createOrbitsLines && startToCheckPlanetPos) {
+    //         planets.forEach((planet) => {
+    //             let trajectoryGeometry = new THREE.BufferGeometry().setFromPoints(planet.trajectoryPoints);
+    //             let trajectoryMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: 0, opacity: 0.2 });
+    //             let trajectoryLine = new THREE.Line(trajectoryGeometry, trajectoryMaterial);
+    //             scene.add(trajectoryLine);
+    //         });
+    //         createOrbitsLines = false;
+    //     }
+    // }
+
+function planetMovement() {
+    planets.forEach((planet) => {
+        planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
+        planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
+        if (planet.name === 'settings') {
+            planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
+            planet.orbitMesh.rotation.x += planet.orbitSpeed;
+        }
+        if (planet.name === 'tournament') {
+            planet.mesh.rotation.x += planet.rotationSpeed;
+            planet.mesh.rotation.y += planet.rotationSpeed;
+        }
+        if (planet.name === 'arena') {
+            planet.mesh.rotation.x += planet.rotationSpeed;
+            planet.mesh.rotation.y += planet.rotationSpeed;
+            planet.orbitMesh.rotation.x += planet.rotationSpeed;
+            planet.orbitMesh.rotation.y += planet.rotationSpeed;
+        }
+        if (planet.orbitMesh != null) {
             planet.orbitMesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
@@ -239,14 +235,11 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
-        loginPageContainer.style.opacity = 0;
-        console.log("e pressed");
+        showPage('none');
         startAnimation();
     }
     if (event.key === 'e' && inRange)
         togglePlanet();
-    if (event.key === 'u')
-        triggerInfiniteAnim();
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
             togglePlanet();
@@ -292,8 +285,6 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
     }
 }
 
-
-
 // Bloom Pass
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = 0.1;
@@ -307,8 +298,8 @@ function update() {
         return;
     if (gameStart && !landedOnPlanet) 
         spaceShipMovement();
-    planetMovement();
     camMovement();
+    planetMovement();
     if (gameStart) {
         updateRay();
     if (!landedOnPlanet)
@@ -333,6 +324,7 @@ const checkModelsLoaded = setInterval(() => {
         clearInterval(checkModelsLoaded);
         animate();
         camMovement();
+        initializeCamera();
     }
 }, 100);
 
