@@ -12,6 +12,8 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { DotScreenShader } from 'three/addons/shaders/DotScreenShader.js';
 import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
+import { Water } from 'three/addons/objects/Water.js';
+import { Sky } from 'three/addons/objects/Sky.js';
 // import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
 import { vertexShader, vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentShader, fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
@@ -123,8 +125,8 @@ class LoadingScreen {
         this.ico2.position.set(0, 0, 0);
         this.xSpeedInitial = 0.005;
         this.ySpeedInitial = 0.015;
-        this.xSpeedFinal = 0.031;
-        this.ySpeedFinal = 0.095;
+        this.xSpeedFinal = 0.061;
+        this.ySpeedFinal = 0.185;
         this.isAnimatingCamera = true;
         this.loading = true;
         this.iterations = 0;
@@ -449,7 +451,6 @@ class Arena extends THREE.Mesh {
         const arenaColor = 0x000000;
         // Create material
         const material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
-        // const material = blueShaderMaterial;
         // Call super constructor to set up mesh
         super(geometry, material);
         
