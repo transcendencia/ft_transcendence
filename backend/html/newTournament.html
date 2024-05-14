@@ -11,187 +11,6 @@
 <div class="planetPanel">
   <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
   <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
-  <!-- <div class="background blueShadowfilter"> 
-    <div class="container">
-      <div class="row">
-        <div class="col-md-9 square maClasse">
-          <div class="before-launch">
-            <h2>Players in tournament :</h2>
-            <div id="tableContainer">
-              <table id="tournamentTable">
-                <tbody>
-                </tbody>
-              </table>
-            </div>
-            <p id="error_msg"></p>
-            <button id="launch" class="bottom">Launch tournament</button>
-          </div>
-          when the tournament is launch
-          <div id="bracket" class="theme theme-dark" style="display:none;">
-            <div class="bracket">
-              <div class="column one">
-                <div id="A1-A2-match" class="match">
-                  <div id="A1" class="match-top team" style="display:none;">
-                    <span id="A1_name" class="name"></span>
-                    <span id="A1_score" class="score"></span>
-                  </div>
-                  <div id="A2" class="match-bottom team" style="display:none;">
-                    <span id="A2_name" class="name"></span>
-                    <span id="A2_score" class="score"></span>
-                  </div>
-                  <div id="first-top-top" style="display:none;">
-                    <div class="match-lines">
-                      <div class="line one"></div>
-                      <div class="line two"></div>
-                    </div>
-                    <div class="match-lines alt">
-                      <div class="line one"></div>
-                    </div>
-                  </div>
-                </div>
-                <div id="A3-A4-match" class="match">
-                  <div id="A3" class="match-top team" style="display:none;">
-                    <span id="A3_name" class="name"></span>
-                    <span id="A3_score" class="score"></span>
-                  </div>
-                  <div id="A4" class="match-bottom team" style="display:none;">
-                    <span id="A4_name" class="name"></span>
-                    <span id="A4_score" class="score"></span>
-                  </div>
-                  <div id="first-top-bot" style="display:none;">
-                    <div class="match-lines">
-                      <div class="line one"></div>
-                      <div class="line two"></div>
-                    </div>
-                    <div class="match-lines alt">
-                      <div class="line one"></div>
-                    </div>
-                  </div>
-                </div>
-            <div id="A5-A6-match" class="match">
-              <div id="A5" class="match-top team" style="display:none;">
-                <span id="A5_name" class="name"></span>
-                <span id="A5_score" class="score"></span>
-              </div>
-              <div id="A6" class="match-bottom team" style="display:none;">
-                <span id="A6_name" class="name"></span>
-                <span id="A6_score" class="score"></span>
-              </div>
-              <div id="first-bot-top" style="display:none;">
-                <div class="match-lines">
-                  <div class="line one"></div>
-                  <div class="line two"></div>
-                </div>
-                <div class="match-lines alt">
-                  <div class="line one"></div>
-                </div>
-              </div>
-            </div>
-            <div id="A7-A8-match" class="match">
-              <div id="A7" class="match-top team" style="display:none;">
-                <span id="A7_name" class="name"></span>
-                <span id="A7_score" class="score"></span>
-              </div>
-              <div id="A8" class="match-bottom team" style="display:none;">
-                <span id="A8_name" class="name"></span>
-                <span id="A8_score" class="score"></span>
-              </div>
-              <div id="first-bot-bot" style="display:none;">
-                <div class="match-lines">
-                  <div class="line one"></div>
-                  <div class="line two"></div>
-                </div>
-                <div class="match-lines alt">
-                  <div class="line one"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="column two">
-            <div id="B1-B2-match" class="match">
-              <div id="B1" class="match-top team" style="display:none;">
-                <span id="B1_name" class="name"></span>
-                <span id="B1_score" class="score"></span>
-              </div>
-              <div id="B2" class="match-bottom team" style="display:none;">
-                <span id="B2_name" class="name"></span>
-                <span id="B2_score" class="score"></span>
-              </div>
-              <div id="second-top" class="match-lines" style="display:none;">
-                <div class="line one"></div>
-                <div class="line two"></div>
-              </div>
-              <div id="first-second-top" class="match-lines alt" style="display:none;">
-                <div class="line one"></div>
-              </div>
-            </div>
-            <div id="B3-B4-match" class="match">
-              <div id="B3" class="match-top team" style="display:none;">
-                <span id="B3_name" class="name"></span>
-                <span id="B3_score" class="score"></span>
-              </div>
-              <div id="B4" class="match-bottom team" style="display:none;">
-                <span id="B4_name" class="name"></span>
-                <span id="B4_score" class="score"></span>
-              </div>
-              <div id="second-bot" class="match-lines" style="display:none;">
-                <div class="line one"></div>
-                <div class="line two"></div>
-              </div>
-              <div id="first-second-bot" class="match-lines alt" style="display:none;">
-                <div class="line one"></div>
-              </div>
-            </div>
-          </div>
-          <div class="column three">
-            <div id="C1-C2-match" class="match">
-              <div id="C1" class="match-top team" style="display:none;">
-                <span id="C1_name" class="name"></span>
-                <span id="C1_score" class="score"></span>
-              </div>
-              <div id="C2" class="match-bottom team" style="display:none;">
-                <span id="C2_name" class="name"></span>
-                <span id="C2_score" class="score"></span>
-              </div>
-              <div class="match-lines">
-                <div class="line one"></div>
-                <div class="line two"></div>
-              </div>
-              <div id="second-line" class="match-lines alt" style="display:none;">
-                <div class="line one"></div>
-              </div>
-            </div>        
-          </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 square">
-          <div class="container">
-            <div class="before-launch">
-              <ul class="responsive-table">
-                <li class="table-header">
-                  <div class="col col-1">Players</div>
-                </li>
-                {% for x in mymembers %}
-                <li class="table-row">
-                  <div class="col col-1"><img class="icon" src="{% static 'tournament/img/th.jpg' %}"></div>
-                  <div class="col col-2"><a href="#" class="username-link">{{ x.username }}</a></div>
-                </li>
-                {% endfor %}
-              </ul>
-              <button id="NewUser" class="bottom"><a href="/add_player">Add a player</a></button>
-            </div>
-          </div>
-          when the tournament is ready to be played
-          <h2 id="next-match" style="display:none;">Next match to be played:</h2>
-          <p id="matchup"></p>
-          <button id="launchMatch" class="bottom" style="display:none;">Start match</button>
-          <p id="match"></p>
-          <p id="result"></p>
-        </div>
-      </div>
-    </div>
-  </div> -->
   <div class="background blueShadowfilter" style="flex-direction: column;">
     <div class="titleTournament">
       <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div>
@@ -212,66 +31,54 @@
           {% endfor %}
         </div>
       </div>
-    <div id="midColumn" class="rightColumn">
-      <!-- <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div> -->
+    <div id="midColumn" class="rightColumn" style="width: 60%;">
       <div class="addPlayerToTournament before-launch">
-        <!-- <div class="miniGame">
-          <div class="movingSpaceShip3">
-            <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}" style="transform: scale(0.08) rotate(90deg);">
-          </div>
-          <div class="elemCont">
-            <div class="pongField blueShadowfilter"><div class="ball1"></div></div>
-          </div>
-          <div class="movingSpaceShip4">
-            <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}" style="transform: scale(0.08) rotate(-90deg);">
-          </div>
-        </div> -->
         <div class="elemCont1">
           <div class="addPlayer">
-            <div class="plusPlayer">+</div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
             <div id="player1TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 1 </div>
           </div>
           <div class="addPlayer">
-            <div class="plusPlayer">+</div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
             <div id="player2TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 2 </div>
           </div>
           <div class="addPlayer">
-            <div class="plusPlayer">+</div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
             <div id="player3TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 3 </div>
           </div>
         </div>
         <div class="elemCont1">
           <div class="addPlayer">
-            <div class="plusPlayer">+</div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
             <div id="player4TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 4 </div>
           </div>
           <div class="addPlayer">
-            <div class="plusPlayer">+</div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
             <div id="player5TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 5 </div>
           </div>
           <div class="addPlayer">
-            <div class="plusPlayer">+</div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
             <div id="player6TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 6 </div>
           </div>
         </div>
         <div class="elemCont1">
           <div class="addPlayer">
-            <div class="plusPlayer">+</div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
             <div id="player7TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 7 </div>
           </div>
           <div class="addPlayer">
-            <div class="plusPlayer">+</div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
             <div id="player8TournamentText" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 8 </div>
           </div>
         </div>
       </div> 
       <div id="launch" class="startButton before-launch">Start</div>
-      <div id="error_msg" class="before-launch"></div>
+      <div id="error_msg" class="errorMsg before-launch"></div>
       <!-- when the tournament is launch -->
-      <h2 id="next-match" style="display:none;">Next match to be played:</h2>
-      <p id="match"></p>
-      <div id="launchMatch" class="startMatchButton" style="display:none;">Start match</div>
-      <p id="result"></p>
+      <h2 id="next-match" class="matchInfo" style="display:none;">Next match to be played:</h2>
+      <p id="match" class="matchInfo" style="display:none;"></p>
+      <div id="launchMatch" class="matchInfo startMatchButton" style="display:none;">Start match</div>
+      <p id="result" class="matchInfo" style="display:none;"></p>
     </div>
     <div id="rightColumn" class="rightColumnTournament">
       <div class="buttonsContVert before-launch">
@@ -316,6 +123,9 @@
                 <span id="A2_name" class="name"></span>
                 <span id="A2_score" class="score"></span>
               </div>
+              <div id="third-A1" class="match-third team" style="display:none;">
+                <span class="name">third player</span>
+              </div>
               <div id="first-top-top" style="display:none;">
                 <div class="match-lines">
                   <div class="line one"></div>
@@ -334,6 +144,9 @@
               <div id="A4" class="match-bottom team" style="display:none;">
                 <span id="A4_name" class="name"></span>
                 <span id="A4_score" class="score"></span>
+              </div>
+              <div id="third-A2" class="match-third team" style="display:none;">
+                <span class="name">third player</span>
               </div>
               <div id="first-top-bot" style="display:none;">
                 <div class="match-lines">
@@ -354,6 +167,9 @@
             <span id="A6_name" class="name"></span>
             <span id="A6_score" class="score"></span>
           </div>
+          <div id="third-A3" class="match-third team" style="display:none;">
+            <span class="name">third player</span>
+          </div>
           <div id="first-bot-top" style="display:none;">
             <div class="match-lines">
               <div class="line one"></div>
@@ -372,6 +188,9 @@
           <div id="A8" class="match-bottom team" style="display:none;">
             <span id="A8_name" class="name"></span>
             <span id="A8_score" class="score"></span>
+          </div>
+          <div id="third-A4" class="match-third team" style="display:none;">
+            <span class="name">third player</span>
           </div>
           <div id="first-bot-bot" style="display:none;">
             <div class="match-lines">
@@ -394,6 +213,9 @@
             <span id="B2_name" class="name"></span>
             <span id="B2_score" class="score"></span>
           </div>
+          <div id="third-B1" class="match-third team" style="display:none;">
+            <span class="name">third player</span>
+          </div>
           <div id="second-top" class="match-lines" style="display:none;">
             <div class="line one"></div>
             <div class="line two"></div>
@@ -410,6 +232,9 @@
           <div id="B4" class="match-bottom team" style="display:none;">
             <span id="B4_name" class="name"></span>
             <span id="B4_score" class="score"></span>
+          </div>
+          <div id="third-B2" class="match-third team" style="display:none;">
+            <span class="name">third player</span>
           </div>
           <div id="second-bot" class="match-lines" style="display:none;">
             <div class="line one"></div>
@@ -429,6 +254,9 @@
           <div id="C2" class="match-bottom team" style="display:none;">
             <span id="C2_name" class="name"></span>
             <span id="C2_score" class="score"></span>
+          </div>
+          <div id="third-C1" class="match-third team" style="display:none;">
+            <span class="name">third player</span>
           </div>
           <div class="match-lines">
             <div class="line one"></div>
