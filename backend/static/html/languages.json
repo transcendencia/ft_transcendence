@@ -1,8 +1,16 @@
 {
     "en": {
-        "loginText": "Login",
-        "passwordText": "Password",
-        "loginLanguageText": "Choose a language",
+        "login": "Login",
+        "password": "Password",
+        "loginLanguage": "Choose a language",
+        "newToTheGame": "New to the game?",
+        "signUpHere": "Sign up here",
+
+        "signUpTitle": "Sign up",
+        "createAnAccount": "Create an account",
+        "confirmPassword": "Confirm password",
+        "backToLogin": "Back to login",
+
         "enterPlanetText": "Press [E] to select",
 
         "settingsPlanetInfo1": "[Name]: Settings",
@@ -17,13 +25,33 @@
 
         "settingsPlanetName": "Settings",
         "arenaPlanetName": "Pong arena",
-        "tournamentPlanetName": "Galaxy Cup"
+        "tournamentPlanetName": "Galaxy Cup",
+        
+        "userlist": "User list",
+        "chooseProfile": "Choose a profile",
+        "enabled": "Yes",
+        "disabled": "No",
+        "arenaTitle": "Arena",
+        "player3": "Player 3",
+        "player2": "Player 2",
+        "player1": "Player 1",
+        "powerups": "Powerups",
+        "maps": "Maps",
+        "start": "Start",
+        "removePlayer": "Remove player"
     },
     "esp": {
-        "loginText": "Usuario",
-		"passwordText": "Contraseña",
-        "loginLanguageText": "Elige un idioma",
+        "login": "Usuario",
+		"password": "Contraseña",
+        "loginLanguage": "Elige un idioma",
+        "newToTheGame": "Nuevo al juego?",
+        "signUpHere": "Registrate aquí",
         "enterPlanetText": "Presiona [E] para seleccionar",
+
+        "signUpTitle": "Registrate",
+        "createAnAccount": "Crea una cuenta",
+        "confirmPassword": "Confirma la contraseña",
+        "backToLogin": "Volver",
 
         "settingsPlanetInfo1": "[Nombre] Ajustes",
         "settingsPlanetInfo2": "[ID] SO-0911",
@@ -37,13 +65,33 @@
 
         "settingsPlanetName": "Ajustes",
         "arenaPlanetName": "Pong arena",
-        "tournamentPlanetName": "Copa Galaxia"
+        "tournamentPlanetName": "Copa Galaxia",
+        
+        "userlist": "Lista de usuarios",
+        "chooseProfile": "Elige un perfil",
+        "enabled": "Si",
+        "disabled": "No",
+        "arenaTitle": "Arena",
+        "player3": "Jugador 3",
+        "player2": "Jugador 2",
+        "player1": "Jugador 1",
+        "powerups": "Poderes",
+        "maps": "Mapas",
+        "start": "Comenzar",
+        "removePlayer": "Eliminar"
+        
     },
     "fr": {
-        "loginText": "Nom d'Utilisateur",
-        "passwordText": "Mot de Passe",
-        "enterPlanetText": "Appuie sur [E] pour selectionner",
-        "loginLanguageText": "Choisis une langue",
+        "login": "Nom d'Utilisateur",
+        "password": "Mot de Passe",
+        "loginLanguage": "Choisis une langue",
+        "newToTheGame": "Nouveau au jeu?",
+        "signUpHere": "Inscris-toi ici",
+
+        "signUpTitle": "s'Inscrire",
+        "createAnAccount": "Cree un compte",
+        "confirmPassword": "confirmer mot de passe",
+        "backToLogin": "Retour",
 
         "settingsPlanetInfo1": "[Nom]: Reglages",
         "settingsPlanetInfo2": "[ID]: SO-0911",
@@ -57,6 +105,19 @@
 
         "settingsPlanetName": "Reglages",
         "arenaPlanetName": "Arene pong",
-        "tournamentPlanetName": "Coupe Galaxie"
+        "tournamentPlanetName": "Coupe Galaxie",
+
+        "userlist": "Liste des utilisateurs",
+        "chooseProfile": "Choisis un profile",
+        "enabled": "Oui",
+        "disabled": "Non",
+        "arenaTitle": "Arene",
+        "player3": "Joueur 3",
+        "player2": "Joueur 2",
+        "player1": "Joueur 1",
+        "powerups": "Pouvoirs",
+        "maps": "Cartes",
+        "start": "Commencer",
+        "removePlayer": "Supprimer"
     }
 }
