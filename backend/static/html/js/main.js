@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { showPage } from './showPages.js';
 import {spaceShip, spaceShipInt, allModelsLoaded} from "./objs.js";
 import { addStar } from "./stars.js";
 import { sun, planets } from "./planets.js";
@@ -135,63 +136,59 @@ export const outlinePass = new OutlinePass(
     
     Array(800).fill().forEach(addStar);
     
-    
-    
     // function vectorsEqual(v1, v2, threshold = 0.1) {
-        //     return Math.abs(v1.x - v2.x) < threshold &&
-        //            Math.abs(v1.y - v2.y) < threshold &&
-        //            Math.abs(v1.z - v2.z) < threshold;
-        // }
-        // let createOrbitsLines = true;
-        // let startToCheckPlanetPos = false;
-        
-        // function allPlanetsFinishedOrbit() {
-            //     planets.forEach((planet) => {
-//         if (vectorsEqual(initialPos[planet], planet.mesh.position))
-//             return false;
-//     });
-//     return true;
-// }
+    //     return Math.abs(v1.x - v2.x) < threshold &&
+    //            Math.abs(v1.y - v2.y) < threshold &&
+    //            Math.abs(v1.z - v2.z) < threshold;
+    // }
+    // let createOrbitsLines = true;
+    // let startToCheckPlanetPos = false;
+    
+    // function allPlanetsFinishedOrbit() {
+        //     planets.forEach((planet) => {
+    //         if (vectorsEqual(initialPos[planet], planet.mesh.position))
+    //             return false;
+    //     });
+    //     return true;
+    // }
 
-// function drawTrajectory() {
+    // function drawTrajectory() {
     //     let initialPos = [];
     //     planets.forEach((planet) => {
-        //         initialPos[planet] = planet.mesh.position;
-        //         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.2);
-        //         planet.trajectoryPoints.push(planet.mesh.position.clone());
-        //     });
-        //     if (allPlanetsFinishedOrbit && createOrbitsLines && startToCheckPlanetPos) {
-            //         planets.forEach((planet) => {
-                //             let trajectoryGeometry = new THREE.BufferGeometry().setFromPoints(planet.trajectoryPoints);
-                //             let trajectoryMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: 0, opacity: 0.2 });
-                //             let trajectoryLine = new THREE.Line(trajectoryGeometry, trajectoryMaterial);
-                //             scene.add(trajectoryLine);
-                //         });
-                //         createOrbitsLines = false;
-                //     }
-                // }
+    //         initialPos[planet] = planet.mesh.position;
+    //         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.2);
+    //         planet.trajectoryPoints.push(planet.mesh.position.clone());
+    //     });
+    //     if (allPlanetsFinishedOrbit && createOrbitsLines && startToCheckPlanetPos) {
+    //         planets.forEach((planet) => {
+    //             let trajectoryGeometry = new THREE.BufferGeometry().setFromPoints(planet.trajectoryPoints);
+    //             let trajectoryMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: 0, opacity: 0.2 });
+    //             let trajectoryLine = new THREE.Line(trajectoryGeometry, trajectoryMaterial);
+    //             scene.add(trajectoryLine);
+    //         });
+    //         createOrbitsLines = false;
+    //     }
+    // }
 
-                function planetMovement() {
-                    planets.forEach((planet) => {
-                        
-                        planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
-                        planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
-                        
-                        if (planet.name === 'settings') {
-                            planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
-                            planet.orbitMesh.rotation.x += planet.orbitSpeed;
-                        }
-                        if (planet.name === 'tournament') {
-                            planet.mesh.rotation.x += planet.rotationSpeed;
-                            planet.mesh.rotation.y += planet.rotationSpeed;
-                        }
-                        if (planet.name === 'arena') {
-                            planet.mesh.rotation.x += planet.rotationSpeed;
-                            planet.mesh.rotation.y += planet.rotationSpeed;
-                            planet.orbitMesh.rotation.x += planet.rotationSpeed;
-                            planet.orbitMesh.rotation.y += planet.rotationSpeed;
-                        }
-                        if (planet.orbitMesh != null) {
+function planetMovement() {
+    planets.forEach((planet) => {
+        planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
+        planet.hitbox.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
+        if (planet.name === 'settings') {
+            planet.mesh.rotation.y += planet.orbitSpeed + 0.005;
+            planet.orbitMesh.rotation.x += planet.orbitSpeed;
+        }
+        if (planet.name === 'tournament') {
+            planet.mesh.rotation.x += planet.rotationSpeed;
+            planet.mesh.rotation.y += planet.rotationSpeed;
+        }
+        if (planet.name === 'arena') {
+            planet.mesh.rotation.x += planet.rotationSpeed;
+            planet.mesh.rotation.y += planet.rotationSpeed;
+            planet.orbitMesh.rotation.x += planet.rotationSpeed;
+            planet.orbitMesh.rotation.y += planet.rotationSpeed;
+        }
+        if (planet.orbitMesh != null) {
             planet.orbitMesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
@@ -238,6 +235,7 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
+        showPage('none');
         startAnimation();
     }
     if (event.key === 'e' && inRange)
@@ -286,8 +284,6 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
         targetBlur === 0 ? coloredPanel.style.opacity = "0" : coloredPanel.style.opacity = "1";
     }
 }
-
-
 
 // Bloom Pass
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );

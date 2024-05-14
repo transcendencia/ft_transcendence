@@ -13,6 +13,8 @@
     width :80%;
     height: 99%;
     transition: opacity 1s;
+    opacity: 0;
+    visibility: hidden; /* Hide the element */
 }
 
 .loginPage * {
@@ -44,8 +46,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: rgb(232, 252, 252);
-
+    color: rgb(182, 221, 254);
     font-size: 12px;
     z-index: 5;
     cursor: default;
@@ -61,8 +62,7 @@
 }
 
 .actionCont:hover {
-    color: rgb(176, 255, 255);
-
+    color: rgb(117, 190, 255);
 }
 
 .separator {
@@ -154,7 +154,7 @@
 }
 
 .title {
-    font-size: 100px;
+    font-size: 80px;
     font-family: "Space";
     color: white;
     display: flex;
@@ -186,7 +186,7 @@
 
 .title img {
     margin: -200px;
-    transform: scale(0.3);
+    transform: scale(0.25);
 }
 
 .textBar {
@@ -210,8 +210,8 @@
 
 .text-input {
     position: absolute;
-    width: 80%; /* Match the width of the container */
-    height: 20%; /* Automatically adjust height based on content */
+    width: 90%; /* Match the width of the container */
+    height: 30%; /* Automatically adjust height based on content */
     background: none;
     border: none;
     color: white; /* Set text color to white */

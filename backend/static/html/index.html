@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/planetPage.css">
     <link rel="stylesheet" href="css/escapePage.css">
     <link rel="stylesheet" href="css/arenaPage.css">
+    <link rel="stylesheet" href="css/SignUpPage.css">
     <script type="importmap">
         {
           "imports": {
@@ -35,7 +36,9 @@
           <img src="assets/icons/frame.png">
         </div>
         <div class="littleMsgCont">
-          <div class="newToTheGame">New to the game ?<div class="actionCont lightblueShadowfilter">Sign Up Here</div></div>
+          <div class="newToTheGame">New to the game ?
+            <div class="actionCont tinyBlueShadowfilter">Sign Up Here</div>
+          </div>
         </div>
       </div>
       <div class="titleText" id="passwordText">
@@ -44,10 +47,8 @@
           <input class="text-input" spellcheck="false" type="password"></input>
           <img src="assets/icons/frame.png">
         </div>
-        <div class="littleMsgCont">
-        <div class="actionCont lightblueShadowfilter"> Forgot password ?</div>
       </div>
-      </div>
+      <div class="errorMessageCont"></div>
     </div>
     <div class="languageColumn" id="loginLanguageText">
       <div class="languageSettings">
@@ -69,8 +70,42 @@
     </div>
   </div>
 
+  <!-- SIGN UP PAGE -->
   <div class="signUpPage page">
+    <div class="perspective">
+      Sign Up
+      <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
+      <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
+        Login
+      <div class="textBar">
+        <input class="text-input" style="font-size: 30px;" spellcheck="false" ></input>
+        <img src="assets/icons/frame.png">
+      </div>
+    </div>
+    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
+        Password
+      <div class="textBar">
+        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
+        <img src="assets/icons/frame.png">
+      </div>
+    </div>
+    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
+      confirm password
+      <div class="textBar">
+        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
+        <img src="assets/icons/frame.png">
+      </div>
+    </div>
   </div>
+  <div class="perspective2">
+      <div class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</div>
+  </div>
+    <div class="backButton tinyWhiteShadowfilter">
+      Back to login
+    </div>
+</div>
+
+
 
   <!-- CANVAS -->
     <div id="a">
@@ -83,17 +118,15 @@
       <div id="enterPlanetText"></div>
     </div>
 
-    <div class="dot"></div>
-
     <!-- PLANET INFOS & MAP -->
     <div id="rsCont" class="rightSideContainer">
       <div id="minimapContainer"></div>
-      <div id="planetInfoLine0" class="planetInfoText redShadowfilter" style="text-align: center;border: none;font-size: 30px;;"> CODEX </div>
+      <div id="planetInfoLine0" class="planetInfoText tinyRedShadowfilter" style="text-align: center;border: none;font-size: 30px;"> CODEX </div>
       <div id="planetInfoContainer">
         <img src="assets/icons/scoreUI.png" class="blueShadowfilter">
-        <div id="planetInfoLine1" class="planetInfoText redShadowfilter"></div>
-        <div id="planetInfoLine2" class="planetInfoText redShadowfilter"></div>
-        <div id="planetInfoLine3" class="planetInfoText redShadowfilter"></div>
+        <div id="planetInfoLine1" class="planetInfoText tinyRedShadowfilter"></div>
+        <div id="planetInfoLine2" class="planetInfoText tinyRedShadowfilter"></div>
+        <div id="planetInfoLine3" class="planetInfoText tinyRedShadowfilter"></div>
         <img src="assets/icons/scoreUI.png" class="blueShadowfilter">
       </div>
     </div>
@@ -160,7 +193,7 @@
           <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Arena </div>
           <div class="choosePlayerCont">
           <div class="thirdPlayerCont">
-            <div class="plusPlayer">+</div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
             <div id="player3Text" style="font-size: 15px; font-family: 'space'; color: white;"></div>
           </div>
           <div class="rightColumnRow">
@@ -183,7 +216,7 @@
               <img src="assets/icons/spaceshipIcon.png" style="transform: scale(0.08) rotate(-90deg);">
             </div>
             <div class="elemCont">
-              <div class="plusPlayer">+</div>
+              <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
               <div id="player2Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 2 </div>
             </div>
           </div>

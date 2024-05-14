@@ -24,7 +24,7 @@ export function togglePanelDisplay() {
         images[1].style.animation = "moveImageLeftreverse 1s forwards";
         background.style.animation = "expandBGreverse 1s forwards"
         anim = setTimeout(function() {planetPanel.style.animation = "";
-    }, 2000)
+    }, 1000)
     }
 }
 
@@ -54,7 +54,7 @@ export function togglePlanet() {
         resetRotations();
         landedOnPlanet = false;
     }
-    // toggleRSContainerVisibility();
+    toggleRSContainerVisibility();
     resetOutlineAndText();
     toggleBlurDisplay();
     togglePanelDisplay();

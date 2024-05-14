@@ -159,7 +159,7 @@ function cameraDebug()
 }
 
 export function initializeCamera() {
-    camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
+    camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, (spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y))));
     camera.rotation.y = spaceShip.rotation.y - Math.PI;
 }
 

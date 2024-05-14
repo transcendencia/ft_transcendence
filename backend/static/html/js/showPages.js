@@ -1,14 +1,15 @@
 export function showPage(pageId) {
     var pages = document.querySelectorAll('.page');
     pages.forEach(function(page) {
-        page.style.opacity = 0;
+        page.classList.remove('show'); // Remove the 'show' class from all pages
     });
 
     // Show the selected page
+    if (pageId == 'none')
+        return;
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
-    console.log(selectedPage);
-    selectedPage.style.opacity = 1;
+    selectedPage.classList.add('show'); // Add the 'show' class to the selected page
 }
 
 // Find all anchor elements on the page
