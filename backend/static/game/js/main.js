@@ -55,6 +55,33 @@ renderer2.render(scene, cameraLeft);
 // scene.add(torus);
 
 
+let water;
+
+const waterGeometry = new THREE.PlaneGeometry( 10000, 10000 );
+
+water = new Water(
+  waterGeometry,
+  {
+    textureWidth: 512,
+    textureHeight: 512,
+    waterNormals: new THREE.TextureLoader().load( '../../static/game/texturePlayground/water/water.jpg', function ( texture ) {
+
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+    } ),
+    sunDirection: new THREE.Vector3(),
+    sunColor: 0xffffff,
+    waterColor: 0x001e0f,
+    distortionScale: 3.7,
+    opacity: 1.0,
+    fog: scene.fog !== undefined
+  }
+);
+
+water.rotation.x = - Math.PI / 2;
+
+scene.add( water );
+
 const shaderBallMaterial = new THREE.MeshStandardMaterial({
     onBeforeCompile: (shader) => {
       // storing a reference to the shader object
@@ -171,7 +198,7 @@ class LoadingScreen {
         if (this.isAnimatingCamera) {
             this.isAnimatingCamera = false;
             this.iterations = 0;
-            const duration = 500;
+            const duration = 2500;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -508,7 +535,7 @@ class Arena extends THREE.Mesh {
         this.viewPoint4 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
         this.material = material;
         this.stars = []; // Store all stars added to the scene
-        this.addStars(2000);
+        // this.addStars(2000);
     }
     addStar() {
         const geometry = new THREE.SphereGeometry(0.125, 12, 12);
@@ -619,12 +646,12 @@ class Arena extends THREE.Mesh {
     }
     monitorArena()
     {
-        this.stars.forEach(star => {
-            star.position.z += 0.01; // Increase Z position by 0.01
-            if (star.position.z > 100) {
-                star.position.z = -100; // Reset position to -100
-            }
-        });
+        // this.stars.forEach(star => {
+        //     star.position.z += 0.01; // Increase Z position by 0.01
+        //     if (star.position.z > 100) {
+        //         star.position.z = -100; // Reset position to -100
+        //     }
+        // });
         this.paddleLeft.light.position.copy(this.paddleLeft.position);
         this.paddleRight.light.position.copy(this.paddleRight.position);
         this.paddleLeft.particles.updateParticles();
@@ -2041,6 +2068,10 @@ class GameState {
         this.lowGraphics = false;
         this.mediumGraphics = true;
         this.highGraphics = false;
+        this.spaceMap = true;
+        this.oceanMap = false;
+        this.driftMap = false;
+        this.hellMap = false;
     }
     switchLoadingToGame() {
         // Switches loading to false and inGame to true to account for the animation time
@@ -2168,73 +2199,6 @@ class Particle {
             }
             this.geometry.attributes.position.needsUpdate = true;
         }
-    }
-}
-
-class Theme {
-    constructor() {
-        this.arenaColor = '#00FF00'; // Green
-        this.paddleColor = '#BBBBBB'; // Red
-        this.paddleDashingColor = '#0000FF'; // Blue
-        this.paddleSuperchargingColor = '#FFFF00'; // Yellow
-        this.ballInitialColor = '#FF00FF'; // Magenta
-        this.ballFinalColor = '#FFFFFF'; // Cyan
-        this.backgroundColor = '#000000'; // Black
-    }
-}
-
-class Theme1 extends Theme {
-    constructor() {
-        super(); // Call the parent class constructor
-        this.arenaColor = '#FF0000'; // Red
-        this.paddleColor = '#00FF00'; // Green
-        this.paddleDashingColor = '#0000FF'; // Blue
-        this.paddleSuperchargingColor = '#FFFF00'; // Yellow
-        this.ballInitialColor = '#FF00FF'; // Magenta
-        this.ballFinalColor = '#00FFFF'; // Cyan
-        this.backgroundColor = '#000000'; // Black
-    }
-}
-
-// Subclass theme2
-class Theme2 extends Theme {
-    constructor() {
-        super(); // Call the parent class constructor
-        this.arenaColor = '#00FF00'; // Green
-        this.paddleColor = '#000000'; // Red
-        this.paddleDashingColor = '#0000FF'; // Blue
-        this.paddleSuperchargingColor = '#FFFF00'; // Yellow
-        this.ballInitialColor = '#FFFFFF'; // Magenta
-        this.ballFinalColor = '#FFFFFF'; // Cyan
-        this.backgroundColor = '#000000'; // Black
-    }
-}
-
-// Subclass theme3
-class Theme3 extends Theme {
-    constructor() {
-        super(); // Call the parent class constructor
-        this.arenaColor = '#0000FF'; // Blue
-        this.paddleColor = '#FF0000'; // Red
-        this.paddleDashingColor = '#00FF00'; // Green
-        this.paddleSuperchargingColor = '#FFFF00'; // Yellow
-        this.ballInitialColor = '#FF00FF'; // Magenta
-        this.ballFinalColor = '#00FFFF'; // Cyan
-        this.backgroundColor = '#000000'; // Black
-    }
-}
-
-// Subclass theme4
-class Theme4 extends Theme {
-    constructor() {
-        super(); // Call the parent class constructor
-        this.arenaColor = '#FFFF00'; // Yellow
-        this.paddleColor = '#FF0000'; // Red
-        this.paddleDashingColor = '#00FF00'; // Green
-        this.paddleSuperchargingColor = '#0000FF'; // Blue
-        this.ballInitialColor = '#FF00FF'; // Magenta
-        this.ballFinalColor = '#00FFFF'; // Cyan
-        this.backgroundColor = '#000000'; // Black
     }
 }
 
@@ -2388,6 +2352,7 @@ function animate()
             arena1.monitorArena();
             arena1.thirdPlayer.monitorThirdPlayerMovement();
             arena1.thirdPlayer.monitorProjectilesMovement();
+            water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
             if (arena1.thirdPlayer.isPlaying)
                 controls.enabled = false;
             composer1.render();
