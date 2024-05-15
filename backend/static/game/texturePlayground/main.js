@@ -110,8 +110,8 @@ material.userData.shader = { uniforms: { uTime: { value: 0 } } };
 //reflective material without shaders
 const reflectiveMaterial = new THREE.MeshStandardMaterial({
   color: 0xffffff,
-  roughness: 0.0,
-  metalness: 1,
+  roughness: 0.2,
+  metalness: 0.9,
   envMap: cubeMapTexture,
   envMapIntensity: 1.2,
   side: THREE.DoubleSide
