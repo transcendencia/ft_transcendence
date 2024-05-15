@@ -13,13 +13,10 @@ function handleSignup(event) {
     })
     .then(response => {
         if (!response.ok) {
+            console.log(response)
             throw new Error('Network response was not ok');
         }
         return response.json();
-    })
-    .then(data => {
-        // Rediriger 
-		// Store dans le local storage
     })
     .catch(error => {
         console.error('There was a problem with the sign-up:', error);

@@ -71,7 +71,8 @@ function handleLogin(event) {
     .then(data => {
         console.log(data);
         if (data.status == "succes")
-            localStorage.setItem("token", data.token)
+            localStorage.setItem("auth_token", data.token)
+        console.log(data.message);
         document.getElementById('messageContainer').innerText = data.message;
     })
     .catch(error => {

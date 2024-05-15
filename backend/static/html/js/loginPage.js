@@ -48,7 +48,7 @@ languageIcons.forEach(function(icon) {
         loginLanguageText.childNodes[4].textContent = getTranslatedText('loginLanguageText');
         languageIcons.forEach(function(otherIcon) {
             if (otherIcon !== icon) {
-                removeGlow(otherIcon.id);
+                console.log(data);               removeGlow(otherIcon.id);
             }
         });
     });
@@ -69,7 +69,6 @@ function handleLogin(event) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);
         if (data.status == "succes")
             localStorage.setItem("token", data.token)
         document.getElementById('messageContainer').innerText = data.message;

@@ -20,7 +20,7 @@
       </script>
 </head>
 <body>
-  <div class="loginPageUI">
+  <!-- <div class="loginPageUI">
     <div class="title">
       TRANSCENDENCIA
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
@@ -29,7 +29,7 @@
       <div id="messageContainer" class="loginMessage"></div>
       <form id="loginForm" method="post" action="login/">
         {% csrf_token %}
-        <!-- <p class="loginMessage">{{ message }}</p> -->
+         <p class="loginMessage">{{ message }}</p> 
         <div class="titleText" id="loginText">
           - Login -
           <div class="textBar">
@@ -65,8 +65,8 @@
       <div class="separator"></div>
       - Choose a language -
     </div>
-  </div>
-  <!-- <div class="signupPageUI">
+  </div> -->
+  <div class="signupPageUI">
     <div class="title">
         TRANSCENDENCIA
         <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
@@ -78,28 +78,31 @@
             <p class="signupMessage">{{ message }}</p>
             <div class="titleText" id="signupText">
                 - Sign Up -
+            </div>
+            <div class="titleText" id="UsernameText">
+                - Username -
                 <div class="textBar">
-                    <input class="text-input" name="username" spellcheck="false" placeholder="Username">
+                    <input class="text-input" name="username" spellcheck="false">
                     <img src="{% static 'html/assets/icons/frame.png' %}">
                 </div>
             </div>
             <div class="titleText" id="passwordText">
                 - Password -
                 <div class="textBar">
-                    <input class="text-input" name="password1" spellcheck="false" type="password" placeholder="Password">
+                    <input class="text-input" name="password" spellcheck="false" type="password">
                     <img src="{% static 'html/assets/icons/frame.png' %}">
                 </div>
             </div>
-            <div class="titleText" id="confirmPasswordText">
+            <!-- <div class="titleText" id="confirmPasswordText">
                 - Confirm Password -
                 <div class="textBar">
-                    <input class="text-input" name="password2" spellcheck="false" type="password" placeholder="Confirm Password">
+                    <input class="text-input" name="password2" spellcheck="false" type="password">
                     <img src="{% static 'html/assets/icons/frame.png' %}">
                 </div>
-            </div>
+            </div> -->
             <button type="submit" style="display: none;">Submit</button>
         </form>
-    </div> -->
+    </div>
 
     <div id="a">
       <canvas id="c1"></canvas>
@@ -134,5 +137,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script type="module" src="{% static 'html/js/main.js' %}"></script>
     <script type="module" src="{%static 'html/js/loginPage.js' %}"></script>
+    <script type="module" src="{%static 'html/js/signupPage.js' %}"></script>
 </body>
 </html>
