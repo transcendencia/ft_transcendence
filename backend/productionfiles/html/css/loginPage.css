@@ -130,22 +130,6 @@
          2px  2px 0 black;
 }
 
-.loginMessage {
-    /* margin: 30px 30px 30px 30px; */
-    color: orange; /* Set text color to white */
-    font-size: 20px; /* Adjust font size as needed */
-    font-family: "Space";
-    text-align: center;
-    text-shadow: 
-        -2px -2px 0 black,  
-         2px -2px 0 black,
-        -2px  2px 0 black,
-         2px  2px 0 black;
-    top: 15px;
-    left: 25px;
-    /* position: absolute; */
-}
-
 .textBar {
     margin: 0px 10px 0px 10px;
     top: 50%;

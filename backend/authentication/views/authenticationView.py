@@ -38,6 +38,7 @@ def login_page(request):
 #ajouter adresse mail
 #ajouter message d'erreur quand user existe deja
 @api_view(['POST'])
+@permission_classes([AllowAny])  
 def signup(request):
   serializer = UserSerializer(data=request.data)
   if serializer.is_valid():
@@ -45,7 +46,8 @@ def signup(request):
     user = User.objects.get(username=request.data['username'])
     user.set_password(request.data['password'])
     user.save()
-    return Response({"user": serializer.data})
+    return Response({"ok": True, "user": serializer.data})
+  print(serializer.errors)
   return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # @api_view(['POST'])
