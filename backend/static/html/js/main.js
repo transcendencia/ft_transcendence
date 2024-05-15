@@ -13,12 +13,13 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
+import { gameStarted, switchToGame } from './arenaPage.js';
 
-export let gameStart = false;
+
+export let lobbyStart = false;
 const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#c1')
+    canvas: document.querySelector('#c4')
 });
-
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000020);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
@@ -224,7 +225,7 @@ function startAnimation() {
         })
         .onComplete(() => {
             spaceShipInt.visible = false;
-            gameStart = true;
+            lobbyStart = true;
             toggleRSContainerVisibility();
         });
         anim1.chain(anim2, anim3);
@@ -234,11 +235,11 @@ function startAnimation() {
 let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
-    if (event.key === 'e' && !gameStart) {
+    if (event.key === 'e' && !lobbyStart) {
         showPage('none');
         startAnimation();
     }
-    if (event.key === 'e' && inRange)
+    if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
@@ -249,6 +250,9 @@ document.addEventListener('keydown', (event) => {
         toggleBlurDisplay(true);
         resetOutlineAndText();
         pauseGame ? pauseGame = false : pauseGame = true;
+    }
+    if (event.key === 'l') {
+        switchToGame();
     }
 });
 
@@ -296,11 +300,11 @@ function update() {
     // displayRay();
     if (pauseGame)
         return;
-    if (gameStart && !landedOnPlanet) 
+    if (lobbyStart && !landedOnPlanet) 
         spaceShipMovement();
     camMovement();
     planetMovement();
-    if (gameStart) {
+    if (lobbyStart) {
         updateRay();
     if (!landedOnPlanet)
         getPlanetIntersection();
@@ -310,8 +314,11 @@ return;
 
 function animate()
 {
-    TWEEN.update();
     requestAnimationFrame( animate )
+    console.log("gameStarted = ", gameStarted)
+    if (gameStarted)
+        return;
+    TWEEN.update();
     if (!landedOnPlanet)
         renderMinimap();
     update();

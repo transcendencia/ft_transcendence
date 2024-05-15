@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{% static '../static/html/css/escapePage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/arenaPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/SignUpPage.css' %}">
+    <link rel="stylesheet" href="{% static '../static/game/style/style.css' %}">
     <script type="importmap">
         {
           "imports": {
@@ -109,8 +110,11 @@
 
 
   <!-- CANVAS -->
-    <div id="a">
+  <div id="a">
+      <canvas id="c4"></canvas>
       <canvas id="c1"></canvas>
+      <canvas id="c2"></canvas>
+      <canvas id="c3"></canvas>
     </div>
     
     <div class="coloredPanel"></div>
@@ -257,11 +261,37 @@
       </div>
     </div> 
 
+    <!-- GAME STUFF -->
+    <div id="a">
+
+  </div>
+
+  <div class="bluebar glow"></div>
+  <div class="scoreUI">
+      <div class="centerRectangle glow" style="border-color: rgb(171, 31, 0); box-shadow: rgb(171, 31, 0);">
+          <div class="speedbar"></div>
+          <div class="speedbar" style="animation-delay: 250ms;"></div>
+      </div>
+      <div class="asset">
+          <img src="{% static 'game/assets/scoreUI.png' %}" class="shadowfilter">
+          <div class="parallelogram glow" style="left: 90%;"></div>
+          <div class="parallelogram glow" style="left: 101%;"></div>
+          <div class="parallelogram glow" style="left: 112%;;"></div>
+      </div>
+      <div class="asset" style="transform: scaleX(-1);">
+          <img src="{% static 'game/assets/scoreUI.png' %}" class="shadowfilter">
+          <div class="parallelogram glow" style="left: 90%;"></div>
+          <div class="parallelogram glow" style="left: 101%;"></div>
+          <div class="parallelogram glow" style="left: 112%;;"></div>
+      </div>
+  </div> 
+
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script type="module" src="{% static 'html/js/main.js' %}"></script>
     <script type="module" src="{% static 'html/js/arenaPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/loginPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/translatePages.js' %}"></script>
+    <script type="module" src="{% static 'game/js/main.js' %}"></script>
 </body>
 </html>
