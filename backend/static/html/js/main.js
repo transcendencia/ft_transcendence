@@ -235,6 +235,7 @@ function startAnimation() {
 let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
+
     if (event.key === 'e' && !lobbyStart) {
         showPage('none');
         startAnimation();
