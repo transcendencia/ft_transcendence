@@ -66,7 +66,41 @@
       - Choose a language -
     </div>
   </div>
-  
+  <!-- <div class="signupPageUI">
+    <div class="title">
+        TRANSCENDENCIA
+        <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
+    </div>
+    <div class="container">
+        <div id="messageContainer" class="signupMessage"></div>
+        <form id="signupForm" method="post" action="signup/">
+            {% csrf_token %}
+            <p class="signupMessage">{{ message }}</p>
+            <div class="titleText" id="signupText">
+                - Sign Up -
+                <div class="textBar">
+                    <input class="text-input" name="username" spellcheck="false" placeholder="Username">
+                    <img src="{% static 'html/assets/icons/frame.png' %}">
+                </div>
+            </div>
+            <div class="titleText" id="passwordText">
+                - Password -
+                <div class="textBar">
+                    <input class="text-input" name="password1" spellcheck="false" type="password" placeholder="Password">
+                    <img src="{% static 'html/assets/icons/frame.png' %}">
+                </div>
+            </div>
+            <div class="titleText" id="confirmPasswordText">
+                - Confirm Password -
+                <div class="textBar">
+                    <input class="text-input" name="password2" spellcheck="false" type="password" placeholder="Confirm Password">
+                    <img src="{% static 'html/assets/icons/frame.png' %}">
+                </div>
+            </div>
+            <button type="submit" style="display: none;">Submit</button>
+        </form>
+    </div> -->
+
     <div id="a">
       <canvas id="c1"></canvas>
     </div>

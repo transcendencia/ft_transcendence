@@ -9,3 +9,7 @@
 
 #Authentication token
 # https://getstream.io/chat/docs/javascript/tokens_and_authentication/
+
+#API = interfaces entre l'utilisateur et le logiciel, permet un contenue dynamique sans recherger la page, permet la communication entre plusieur app
+#GET = lecture
+#POST = creation

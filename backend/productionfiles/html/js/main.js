@@ -239,21 +239,12 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !gameStart) {
-        fetch('check_auth/')
-            .then(response => {
-                console.log(response.ok);
-                if (!response.ok) {
-                    event.preventDefault();
-                }
-                else {
-                    loginPageContainer.style.opacity = 0;
-                    console.log("e pressed");
-                    startAnimation();
-                }
-            })
-        .catch(error => {
-            console.error('Erreur lors de la vérification de l\'état de connexion :', error);
-        });
+        const token = localStorage.getItem('token');
+        if (token) {
+            loginPageContainer.style.opacity = 0;
+            console.log("e pressé");
+            startAnimation();
+        }
     }
     if (event.key === 'e' && inRange) {
         togglePlanet();
