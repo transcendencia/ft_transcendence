@@ -86,6 +86,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.render(scene, camera);
 
 const rightSideContainer = document.getElementById("rsCont");
+const leftSideContainer = document.getElementById("lsCont");
 let rsContVisible = false;
 const loginPageContainer = document.querySelector(".loginPage");
 
@@ -93,10 +94,14 @@ export function toggleRSContainerVisibility() {
     if (rsContVisible) {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '-50%';
+        leftSideContainer.style.transition = 'left 0.5s ease-in-out';
+        leftSideContainer.style.left = '-50%';
         rsContVisible = false;
     } else {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '0%';
+        leftSideContainer.style.transition = 'left 0.5s ease-in-out';
+        leftSideContainer.style.left = '0%';
         rsContVisible = true;
     }
 }

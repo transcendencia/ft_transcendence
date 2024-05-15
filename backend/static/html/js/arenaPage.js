@@ -148,8 +148,11 @@ export function endGame() {
     document.getElementById('c3').style.display = 'none';
 }
 
+const gameUI = document.querySelector(".gameUI");
+
 export function switchToGame() {
     gameStarted = true;
+    gameUI.style.visibility = 'visible';
     planetPanel.style.display = 'none';
     loginPage.style.display = 'none';
     rsContainer.style.display = 'none';
@@ -199,7 +202,7 @@ function isBot(i) {
 }
 
 function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
-    clonedImg.src = 'assets/icons/whiteCross.png';
+    clonedImg.src = '../assets/icons/whiteCross.png';
     profilePic.style.borderColor = 'red';
     userInfoCont.style.borderColor = 'red';
     userInfoCont.style.fontSize = '25px';
