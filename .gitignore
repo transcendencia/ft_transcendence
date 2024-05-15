@@ -10,4 +10,4 @@ venv/
 #pycache
 /backend/backend/__pycache__/
 
-/backend/authentication/__pycache__/
+/backend/authentication/
