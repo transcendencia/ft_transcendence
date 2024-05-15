@@ -27,6 +27,19 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 
+var cubeLoader = new THREE.CubeTextureLoader();
+var cubeMapTexture = cubeLoader.load([
+    'parkingMap/nx.png',
+    'parkingMap/px.png',
+    'parkingMap/ny.png',
+    'parkingMap/py.png',
+    'parkingMap/nz.png',
+    'parkingMap/pz.png'
+]);
+
+scene.background = cubeMapTexture;
+
+
 // Create a ball geometry
 const geometry = new THREE.DodecahedronGeometry(5, 20);
 console.log(geometry.attributes)

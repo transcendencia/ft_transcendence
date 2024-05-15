@@ -17,7 +17,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 // import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
 import { vertexShader, vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentShader, fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
-import { endGame } from '../../html/js/arenaPage.js';
+// import { endGame } from '../../html/js/arenaPage.js';
 
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
@@ -28,6 +28,7 @@ const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 )
 const cameraLeft = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 camera.position.set(20, 20, 0);
 cameraLeft.lookAt(0, 0, 0);
+
 
 //RENDERERS
 const renderer = new THREE.WebGLRenderer({ // Renderer for full screen
@@ -119,6 +120,7 @@ class LoadingScreen {
         }, undefined, (error) => {
             console.error('An error occurred while loading the spaceship model:', error);
         });
+        this.arena;
         this.spaceShipGoingUp = true;
         this.spaceShipGoingDown = false;
         this.isAnimatingSpaceship = false;
@@ -216,7 +218,7 @@ class LoadingScreen {
                     this.starSpeed = 1;
                 })
                 .onComplete(() => {
-                    this.loading = false;
+                    this.arena.gameState.switchLoadingToGame();
                 });
                 
             // FADE OUT LOADING SCREEN FADE IN GAME
@@ -225,6 +227,8 @@ class LoadingScreen {
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onStart(() => {
                     document.getElementById('c3').style.display = 'none';
+                    this.arena.gameState.loading = false;
+                    this.arena.gameState.inGame = true;
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
@@ -282,9 +286,8 @@ class LoadingScreen {
     }
     activateLoadingScreen()
     {
-        this.loading = true;
         this.isAnimatingCamera = true;
-        document.getElementById('c3').style.display = 'block';
+        document.getElementById('c3').style.display = 'inline';
         this.cameraInitialZ = 4;
         this.camera.position.z = this.cameraInitialZ;
         this.xSpeedInitial = 0.005;
@@ -400,8 +403,7 @@ document.addEventListener('keyup', (event) => {
 });
 
 const blueBar = document.getElementsByClassName("bluebar");
-const scoreUI = document.getElementsByClassName("scoreUI");
-
+const scoreUI = document.getElementsByClassName("gameUI");
 function cameraDebug()
 {
     console.log("\n\ncamera.position.x =  " + camera.position.x);
@@ -475,6 +477,7 @@ class Arena extends THREE.Mesh {
         this.height = height;
         this.width = depth;
         this.camera = camera;
+        this.gameState = new GameState(this);
         this.thirdPlayer = new ThirdPlayer(this);
         this.paddleRight = new Paddle(this, false);
         this.paddleLeft = new Paddle(this, true);
@@ -498,6 +501,7 @@ class Arena extends THREE.Mesh {
         this.isSplitScreen = false;
         this.isAnimatingCamera = false;
         this.loadingScreen = loadingScreen;
+        this.loadingScreen.arena = this;
         this.viewPoint1 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z + this.width * 1);
         this.viewPoint2 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z + this.width * 1);
         this.viewPoint3 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
@@ -681,8 +685,8 @@ class Arena extends THREE.Mesh {
         {
             // cameraLeft.position.copy(this.position);
             this.isAnimatingCamera = false;
-            this.game.loserPaddle = this.paddleLeft;
-            this.game.winnerPaddle = this.paddleRight;
+            this.game.loserPaddle = this.paddleRight;
+            this.game.winnerPaddle = this.paddleLeft;
             cameraLeft.position.y += this.length * 3;
             cameraLeft.position.z -= this.length * 3;
             cameraLeft.position.x += this.length * 3;
@@ -749,7 +753,7 @@ class Arena extends THREE.Mesh {
     {
         const duration = 1500;
 
-        this.thirdPlayer.isPlaying = false;
+        this.thirdPlayer.deactivateThirdPlayer();
         let targetY = this.position.y + this.height + this.width / 3;
         let targetZ = this.position.z + this.width * 0.85;
         let targetX = this.position.x;
@@ -816,7 +820,7 @@ class Arena extends THREE.Mesh {
         .onComplete(() => {
             this.isSplitScreen = false;
             if (!gameEnded)
-                    this.thirdPlayer.isPlaying = true;
+                    this.thirdPlayer.activateThirdPlayer();
         })
         .start();
     }
@@ -837,7 +841,7 @@ class Arena extends THREE.Mesh {
     {
         let duration = 1150;
 
-        this.thirdPlayer.isPlaying = false;
+        this.thirdPlayer.deactivateThirdPlayer();
         loserPaddle.light.power = 0;
         winnerPaddle.light.power = 0;
         this.ball.light.power = 0;
@@ -899,8 +903,8 @@ class Arena extends THREE.Mesh {
                 this.game.rightScore = 0;
                 swapToFullScreen();
                 this.setTopView(camera, true);
-                this.loadingScreen.activateLoadingScreen();
             }
+            this.gameState.switchGameToLoading();
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
             this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
@@ -909,7 +913,7 @@ class Arena extends THREE.Mesh {
             this.ball.particles.isActive = false;
             this.idleCameraAnimation();
             this.resetUI();
-            endGame();
+            // endGame();
         });
         const powerPaddleLight = new TWEEN.Tween(loserPaddle.light)
         .to({power: loserPaddle.defaultLight}, duration)
@@ -1333,6 +1337,8 @@ class Ball extends THREE.Mesh {
     }
     updateSpeedBar() {
         const percent = -95 * (Math.abs(this.speedZ)) / this.arena.maxSpeed + 100;
+        if (Math.abs(this.speedZ) === this.arena.maxSpeed * this.arena.thirdPlayer.speedBoost || Math.abs(this.speedZ) === this.arena.maxSpeed * Math.pow(this.arena.thirdPlayer.speedBoost, 2))
+            return;
         const hue = 10 + (percent / 100) * 60;
         let color = `hsl(${hue}, 100%, 50%)`;
         for (let i = 0; i < speedBar.length; i++) {
@@ -1471,7 +1477,6 @@ class Ball extends THREE.Mesh {
                     this.speedZ = tmpSpeed * -1;
                 else
                     this.speedZ = tmpSpeed * -1.5;
-                this.updateSpeedBar();
                 if (Math.abs(this.speedZ) > this.arena.maxSpeed)
                 {
                     if (this.speedZ * this.arena.maxSpeed < 0)
@@ -1479,6 +1484,7 @@ class Ball extends THREE.Mesh {
                     else
                         this.speedZ = this.arena.maxSpeed;
                 }
+                this.updateSpeedBar();
                 this.speedX = (this.position.x - paddle.position.x) / paddle.width * 0.015 * this.arena.width;
                 this.isSupercharging = false;
                 const rotationReset = paddle.model.rotation.z + (Math.PI * 2 - paddle.model.rotation.z % Math.PI);
@@ -1524,7 +1530,6 @@ class Ball extends THREE.Mesh {
                     this.speedZ = tmpSpeed * -1;
                 else
                     this.speedZ = tmpSpeed * -1.5;
-                this.updateSpeedBar();
                 if (Math.abs(this.speedZ) > this.arena.maxSpeed)
                 {
                     if (this.speedZ * this.arena.maxSpeed < 0)
@@ -1532,6 +1537,7 @@ class Ball extends THREE.Mesh {
                     else
                         this.speedZ = this.arena.maxSpeed;
                 }
+                this.updateSpeedBar();
                 this.speedX = (this.position.x - paddle.position.x) / paddle.width * 0.015 * this.arena.width;
                 this.isSupercharging = false;
                 const rotationReset = paddle.model.rotation.z + (Math.PI * 2 - paddle.model.rotation.z % Math.PI);
@@ -1569,15 +1575,15 @@ class Ball extends THREE.Mesh {
     increaseSpeed()
     {
         const hasToDivide = Math.abs(this.speedZ) > 0;
-        this.speedZ *= 1.5;
-        this.speedX *= 1.5;
+        this.speedZ *= this.arena.thirdPlayer.speedBoost;
+        this.speedX *= this.arena.thirdPlayer.speedBoost;
         this.material.color.set(this.speedColor);
         setTimeout(() => {
             this.material.color.set(this.initialColor);
             if (hasToDivide)
             {
-                this.speedZ /= 1.5;
-                this.speedX /= 1.5;
+                this.speedZ /= this.arena.thirdPlayer.speedBoost;
+                this.speedX /= this.arena.thirdPlayer.speedBoost;
             }
         }, 500);
     }
@@ -1642,6 +1648,8 @@ class ThirdPlayer extends THREE.Group {
         this.rightShootDirection = new THREE.Vector2(0, 0);
         this.ballColor = new THREE.Color(0x31FBF3); // Set the color of the ball
         this.bulletColor = new THREE.Color(0xffbb12); // Set the color of the bullets
+        this.deactivatedPosition = new THREE.Vector3(0, -this.arena.height, 0);
+        this.activatedPosition = new THREE.Vector3(-this.arena.width / 2 - 3, this.arena.height , 0);
         // Define spaceship in the outer scope
         let spaceship;
 
@@ -1658,10 +1666,7 @@ class ThirdPlayer extends THREE.Group {
                 spaceship.scale.set(0.4, 0.4, 0.4);
                 // Add the spaceship to the group
                 this.add(spaceship);
-                this.position.set(-this.arena.width / 2 - 3, this.arena.height, 0);
-                // Create a sphere representing the ball
-                
-                        // Create a buffer geometry point
+                this.position.copy(this.deactivatedPosition);
                 const bufferGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0.1, 0, 0)]);
                 const bufferMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }); // Make it invisible
                 this.buffer = new THREE.Mesh(bufferGeometry, bufferMaterial);
@@ -1689,6 +1694,7 @@ class ThirdPlayer extends THREE.Group {
                 this.scene = arena.scene;
                 this.isPlaying = false;
                 this.ballAttached = true;
+                this.speedBoost = 1.5;
                 this.bulletLeftAttached = true;
                 this.bulletRightAttached = true;
                 this.isAnimating = false;
@@ -1959,6 +1965,30 @@ class ThirdPlayer extends THREE.Group {
         // Check for intersection between the cylinder and sphere bounding volumes
         return cylinderSphere.intersectsSphere(sphereSphere);
     }
+    activateThirdPlayer() {
+        this.isPlaying = true;
+        const goToYPositionTween = new TWEEN.Tween(this.position)
+        .to({y: this.activatedPosition.y }, 1000)
+        .easing(TWEEN.Easing.Quadratic.Out);
+        const  goToXPositionTween = new TWEEN.Tween(this.position)
+        .to({x: this.activatedPosition.x }, 1000)
+        .easing(TWEEN.Easing.Quadratic.Out);
+        goToXPositionTween.chain(goToYPositionTween);
+        goToXPositionTween.start();
+    }
+    deactivateThirdPlayer() {
+        this.isPlaying = false;
+        const goToYPositionTween = new TWEEN.Tween(this.position)
+        .to({y: this.deactivatedPosition.y }, 1000)
+        .easing(TWEEN.Easing.Quadratic.Out);
+
+        const gotoXPositionTween = new TWEEN.Tween(this.position)
+        .to({x: this.deactivatedPosition.x }, 1000)
+        .easing(TWEEN.Easing.Quadratic.Out);
+
+        goToYPositionTween.chain(gotoXPositionTween);
+        goToYPositionTween.start();
+    }
 }
 
 class Bot {
@@ -1998,6 +2028,28 @@ class Game {
         this.arena = arena;
         this.loserPaddle;
         this.winnerPaddle;
+    }
+}
+
+class GameState {
+    constructor(arena) {
+        this.arena = arena;
+        this.loading = true;
+        this.inGame = false;
+        this.inLobby = false;
+        this.powerUps = false;
+        this.lowGraphics = false;
+        this.mediumGraphics = true;
+        this.highGraphics = false;
+    }
+    switchLoadingToGame() {
+        // Switches loading to false and inGame to true to account for the animation time
+        this.arena.loadingScreen.loadingComplete();
+    }
+    switchGameToLoading() {
+        this.inGame = false;
+        this.loading = true;
+        this.arena.loadingScreen.activateLoadingScreen();
     }
 }
 
@@ -2331,7 +2383,7 @@ function animate()
     // else
     {
         TWEEN.update();
-        if (!loadingScreen.loading)
+        if (arena1.gameState.inGame)
         {
             arena1.monitorArena();
             arena1.thirdPlayer.monitorThirdPlayerMovement();
@@ -2341,10 +2393,10 @@ function animate()
             composer1.render();
             composer2.render();
         }
-        else
+        else if (arena1.gameState.loading)
         {
             if (keyDown['g'])
-                loadingScreen.loadingComplete();
+                arena1.gameState.switchLoadingToGame();
             loadingScreen.animate();
         }
     }
