@@ -21,7 +21,7 @@ import { fragmentShader, fragmentMain, fragmentPars } from './../texturePlaygrou
 
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000010);
+// scene.background = new THREE.Color(0x000010);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000);
 const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
@@ -54,10 +54,22 @@ renderer2.render(scene, cameraLeft);
 // const torus = new THREE.Mesh(geometry, material);
 // scene.add(torus);
 
+var cubeLoader = new THREE.CubeTextureLoader();
+var cubeMapTexture = cubeLoader.load([
+  '../../static/game/texturePlayground/parkingMap/nx.jpg',
+  '../../static/game/texturePlayground/parkingMap/px.jpg',
+    '../../static/game/texturePlayground/parkingMap/py.jpg',
+    '../../static/game/texturePlayground/parkingMap/ny.jpg',
+    '../../static/game/texturePlayground/parkingMap/nz.jpg',
+    '../../static/game/texturePlayground/parkingMap/pz.jpg'
+]);
+
+scene.background = cubeMapTexture;
+
 
 let water;
 
-const waterGeometry = new THREE.PlaneGeometry( 10000, 10000 );
+const waterGeometry = new THREE.PlaneGeometry( 3000, 3000 );
 
 water = new Water(
   waterGeometry,
@@ -481,8 +493,16 @@ class Arena extends THREE.Mesh {
         const arenaColor = 0x000000;
         // Create material
         const material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
+        const reflectiveMaterial = new THREE.MeshStandardMaterial({
+            color: 0xaaaaaa,
+            roughness: 0.0,
+            metalness: 0.9,
+            envMap: cubeMapTexture,
+            envMapIntensity: 1,
+            side: THREE.DoubleSide
+          });
         // Call super constructor to set up mesh
-        super(geometry, material);
+        super(geometry, reflectiveMaterial);
         
         // Set position of the arena
         this.position.copy(centerPosition);
@@ -533,7 +553,7 @@ class Arena extends THREE.Mesh {
         this.viewPoint2 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z + this.width * 1);
         this.viewPoint3 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
         this.viewPoint4 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
-        this.material = material;
+        this.material = reflectiveMaterial;
         this.stars = []; // Store all stars added to the scene
         // this.addStars(2000);
     }
@@ -2308,7 +2328,8 @@ const halftonePass = new HalftonePass( window.innerWidth, window.innerHeight, pa
 // Bloom Pass
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = 0.5;
-bloomPass.strength = 1;
+// bloomPass.strength = 1;
+bloomPass.strength = 0.0;
 bloomPass.radius = 0.5;
 composer1.addPass(bloomPass);
 composer2.addPass(bloomPass);
