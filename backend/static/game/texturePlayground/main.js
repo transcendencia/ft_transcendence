@@ -14,6 +14,7 @@ import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import { vertexShader, vertexMain, vertexPars } from './shaders/vertex.js';
 import { fragmentShader, fragmentMain, fragmentPars } from './shaders/fragment.js';
+import { Water } from 'three/addons/objects/Water.js';
 // Create a scene
 const scene = new THREE.Scene();
 
@@ -29,19 +30,46 @@ document.body.appendChild(renderer.domElement);
 
 var cubeLoader = new THREE.CubeTextureLoader();
 var cubeMapTexture = cubeLoader.load([
-    'parkingMap/nx.png',
-    'parkingMap/px.png',
-    'parkingMap/ny.png',
-    'parkingMap/py.png',
-    'parkingMap/nz.png',
-    'parkingMap/pz.png'
+  'parkingMap/nx.jpg',
+  'parkingMap/px.jpg',
+    'parkingMap/py.jpg',
+    'parkingMap/ny.jpg',
+    'parkingMap/nz.jpg',
+    'parkingMap/pz.jpg'
 ]);
 
 scene.background = cubeMapTexture;
 
+let water;
+
+const waterGeometry = new THREE.PlaneGeometry( 10000, 10000 );
+
+water = new Water(
+  waterGeometry,
+  {
+    textureWidth: 512,
+    textureHeight: 512,
+    waterNormals: new THREE.TextureLoader().load( 'water/water.jpg', function ( texture ) {
+
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+    } ),
+    sunDirection: new THREE.Vector3(),
+    sunColor: 0xffffff,
+    waterColor: 0x001e0f,
+    distortionScale: 3.7,
+    opacity: 1.0,
+    fog: scene.fog !== undefined
+  }
+);
+
+water.rotation.x = - Math.PI / 2;
+
+scene.add( water );
+
 
 // Create a ball geometry
-const geometry = new THREE.DodecahedronGeometry(5, 20);
+const geometry = new THREE.BoxGeometry(40, 5, 40);
 console.log(geometry.attributes)
 // Create a standard material
 const material = new THREE.MeshStandardMaterial({
@@ -79,8 +107,18 @@ const material = new THREE.MeshStandardMaterial({
 
 material.userData.shader = { uniforms: { uTime: { value: 0 } } };
 
+//reflective material without shaders
+const reflectiveMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffffff,
+  roughness: 0.0,
+  metalness: 1,
+  envMap: cubeMapTexture,
+  envMapIntensity: 1.2,
+  side: THREE.DoubleSide
+});
+
 // Create a ball mesh
-const ball = new THREE.Mesh(geometry, material);
+const ball = new THREE.Mesh(geometry, reflectiveMaterial);
 scene.add(ball);
 
 // Create light
@@ -96,11 +134,15 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 // Set background color to off/white
 renderer.setClearColor(0x101114);
-
+console.log(water.material.uniforms);
 // Render function
 function render() {
     requestAnimationFrame(render);
-    ball.material.userData.shader.uniforms.uTime.value += 0.01;
+    water.material.uniforms[ 'time' ].value += 1.0 / 2.0;
+    water.material.uniforms['size'].value = 1.11;
+    water.material.uniforms[ 'waterColor' ].value.r = 1;
+    water.material.uniforms[ 'waterColor' ].value.g = 0;
+    water.material.uniforms[ 'waterColor' ].value.b = 0;
     renderer.render(scene, camera);
 }
 
