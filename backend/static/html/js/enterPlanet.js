@@ -58,6 +58,5 @@ export function togglePlanet() {
     resetOutlineAndText();
     toggleBlurDisplay();
     togglePanelDisplay();
-    console.log("oui");
     translateArenaPageTexts();
 }

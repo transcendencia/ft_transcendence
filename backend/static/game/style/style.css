@@ -100,7 +100,7 @@ body {
     position: fixed;
     transform: translate(-50%, -50%);
     left: 50%;
-    top: 75%;
+    top: 66%;
     transition: opacity 2s ease;
     opacity: 0;
 }
@@ -112,6 +112,7 @@ body {
     transform: translate(-50%, -50%);
     top: 50%;
     left: 50%;
+    visibility: hidden;
     opacity: 0;
     transition: opacity 2s ease;
 }

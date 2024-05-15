@@ -203,6 +203,12 @@
     overflow: hidden; /* Ensure text input doesn't overflow */
 }
 
+.test {
+    border: 2px solid white;
+    height: 50%;
+    width: 50%;
+}
+
 @font-face {
     font-family: 'Space'; 
     src: url('../assets/fonts/SPACE.ttf') format('truetype');
