@@ -17,9 +17,9 @@
     visibility: hidden; /* Hide the element */
 }
 
-.loginPage * {
-    /* border: 5px solid wheat; */
-}
+/* .loginPage * {
+    border: 5px solid wheat; 
+} */
 
 .inputContainer {
     margin-top: -40px;

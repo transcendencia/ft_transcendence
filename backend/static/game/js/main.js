@@ -17,6 +17,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 // import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
 import { vertexShader, vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentShader, fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
+import { endGame } from '../../html/js/arenaPage.js';
 
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
@@ -168,7 +169,7 @@ class LoadingScreen {
         if (this.isAnimatingCamera) {
             this.isAnimatingCamera = false;
             this.iterations = 0;
-            const duration = 2500;
+            const duration = 500;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -908,6 +909,7 @@ class Arena extends THREE.Mesh {
             this.ball.particles.isActive = false;
             this.idleCameraAnimation();
             this.resetUI();
+            endGame();
         });
         const powerPaddleLight = new TWEEN.Tween(loserPaddle.light)
         .to({power: loserPaddle.defaultLight}, duration)
@@ -1326,7 +1328,7 @@ class Ball extends THREE.Mesh {
         this.bounceCount = 0;
         this.justCollisioned = false;
         this.particles = new Particle(this.scene, 1000, false, this, true);
-        this.trailParticles = new TrailParticles(this.scene, this, 50);
+        this.trailParticles = new TrailParticles(this.scene, this, 75);
 
     }
     updateSpeedBar() {
@@ -1553,7 +1555,6 @@ class Ball extends THREE.Mesh {
         this.position.x += this.speedX;
         this.speedX += this.acceleration;
         this.trailParticles.updateTrail();
-        console.log("speedZ: " + this.speedZ);
     }
     invertMovement()
     {
@@ -1595,7 +1596,7 @@ class TrailParticles {
             const sphereSize = invertedIndex * (ball.geometry.parameters.radius / this.maxParticles); // Calculate inverted sphere size
             const trailSphere = new THREE.Mesh(
                 new THREE.SphereGeometry(sphereSize, 32, 32),
-                new THREE.MeshBasicMaterial({ color: 0xD5f719, transparent: true, opacity: 0.3 })
+                new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3 })
             );
             this.scene.add(trailSphere);
             this.trailSpheres.push(trailSphere);
@@ -1609,7 +1610,7 @@ class TrailParticles {
             const currentSphere = this.trailSpheres[i];
             currentSphere.position.copy(previousSphere.position);
             const invertedIndex = this.trailSpheres.length - i;
-            const sphereSize = invertedIndex * (this.ball.geometry.parameters.radius / this.maxParticles);
+            const sphereSize = invertedIndex * (this.ball.geometry.parameters.radius * 0.8 / this.maxParticles);
             currentSphere.scale.set(sphereSize, sphereSize, sphereSize);
         }
 

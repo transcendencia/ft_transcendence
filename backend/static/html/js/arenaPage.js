@@ -1,4 +1,5 @@
 import { getTranslatedText } from "./loginPage.js";
+import { showPage } from "./showPages.js";
 
 const userlist = document.querySelector(".userlistBackground");
 const userTiles = userlist.querySelectorAll(":scope > *");
@@ -134,6 +135,36 @@ function setAddingMode(plusButton, i) {
         }
     });
 }
+
+
+export let gameStarted = false;
+
+export function endGame() {
+    gameStarted = false;
+    planetPanel.style.display = 'inline';
+    loginPage.style.display = 'inline';
+    rsContainer.style.display = 'inline';
+    document.getElementById('c4').style.display = 'block';
+    document.getElementById('c3').style.display = 'none';
+}
+
+export function switchToGame() {
+    gameStarted = true;
+    planetPanel.style.display = 'none';
+    loginPage.style.display = 'none';
+    rsContainer.style.display = 'none';
+    document.getElementById('c4').style.display = 'none';
+    document.getElementById('c1').style.display = 'block';
+}
+    
+
+const rsContainer = document.querySelector('.rightSideContainer');
+const loginPage = document.querySelector('.loginPage');
+const planetPanel = document.querySelector('.planetPanel');
+const startButton = document.querySelector('.startButton');
+startButton.addEventListener('click', function() {
+    switchToGame();
+});
 
 userlistTitle.textContent = getTranslatedText('userlist');
 plusButtons.forEach(function(plusButton, i) {
