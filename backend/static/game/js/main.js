@@ -19,9 +19,28 @@ import { vertexShader, vertexMain, vertexPars } from './../texturePlayground/sha
 import { fragmentShader, fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 // import { endGame } from '../../html/js/arenaPage.js';
 
+// FPS COUNTER
+const fpsCounter = document.getElementById('fps-counter');
+
+let frameCount = 0;
+let lastTime = performance.now(); // Initialize lastTime here
+
+function updateFpsCounter() {
+    var currentTime = performance.now();
+
+    frameCount++;
+
+    if (currentTime > lastTime + 1000) {
+        var fps = Math.round(frameCount);
+        fpsCounter.innerHTML = 'FPS: ' + fps;
+        frameCount = 0;
+        lastTime = currentTime;
+    }
+}
+
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
-// scene.background = new THREE.Color(0x000010);
+scene.background = new THREE.Color(0x000010);
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000);
 const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
@@ -54,17 +73,17 @@ renderer2.render(scene, cameraLeft);
 // const torus = new THREE.Mesh(geometry, material);
 // scene.add(torus);
 
-var cubeLoader = new THREE.CubeTextureLoader();
-var cubeMapTexture = cubeLoader.load([
-  '../../static/game/texturePlayground/parkingMap/nx.jpg',
-  '../../static/game/texturePlayground/parkingMap/px.jpg',
-    '../../static/game/texturePlayground/parkingMap/py.jpg',
-    '../../static/game/texturePlayground/parkingMap/ny.jpg',
-    '../../static/game/texturePlayground/parkingMap/nz.jpg',
-    '../../static/game/texturePlayground/parkingMap/pz.jpg'
+let cubeLoader = new THREE.CubeTextureLoader();
+let cubeMapTexture = cubeLoader.load([
+  '../../static/game/texturePlayground/skyMap/nx.jpg',
+  '../../static/game/texturePlayground/skyMap/px.jpg',
+    '../../static/game/texturePlayground/skyMap/py.jpg',
+    '../../static/game/texturePlayground/skyMap/ny.jpg',
+    '../../static/game/texturePlayground/skyMap/nz.jpg',
+    '../../static/game/texturePlayground/skyMap/pz.jpg'
 ]);
 
-scene.background = cubeMapTexture;
+// scene.background = cubeMapTexture;
 
 
 let water;
@@ -92,7 +111,7 @@ water = new Water(
 
 water.rotation.x = - Math.PI / 2;
 
-scene.add( water );
+// scene.add( water );
 
 const shaderBallMaterial = new THREE.MeshStandardMaterial({
     onBeforeCompile: (shader) => {
@@ -493,16 +512,8 @@ class Arena extends THREE.Mesh {
         const arenaColor = 0x000000;
         // Create material
         const material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
-        const reflectiveMaterial = new THREE.MeshStandardMaterial({
-            color: 0xaaaaaa,
-            roughness: 0.0,
-            metalness: 0.9,
-            envMap: cubeMapTexture,
-            envMapIntensity: 1,
-            side: THREE.DoubleSide
-          });
         // Call super constructor to set up mesh
-        super(geometry, reflectiveMaterial);
+        super(geometry, material);
         
         // Set position of the arena
         this.position.copy(centerPosition);
@@ -553,15 +564,21 @@ class Arena extends THREE.Mesh {
         this.viewPoint2 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z + this.width * 1);
         this.viewPoint3 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
         this.viewPoint4 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
-        this.material = reflectiveMaterial;
+        this.defaultMaterial = material;
         this.stars = []; // Store all stars added to the scene
-        // this.addStars(2000);
+        this.bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );;
+        this.bloomPass.threshold = 0.5;
+        this.bloomPass.strength = 1.0;
+        this.bloomPass.radius = 0.5;
+        this.oceanMap = new OceanMap(this);
+        this.spaceMap = new SpaceMap(this);
+        this.spaceMap.initMap();
     }
     addStar() {
-        const geometry = new THREE.SphereGeometry(0.125, 12, 12);
+        const geometry = new THREE.SphereGeometry(1.125, 12, 12);
         const material = new THREE.MeshStandardMaterial({color: 0xffffff});
         const star = new THREE.Mesh(geometry, material);
-        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(200));
+        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(4000));
 
         star.position.set(x, y, z);
         this.scene.add(star);
@@ -569,6 +586,11 @@ class Arena extends THREE.Mesh {
     }
     addStars(numStars) {
         Array(numStars).fill().forEach(this.addStar.bind(this));
+    }
+    removeStars() {
+        this.stars.forEach(star => {
+            this.scene.remove(star);
+        });
     }
     idleCameraAnimation()
     {
@@ -666,12 +688,7 @@ class Arena extends THREE.Mesh {
     }
     monitorArena()
     {
-        // this.stars.forEach(star => {
-        //     star.position.z += 0.01; // Increase Z position by 0.01
-        //     if (star.position.z > 100) {
-        //         star.position.z = -100; // Reset position to -100
-        //     }
-        // });
+
         this.paddleLeft.light.position.copy(this.paddleLeft.position);
         this.paddleRight.light.position.copy(this.paddleRight.position);
         this.paddleLeft.particles.updateParticles();
@@ -686,6 +703,10 @@ class Arena extends THREE.Mesh {
             this.ball.monitorMovement();
         this.ball.light.position.copy(this.ball.position);
         this.ball.light.position.y += this.height;
+        if (this.oceanMap.mapActive)
+            this.oceanMap.updateMap();
+        if (this.spaceMap.mapActive)
+            this.spaceMap.updateMap();
         if (this.ball.isRolling)
             this.ball.rotation.y += 0.1;
         if (this.isActive)
@@ -712,8 +733,16 @@ class Arena extends THREE.Mesh {
                 this.ball.isgoingLeft = true;
             }
         }
-        if (keyDown['4'])  
-            this.changeTheme(new Theme4());
+        if (keyDown['1'])  
+        {
+            this.spaceMap.closeMap();
+            this.oceanMap.initMap();
+        }
+        if (keyDown['2'])
+        {
+            this.oceanMap.closeMap();
+            this.spaceMap.initMap();
+        }
         if (keyDown['b'])
         {
             if (!this.isBeingBlurred)
@@ -1684,6 +1713,104 @@ class TrailParticles {
     }
 }
 
+class OceanMap {
+    constructor(arena) {
+        this.arena = arena;
+        this.scene = arena.scene;
+        this.oceanCubeMapTexture = cubeLoader.load([
+            '../../static/game/texturePlayground/skyMap/nx.jpg',
+            '../../static/game/texturePlayground/skyMap/px.jpg',
+              '../../static/game/texturePlayground/skyMap/py.jpg',
+              '../../static/game/texturePlayground/skyMap/ny.jpg',
+              '../../static/game/texturePlayground/skyMap/nz.jpg',
+              '../../static/game/texturePlayground/skyMap/pz.jpg'
+          ]);
+        this.reflectiveMaterial = new THREE.MeshStandardMaterial({
+            color: 0xaaaaaa,
+            roughness: 0.0,
+            metalness: 0.9,
+            envMap: cubeMapTexture,
+            envMapIntensity: 1,
+            side: THREE.DoubleSide
+          });
+        this.water = water;
+        this.mapActive = false;
+    }
+    initMap()
+    {
+        if (!this.mapActive)
+        {
+            this.mapActive = true;
+            this.arena.material = this.reflectiveMaterial;
+            this.scene.add(this.water);
+            this.scene.background = this.oceanCubeMapTexture;
+            this.arena.bloomPass.strength = 0.0;
+            console.log("bloom", this.arena.bloomPass.strength);
+        }
+    }
+    updateMap()
+    {
+        this.water.material.uniforms['time'].value += 1.0 / 60.0;
+    }
+    closeMap()
+    {
+        if (this.mapActive)
+        {
+            this.mapActive = false;
+            this.scene.remove(this.water);
+            this.arena.material = this.arena.defaultMaterial;
+        }
+    }
+
+}
+
+class SpaceMap {
+    constructor(arena) {
+        this.arena = arena;
+        this.scene = arena.scene;
+        this.spaceCubeMapTexture = cubeLoader.load([
+            '../../static/game/texturePlayground/spaceMap/nx.png',
+            '../../static/game/texturePlayground/spaceMap/px.png',
+              '../../static/game/texturePlayground/spaceMap/py.png',
+              '../../static/game/texturePlayground/spaceMap/ny.png',
+              '../../static/game/texturePlayground/spaceMap/nz.png',
+              '../../static/game/texturePlayground/spaceMap/pz.png'
+          ]);
+        this.material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
+        this.mapActive = false;
+    }
+    initMap()
+    {
+        if (!this.mapActive)
+        {
+            this.arena.addStars(2500);
+            this.mapActive = true;
+            this.arena.material = this.material;
+            // this.scene.background = new THREE.Color(0x000010);
+            this.scene.background = this.spaceCubeMapTexture;
+            this.arena.bloomPass.strength = 1.0;
+        }
+    }
+    closeMap()
+    {
+        if (this.mapActive)
+        {
+            this.mapActive = false;
+            this.arena.removeStars();
+            this.arena.material = this.arena.defaultMaterial;
+        }
+    }
+    updateMap()
+    {
+        this.arena.stars.forEach(star => {
+            star.position.z += 0.01; // Increase Z position by 0.01
+            if (star.position.z > 4000) {
+                star.position.z = -4000; // Reset position to -100
+            }
+        });
+    }
+}
+
 class ThirdPlayer extends THREE.Group {
     constructor(arena) {
         super(); // Call the parent constructor
@@ -2277,8 +2404,11 @@ function monitorScreen()
         swapToSplitScreen();
 }
 
+const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+
+
 const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 28, 1.7, 34, loadingScreen);
+const arena1 = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, bloomPass);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball, arena1.thirdPlayer);
 arena1.idleCameraAnimation();
 
@@ -2309,30 +2439,12 @@ function glitch(glitchEffect)
     }, 500);
 }
 
-// Halftone Pass
-const params = {
-    shape: 1,
-    radius: 4,
-    rotateR: Math.PI / 12,
-    rotateB: Math.PI / 12 * 2,
-    rotateG: Math.PI / 12 * 3,
-    scatter: 0,
-    blending: 1,
-    blendingMode: 1,
-    greyscale: false,
-    disable: false
-};
-const halftonePass = new HalftonePass( window.innerWidth, window.innerHeight, params );
-// composer1.addPass( halftonePas   s );
-
-// Bloom Pass
-const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-bloomPass.threshold = 0.5;
-// bloomPass.strength = 1;
-bloomPass.strength = 0.0;
-bloomPass.radius = 0.5;
-composer1.addPass(bloomPass);
-composer2.addPass(bloomPass);
+// // Bloom Pass
+// arena1.bloomPass.threshold = 0.5;
+// arena1.bloomPass.strength = 1.0;
+// arena1.bloomPass.radius = 0.5;
+composer1.addPass(arena1.bloomPass);
+composer2.addPass(arena1.bloomPass);
 
 
 composer1.addPass(arena1.horizontalBlur);
@@ -2345,35 +2457,34 @@ let afterimagePass = new AfterimagePass();
 afterimagePass.uniforms.damp.value = 0.90;
 // composer1.addPass(afterimagePass);
 // loadingScreen.composer.addPass(afterimagePass);
-loadingScreen.composer.addPass(bloomPass);
+loadingScreen.composer.addPass(arena1.bloomPass);
 
 // // dotScreen
 // const effect1 = new ShaderPass( DotScreenShader );
 // 				effect1.uniforms[ 'scale' ].value = 256;
 // 				composer1.addPass( effect1 );
 
-// let fpsInterval = 1000 / 75; // 120 FPS
-// let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
-// let lastUpdateTime = performance.now();
+let fpsInterval = 1000 / 75; // 120 FPS
+let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
+let lastUpdateTime = performance.now();
 
 function animate()
 {
-    // let deltaTime = (performance.now() - stats.time) / 1000;
     requestAnimationFrame( animate );
-    // controls.update();
-
-    // let now = performance.now();
-    // let elapsed = now - lastUpdateTime;
-    // if (elapsed < fpsInterval) return; // Skip if too big FPS
-    // else
+    controls.update();
+    
+    let now = performance.now();
+    let elapsed = now - lastUpdateTime;
+    if (elapsed < fpsInterval) return; // Skip if too big FPS
+    else
     {
+        updateFpsCounter();
         TWEEN.update();
         if (arena1.gameState.inGame)
         {
             arena1.monitorArena();
             arena1.thirdPlayer.monitorThirdPlayerMovement();
             arena1.thirdPlayer.monitorProjectilesMovement();
-            water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
             if (arena1.thirdPlayer.isPlaying)
                 controls.enabled = false;
             composer1.render();
@@ -2387,8 +2498,8 @@ function animate()
         }
     }
 
-    // stats.update(); // Update Three.js stats
-    // lastUpdateTime = now - (elapsed % fpsInterval);
-    // stats.time = performance.now();
+    stats.update(); // Update Three.js stats
+    lastUpdateTime = now - (elapsed % fpsInterval);
+    stats.time = performance.now();
 }
 animate();
