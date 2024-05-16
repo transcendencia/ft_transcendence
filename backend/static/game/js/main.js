@@ -390,8 +390,8 @@ const leftHelper = new THREE.CameraHelper(cameraLeft);
 // scene.add(gridHelper);
 
 // VIEW UTILS
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
+// const controls = new OrbitControls(camera, renderer.domElement);
+// controls.enableDamping = true;
 
 let lastKeyPressTime = {};
 let lastKeyUpTime = {};
@@ -578,7 +578,7 @@ class Arena extends THREE.Mesh {
         const geometry = new THREE.SphereGeometry(1.125, 12, 12);
         const material = new THREE.MeshStandardMaterial({color: 0xffffff});
         const star = new THREE.Mesh(geometry, material);
-        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(4000));
+        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(1500));
 
         star.position.set(x, y, z);
         this.scene.add(star);
@@ -688,7 +688,6 @@ class Arena extends THREE.Mesh {
     }
     monitorArena()
     {
-
         this.paddleLeft.light.position.copy(this.paddleLeft.position);
         this.paddleRight.light.position.copy(this.paddleRight.position);
         this.paddleLeft.particles.updateParticles();
@@ -709,6 +708,10 @@ class Arena extends THREE.Mesh {
             this.spaceMap.updateMap();
         if (this.ball.isRolling)
             this.ball.rotation.y += 0.1;
+        if (keyDown['3'])
+            water.material.uniforms['size'].value += 0.01;
+        if (keyDown['4'])
+            water.material.uniforms['size'].value -= 0.01;
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
         if (!this.bot.isPlaying)
@@ -1137,6 +1140,7 @@ class Paddle extends THREE.Group {
         this.isPowered = false;
         this.flippingSpeed = 0.5;
         this.isGoingUp = true;
+        this.modelName;
         this.isGoingDown = false;
 
     }
@@ -1164,18 +1168,36 @@ class Paddle extends THREE.Group {
     
         update();
     }
-    async changeBlenderModel(modelName)
+    async changeBlenderModel(modelName, scale, position, rotationFactor)
     {
+        this.remove(this.model);
         this.scene.remove(this.model);
+        scene.needsUpdate = true;
         const loader = new GLTFLoader();
         loader.load(
             modelName,
             (gltf) => {
                 this.model = gltf.scene;
+                this.modelName = modelName;
                 // Position the this.model relative to the paddle
-                this.model.position.set(0, 0, 2); // Adjust position as needed
-                this.model.rotation.y = Math.PI;
-                this.model.scale.set(0.15, 0.15, 0.15); // Adjust scale as needed
+                if (!this.left)
+                {
+                    this.model.position.set(0, 0, position); // Adjust position as needed
+                    if (rotationFactor == -1)
+                        this.model.rotation.y = -Math.PI;
+                    else
+                        this.model.rotation.y = 0;
+                }
+                else
+                {
+                    this.model.position.set(0, 0, -position); // Adjust position as needed
+                    if (rotationFactor == -1)
+                        this.model.rotation.y = 0;
+                    else
+                        this.model.rotation.y = -Math.PI;
+                }
+
+                this.model.scale.set(scale, scale, scale); // Adjust scale as needed
                 this.add(this.model);
             },
             undefined,
@@ -1735,6 +1757,13 @@ class OceanMap {
           });
         this.water = water;
         this.mapActive = false;
+        this.modelName = '../../static/game/models/boat/scene.gltf';
+        this.lightRight = new THREE.PointLight(0xffffff, 10, 100);
+        this.lightLeft = new THREE.PointLight(0xffffff, 10, 100);
+        this.lightRight.position.set(0, this.arena.height * 2, this.arena.width * 1.5);
+        this.lightLeft.position.set(0, this.arena.height * 2, -this.arena.width * 1.5);
+        this.lightRight.castShadow = true;
+        this.lightLeft.castShadow = true;
     }
     initMap()
     {
@@ -1744,8 +1773,10 @@ class OceanMap {
             this.arena.material = this.reflectiveMaterial;
             this.scene.add(this.water);
             this.scene.background = this.oceanCubeMapTexture;
-            this.arena.bloomPass.strength = 0.0;
-            console.log("bloom", this.arena.bloomPass.strength);
+            this.arena.bloomPass.strength = 0.2;
+            this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.5, 3, 1);
+            this.arena.paddleRight.changeBlenderModel(this.modelName, 0.5, 3, 1);
+            this.scene.add(this.lightRight, this.lightLeft);
         }
     }
     updateMap()
@@ -1759,6 +1790,7 @@ class OceanMap {
             this.mapActive = false;
             this.scene.remove(this.water);
             this.arena.material = this.arena.defaultMaterial;
+            this.scene.remove(this.lightRight, this.lightLeft);
         }
     }
 
@@ -1778,17 +1810,24 @@ class SpaceMap {
           ]);
         this.material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
         this.mapActive = false;
+        this.modelName = '../../static/game/models/spaceShip/scene.gltf';
     }
     initMap()
     {
         if (!this.mapActive)
         {
-            this.arena.addStars(2500);
+            this.arena.addStars(2000);
             this.mapActive = true;
             this.arena.material = this.material;
             // this.scene.background = new THREE.Color(0x000010);
             this.scene.background = this.spaceCubeMapTexture;
             this.arena.bloomPass.strength = 1.0;
+            if (this.arena.paddleLeft.modelName != this.modelName)
+            {
+
+                this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.2, 2, -1);
+                this.arena.paddleRight.changeBlenderModel(this.modelName, 0.2, 2, -1);
+            }
         }
     }
     closeMap()
@@ -1798,6 +1837,8 @@ class SpaceMap {
             this.mapActive = false;
             this.arena.removeStars();
             this.arena.material = this.arena.defaultMaterial;
+            this.arena.paddleLeft.remove(this.paddleLeft.model);
+            this.arena.paddleRight.remove(this.paddleRight.model);
         }
     }
     updateMap()
@@ -2471,12 +2512,12 @@ let lastUpdateTime = performance.now();
 function animate()
 {
     requestAnimationFrame( animate );
-    controls.update();
+    // controls.update();
     
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
-    if (elapsed < fpsInterval) return; // Skip if too big FPS
-    else
+    // if (elapsed < fpsInterval) return; // Skip if too big FPS
+    // else
     {
         updateFpsCounter();
         TWEEN.update();
@@ -2485,10 +2526,11 @@ function animate()
             arena1.monitorArena();
             arena1.thirdPlayer.monitorThirdPlayerMovement();
             arena1.thirdPlayer.monitorProjectilesMovement();
-            if (arena1.thirdPlayer.isPlaying)
-                controls.enabled = false;
+            // if (arena1.thirdPlayer.isPlaying)
+                // controls.enabled = false;
             composer1.render();
             composer2.render();
+            // console.log("camera.rotation.y = ", camera.rotation.y);
         }
         else if (arena1.gameState.loading)
         {
