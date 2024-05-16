@@ -42,7 +42,7 @@ scene.background = cubeMapTexture;
 
 let water;
 
-const waterGeometry = new THREE.PlaneGeometry( 10000, 10000 );
+const waterGeometry = new THREE.PlaneGeometry( 100000, 100000 );
 
 water = new Water(
   waterGeometry,
@@ -134,15 +134,32 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 // Set background color to off/white
 renderer.setClearColor(0x101114);
-console.log(water.material.uniforms);
+
+const fpsCounter = document.getElementById('fps-counter');
+
+let frameCount = 0;
+let lastTime = performance.now(); // Initialize lastTime here
+
+function updateFpsCounter() {
+    var currentTime = performance.now();
+
+    frameCount++;
+
+    if (currentTime > lastTime + 1000) {
+        var fps = Math.round(frameCount);
+        console.log("fps = ", fps);
+        fpsCounter.innerHTML = 'FPS: ' + fps;
+        frameCount = 0;
+        lastTime = currentTime;
+    }
+}
+
 // Render function
 function render() {
     requestAnimationFrame(render);
-    water.material.uniforms[ 'time' ].value += 1.0 / 2.0;
-    water.material.uniforms['size'].value = 1.11;
-    water.material.uniforms[ 'waterColor' ].value.r = 1;
-    water.material.uniforms[ 'waterColor' ].value.g = 0;
-    water.material.uniforms[ 'waterColor' ].value.b = 0;
+    updateFpsCounter();
+    // water.material.uniforms[ 'time' ].value += 1.0 / 120.0;
+    // water.material.uniforms['size'].value = 1.11;
     renderer.render(scene, camera);
 }
 
