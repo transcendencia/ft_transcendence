@@ -11,6 +11,10 @@
         "confirmPassword": "Confirm password",
         "backToLogin": "Back to login",
 
+        "gamemodeNameText1": "Classic",
+        "gamemodeNameText2": "Powerless",
+        "gamemodeNameText3": "Spin Only",
+
         "enterPlanetText": "Press [E] to select",
 
         "settingsPlanetInfo1": "[Name]: Settings",
@@ -29,8 +33,6 @@
         
         "userlist": "User list",
         "chooseProfile": "Choose a profile",
-        "enabled": "Yes",
-        "disabled": "No",
         "arenaTitle": "Arena",
         "player3": "Player 3",
         "player2": "Player 2",
@@ -53,6 +55,10 @@
         "confirmPassword": "Confirma la contraseña",
         "backToLogin": "Volver",
 
+        "gamemodeNameText1": "Clásico",
+        "gamemodeNameText2": "No Poderes",
+        "gamemodeNameText3": "todo efecto",
+
         "settingsPlanetInfo1": "[Nombre] Ajustes",
         "settingsPlanetInfo2": "[ID] SO-0911",
         "settingsPlanetInfo3": "[temperatura] +127°C",
@@ -69,8 +75,6 @@
         
         "userlist": "Lista de usuarios",
         "chooseProfile": "Elige un perfil",
-        "enabled": "Si",
-        "disabled": "No",
         "arenaTitle": "Arena",
         "player3": "Jugador 3",
         "player2": "Jugador 2",
@@ -93,6 +97,10 @@
         "confirmPassword": "confirmer mot de passe",
         "backToLogin": "Retour",
 
+        "gamemodeNameText1": "Classique",
+        "gamemodeNameText2": "Sans Pouvoirs",
+        "gamemodeNameText3": "tout Effets",
+
         "settingsPlanetInfo1": "[Nom]: Reglages",
         "settingsPlanetInfo2": "[ID]: SO-0911",
         "settingsPlanetInfo3": "[Temperature]: +127°C",
@@ -109,8 +117,6 @@
 
         "userlist": "Liste des utilisateurs",
         "chooseProfile": "Choisis un profile",
-        "enabled": "Oui",
-        "disabled": "Non",
         "arenaTitle": "Arene",
         "player3": "Joueur 3",
         "player2": "Joueur 2",

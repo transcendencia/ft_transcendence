@@ -7,7 +7,7 @@ const player2Text = document.getElementById('player2Text');
 const player1Text = document.getElementById('player1Text');
 const powerupsText = document.getElementById('gamemodeText');
 const mapsText = document.getElementById('mapsText');
-const enabledText = document.getElementById('enabledText');
+const enabledText = document.getElementById('gamemodesNameText');
 const startText = document.getElementById('startText');
 
 export function translateArenaPageTexts() {
@@ -18,6 +18,6 @@ export function translateArenaPageTexts() {
     player1Text.textContent = getTranslatedText('player1');
     powerupsText.textContent = getTranslatedText('gamemode');
     mapsText.textContent = getTranslatedText('maps');
-    enabledText.textContent = getTranslatedText('enabled');
+    enabledText.textContent = getTranslatedText('gamemodesNameText');
     startText.textContent = getTranslatedText('start');
 }

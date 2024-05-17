@@ -6,8 +6,8 @@ import { setupPlanets } from "./planets.js";
 let spaceShip;
 let spaceShipLoaded = false;
 
-const spaceShipLoader = new GLTFLoader();
-spaceShipLoader.load(
+const objectLoader = new GLTFLoader();
+objectLoader.load(
     '../static/html/assets/spaceShip/scene.gltf',
     function(gltf) {
         spaceShip = gltf.scene;
@@ -27,7 +27,7 @@ spaceShipLoader.load(
 let spaceShipInt;
 let spaceShipIntLoaded = false;
 
-spaceShipLoader.load(
+objectLoader.load(
     '../static/html/assets/blender/spaceshipInterior.glb',
     function(gltf) {
         spaceShipInt = gltf.scene;
@@ -45,6 +45,47 @@ spaceShipLoader.load(
         console.error(error);
     }
     );
+
+    let alien;
+    let alienLoaded = false;
+    export let mixer;
+
+    objectLoader.load(
+        '../static/html/assets/blender/alienAnimationss.glb',
+        function(gltf) {
+            alien = gltf.scene;
+            alien.scale.set(0.3,0.3,0.3);
+            alien.position.set(2.7, 3.05, -1300.5);
+            alien.rotation.set(0,THREE.MathUtils.degToRad(210),0);
+            scene.add(alien);
+            if (gltf.animations && gltf.animations.length > 1) {
+                console.log(gltf.animations[0]);
+                console.log(gltf.animations[1]);
+                console.log(gltf.animations[2]);
+            mixer = new THREE.AnimationMixer(alien);
+                let action1 = mixer.clipAction(gltf.animations[1]);
+                let action3 = mixer.clipAction(gltf.animations[3]);
+                let action4 = mixer.clipAction(gltf.animations[0]);
+                action1.play();
+                setTimeout(() => {
+                    action3.play(); // Start the second animation
+                    action1.crossFadeTo(action3, 1, true);
+                    setTimeout(() => {
+                        action4.play(); // Start the second animation
+                        action3.crossFadeTo(action4, 3, true);
+                    }, 7700);
+                }, 1100);
+               
+            }
+        },
+        function(xhr) {
+            // console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+            alienLoaded = true;
+        },
+        function (error) {
+            console.error(error);
+        }
+        );
     
 let modelsData = [
     {name: 'arena', filePath: '../static/html/assets/blender/arena.glb', loaded: false},

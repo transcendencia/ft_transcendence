@@ -223,7 +223,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: row;
+    text-align: center;
     height: 80%;
     width: 65%;
 }
