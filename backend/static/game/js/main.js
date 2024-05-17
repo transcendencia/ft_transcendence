@@ -110,6 +110,7 @@ water = new Water(
 );
 
 water.rotation.x = - Math.PI / 2;
+water.position.y = -10;
 
 // scene.add( water );
 
@@ -229,7 +230,7 @@ class LoadingScreen {
         if (this.isAnimatingCamera) {
             this.isAnimatingCamera = false;
             this.iterations = 0;
-            const duration = 2500;
+            const duration = 500;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -390,8 +391,8 @@ const leftHelper = new THREE.CameraHelper(cameraLeft);
 // scene.add(gridHelper);
 
 // VIEW UTILS
-// const controls = new OrbitControls(camera, renderer.domElement);
-// controls.enableDamping = true;
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
 
 let lastKeyPressTime = {};
 let lastKeyUpTime = {};
@@ -572,6 +573,7 @@ class Arena extends THREE.Mesh {
         this.bloomPass.radius = 0.5;
         this.oceanMap = new OceanMap(this);
         this.spaceMap = new SpaceMap(this);
+        this.skyMap = new SkyMap(this);
         this.spaceMap.initMap();
     }
     addStar() {
@@ -708,10 +710,6 @@ class Arena extends THREE.Mesh {
             this.spaceMap.updateMap();
         if (this.ball.isRolling)
             this.ball.rotation.y += 0.1;
-        if (keyDown['3'])
-            water.material.uniforms['size'].value += 0.01;
-        if (keyDown['4'])
-            water.material.uniforms['size'].value -= 0.01;
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
         if (!this.bot.isPlaying)
@@ -737,15 +735,13 @@ class Arena extends THREE.Mesh {
             }
         }
         if (keyDown['1'])  
-        {
-            this.spaceMap.closeMap();
-            this.oceanMap.initMap();
-        }
+            this.switchMap(this.oceanMap);
         if (keyDown['2'])
-        {
-            this.oceanMap.closeMap();
-            this.spaceMap.initMap();
-        }
+            this.switchMap(this.spaceMap);
+        if (keyDown['3'])
+            this.switchMap(this.skyMap);
+        if (keyDown['4'])
+            water.material.uniforms['size'].value -= 0.001;
         if (keyDown['b'])
         {
             if (!this.isBeingBlurred)
@@ -856,6 +852,33 @@ class Arena extends THREE.Mesh {
         leftTween.start();
         rightTween.start();
     }
+    switchMap(map)
+    {
+        if (this.spaceMap.mapActive && this.spaceMap != map)
+        {
+            this.spaceMap.closeMap();
+            map.initMap();
+        }
+        else if (this.oceanMap.mapActive && this.oceanMap != map)
+        {
+            this.oceanMap.closeMap();
+            map.initMap();
+        }
+        else if (this.skyMap.mapActive && this.skyMap != map)
+        {
+            this.skyMap.closeMap();
+            map.initMap();
+        }
+    }
+    getCurrentMap()
+    {
+        if (this.oceanMap.mapActive)
+            return this.oceanMap;
+        else if (this.spaceMap.mapActive)
+            return this.spaceMap;
+        else if (this.skyMap.mapActive)
+            return this.skyMap;
+    }
     blurScreen()
     {
         const duration = 1500;
@@ -911,7 +934,6 @@ class Arena extends THREE.Mesh {
         this.ball.speedX = 0;
         this.ball.isRolling = false;
         this.ball.bounceCount = 0;
-        this.ball.material.color.set(this.ball.initialColor);
         this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
         this.ball.position.copy(this.ball.startingPoint);
         this.ball.updateSpeedBar();
@@ -972,7 +994,6 @@ class Arena extends THREE.Mesh {
             this.ball.isgoingLeft = false;
             this.ball.light.power = this.ball.startingPower;
             this.ball.bounceCount = 0;
-            this.ball.material.color.set(this.ball.initialColor);
             this.isBeingReset = false;
             if (this.game.isOver)
             {
@@ -1121,9 +1142,10 @@ class Paddle extends THREE.Group {
         this.left = left;
         this.canDash = true;
         // Add other properties and methods as needed
-        this.particles = new Particle(this.scene, 100, left, this, false);
+        this.particles = new Particle(this.scene, 500, left, this, false);
         this.light = new THREE.PointLight(0x4B4FC5);
         scene.add(this.light);
+        this.defaultMaterial = this.material.clone();
         this.defaultLight = this.arena.width * this.arena.length / 7.5;
         this.light.power = this.defaultLight;
         this.defaultColor = this.material.color.clone();
@@ -1132,6 +1154,7 @@ class Paddle extends THREE.Group {
         this.invertedColor = this.arena.thirdPlayer.ballColor.clone();
         this.slowedColor = this.arena.thirdPlayer.bulletColor.clone();
         this.dashingColor = new THREE.Color(0xf4ff69);
+        this.particlesColor = new THREE.Color(0xffffff);
         this.defaultSpeed = 0.016;
         this.moveSpeed = 0.016;
         this.isDashingRight = false;
@@ -1179,13 +1202,19 @@ class Paddle extends THREE.Group {
             (gltf) => {
                 this.model = gltf.scene;
                 this.modelName = modelName;
+                if (rotationFactor == 0)
+                {
+
+                }
                 // Position the this.model relative to the paddle
                 if (!this.left)
                 {
                     this.model.position.set(0, 0, position); // Adjust position as needed
                     if (rotationFactor == -1)
                         this.model.rotation.y = -Math.PI;
-                    else
+                    else if (rotationFactor == 1)
+                        this.model.rotation.y = 0;
+                    else if (rotationFactor == 0)
                         this.model.rotation.y = 0;
                 }
                 else
@@ -1193,8 +1222,10 @@ class Paddle extends THREE.Group {
                     this.model.position.set(0, 0, -position); // Adjust position as needed
                     if (rotationFactor == -1)
                         this.model.rotation.y = 0;
-                    else
+                    else if (rotationFactor == 1)
                         this.model.rotation.y = -Math.PI;
+                    else if (rotationFactor == 0)
+                        this.model.rotation.y = Math.PI;
                 }
 
                 this.model.scale.set(scale, scale, scale); // Adjust scale as needed
@@ -1419,6 +1450,7 @@ class Ball extends THREE.Mesh {
         this.accelerationStrength = 0.01;
         this.isgoingLeft = false;
         this.isgoingRight = false;
+        this.defaultMaterial = this.material.clone();
         this.initialColor = this.material.color.clone();
         this.invertedColor = this.arena.thirdPlayer.ballColor.clone();
         this.speedColor = this.arena.thirdPlayer.bulletColor.clone();
@@ -1478,7 +1510,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && Math.abs(this.speedZ) > 0)
         {
-            paddle.particles.explodeParticles(paddle.position, paddle.material.color);
+            paddle.particles.explodeParticles(paddle.position, paddle.particlesColor);
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
@@ -1512,7 +1544,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight && this.speedZ > 0)
         {
-            paddle.particles.explodeParticles(paddle.position, paddle.material.color);
+            paddle.particles.explodeParticles(paddle.position, paddle.particlesColor);
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
             this.isgoingLeft = !this.isgoingLeft;
@@ -1733,6 +1765,14 @@ class TrailParticles {
             this.trailSpheres[i].scale.set(sphereSize, sphereSize, sphereSize);
         }
     }
+
+    changeMaterial(material)
+    {
+        for (let i = 0; i < this.trailSpheres.length; i++) {
+            this.trailSpheres[i].material = material;
+        }
+    }
+
 }
 
 class OceanMap {
@@ -1748,15 +1788,51 @@ class OceanMap {
               '../../static/game/texturePlayground/skyMap/pz.jpg'
           ]);
         this.reflectiveMaterial = new THREE.MeshStandardMaterial({
-            color: 0xaaaaaa,
+            color: 0x00ba99,
             roughness: 0.0,
             metalness: 0.9,
-            envMap: cubeMapTexture,
+            envMap: this.oceanCubeMapTexture,
             envMapIntensity: 1,
             side: THREE.DoubleSide
           });
+        this.paddleGlassMaterial = new THREE.MeshStandardMaterial({
+            color: 0xfd739d,
+            roughness: 0.0,
+            metalness: 1,
+            envMap: this.oceanCubeMapTexture,
+            envMapIntensity: 2,
+            side: THREE.DoubleSide
+        });
+        this.ballGlassMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x07386d,
+            envMap: this.oceanCubeMapTexture,
+            metalness: 0,
+            roughness: 0,
+            transparent: true,
+            opacity: 0.6,
+            reflectivity: 0.9,
+            refractionRatio: 0.98,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+          });
+
+          this.trailMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x07386d,
+            envMap: this.oceanCubeMapTexture,
+            metalness: 0,
+            roughness: 0,
+            transparent: true,
+            opacity: 0.2,
+            reflectivity: 0.9,
+            refractionRatio: 0.98,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+          });
+
+
         this.water = water;
         this.mapActive = false;
+        this.particleColor = new THREE.Color(0xffffff);
         this.modelName = '../../static/game/models/boat/scene.gltf';
         this.lightRight = new THREE.PointLight(0xffffff, 10, 100);
         this.lightLeft = new THREE.PointLight(0xffffff, 10, 100);
@@ -1767,17 +1843,29 @@ class OceanMap {
     }
     initMap()
     {
-        if (!this.mapActive)
-        {
-            this.mapActive = true;
-            this.arena.material = this.reflectiveMaterial;
-            this.scene.add(this.water);
-            this.scene.background = this.oceanCubeMapTexture;
-            this.arena.bloomPass.strength = 0.2;
-            this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.5, 3, 1);
-            this.arena.paddleRight.changeBlenderModel(this.modelName, 0.5, 3, 1);
-            this.scene.add(this.lightRight, this.lightLeft);
-        }
+        if (this.mapActive)
+            return;
+        this.mapActive = true;
+        this.arena.bloomPass.strength = 0.2;
+        this.scene.background = this.oceanCubeMapTexture;
+
+        this.arena.material = this.reflectiveMaterial;
+        this.arena.ball.material = this.ballGlassMaterial;
+        this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
+
+        this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.5, 3, 1);
+        this.arena.paddleRight.changeBlenderModel(this.modelName, 0.5, 3, 1);
+
+        this.arena.paddleLeft.paddleMesh.material = this.paddleGlassMaterial;
+        this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial;
+
+        this.arena.paddleLeft.particlesColor = this.particleColor;
+        this.arena.paddleRight.particlesColor = this.particleColor;
+
+        this.arena.paddleLeft.light.power = 0;
+        this.arena.paddleRight.light.power = 0;
+
+        this.scene.add(this.lightRight, this.lightLeft, this.water);
     }
     updateMap()
     {
@@ -1791,9 +1879,13 @@ class OceanMap {
             this.scene.remove(this.water);
             this.arena.material = this.arena.defaultMaterial;
             this.scene.remove(this.lightRight, this.lightLeft);
+            this.arena.paddleLeft.paddleMesh.material = this.arena.paddleLeft.defaultMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.arena.paddleRight.defaultMaterial;
+            this.arena.ball.material = this.arena.ball.defaultMaterial;
+            this.arena.paddleLeft.light.power = this.arena.paddleLeft.defaultLight;
+            this.arena.paddleRight.light.power = this.arena.paddleRight.defaultLight;
         }
     }
-
 }
 
 class SpaceMap {
@@ -1809,26 +1901,39 @@ class SpaceMap {
               '../../static/game/texturePlayground/spaceMap/pz.png'
           ]);
         this.material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
+        this.trailMaterial = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            opacity: 0.2,
+            transparent: true,
+        });
+        this.particleColor = new THREE.Color(0xffffff);
         this.mapActive = false;
         this.modelName = '../../static/game/models/spaceShip/scene.gltf';
+
     }
     initMap()
     {
-        if (!this.mapActive)
-        {
-            this.arena.addStars(2000);
-            this.mapActive = true;
-            this.arena.material = this.material;
-            // this.scene.background = new THREE.Color(0x000010);
-            this.scene.background = this.spaceCubeMapTexture;
-            this.arena.bloomPass.strength = 1.0;
-            if (this.arena.paddleLeft.modelName != this.modelName)
-            {
+        if (this.mapActive)
+            return;
+        this.arena.addStars(2000);
+        this.mapActive = true;
+        this.arena.material = this.material;
+        this.scene.background = this.spaceCubeMapTexture;
+        this.arena.bloomPass.strength = 1.0;
 
-                this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.2, 2, -1);
-                this.arena.paddleRight.changeBlenderModel(this.modelName, 0.2, 2, -1);
-            }
+        this.arena.paddleLeft.light.power = this.arena.paddleLeft.defaultLight;
+        this.arena.paddleRight.light.power = this.arena.paddleRight.defaultLight;
+
+        this.arena.paddleLeft.particlesColor = this.particleColor;
+        this.arena.paddleRight.particlesColor = this.particleColor;
+
+        if (this.arena.paddleLeft.modelName != this.modelName)
+        {
+            this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.2, 2, -1);
+            this.arena.paddleRight.changeBlenderModel(this.modelName, 0.2, 2, -1);
         }
+        this.arena.ball.material = this.arena.ball.defaultMaterial;
+        this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
     }
     closeMap()
     {
@@ -1837,8 +1942,6 @@ class SpaceMap {
             this.mapActive = false;
             this.arena.removeStars();
             this.arena.material = this.arena.defaultMaterial;
-            this.arena.paddleLeft.remove(this.paddleLeft.model);
-            this.arena.paddleRight.remove(this.paddleRight.model);
         }
     }
     updateMap()
@@ -1849,6 +1952,98 @@ class SpaceMap {
                 star.position.z = -4000; // Reset position to -100
             }
         });
+    }
+}
+
+class SkyMap {
+    constructor (arena) {
+        this.arena = arena;
+        this.scene = arena.scene;
+        this.skyCubeMapTexture = cubeLoader.load([
+            '../../static/game/texturePlayground/cloudMap/nx.png',
+            '../../static/game/texturePlayground/cloudMap/px.png',
+            '../../static/game/texturePlayground/cloudMap/py.png',
+            '../../static/game/texturePlayground/cloudMap/ny.png',
+              '../../static/game/texturePlayground/cloudMap/nz.png',
+              '../../static/game/texturePlayground/cloudMap/pz.png'
+          ]);
+        this.reflectiveMaterial = new THREE.MeshStandardMaterial({
+            color: 0x6666bb,
+            roughness: 0.0,
+            metalness: 1,
+            envMap: this.skyCubeMapTexture,
+            envMapIntensity: 2,
+            side: THREE.DoubleSide
+        });
+        this.reflectivePaddleMaterial = new THREE.MeshStandardMaterial({
+            color: 0xff957b,
+            roughness: 0.0,
+            metalness: 1,
+            envMap: this.skyCubeMapTexture,
+            envMapIntensity: 2,
+            side: THREE.DoubleSide
+        });
+        this.reflectiveBallMaterial = new THREE.MeshStandardMaterial({
+            color: 0xfd739d,
+            roughness: 0.0,
+            metalness: 1,
+            envMap: this.skyCubeMapTexture,
+            envMapIntensity: 2,
+            side: THREE.DoubleSide
+        });
+        this.trailMaterial = new THREE.MeshStandardMaterial({
+            color: 0xfd739d,
+            roughness: 0.0,
+            metalness: 1,
+            envMap: this.skyCubeMapTexture,
+            envMapIntensity: 2,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.2,
+        });
+
+        this.mapActive = false;
+        this.modelName = '../../static/game/models/pixel_plane/scene.gltf';
+        this.lightRight = new THREE.PointLight(0xffffff, 10, 100);
+        this.lightLeft = new THREE.PointLight(0xffffff, 10, 100);
+        this.lightRight.position.set(0, this.arena.height * 8, this.arena.width * 1.5);
+        this.lightLeft.position.set(0, this.arena.height * 8, -this.arena.width * 1.5);
+        this.particleColor = new THREE.Color(0x755EA2);
+        this.lightRight.castShadow = true;
+        this.lightLeft.castShadow = true;
+    }
+    initMap()
+    {
+        if (this.mapActive)
+            return;
+        this.mapActive = true;
+        this.arena.material = this.reflectiveMaterial;
+        this.scene.background = this.skyCubeMapTexture;
+        this.arena.bloomPass.strength = 0.05;
+        if (this.arena.paddleLeft.modelName != this.modelName)
+        {
+            this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.003, 1, 0);
+            this.arena.paddleRight.changeBlenderModel(this.modelName, 0.003, 1, 0);
+        }
+        this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
+        this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial;
+        this.arena.paddleLeft.particlesColor = this.particleColor;
+        this.arena.paddleRight.particlesColor = this.particleColor;
+        this.arena.ball.material = this.reflectiveBallMaterial;
+        this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
+        this.scene.add(this.lightRight, this.lightLeft);
+    }
+    closeMap()
+    {
+        if (this.mapActive)
+        {
+            this.mapActive = false;
+            this.arena.material = this.arena.defaultMaterial;
+            this.arena.ball.material = this.arena.ball.defaultMaterial;
+            this.arena.paddleLeft.paddleMesh.material = this.arena.paddleLeft.defaultMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.arena.paddleRight.defaultMaterial;
+            this.scene.remove(this.lightRight, this.lightLeft);
+        }
     }
 }
 
@@ -2306,6 +2501,7 @@ class Particle {
         this.particleSystem = new THREE.Points(this.geometry, this.material);
         this.scene.add(this.particleSystem);
         this.isBall = isBall;
+        this.particlesColor = new THREE.Color(0xffffff);
         this.offsetZ;
         if (!left)
             this.offsetZ = 2;
@@ -2382,6 +2578,14 @@ class Particle {
                         this.positions[index + 2] = this.paddle.position.z + this.offsetZ;
                         this.positions[index + 1] = this.paddle.position.y;
                         this.positions[index] = this.paddle.position.x;
+                        if (this.paddle.arena.skyMap.mapActive)
+                        {
+                            const result = Math.random();
+                            if (result < 0.5)
+                                this.positions[index] = this.paddle.position.x + 2.5;
+                            else
+                                this.positions[index] = this.paddle.position.x - 2.5;
+                        }
                     }
                 }
             }
