@@ -40,19 +40,19 @@ function toggleGamemode(buttonHeader, imgIndex) {
     if (imgIndex === 0){
         gamemodeCounter--;
         if (gamemodeCounter === -1)
-        gamemodeCounter = 3;
+            gamemodeCounter = 3;
         }
     else {
         gamemodeCounter++;    
         if (gamemodeCounter === 3)
-        gamemodeCounter = 0;
+            gamemodeCounter = 0;
         } 
     if (gamemodeCounter === 0)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Classic';
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('gamemodeNameText1');
     if (gamemodeCounter === 1)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Powerups';
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('gamemodeNameText2');
     if (gamemodeCounter === 2)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Spin Only';
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('gamemodeNameText3');
 
 }
 
@@ -60,12 +60,12 @@ function handleMaps(buttonHeader, imgIndex) {
     if (imgIndex === 0){
         mapCounter--;
         if (mapCounter === -1)
-        mapCounter = 3;
+            mapCounter = 3;
         }
     else {
         mapCounter++;    
         if (mapCounter === 4)
-        mapCounter = 0;
+            mapCounter = 0;
         } 
     if (mapCounter === 0)
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Space';
