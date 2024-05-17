@@ -33,24 +33,27 @@ function Glow() {
     });
 }
 
-let powerupActive = true;
+let gamemodeCounter = 0;
 let mapCounter = 0;
 
-function togglePowerups(image) {
-    if (!powerupActive) {
-        image.parentNode.querySelector('.buttonCont').style.borderColor = 'rgb(79, 226, 0)';
-        image.parentNode.querySelector('.buttonCont').style.backgroundColor = 'rgba(38, 255, 0, 0.374)';
-        image.parentNode.querySelector('.buttonCont').style.color = 'rgb(79, 226, 0)';
-        image.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('enabled');
-        powerupActive = true;
-    }
+function toggleGamemode(buttonHeader, imgIndex) {
+    if (imgIndex === 0){
+        gamemodeCounter--;
+        if (gamemodeCounter === -1)
+        gamemodeCounter = 3;
+        }
     else {
-        image.parentNode.querySelector('.buttonCont').style.borderColor = 'red';
-        image.parentNode.querySelector('.buttonCont').style.backgroundColor = 'rgba(255, 0, 0, 0.374)';
-        image.parentNode.querySelector('.buttonCont').style.color = 'red';
-        image.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('disabled');
-        powerupActive = false;
-    }
+        gamemodeCounter++;    
+        if (gamemodeCounter === 3)
+        gamemodeCounter = 0;
+        } 
+    if (gamemodeCounter === 0)
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Classic';
+    if (gamemodeCounter === 1)
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Powerups';
+    if (gamemodeCounter === 2)
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Spin Only';
+
 }
 
 function handleMaps(buttonHeader, imgIndex) {
@@ -65,13 +68,13 @@ function handleMaps(buttonHeader, imgIndex) {
         mapCounter = 0;
         } 
     if (mapCounter === 0)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Arabic';
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Space';
     if (mapCounter === 1)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Blue';
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Ocean';
     if (mapCounter === 2)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'City';
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Sky';
     if (mapCounter === 3)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Desert';
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Road';
 }
 
 const buttonHeaders = document.querySelectorAll('.buttonTitle');
@@ -88,7 +91,7 @@ buttonHeaders.forEach((buttonHeader, index) => {
         image.addEventListener('click', function () {
             // console.log(imgIndex);
             if (index === 0)
-                togglePowerups(buttonHeader);
+                toggleGamemode(buttonHeader, imgIndex);
             if (index === 1)
                 handleMaps(buttonHeader, imgIndex);
         });

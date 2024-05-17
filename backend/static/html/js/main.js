@@ -14,18 +14,31 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame } from './arenaPage.js';
+import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 
+let cubeLoader = new THREE.CubeTextureLoader();
+let spaceCubeMapTexture = cubeLoader.load([
+    '../../static/game/texturePlayground/spaceMap/nx.png',
+    '../../static/game/texturePlayground/spaceMap/px.png',
+      '../../static/game/texturePlayground/spaceMap/py.png',
+      '../../static/game/texturePlayground/spaceMap/ny.png',
+      '../../static/game/texturePlayground/spaceMap/nz.png',
+      '../../static/game/texturePlayground/spaceMap/pz.png'
+  ]);
 
 export let lobbyStart = false;
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c4')
 });
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000020);
+scene.background = spaceCubeMapTexture;
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
+
+
+
 
 // Define the size of the minimap
 const minimapWidth = 200; // Adjust as needed
@@ -251,10 +264,16 @@ document.addEventListener('keydown', (event) => {
             togglePlanet();
             return;
         }
-        toggleRSContainerVisibility();
-        toggleBlurDisplay(true);
-        resetOutlineAndText();
-        pauseGame ? pauseGame = false : pauseGame = true;
+        else if (inCockpit) {
+            moveCameraToBackOfCockpit();
+            return;
+        }
+        if (lobbyStart) {
+            toggleRSContainerVisibility();
+            toggleBlurDisplay(true);
+            resetOutlineAndText();
+            pauseGame ? pauseGame = false : pauseGame = true;
+        }
     }
     if (event.key === 'l') {
         switchToGame();
