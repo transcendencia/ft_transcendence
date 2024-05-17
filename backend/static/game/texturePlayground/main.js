@@ -14,13 +14,17 @@ import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import { vertexShader, vertexMain, vertexPars } from './shaders/vertex.js';
 import { fragmentShader, fragmentMain, fragmentPars } from './shaders/fragment.js';
+import { fragmentPass, vertexPass, loadingFragmentPass } from './shaders/fragmentPass.js';
 import { Water } from 'three/addons/objects/Water.js';
 // Create a scene
 const scene = new THREE.Scene();
 
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 18;
+camera.position.x = 0;
+camera.position.z = 0;
+camera.position.y = 45;
+camera.lookAt(0, 0, 0);
 
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
@@ -30,12 +34,12 @@ document.body.appendChild(renderer.domElement);
 
 var cubeLoader = new THREE.CubeTextureLoader();
 var cubeMapTexture = cubeLoader.load([
-  'parkingMap/nx.jpg',
-  'parkingMap/px.jpg',
-    'parkingMap/py.jpg',
-    'parkingMap/ny.jpg',
-    'parkingMap/nz.jpg',
-    'parkingMap/pz.jpg'
+  'skyMap/nx.jpg',
+  'skyMap/px.jpg',
+    'skyMap/py.jpg',
+    'skyMap/ny.jpg',
+    'skyMap/nz.jpg',
+    'skyMap/pz.jpg'
 ]);
 
 scene.background = cubeMapTexture;
@@ -69,8 +73,6 @@ scene.add( water );
 
 
 // Create a ball geometry
-const geometry = new THREE.BoxGeometry(40, 5, 40);
-console.log(geometry.attributes)
 // Create a standard material
 const material = new THREE.MeshStandardMaterial({
     onBeforeCompile: (shader) => {
@@ -107,20 +109,30 @@ const material = new THREE.MeshStandardMaterial({
 
 material.userData.shader = { uniforms: { uTime: { value: 0 } } };
 
+
+
+const geometry = new THREE.BoxGeometry(40, 10, 40);
+let width = 40; // Width of the boxGeometry
+let height = 5; // Height of the boxGeometry
+let r = 10; // Desired radius of the circles
+
+let scaleFactor = Math.min(width / (2 * r), height / (2 * r));
 //reflective material without shaders
-const reflectiveMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
-  roughness: 0.2,
-  metalness: 0.9,
-  envMap: cubeMapTexture,
-  envMapIntensity: 1.2,
-  side: THREE.DoubleSide
+const shaderMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+        uTime: { value: 0 },
+        scaleFactor: { value: scaleFactor }
+    },
+    vertexShader: vertexPass,
+    fragmentShader: loadingFragmentPass
 });
 
-// Create a ball mesh
-const ball = new THREE.Mesh(geometry, reflectiveMaterial);
-scene.add(ball);
 
+// Create a ball mesh
+const object = new THREE.Mesh(geometry, shaderMaterial);
+object.position.y = 10;
+
+scene.add(object);
 // Create light
   // lighting
   const dirLight = new THREE.DirectionalLight('#526cff', 0.6)
@@ -135,6 +147,13 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // Set background color to off/white
 renderer.setClearColor(0x101114);
 
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
+
+
+
 const fpsCounter = document.getElementById('fps-counter');
 
 let frameCount = 0;
@@ -147,7 +166,6 @@ function updateFpsCounter() {
 
     if (currentTime > lastTime + 1000) {
         var fps = Math.round(frameCount);
-        console.log("fps = ", fps);
         fpsCounter.innerHTML = 'FPS: ' + fps;
         frameCount = 0;
         lastTime = currentTime;
@@ -158,9 +176,10 @@ function updateFpsCounter() {
 function render() {
     requestAnimationFrame(render);
     updateFpsCounter();
-    // water.material.uniforms[ 'time' ].value += 1.0 / 120.0;
+    object.material.uniforms.uTime.value += 0.01;
+    water.material.uniforms[ 'time' ].value += 1.0 / 120.0;
     // water.material.uniforms['size'].value = 1.11;
-    renderer.render(scene, camera);
+    composer.render();
 }
 
 // Call the render function
