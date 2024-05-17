@@ -116,6 +116,7 @@
     transform: rotate(45deg);
     border: solid 5px white;
     transition: box-shadow 0.5s ease, border-color 0.5s ease;
+    overflow: hidden;
 }
 
 .glow {
@@ -133,15 +134,7 @@
 }
 
 .flag {
-    background-size: 50%;
-    position: absolute;
-    width: 143%;
-    height: 143%;
-    background-size: contain;
-    background-position: center;
     opacity: 0; /* Initially hide the flag */
-    transform: rotate(-45deg);
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
     transition: opacity 0.5s ease; /* Add a smooth transition effect */
 }
 

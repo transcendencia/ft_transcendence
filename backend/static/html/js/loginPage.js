@@ -1,7 +1,7 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 
-export let currentLanguage = 'esp';
+export let currentLanguage = 'en';
 let languageFile;
 
 fetch('../../static/html/languages.json')
@@ -67,10 +67,10 @@ const backToLoginButton = document.querySelector('.backButton');
 
 signupHereButton.addEventListener('click', function() {
     moveCameraToFrontOfCockpit();
-    showPage('signUpPage');
 });
 
 showPage('loginPage');
+
 
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
@@ -87,6 +87,11 @@ languageIcons.forEach(function(icon) {
             }
         });
     });
+    //init english flag
+    if (icon.id === currentLanguage) {
+        icon.querySelector('.flag').style.opacity = 1;
+        icon.querySelector('.icon').style.opacity = 0;
+    }
 
     icon.addEventListener('mouseenter', function () {
         icon.querySelector('.flag').style.opacity = 1;

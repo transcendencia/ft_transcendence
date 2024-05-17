@@ -17,6 +17,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 // import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
 import { vertexShader, vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentShader, fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
+import { gameStarted } from '../../html/js/arenaPage.js';
 // import { endGame } from '../../html/js/arenaPage.js';
 
 // FPS COUNTER
@@ -84,7 +85,6 @@ let cubeMapTexture = cubeLoader.load([
 ]);
 
 // scene.background = cubeMapTexture;
-
 
 let water;
 
@@ -2513,13 +2513,14 @@ function animate()
 {
     requestAnimationFrame( animate );
     // controls.update();
-    
+    updateFpsCounter();
+    if (!gameStarted)
+        return;
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
     // if (elapsed < fpsInterval) return; // Skip if too big FPS
     // else
     {
-        updateFpsCounter();
         TWEEN.update();
         if (arena1.gameState.inGame)
         {

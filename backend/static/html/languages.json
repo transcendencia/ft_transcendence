@@ -35,7 +35,7 @@
         "player3": "Player 3",
         "player2": "Player 2",
         "player1": "Player 1",
-        "powerups": "Powerups",
+        "gamemode": "gamemode",
         "maps": "Maps",
         "start": "Start",
         "removePlayer": "Remove player"
@@ -75,7 +75,7 @@
         "player3": "Jugador 3",
         "player2": "Jugador 2",
         "player1": "Jugador 1",
-        "powerups": "Poderes",
+        "gamemode": "modo",
         "maps": "Mapas",
         "start": "Comenzar",
         "removePlayer": "Eliminar"
@@ -115,7 +115,7 @@
         "player3": "Joueur 3",
         "player2": "Joueur 2",
         "player1": "Joueur 1",
-        "powerups": "Pouvoirs",
+        "gamemode": "Mode",
         "maps": "Cartes",
         "start": "Commencer",
         "removePlayer": "Supprimer"
