@@ -15,7 +15,7 @@ import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame } from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
-import { mixer } from './objs.js';
+import { mixer1, mixer2 } from './objs.js';
 
 let cubeLoader = new THREE.CubeTextureLoader();
 let spaceCubeMapTexture = cubeLoader.load([
@@ -347,7 +347,8 @@ function animate()
         renderMinimap();
     update();
     composer.render();
-    mixer.update(0.025);
+    mixer1.update(0.025);
+    mixer2.update(0.025);
     // renderer.render(scene, camera);
 }
 

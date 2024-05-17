@@ -1,5 +1,6 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
+import { alien1, alien2 } from "./objs.js";
 
 export let currentLanguage = 'en';
 let languageFile;
@@ -39,9 +40,7 @@ function updateText() {
     passwordText.childNodes[0].textContent = '- ' + getTranslatedText('password') + ' -';
     loginLanguageText.childNodes[4].textContent = '- ' + getTranslatedText('loginLanguage') + ' -';
     newToTheGame.childNodes[0].textContent = getTranslatedText('newToTheGame');
-    // console.log(signupHereButton.textContent);
     signupHereButton.textContent = getTranslatedText('signUpHere');
-
     SignUpTitle.childNodes[0].textContent = getTranslatedText('signUpTitle');
     SignUpTitle.childNodes[1].textContent = getTranslatedText('createAnAccount');
     enterLogin.childNodes[0].textContent = getTranslatedText('login');
@@ -71,9 +70,16 @@ signupHereButton.addEventListener('click', function() {
 
 showPage('loginPage');
 
-
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
+        if (icon.id === 'fr') {
+            alien1.visible = false;
+            alien2.visible = true;
+        }
+        if (icon.id === 'en') {
+            alien1.visible = true;
+            alien2.visible = false;
+        }
         addGlow(icon.id);
         currentLanguage = icon.id;
         icon.querySelector('.flag').style.opacity = 1;

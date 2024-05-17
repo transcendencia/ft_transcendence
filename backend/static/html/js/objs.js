@@ -46,47 +46,82 @@ objectLoader.load(
     }
     );
 
-    let alien;
+    export let alien1;
     let alienLoaded = false;
-    export let mixer;
+    export let mixer1;
+    export let mixer2;
 
-    objectLoader.load(
-        '../static/html/assets/blender/alienAnimationss.glb',
-        function(gltf) {
-            alien = gltf.scene;
-            alien.scale.set(0.3,0.3,0.3);
-            alien.position.set(2.7, 3.05, -1300.5);
-            alien.rotation.set(0,THREE.MathUtils.degToRad(210),0);
-            scene.add(alien);
-            if (gltf.animations && gltf.animations.length > 1) {
-                console.log(gltf.animations[0]);
-                console.log(gltf.animations[1]);
-                console.log(gltf.animations[2]);
-            mixer = new THREE.AnimationMixer(alien);
-                let action1 = mixer.clipAction(gltf.animations[1]);
-                let action3 = mixer.clipAction(gltf.animations[3]);
-                let action4 = mixer.clipAction(gltf.animations[0]);
-                action1.play();
+objectLoader.load(
+    '../static/html/assets/blender/alienAnimationhat.glb',
+    function(gltf) {
+        alien1 = gltf.scene;
+        alien1.scale.set(0.3,0.3,0.3);
+        alien1.position.set(2.7, 3.05, -1300.5);
+        alien1.rotation.set(0,THREE.MathUtils.degToRad(210),0);
+        scene.add(alien1);
+        if (gltf.animations && gltf.animations.length > 1) {
+            mixer1 = new THREE.AnimationMixer(alien1);
+            let action1 = mixer1.clipAction(gltf.animations[1]);
+            let action3 = mixer1.clipAction(gltf.animations[3]);
+            let action4 = mixer1.clipAction(gltf.animations[0]);
+            action1.play();
+            setTimeout(() => {
+                action3.play(); // Start the second animation
+                action1.crossFadeTo(action3, 1, true);
                 setTimeout(() => {
-                    action3.play(); // Start the second animation
-                    action1.crossFadeTo(action3, 1, true);
-                    setTimeout(() => {
-                        action4.play(); // Start the second animation
-                        action3.crossFadeTo(action4, 3, true);
-                    }, 7700);
-                }, 1100);
-               
-            }
-        },
-        function(xhr) {
-            // console.log((xhr.loaded / xhr.total * 100) + '%loaded');
-            alienLoaded = true;
-        },
-        function (error) {
-            console.error(error);
+                    action4.play(); // Start the second animation
+                    action3.crossFadeTo(action4, 3, true);
+                }, 7700);
+            }, 1100);
+            
         }
-        );
-    
+    },
+    function(xhr) {
+        // console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        alienLoaded = true;
+    },
+    function (error) {
+        console.error(error);
+    }
+    );
+
+export let alien2;
+
+objectLoader.load(
+    '../static/html/assets/blender/alienAnimationberet.glb',
+    function(gltf) {
+        alien2 = gltf.scene;
+        alien2.scale.set(0.3,0.3,0.3);
+        alien2.position.set(2.7, 3.05, -1300.5);
+        alien2.rotation.set(0,THREE.MathUtils.degToRad(210),0);
+        alien2.visible = false;
+        scene.add(alien2);
+        if (gltf.animations && gltf.animations.length > 1) {
+        mixer2 = new THREE.AnimationMixer(alien2);
+            let action1 = mixer2.clipAction(gltf.animations[1]);
+            let action3 = mixer2.clipAction(gltf.animations[3]);
+            let action4 = mixer2.clipAction(gltf.animations[0]);
+            action1.play();
+            setTimeout(() => {
+                action3.play(); // Start the second animation
+                action1.crossFadeTo(action3, 1, true);
+                setTimeout(() => {
+                    action4.play(); // Start the second animation
+                    action3.crossFadeTo(action4, 3, true);
+                }, 7700);
+            }, 1100);
+            
+        }
+    },
+    function(xhr) {
+        // console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        alienLoaded = true;
+    },
+    function (error) {
+        console.error(error);
+    }
+    );
+
 let modelsData = [
     {name: 'arena', filePath: '../static/html/assets/blender/arena.glb', loaded: false},
     {name: 'arenaRing', filePath: '../static/html/assets/blender/arenaRing.glb', loaded: false},
