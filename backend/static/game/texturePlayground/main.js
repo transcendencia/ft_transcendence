@@ -16,6 +16,7 @@ import { vertexShader, vertexMain, vertexPars } from './shaders/vertex.js';
 import { fragmentShader, fragmentMain, fragmentPars } from './shaders/fragment.js';
 import { fragmentPass, vertexPass, loadingFragmentPass } from './shaders/fragmentPass.js';
 import { Water } from 'three/addons/objects/Water.js';
+import { lavaFragmentShader, lavaVertexShader } from './shaders/lavaShader.js';
 // Create a scene
 const scene = new THREE.Scene();
 
@@ -23,7 +24,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.x = 0;
 camera.position.z = 0;
-camera.position.y = 45;
+camera.position.y = 60;
 camera.lookAt(0, 0, 0);
 
 // Create a renderer
@@ -69,7 +70,7 @@ water = new Water(
 
 water.rotation.x = - Math.PI / 2;
 
-scene.add( water );
+// scene.add( water );
 
 
 // Create a ball geometry
@@ -111,7 +112,7 @@ material.userData.shader = { uniforms: { uTime: { value: 0 } } };
 
 
 
-const geometry = new THREE.BoxGeometry(40, 10, 40);
+const geometry = new THREE.BoxGeometry(28, 40, 34);
 let width = 40; // Width of the boxGeometry
 let height = 5; // Height of the boxGeometry
 let r = 10; // Desired radius of the circles
@@ -124,7 +125,7 @@ const shaderMaterial = new THREE.ShaderMaterial({
         scaleFactor: { value: scaleFactor }
     },
     vertexShader: vertexPass,
-    fragmentShader: loadingFragmentPass
+    fragmentShader: fragmentPass
 });
 
 
@@ -132,13 +133,13 @@ const shaderMaterial = new THREE.ShaderMaterial({
 const object = new THREE.Mesh(geometry, shaderMaterial);
 object.position.y = 10;
 
-scene.add(object);
+// scene.add(object);
 // Create light
   // lighting
   const dirLight = new THREE.DirectionalLight('#526cff', 0.6)
   dirLight.position.set(2, 2, 2)
 
-  const ambientLight = new THREE.AmbientLight('#4255ff', 0.5)
+  const ambientLight = new THREE.AmbientLight('#ffffff', 0.5)
   scene.add(dirLight, ambientLight)
 
 // Create orbit controls
@@ -150,6 +151,43 @@ renderer.setClearColor(0x101114);
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
+
+
+
+
+// LAVA
+
+var lavaGeometry = new THREE.PlaneGeometry(2, 2);
+var textureLoader = new THREE.TextureLoader();
+var lavaTexture = textureLoader.load('lava.jpg', function(texture) {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    // texture.needsUpdate = true;
+});
+
+var uniforms = {
+    uTime: { value: 1.0 },
+    u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
+    uResolution: { value: new THREE.Vector2() },
+    uLavaTexture: { value: lavaTexture }
+};
+
+var lavaMaterial = new THREE.ShaderMaterial({
+    uniforms: uniforms,
+    vertexShader: lavaVertexShader,
+    fragmentShader: lavaFragmentShader
+});
+
+
+var mesh = new THREE.Mesh(lavaGeometry, lavaMaterial);
+scene.add(mesh);
+
+
+
+
+
+
+
+
 
 
 
@@ -171,13 +209,13 @@ function updateFpsCounter() {
         lastTime = currentTime;
     }
 }
-
 // Render function
 function render() {
     requestAnimationFrame(render);
     updateFpsCounter();
-    object.material.uniforms.uTime.value += 0.01;
-    water.material.uniforms[ 'time' ].value += 1.0 / 120.0;
+    object.material.uniforms.uTime.value += 0.05;
+    uniforms.uTime.value += 0.02;
+    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     // water.material.uniforms['size'].value = 1.11;
     composer.render();
 }
