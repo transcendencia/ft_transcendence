@@ -16,7 +16,7 @@ spaceShipLoader.load(
         scene.add(spaceShip);
     },
     function(xhr) {
-        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        // console.log((xhr.loaded / xhr.total * 100) + '%loaded');
         spaceShipLoaded = true;
     },
     function (error) {
@@ -38,7 +38,7 @@ spaceShipLoader.load(
         scene.add(spaceShipInt);
     },
     function(xhr) {
-        console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        // console.log((xhr.loaded / xhr.total * 100) + '%loaded');
         spaceShipIntLoaded = true;
     },
     function (error) {
@@ -72,7 +72,7 @@ for (let i = 0; i < modelsData.length; i++) {
             }
         },
         function (xhr) {
-            console.log(`${data.filePath}: ${(xhr.loaded / xhr.total * 100)}% loaded`);
+            // console.log(`${data.filePath}: ${(xhr.loaded / xhr.total * 100)}% loaded`);
         },
         function (error) {
             console.error(`Error loading ${data.filePath}:`, error);

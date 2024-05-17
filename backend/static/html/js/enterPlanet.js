@@ -30,7 +30,7 @@ export function togglePanelDisplay() {
 
 function resetRotations() {
     spaceShip.rotation.set(0, 0, 0);
-        console.log(spaceShip.position);
+        // console.log(spaceShip.position);
         if (spaceShip.position.z > 0 && spaceShip.position.x < 0)
             spaceShip.rotation.set(0, THREE.MathUtils.degToRad(135), 0);
         else if (spaceShip.position.z > 0 && spaceShip.position.x > 0)

@@ -18,8 +18,6 @@ export function getTranslatedText(key) {
         if (languageFile[currentLanguage])
             return languageFile[currentLanguage][key];
         else console.error('Current language not found in language file');
-    } else {
-        console.error('Language file not initialized');
     }
 }
 
@@ -41,7 +39,7 @@ function updateText() {
     passwordText.childNodes[0].textContent = '- ' + getTranslatedText('password') + ' -';
     loginLanguageText.childNodes[4].textContent = '- ' + getTranslatedText('loginLanguage') + ' -';
     newToTheGame.childNodes[0].textContent = getTranslatedText('newToTheGame');
-    console.log(signupHereButton.textContent);
+    // console.log(signupHereButton.textContent);
     signupHereButton.textContent = getTranslatedText('signUpHere');
 
     SignUpTitle.childNodes[0].textContent = getTranslatedText('signUpTitle');

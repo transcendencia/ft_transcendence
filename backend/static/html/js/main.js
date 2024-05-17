@@ -320,7 +320,6 @@ return;
 function animate()
 {
     requestAnimationFrame( animate )
-    console.log("gameStarted = ", gameStarted)
     if (gameStarted)
         return;
     TWEEN.update();
@@ -332,7 +331,7 @@ function animate()
 }
 
 const checkModelsLoaded = setInterval(() => {
-    if (allModelsLoaded()) {
+    if (allModelsLoaded() && spaceShip) {
         clearInterval(checkModelsLoaded);
         animate();
         camMovement();
