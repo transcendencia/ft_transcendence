@@ -11,7 +11,6 @@ const enabledText = document.getElementById('enabledText');
 const startText = document.getElementById('startText');
 
 export function translateArenaPageTexts() {
-    console.log('non');
     userlistText.textContent = getTranslatedText('userlist');
     arenaTitleText.textContent = getTranslatedText('arenaTitle');
     player3Text.textContent = getTranslatedText('player3');

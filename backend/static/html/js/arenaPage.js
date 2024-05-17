@@ -86,7 +86,7 @@ buttonHeaders.forEach((buttonHeader, index) => {
             image.classList.remove('lightblueShadowfilter');
         });
         image.addEventListener('click', function () {
-            console.log(imgIndex);
+            // console.log(imgIndex);
             if (index === 0)
                 togglePowerups(buttonHeader);
             if (index === 1)
