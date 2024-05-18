@@ -2041,15 +2041,16 @@ class SkyMap {
             envMapIntensity: 2,
             side: THREE.DoubleSide
         });
-        this.trailMaterial = new THREE.MeshStandardMaterial({
+        this.trailMaterial = new THREE.MeshPhysicalMaterial({
             color: 0xfd739d,
-            roughness: 0.0,
-            metalness: 1,
-            envMap: this.skyCubeMapTexture,
-            envMapIntensity: 2,
-            side: THREE.DoubleSide,
+            metalness: 0,
+            roughness: 0,
             transparent: true,
-            opacity: 0.2,
+            opacity: 0.8,
+            reflectivity: 0.9,
+            refractionRatio: 0.98,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
         });
 
         this.mapActive = false;
@@ -2166,14 +2167,16 @@ class DragonMap {
             envMapIntensity: 1,
             side: THREE.DoubleSide
         });
-        this.trailMaterial = new THREE.MeshStandardMaterial({
+        this.trailMaterial = new THREE.MeshPhysicalMaterial({
             color: 0xF3BB0B,
-            roughness: 0.0,
-            metalness: 0.8,
-            envMapIntensity: 1,
+            metalness: 0,
+            roughness: 0,
             transparent: true,
             opacity: 0.2,
-            side: THREE.DoubleSide
+            reflectivity: 0.9,
+            refractionRatio: 0.98,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
         });
         const groundGeometry = new THREE.PlaneGeometry( 10000, 10000 );
         this.lavaGround = new THREE.Mesh( groundGeometry, this.floorMaterial );
