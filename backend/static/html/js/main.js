@@ -38,9 +38,6 @@ const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
-
-
-
 // Define the size of the minimap
 const minimapWidth = 200; // Adjust as needed
 const minimapHeight = 200;
@@ -102,7 +99,8 @@ renderer.render(scene, camera);
 const rightSideContainer = document.getElementById("rsCont");
 const leftSideContainer = document.getElementById("lsCont");
 let rsContVisible = false;
-const loginPageContainer = document.querySelector(".loginPage");
+const structure = document.querySelector(".structure");
+const escapeBG = document.querySelector(".escapeBG");
 
 export function toggleRSContainerVisibility() {
     if (rsContVisible) {
@@ -155,40 +153,6 @@ export const outlinePass = new OutlinePass(
     scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
     
     Array(800).fill().forEach(addStar);
-    
-    // function vectorsEqual(v1, v2, threshold = 0.1) {
-    //     return Math.abs(v1.x - v2.x) < threshold &&
-    //            Math.abs(v1.y - v2.y) < threshold &&
-    //            Math.abs(v1.z - v2.z) < threshold;
-    // }
-    // let createOrbitsLines = true;
-    // let startToCheckPlanetPos = false;
-    
-    // function allPlanetsFinishedOrbit() {
-        //     planets.forEach((planet) => {
-    //         if (vectorsEqual(initialPos[planet], planet.mesh.position))
-    //             return false;
-    //     });
-    //     return true;
-    // }
-
-    // function drawTrajectory() {
-    //     let initialPos = [];
-    //     planets.forEach((planet) => {
-    //         initialPos[planet] = planet.mesh.position;
-    //         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.2);
-    //         planet.trajectoryPoints.push(planet.mesh.position.clone());
-    //     });
-    //     if (allPlanetsFinishedOrbit && createOrbitsLines && startToCheckPlanetPos) {
-    //         planets.forEach((planet) => {
-    //             let trajectoryGeometry = new THREE.BufferGeometry().setFromPoints(planet.trajectoryPoints);
-    //             let trajectoryMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: 0, opacity: 0.2 });
-    //             let trajectoryLine = new THREE.Line(trajectoryGeometry, trajectoryMaterial);
-    //             scene.add(trajectoryLine);
-    //         });
-    //         createOrbitsLines = false;
-    //     }
-    // }
 
 function planetMovement() {
     planets.forEach((planet) => {
@@ -217,7 +181,7 @@ function planetMovement() {
 
 function startAnimation() {
     let target = -1298;
-    let duration = 1000;
+    let duration = 500;
     let anim1 = new TWEEN.Tween(spaceShip.position)
     .to({z: target}, duration)
     .easing(TWEEN.Easing.Linear.None)
@@ -235,7 +199,7 @@ function startAnimation() {
         })
         
         target = -1150;
-        duration = 3000;
+        duration = 500;
         let anim3 = new TWEEN.Tween(spaceShip.position)
         .to({z: target}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
@@ -250,6 +214,18 @@ function startAnimation() {
         anim1.chain(anim2, anim3);
         anim1.start();
     }
+
+function toggleEscapeContainerVisibility() {
+    if (targetBlur !== 0) {
+        structure.style.animation = 'headerDown 0.5s ease forwards'
+        escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
+    }
+    else {
+        escapeBG.style.animation = 'rollBG 0.2s ease backwards'
+        structure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
+    }
+}
+
 
 let pauseGame = false;
 
@@ -272,6 +248,7 @@ document.addEventListener('keydown', (event) => {
         if (lobbyStart) {
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
+            toggleEscapeContainerVisibility();
             resetOutlineAndText();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
@@ -310,6 +287,7 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
     .easing(TWEEN.Easing.Quadratic.Out)
         .start();
     if (displayColoredPanel) {
+        console.log(targetBlur);
         targetBlur === 0 ? coloredPanel.style.opacity = "0" : coloredPanel.style.opacity = "1";
     }
 }

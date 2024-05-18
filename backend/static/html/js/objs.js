@@ -66,13 +66,13 @@ objectLoader.load(
             let action4 = mixer1.clipAction(gltf.animations[0]);
             action1.play();
             setTimeout(() => {
-                action3.play(); // Start the second animation
                 action1.crossFadeTo(action3, 1, true);
+                action3.play(); // Start the second animation
                 setTimeout(() => {
                     action4.play(); // Start the second animation
                     action3.crossFadeTo(action4, 3, true);
                 }, 7700);
-            }, 1100);
+            }, 1500);
             
         }
     },
