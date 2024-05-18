@@ -15,8 +15,9 @@ import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import { Water } from 'three/addons/objects/Water.js';
 import { Sky } from 'three/addons/objects/Sky.js';
 // import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
-import { vertexShader, vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
-import { fragmentShader, fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
+import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
+import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
+import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
 import { gameStarted } from '../../html/js/arenaPage.js';
 // import { endGame } from '../../html/js/arenaPage.js';
 
@@ -421,7 +422,9 @@ let keyDown = {
     '1': false,
     '2': false,
     '3': false,
-    '4': false
+    '4': false,
+    '5': false,
+    '6': false,
 };
 
 let doubleKeyPress = {
@@ -574,6 +577,7 @@ class Arena extends THREE.Mesh {
         this.oceanMap = new OceanMap(this);
         this.spaceMap = new SpaceMap(this);
         this.skyMap = new SkyMap(this);
+        this.dragonMap = new DragonMap(this);
         this.spaceMap.initMap();
     }
     addStar() {
@@ -708,6 +712,8 @@ class Arena extends THREE.Mesh {
             this.oceanMap.updateMap();
         if (this.spaceMap.mapActive)
             this.spaceMap.updateMap();
+        if (this.dragonMap.mapActive)
+            this.dragonMap.updateMap();
         if (this.ball.isRolling)
             this.ball.rotation.y += 0.1;
         if (this.isActive)
@@ -741,7 +747,7 @@ class Arena extends THREE.Mesh {
         if (keyDown['3'])
             this.switchMap(this.skyMap);
         if (keyDown['4'])
-            water.material.uniforms['size'].value -= 0.001;
+            this.switchMap(this.dragonMap);
         if (keyDown['b'])
         {
             if (!this.isBeingBlurred)
@@ -867,6 +873,11 @@ class Arena extends THREE.Mesh {
         else if (this.skyMap.mapActive && this.skyMap != map)
         {
             this.skyMap.closeMap();
+            map.initMap();
+        }
+        else if (this.dragonMap.mapActive && this.dragonMap != map)
+        {
+            this.dragonMap.closeMap();
             map.initMap();
         }
     }
@@ -1164,6 +1175,7 @@ class Paddle extends THREE.Group {
         this.flippingSpeed = 0.5;
         this.isGoingUp = true;
         this.modelName;
+        this.mixer;
         this.isGoingDown = false;
 
     }
@@ -1202,10 +1214,6 @@ class Paddle extends THREE.Group {
             (gltf) => {
                 this.model = gltf.scene;
                 this.modelName = modelName;
-                if (rotationFactor == 0)
-                {
-
-                }
                 // Position the this.model relative to the paddle
                 if (!this.left)
                 {
@@ -1215,7 +1223,14 @@ class Paddle extends THREE.Group {
                     else if (rotationFactor == 1)
                         this.model.rotation.y = 0;
                     else if (rotationFactor == 0)
-                        this.model.rotation.y = 0;
+                    {
+                        this.model.position.y -= 2;
+                        this.model.rotation.z = Math.PI;
+                        // this.model.rotation.y = Math.PI / 2;
+                    }
+                    else if (rotationFactor == 2)
+                        this.model.rotation.y = 0;                        
+
                 }
                 else
                 {
@@ -1225,11 +1240,36 @@ class Paddle extends THREE.Group {
                     else if (rotationFactor == 1)
                         this.model.rotation.y = -Math.PI;
                     else if (rotationFactor == 0)
+                    {
+                        this.model.position.y -= 2;
+                        this.model.rotation.y = -Math.PI;
+                        this.model.rotation.z = Math.PI;
+                        // this.model.rotation.y = - Math.PI / 2;
+                    }
+                    else if (rotationFactor == 2)
                         this.model.rotation.y = Math.PI;
                 }
 
                 this.model.scale.set(scale, scale, scale); // Adjust scale as needed
                 this.add(this.model);
+
+                if (this.arena.dragonMap.mapActive)
+                {
+                    if (gltf.animations)
+                    {
+                        this.mixer = new THREE.AnimationMixer(this.model);
+                        let animation1 = this.mixer.clipAction(gltf.animations[0]);
+                        if (this.left)
+                            animation1.play();
+                        else
+                        {
+                            setTimeout (() => {
+                                animation1.play();
+                            }, 500);
+                        }
+
+                    }
+                }
             },
             undefined,
             (error) => {
@@ -1900,8 +1940,18 @@ class SpaceMap {
               '../../static/game/texturePlayground/spaceMap/nz.png',
               '../../static/game/texturePlayground/spaceMap/pz.png'
           ]);
-        this.material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
-        this.trailMaterial = new THREE.MeshStandardMaterial({
+        this.renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+        this.renderTarget.texture.format = THREE.RGBFormat;
+        this.renderTarget.texture.minFilter = THREE.LinearMipMapLinearFilter;
+        this.renderTarget.texture.magFilter = THREE.LinearMipMapLinearFilter;
+
+        this.material = new THREE.MeshPhongMaterial({
+            color: 0x101030,
+            wireframe:false,
+            transparent:true,
+            opacity: 0.8
+        });
+        this.trailMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             opacity: 0.2,
             transparent: true,
@@ -2022,8 +2072,8 @@ class SkyMap {
         this.arena.bloomPass.strength = 0.05;
         if (this.arena.paddleLeft.modelName != this.modelName)
         {
-            this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.003, 1, 0);
-            this.arena.paddleRight.changeBlenderModel(this.modelName, 0.003, 1, 0);
+            this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.003, 1, 2);
+            this.arena.paddleRight.changeBlenderModel(this.modelName, 0.003, 1, 2);
         }
         this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
         this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial;
@@ -2044,6 +2094,133 @@ class SkyMap {
             this.arena.paddleRight.paddleMesh.material = this.arena.paddleRight.defaultMaterial;
             this.scene.remove(this.lightRight, this.lightLeft);
         }
+    }
+}
+
+class DragonMap {
+    constructor(arena)
+    {
+        this.arena = arena;
+        this.scene = this.arena.scene;
+        this.redCubeMapTexture = cubeLoader.load([
+            '../../static/game/texturePlayground/redMap/nx.png',
+            '../../static/game/texturePlayground/redMap/px.png',
+            '../../static/game/texturePlayground/redMap/py.png',
+            '../../static/game/texturePlayground/redMap/ny.png',
+              '../../static/game/texturePlayground/redMap/nz.png',
+              '../../static/game/texturePlayground/redMap/pz.png'
+          ]);
+        this.mapActive = false;
+        this.mixer;
+        this.particleColor = new THREE.Color(0xffff00)
+        this.modelName = '../../static/game/models/dragonglb.glb';
+
+        // LAVA MATERIAL
+        const textureLoader = new THREE.TextureLoader();
+
+        const cloudTexture = textureLoader.load( '../../static/game/assets/cloud.png' );
+        const lavaTexture = textureLoader.load( '../../static/game/assets/lava.jpg' );
+
+        lavaTexture.colorSpace = THREE.SRGBColorSpace;
+
+        cloudTexture.wrapS = cloudTexture.wrapT = THREE.RepeatWrapping;
+        lavaTexture.wrapS = lavaTexture.wrapT = THREE.RepeatWrapping;
+        this.uvScaleX = 45;
+        this.uvScaleY = 90;
+        this.uniforms = {
+
+            'fogDensity': { value: 0.00150000000 },
+            'fogColor': { value: new THREE.Vector3( 1, 0.45, 0 ) },
+            'time': { value: 1.0 },
+            'uvScale': { value: new THREE.Vector2( 90, 45 ) },
+            'texture1': { value: cloudTexture },
+            'texture2': { value: lavaTexture }
+        };
+        this.floorMaterial = new THREE.ShaderMaterial( {
+                uniforms: this.uniforms,
+                vertexShader: lavaVertexShader,
+                fragmentShader: lavaFragmentShader
+            } );
+
+        this.arenaMaterial = new THREE.MeshStandardMaterial({
+            color: 0xff0000,
+            roughness: 0.0,
+            metalness: 1.4,
+            envMap: this.redCubeMapTexture,
+            envMapIntensity: 1,
+            side: THREE.DoubleSide
+        });
+        this.paddleMaterial = new THREE.MeshStandardMaterial({
+            color: 0x6220CE,
+            roughness: 0.0,
+            metalness: 1.4,
+            envMap: this.redCubeMapTexture,
+            envMapIntensity: 1,
+            side: THREE.DoubleSide
+        });
+        this.ballMaterial = new THREE.MeshStandardMaterial({
+            color: 0xF3BB0B,
+            roughness: 0.0,
+            metalness: 0.8,
+            envMap: this.redCubeMapTexture,
+            envMapIntensity: 1,
+            side: THREE.DoubleSide
+        });
+        this.trailMaterial = new THREE.MeshStandardMaterial({
+            color: 0xF3BB0B,
+            roughness: 0.0,
+            metalness: 0.8,
+            envMapIntensity: 1,
+            transparent: true,
+            opacity: 0.2,
+            side: THREE.DoubleSide
+        });
+        const groundGeometry = new THREE.PlaneGeometry( 10000, 10000 );
+        this.lavaGround = new THREE.Mesh( groundGeometry, this.floorMaterial );
+        this.lavaGround.rotation.x =  -Math.PI / 2;
+        this.lavaGround.position.y -= 10;
+    }
+    initMap()
+    {
+        if (this.mapActive)
+            return;
+        this.mapActive = true;
+        this.scene.background = this.redCubeMapTexture;
+        this.scene.add(this.lavaGround);
+        this.arena.bloomPass.strength = 1.1;
+        this.arena.material = this.arenaMaterial;
+
+        this.arena.ball.material = this.ballMaterial;
+        this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
+        this.arena.paddleLeft.paddleMesh.material = this.paddleMaterial;
+        this.arena.paddleRight.paddleMesh.material = this.paddleMaterial;
+        this.arena.paddleLeft.particlesColor = this.particleColor;
+        this.arena.paddleRight.particlesColor = this.particleColor;
+        this.arena.paddleRight.light.color.set(0xF3BB0B);
+        this.arena.paddleLeft.light.color.set(0xF3BB0B);
+
+        if (this.arena.paddleLeft.modelName != this.modelName)
+        {
+            this.arena.paddleLeft.changeBlenderModel(this.modelName, 0.01, 5, 0);
+            this.arena.paddleRight.changeBlenderModel(this.modelName, 0.01, 5, 0);
+        }
+    }
+    updateMap()
+    {
+        if (this.arena.paddleLeft.mixer != undefined)
+            this.arena.paddleLeft.mixer.update(0.02);
+        if (this.arena.paddleRight.mixer != undefined)
+            this.arena.paddleRight.mixer.update(0.02)
+        this.uniforms[ 'time' ].value += 0.01;
+    }
+    closeMap()
+    {
+        this.mapActive = false;
+        this.scene.remove(this.lavaGround);
+        this.arena.material = this.arena.defaultMaterial;
+        this.arena.ball.material = this.arena.ball.defaultMaterial;
+        this.arena.paddleLeft.paddleMesh.material = this.arena.paddleLeft.defaultMaterial;
+        this.arena.paddleRight.paddleMesh.material = this.arena.paddleRight.defaultMaterial;
     }
 }
 
@@ -2507,7 +2684,7 @@ class Particle {
             this.offsetZ = 2;
         else
             this.offsetZ = -2;
-        this.isActive = false;
+        this.isActive = true;
         // Initialize particle velocities (for example, random initial velocities)
         this.velocities = [];
         if (!isBall)
@@ -2585,6 +2762,11 @@ class Particle {
                                 this.positions[index] = this.paddle.position.x + 2.5;
                             else
                                 this.positions[index] = this.paddle.position.x - 2.5;
+                        }
+                        if (this.paddle.arena.dragonMap.mapActive)
+                        {
+                            this.positions[index + 1] -= 1.5;
+                            this.positions[index + 2] *= 1.17;
                         }
                     }
                 }
@@ -2731,8 +2913,8 @@ function animate()
             arena1.monitorArena();
             arena1.thirdPlayer.monitorThirdPlayerMovement();
             arena1.thirdPlayer.monitorProjectilesMovement();
-            // if (arena1.thirdPlayer.isPlaying)
-                // controls.enabled = false;
+            if (arena1.thirdPlayer.isPlaying)
+                controls.enabled = false;
             composer1.render();
             composer2.render();
             // console.log("camera.rotation.y = ", camera.rotation.y);
