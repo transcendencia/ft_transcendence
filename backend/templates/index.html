@@ -55,7 +55,7 @@
     </div>
     <div class="languageColumn" id="loginLanguageText">
       <div class="languageSettings">
-        <div class="languageIcon" id="esp">
+        <div class="languageIcon" id="es">
           <div class="icon" style="background-image: url('../static/html/assets/icons/mexicanAlienWhite.png');" ></div>
           <div class="flag" style="background-image: url('../static/html/assets/icons/ES_NU.png');"></div>
         </div>
@@ -260,7 +260,7 @@
                 </div>
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
                 </div>
-              <div id="enabledText" class="buttonCont" style="font-size: 20px;">Classic</div>
+              <div id="gamemodeNameText" class="buttonCont" style="font-size: 20px;">Classic</div>
               </div>
               <div class="optionButton">
                 <div class="buttonTitle">
@@ -285,6 +285,56 @@
         </div>
       </div>
     </div> 
+
+    <!-- ESCAPE PAGE -->
+    <div class="coloredPanel"></div>
+    <div class="structure">
+        <div class="pauseTitle">
+          <img src="{% static 'game/assets/scoreUI.png' %}">
+          PAUSE
+          <img src="{% static 'game/assets/scoreUI.png' %}">
+        </div>
+        <div class="escapeBG">
+        <div class="settings">
+          <div class="languageColumn" id="graphicsText" style="width: 50%; height: 40%;">
+            <div class="languageSettings">
+            <div class="graphicsIcon" id="graphicsIcon1">Simple</div>
+            <div class="graphicsIcon glow" id="graphicsIcon2">Classic</div>
+            <div class="graphicsIcon" id="graphicsIcon3">Detailed</div>
+            </div>
+            <div class="separator"></div>
+            Graphics
+          </div>
+          <div class="languageColumn" id="EscapeLanguageText" style="width: 50%; height: 40%;">
+            <div class="languageSettings">
+              <div class="languageIcon" id="es1">
+                <div class="icon" style="background-image: url('../static/html/assets/icons/mexicanAlienWhite.png');" ></div>
+                <div class="flag" style="background-image: url('../static/html/assets/icons/ES_NU.png');"></div>
+              </div>
+              <div class="languageIcon" id="fr1">
+                <div class="icon" style="background-image: url('../static/html/assets/icons/frenchAlienWhite.png');" ></div>
+                <div class="flag" style="background-image: url('../static/html/assets/icons/FR_NU.png');"></div>
+              </div>
+              <div class="languageIcon glow" id="en1">
+                <div class="icon" style="background-image: url('../static/html/assets/icons/englishAlienWhite.png');" ></div>
+                <div class="flag" style="background-image: url('../static/html/assets/icons/BR_NU.png');"></div>
+              </div>
+            </div>
+            <div class="separator"></div>
+      Language
+    </div>
+  </div>
+    <div class="loggedAs">
+      Currently logged as :
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        AtomiK
+    </div>
+    </div>
+      </div>
+    </div>
 
     <!-- GAME STUFF -->
   <div class="bluebar glow"></div>

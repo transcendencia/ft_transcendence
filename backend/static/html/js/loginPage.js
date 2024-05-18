@@ -1,6 +1,7 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2 } from "./objs.js";
+import { TranslateAllTexts } from "./translatePages.js";
 
 export let currentLanguage = 'en';
 let languageFile;
@@ -18,7 +19,7 @@ export function getTranslatedText(key) {
     if (languageFile) {
         if (languageFile[currentLanguage])
             return languageFile[currentLanguage][key];
-        else console.error('Current language not found in language file');
+        else console.error('Current language ' + currentLanguage + 'not found in language file');
     }
 }
 
@@ -35,34 +36,13 @@ function removeGlow(elementId) {
         element.classList.remove('glow');
 }
 
-function updateText() {
-    loginText.childNodes[0].textContent = '- ' + getTranslatedText('login') + ' -';
-    passwordText.childNodes[0].textContent = '- ' + getTranslatedText('password') + ' -';
-    loginLanguageText.childNodes[4].textContent = '- ' + getTranslatedText('loginLanguage') + ' -';
-    newToTheGame.childNodes[0].textContent = getTranslatedText('newToTheGame');
-    signupHereButton.textContent = getTranslatedText('signUpHere');
-    SignUpTitle.childNodes[0].textContent = getTranslatedText('signUpTitle');
-    SignUpTitle.childNodes[1].textContent = getTranslatedText('createAnAccount');
-    enterLogin.childNodes[0].textContent = getTranslatedText('login');
-    enterPassword.childNodes[0].textContent = getTranslatedText('password');
-    confirmPassword.childNodes[0].textContent = getTranslatedText('confirmPassword');
-    backToLoginButton.childNodes[0].textContent = getTranslatedText('backToLogin');
-    SignUpButton.childNodes[0].textContent = getTranslatedText('signUpTitle');
-}
+
 
 // Get all elements with the class "languageIcon"
 var languageIcons = document.querySelectorAll('.languageIcon');
-const loginText = document.getElementById('loginText');
-const passwordText = document.getElementById('passwordText');
-const enterLogin = document.getElementById('enterLogin');
-const enterPassword = document.getElementById('enterPassword');
-const loginLanguageText = document.getElementById('loginLanguageText');
-const newToTheGame = document.querySelector('.newToTheGame');
+
 const signupHereButton = document.querySelector('.actionCont');
-const confirmPassword = document.getElementById('confirmPassword');
-const SignUpTitle = document.querySelector('.perspective');
-const SignUpButton = document.querySelectorAll('.actionCont')[1];
-const backToLoginButton = document.querySelector('.backButton');
+
 
 signupHereButton.addEventListener('click', function() {
     moveCameraToFrontOfCockpit();
@@ -72,19 +52,21 @@ showPage('loginPage');
 
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
-        if (icon.id === 'fr') {
+        if (icon.id === 'fr' || icon.id == 'fr1') {
             alien1.visible = false;
             alien2.visible = true;
         }
-        if (icon.id === 'en') {
+        if (icon.id === 'en'|| icon.id == 'en1') {
             alien1.visible = true;
             alien2.visible = false;
         }
         addGlow(icon.id);
         currentLanguage = icon.id;
+        if (icon.id.length === 3)
+            currentLanguage = icon.id.slice(0, 2);
         icon.querySelector('.flag').style.opacity = 1;
         icon.querySelector('.icon').style.opacity = 0;
-        updateText();
+        TranslateAllTexts();
         languageIcons.forEach(function(otherIcon) {
             if (otherIcon != icon) {
                 removeGlow(otherIcon.id);

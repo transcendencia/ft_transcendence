@@ -31,6 +31,13 @@
         "arenaPlanetName": "Pong arena",
         "tournamentPlanetName": "Galaxy Cup",
         
+        "pause": "Pause",
+        "escapeLanguage": "language",
+        "graphicsText1": "Simple",
+        "graphicsText2": "Classic",
+        "graphicsText3": "Detailed",
+        "loggedAs": "Currently logged as :",
+
         "userlist": "User list",
         "chooseProfile": "Choose a profile",
         "arenaTitle": "Arena",
@@ -42,7 +49,7 @@
         "start": "Start",
         "removePlayer": "Remove player"
     },
-    "esp": {
+    "es": {
         "login": "Usuario",
 		"password": "Contraseña",
         "loginLanguage": "Elige un idioma",
@@ -55,7 +62,7 @@
         "confirmPassword": "Confirma la contraseña",
         "backToLogin": "Volver",
 
-        "gamemodeNameText1": "Clásico",
+        "gamemodeNameText1": "Clasico",
         "gamemodeNameText2": "No Poderes",
         "gamemodeNameText3": "todo efecto",
 
@@ -72,6 +79,13 @@
         "settingsPlanetName": "Ajustes",
         "arenaPlanetName": "Pong arena",
         "tournamentPlanetName": "Copa Galaxia",
+
+        "pause": "Pausa",
+        "escapeLanguage": "idioma",
+        "graphicsText1": "Simple",
+        "graphicsText2": "Clasico",
+        "graphicsText3": "Detallado",
+        "loggedAs": "conectado como :",
         
         "userlist": "Lista de usuarios",
         "chooseProfile": "Elige un perfil",
@@ -114,6 +128,13 @@
         "settingsPlanetName": "Reglages",
         "arenaPlanetName": "Arene pong",
         "tournamentPlanetName": "Coupe Galaxie",
+
+        "pause": "Pause",
+        "escapeLanguage": "langue",
+        "graphicsText1": "Simple",
+        "graphicsText2": "Classique",
+        "graphicsText3": "Detaille",
+        "loggedAs": "Connecte en tant que :",
 
         "userlist": "Liste des utilisateurs",
         "chooseProfile": "Choisis un profile",
