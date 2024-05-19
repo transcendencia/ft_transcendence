@@ -17,6 +17,8 @@ import { fragmentShader, fragmentMain, fragmentPars } from './shaders/fragment.j
 import { fragmentPass, vertexPass, loadingFragmentPass } from './shaders/fragmentPass.js';
 import { Water } from 'three/addons/objects/Water.js';
 import { lavaFragmentShader, lavaVertexShader } from './shaders/lavaShader.js';
+import { rayMarchingFragmentShader, rayMarchingVertexShader } from './shaders/raymarching.js';
+
 // Create a scene
 const scene = new THREE.Scene();
 
@@ -24,7 +26,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.x = 0;
 camera.position.z = 0;
-camera.position.y = 60;
+camera.position.y = 12;
 camera.lookAt(0, 0, 0);
 
 // Create a renderer
@@ -43,7 +45,7 @@ var cubeMapTexture = cubeLoader.load([
     'skyMap/pz.jpg'
 ]);
 
-scene.background = cubeMapTexture;
+// scene.background = cubeMapTexture;
 
 let water;
 
@@ -155,42 +157,82 @@ composer.addPass(new RenderPass(scene, camera));
 
 
 
-// LAVA
-
-var lavaGeometry = new THREE.PlaneGeometry(2, 2);
-var textureLoader = new THREE.TextureLoader();
-var lavaTexture = textureLoader.load('lava.jpg', function(texture) {
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    // texture.needsUpdate = true;
+let planeGeometry = new THREE.BoxGeometry(10, 10, 10);
+let planeMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+        uTime: { value: 0 },
+        cameraPos: { value: new THREE.Vector3(0,0,-3) },
+        cameraDir: { value: new THREE.Vector3(0.4,0.4,0) }
+    },
+    vertexShader: rayMarchingVertexShader,
+    fragmentShader: rayMarchingFragmentShader
 });
 
-var uniforms = {
-    uTime: { value: 1.0 },
-    u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
-    uResolution: { value: new THREE.Vector2() },
-    uLavaTexture: { value: lavaTexture }
+const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+plane.rotation.x = -Math.PI / 2;
+scene.add(plane);
+
+
+
+let keyDown = {
+  'ArrowLeft': false,
+  'ArrowRight': false,
+  'ArrowUp': false,
+  'ArrowDown': false,
+  'w': false,
+  'a': false,
+  's': false,
+  'd': false,
+  ' ': false,
+  'c': false,
+  'v': false,
+  'n': false,
+  'o': false,
+  'p': false,
+  'l': false,
+  'i': false,
+  'u': false,
+  'e': false,
+  'g': false,
+  'b': false,
+  '1': false,
+  '2': false,
+  '3': false,
+  '4': false,
+  '5': false,
+  '6': false,
 };
 
-var lavaMaterial = new THREE.ShaderMaterial({
-    uniforms: uniforms,
-    vertexShader: lavaVertexShader,
-    fragmentShader: lavaFragmentShader
+
+document.addEventListener('keydown', (event) => {
+  if (keyDown.hasOwnProperty(event.key))
+      keyDown[event.key] = true;
+});
+
+document.addEventListener('keyup', (event) => {
+  if (keyDown.hasOwnProperty(event.key))
+      keyDown[event.key] = false;
 });
 
 
-var mesh = new THREE.Mesh(lavaGeometry, lavaMaterial);
-scene.add(mesh);
-
-
-
-
-
-
-
-
-
-
-
+function monitorUniforms() {
+  if (keyDown['ArrowLeft'])
+      planeMaterial.uniforms.cameraDir.value.x -= 0.1;
+  if (keyDown['ArrowRight'])
+      planeMaterial.uniforms.cameraDir.value.x += 0.1;
+  if (keyDown['ArrowUp'])
+      planeMaterial.uniforms.cameraDir.value.y += 0.1;
+  if (keyDown['ArrowDown'])
+      planeMaterial.uniforms.cameraDir.value.y -= 0.1;
+  if (keyDown['w'])
+      planeMaterial.uniforms.cameraPos.value.z += 0.1;
+  if (keyDown['s'])
+      planeMaterial.uniforms.cameraPos.value.z -= 0.1;
+  if (keyDown['a'])
+      planeMaterial.uniforms.cameraPos.value.x -= 0.1;
+  if (keyDown['d'])
+      planeMaterial.uniforms.cameraPos.value.x += 0.1;
+}
 
 const fpsCounter = document.getElementById('fps-counter');
 
@@ -213,8 +255,9 @@ function updateFpsCounter() {
 function render() {
     requestAnimationFrame(render);
     updateFpsCounter();
+    monitorUniforms();
+    plane.material.uniforms.uTime.value += 0.01;
     object.material.uniforms.uTime.value += 0.05;
-    uniforms.uTime.value += 0.02;
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     // water.material.uniforms['size'].value = 1.11;
     composer.render();
