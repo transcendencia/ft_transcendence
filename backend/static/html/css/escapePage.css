@@ -85,13 +85,13 @@
     transform: translate(-50%);
     z-index: 1;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-around;
     align-items: center;
     flex-direction: column;
     overflow: hidden;
 }
-
-/* .escapeBG * {
+/* 
+.escapeBG * {
     border: 2px solid wheat;
 } */
 
@@ -124,7 +124,6 @@
 }
 
 .loggedAs {
-    margin-top: 50px;
     font-size: 20px;
     width: 80%;
     height: 10%;

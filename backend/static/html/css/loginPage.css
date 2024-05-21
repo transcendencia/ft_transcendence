@@ -119,10 +119,7 @@
     overflow: hidden;
 }
 
-.glow {
-    border-color: #3777ff; /* Change border color to the shine color */
-    box-shadow: 0 0 100px #0724ff; /* Add a white shadow */
-}
+
 
 .icon {
     width: 100%;
