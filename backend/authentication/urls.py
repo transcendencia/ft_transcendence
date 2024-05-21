@@ -6,4 +6,5 @@ urlpatterns = [
 
     path('login_page/', authenticationView.login_page, name='login_page'),
     path('signup/', authenticationView.signup, name='signup'),
+    # path('uptdate_info/', authenticationView.update_info, name='update_info'),
 ]

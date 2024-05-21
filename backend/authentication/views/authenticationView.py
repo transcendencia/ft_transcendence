@@ -58,3 +58,6 @@ def signup(request):
 # def logout(request):
 
 #view logout --> bien pense a supprime le token d'authentication dans le local storage
+
+# @api_view(['POST'])
+# def update_info(request):

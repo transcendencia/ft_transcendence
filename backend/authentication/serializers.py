@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
+import logging
 
 class UserSerializer(serializers.ModelSerializer):
 	class Meta():
@@ -27,8 +28,11 @@ class SignupSerializer(serializers.ModelSerializer):
 				'password_character_requirements': "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial parmi les suivants : ~!@#$%^&*()_+{}\":;'[].",
 			}
 
-			error_code = e.error_list[0].code
+			logging.error(f"Password validation errors: {e.error_list[0]}")
+			logging.error(e.error_list[0].code)
+			error_code = e.error_list[0].code if e.error_list else None
 			message = messages.get(error_code, "Le mot de passe ne respecte pas les critères de sécurité.")
+
 			raise PasswordValidationError(detail=message)
 		return value
 	
