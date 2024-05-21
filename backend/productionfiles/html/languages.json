@@ -1,0 +1,150 @@
+{
+    "en": {
+        "login": "Login",
+        "password": "Password",
+        "loginLanguage": "Choose a language",
+        "newToTheGame": "New to the game?",
+        "signUpHere": "Sign up here",
+
+        "signUpTitle": "Sign up",
+        "createAnAccount": "Create an account",
+        "confirmPassword": "Confirm password",
+        "backToLogin": "Back to login",
+
+        "gamemodeNameText1": "Classic",
+        "gamemodeNameText2": "Powerless",
+        "gamemodeNameText3": "Spin Only",
+
+        "enterPlanetText": "Press [E] to select",
+
+        "settingsPlanetInfo1": "[Name]: Settings",
+        "settingsPlanetInfo2": "[ID]: SO-0911",
+        "settingsPlanetInfo3": "[Temperature]: +127°C",
+        "tournamentPlanetInfo1": "[Name]: Galaxy Cup",
+        "tournamentPlanetInfo2": "[ID]: XR-0720",
+        "tournamentPlanetInfo3": "[Temperature]: +14.6°C",
+        "arenaPlanetInfo1": "[Name]: Pong arena",
+        "arenaPlanetInfo2": "[ID]: PA-0667",
+        "arenaPlanetInfo3": "[Temperature]: -269°C",
+
+        "settingsPlanetName": "Settings",
+        "arenaPlanetName": "Pong arena",
+        "tournamentPlanetName": "Galaxy Cup",
+        
+        "pause": "Pause",
+        "escapeLanguage": "language",
+        "graphicsText1": "Simple",
+        "graphicsText2": "Classic",
+        "graphicsText3": "Detailed",
+        "loggedAs": "Currently logged as :",
+
+        "userlist": "User list",
+        "chooseProfile": "Choose a profile",
+        "arenaTitle": "Arena",
+        "player3": "Player 3",
+        "player2": "Player 2",
+        "player1": "Player 1",
+        "gamemode": "gamemode",
+        "maps": "Maps",
+        "start": "Start",
+        "removePlayer": "Remove player"
+    },
+    "es": {
+        "login": "Usuario",
+		"password": "Contraseña",
+        "loginLanguage": "Elige un idioma",
+        "newToTheGame": "Nuevo al juego?",
+        "signUpHere": "Registrate aquí",
+        "enterPlanetText": "Presiona [E] para seleccionar",
+
+        "signUpTitle": "Registrate",
+        "createAnAccount": "Crea una cuenta",
+        "confirmPassword": "Confirma la contraseña",
+        "backToLogin": "Volver",
+
+        "gamemodeNameText1": "Clasico",
+        "gamemodeNameText2": "No Poderes",
+        "gamemodeNameText3": "todo efecto",
+
+        "settingsPlanetInfo1": "[Nombre] Ajustes",
+        "settingsPlanetInfo2": "[ID] SO-0911",
+        "settingsPlanetInfo3": "[temperatura] +127°C",
+        "tournamentPlanetInfo1": "[Nombre] Copa Galaxia",
+        "tournamentPlanetInfo2": "[ID] XR-0720",
+        "tournamentPlanetInfo3": "[Temperatura] +14.6°C",
+        "arenaPlanetInfo1": "[Nombre] Pong arena",
+        "arenaPlanetInfo2": "[ID] PA-0667",
+        "arenaPlanetInfo3": "[Temperatura] -269°C",
+
+        "settingsPlanetName": "Ajustes",
+        "arenaPlanetName": "Pong arena",
+        "tournamentPlanetName": "Copa Galaxia",
+
+        "pause": "Pausa",
+        "escapeLanguage": "idioma",
+        "graphicsText1": "Simple",
+        "graphicsText2": "Clasico",
+        "graphicsText3": "Detallado",
+        "loggedAs": "conectado como :",
+        
+        "userlist": "Lista de usuarios",
+        "chooseProfile": "Elige un perfil",
+        "arenaTitle": "Arena",
+        "player3": "Jugador 3",
+        "player2": "Jugador 2",
+        "player1": "Jugador 1",
+        "gamemode": "modo",
+        "maps": "Mapas",
+        "start": "Comenzar",
+        "removePlayer": "Eliminar"
+        
+    },
+    "fr": {
+        "login": "Nom d'Utilisateur",
+        "password": "Mot de Passe",
+        "loginLanguage": "Choisis une langue",
+        "newToTheGame": "Nouveau au jeu?",
+        "signUpHere": "Inscris-toi ici",
+
+        "signUpTitle": "s'Inscrire",
+        "createAnAccount": "Cree un compte",
+        "confirmPassword": "confirmer mot de passe",
+        "backToLogin": "Retour",
+
+        "gamemodeNameText1": "Classique",
+        "gamemodeNameText2": "Sans Pouvoirs",
+        "gamemodeNameText3": "tout Effets",
+
+        "settingsPlanetInfo1": "[Nom]: Reglages",
+        "settingsPlanetInfo2": "[ID]: SO-0911",
+        "settingsPlanetInfo3": "[Temperature]: +127°C",
+        "tournamentPlanetInfo1": "[Nom]: Coupe Galaxie",
+        "tournamentPlanetInfo2": "[ID]: XR-0720",
+        "tournamentPlanetInfo3": "[Temperature]: +14.6°C",
+        "arenaPlanetInfo1": "[Nom]: Arene Pong",
+        "arenaPlanetInfo2": "[ID]: PA-0667",
+        "arenaPlanetInfo3": "[Temperature]: -269°C",
+
+        "settingsPlanetName": "Reglages",
+        "arenaPlanetName": "Arene pong",
+        "tournamentPlanetName": "Coupe Galaxie",
+
+        "pause": "Pause",
+        "escapeLanguage": "langue",
+        "graphicsText1": "Simple",
+        "graphicsText2": "Classique",
+        "graphicsText3": "Detaille",
+        "loggedAs": "Connecte en tant que :",
+
+        "userlist": "Liste des utilisateurs",
+        "chooseProfile": "Choisis un profile",
+        "arenaTitle": "Arene",
+        "player3": "Joueur 3",
+        "player2": "Joueur 2",
+        "player1": "Joueur 1",
+        "gamemode": "Mode",
+        "maps": "Cartes",
+        "start": "Commencer",
+        "removePlayer": "Supprimer"
+    }
+}
