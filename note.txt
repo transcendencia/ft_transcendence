@@ -10,4 +10,8 @@ python manage.py createsuperuser
 -> Est ce que je stocke le langages dans le localStorage?
 
 ----USER----
--> Ajouter langages, email, nom, prenom
+-> Ajouter langue, email, nom, prenom
+-> nbr victoire, defaite, but, image, amis, 
+-> historique : joueur dans le match (2 ou 3) (image + pseudo), score de chaque partie, date du match, mode de jeux
+-> stat
+-> date du dernier login
