@@ -1424,7 +1424,7 @@ class Paddle extends THREE.Group {
         const tmp = this.leftKey;
         this.leftKey = this.rightKey;
         this.rightKey = tmp;
-        this.material.color.set(this.invertedColor);
+        this.paddleMesh.material.color.set(this.arena.getCurrentMap().invertedColor);
         this.defaultColor.set(this.invertedColor);
 
         setTimeout(() => {
@@ -1433,9 +1433,9 @@ class Paddle extends THREE.Group {
             this.rightKey = tmp;
             this.defaultColor.set(this.untouchedDefaultColor);
             if (!this.isPowered)
-                this.material.color.set(this.defaultColor);
+                this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDefaultColor);
             else
-                this.material.color.set(this.superChargingColor);
+                this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleSuperchargingColor);
         }, 1000);
     }
     slowDown()
@@ -1444,11 +1444,11 @@ class Paddle extends THREE.Group {
         {
             this.moveSpeed *= 0.6;
         if (!this.isPowered)
-            this.material.color.set(this.slowedColor);
+            this.paddleMesh.material.color.set(this.arena.getCurrentMap().slowedColor);
         this.defaultColor.set(this.slowedColor);
         setTimeout(() => {
             if (!this.isPowered)
-                this.material.color.set(this.untouchedDefaultColor);
+                this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDefaultColor);
             this.defaultColor.set(this.untouchedDefaultColor);
             this.moveSpeed = this.defaultSpeed;
         }, 1000);
@@ -1739,9 +1739,9 @@ class Ball extends THREE.Mesh {
         this.speedZ *= -1;
         this.isgoingLeft = !this.isgoingLeft;
         this.isgoingRight = !this.isgoingRight;
-        this.material.color.set(this.invertedColor);
+        this.material.color.set(this.arena.getCurrentMap().invertedColor);
         setTimeout(() => {
-            this.material.color.set(this.initialColor);
+            this.material.color.set(this.arena.getCurrentMap().ballColor);
         }, 500);
     }
     increaseSpeed()
@@ -1749,9 +1749,9 @@ class Ball extends THREE.Mesh {
         const hasToDivide = Math.abs(this.speedZ) > 0;
         this.speedZ *= this.arena.thirdPlayer.speedBoost;
         this.speedX *= this.arena.thirdPlayer.speedBoost;
-        this.material.color.set(this.speedColor);
+        this.material.color.set(this.arena.getCurrentMap().slowedColor);
         setTimeout(() => {
-            this.material.color.set(this.initialColor);
+            this.material.color.set(this.arena.getCurrentMap().ballColor);
             if (hasToDivide)
             {
                 this.speedZ /= this.arena.thirdPlayer.speedBoost;
@@ -1848,6 +1848,9 @@ class OceanMap {
         this.paddleDefaultColor = new THREE.Color(0xfd739d);
         this.paddleDashingColor = new THREE.Color(0xf4ff69);
         this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+        this.invertedColor = new THREE.Color(0x31FBF3);
+        this.slowedColor = new THREE.Color(0xffbb12);
+        this.ballColor = new THREE.Color(0x07386d);
 
         this.ballGlassMaterial = new THREE.MeshPhysicalMaterial({
             color: 0x07386d,
@@ -1921,10 +1924,8 @@ class OceanMap {
         if (this.mapActive)
         {
             this.mapActive = false;
-            this.scene.remove(this.mountains);
-            this.scene.remove(this.water);
             this.arena.material = this.arena.defaultMaterial;
-            this.scene.remove(this.lightRight, this.lightLeft, this.ambientLight);
+            this.scene.remove(this.lightRight, this.lightLeft, this.ambientLight, this.mountains, this.water);
             this.arena.paddleLeft.paddleMesh.material = this.arena.paddleLeft.defaultMaterial;
             this.arena.paddleRight.paddleMesh.material = this.arena.paddleRight.defaultMaterial;
             this.arena.ball.material = this.arena.ball.defaultMaterial;
@@ -1972,6 +1973,9 @@ class SpaceMap {
         this.paddleDefaultColor = new THREE.Color(0xffffff);
         this.paddleDashingColor = new THREE.Color(0xf4ff69);
         this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+        this.invertedColor = new THREE.Color(0x31FBF3);
+        this.slowedColor = new THREE.Color(0xffbb12);
+        this.ballColor = new THREE.Color(0xffffff);
     }
     initMap()
     {
@@ -2051,6 +2055,9 @@ class SkyMap {
         this.paddleDefaultColor = new THREE.Color(0xff957b);
         this.paddleDashingColor = new THREE.Color(0xf4ff69);
         this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+        this.invertedColor = new THREE.Color(0x31FBF3);
+        this.slowedColor = new THREE.Color(0xffbb12);
+        this.ballColor = new THREE.Color(0xfd739d);
         this.reflectiveBallMaterial = new THREE.MeshStandardMaterial({
             color: 0xfd739d,
             roughness: 0.0,
@@ -2195,6 +2202,9 @@ class DragonMap {
         this.paddleDefaultColor = new THREE.Color(0xaaaaaa);
         this.paddleDashingColor = new THREE.Color(0xf4ff69);
         this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+        this.invertedColor = new THREE.Color(0x31FBF3);
+        this.slowedColor = new THREE.Color(0xffbb12);
+        this.ballColor = new THREE.Color(0xF3BB0B);
 
         this.ballMaterial = new THREE.MeshStandardMaterial({
             color: 0xF3BB0B,
@@ -2219,7 +2229,6 @@ class DragonMap {
         this.lavaGround = new THREE.Mesh( groundGeometry, this.floorMaterial );
         this.lavaGround.rotation.x =  -Math.PI / 2;
         this.lavaGround.position.y -= 30;
-        this.ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
     }
     initMap()
     {
