@@ -97,3 +97,29 @@ languageIcons.forEach(function(icon) {
         }
     });
 });
+
+// Add event listener to the loginForm
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', handleLogin);
+
+// Handle form submission
+function handleLogin(event) {
+    event.preventDefault();
+
+    console.log(currentLanguage);
+
+    const formData = new FormData(this);
+    fetch('login_page/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status == "succes")
+            localStorage.setItem("auth_token", data.token)
+        document.getElementById('messageContainer').innerText = data.message;
+    })
+    .catch(error => {
+        console.error('Une erreur s\'est produite:', error);
+    })
+}
