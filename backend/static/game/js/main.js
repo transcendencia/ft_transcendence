@@ -231,7 +231,7 @@ class LoadingScreen {
         if (this.isAnimatingCamera) {
             this.isAnimatingCamera = false;
             this.iterations = 0;
-            const duration = 500;
+            const duration = 2500;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -2884,12 +2884,6 @@ function swapToFullScreen()
         .start();
 }
 
-function monitorScreen()
-{
-    if (keyDown['o'])
-        swapToSplitScreen();
-}
-
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 
 
@@ -2973,11 +2967,8 @@ function animate()
             arena1.monitorArena();
             arena1.thirdPlayer.monitorThirdPlayerMovement();
             arena1.thirdPlayer.monitorProjectilesMovement();
-            // if (arena1.thirdPlayer.isPlaying)
-            //     controls.enabled = false;
             composer1.render();
             composer2.render();
-            // console.log("camera.rotation.y = ", camera.rotation.y);
         }
         else if (arena1.gameState.loading)
         {
@@ -2987,7 +2978,7 @@ function animate()
         }
     }
 
-    stats.update(); // Update Three.js stats
+    stats.update();
     lastUpdateTime = now - (elapsed % fpsInterval);
     stats.time = performance.now();
 }
