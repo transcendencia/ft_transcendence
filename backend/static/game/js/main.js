@@ -164,7 +164,14 @@ class LoadingScreen {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.composer = new EffectComposer(this.renderer);
         this.renderPass = new RenderPass(this.scene, this.camera);
+        this.afterimagePass = new AfterimagePass();
+        this.afterimagePass.uniforms['damp'].value = 0.90;
+        this.bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 1.0, 0.5 );
+        this.bloomPass.threshold = 0.5;
+        this.bloomPass.strength = 1.0;
+        this.bloomPass.radius = 0.5;
         this.composer.addPass(this.renderPass);
+        this.composer.addPass(this.bloomPass);
         this.cameraInitialZ = 4;
         this.cameraCloseZ = 4;
         this.cameraFarZ = 45;
@@ -275,6 +282,7 @@ class LoadingScreen {
                 .to({ z: this.cameraFarZ }, duration / 2)
                 .easing(TWEEN.Easing.Linear.None)
                 .onStart(() => {
+                    this.composer.addPass(this.afterimagePass);
                     this.starSpeed = 1;
                 })
                 .onComplete(() => {
@@ -347,6 +355,7 @@ class LoadingScreen {
     activateLoadingScreen()
     {
         this.isAnimatingCamera = true;
+        this.composer.removePass(this.afterimagePass);
         document.getElementById('c3').style.display = 'inline';
         this.cameraInitialZ = 4;
         this.camera.position.z = this.cameraInitialZ;
@@ -580,6 +589,8 @@ class Arena extends THREE.Mesh {
         this.skyMap = new SkyMap(this);
         this.dragonMap = new DragonMap(this);
         this.spaceMap.initMap();
+        this.composer1 = new EffectComposer(renderer);
+        this.composer2 = new EffectComposer(renderer2);
     }
     addStar() {
         const geometry = new THREE.SphereGeometry(1.125, 12, 12);
@@ -787,8 +798,6 @@ class Arena extends THREE.Mesh {
             this.paddleLeft.changePaddleControls(true);
             this.paddleRight.changePaddleControls(true);
         }
-        if(keyDown['o'])
-            this.paddleRight.changeBlenderModel('../../static/game/models/godzilla/scene.gltf');
         if (this.game.leftScore >= this.game.maxScore || this.game.rightScore >= this.game.maxScore)
         {
             this.game.isPlaying = false;
@@ -2893,18 +2902,16 @@ scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball, arena1.thi
 arena1.idleCameraAnimation();
 
 let renderPass1 = new RenderPass(scene, camera);
-const composer1 = new EffectComposer( renderer );
 let glitchLeft = new GlitchPass(64);
 glitchLeft.renderToScreen = true;
-composer1.addPass(renderPass1);
-composer1.addPass(glitchLeft);
+arena1.composer1.addPass(renderPass1);
+arena1.composer1.addPass(glitchLeft);
 
 let renderPass2 = new RenderPass(scene, cameraLeft);
-const composer2 = new EffectComposer( renderer2 );
 let glitchRight = new GlitchPass(64);
 glitchRight.renderToScreen = true;
-composer2.addPass(renderPass2);
-composer2.addPass(glitchRight);
+arena1.composer2.addPass(renderPass2);
+arena1.composer2.addPass(glitchRight);
 
 glitchRight.enabled = false;
 glitchLeft.enabled = false;
@@ -2919,30 +2926,15 @@ function glitch(glitchEffect)
     }, 500);
 }
 
-// // Bloom Pass
-// arena1.bloomPass.threshold = 0.5;
-// arena1.bloomPass.strength = 1.0;
-// arena1.bloomPass.radius = 0.5;
-composer1.addPass(arena1.bloomPass);
-composer2.addPass(arena1.bloomPass);
+
+arena1.composer1.addPass(arena1.bloomPass);
+arena1.composer2.addPass(arena1.bloomPass);
 
 
-composer1.addPass(arena1.horizontalBlur);
-composer1.addPass(arena1.verticalBlur);
-composer2.addPass(arena1.horizontalBlur);
-composer2.addPass(arena1.verticalBlur);
-
-// after image pass
-let afterimagePass = new AfterimagePass();
-afterimagePass.uniforms.damp.value = 0.90;
-// composer1.addPass(afterimagePass);
-// loadingScreen.composer.addPass(afterimagePass);
-loadingScreen.composer.addPass(arena1.bloomPass);
-
-// // dotScreen
-// const effect1 = new ShaderPass( DotScreenShader );
-// 				effect1.uniforms[ 'scale' ].value = 256;
-// 				composer1.addPass( effect1 );
+arena1.composer1.addPass(arena1.horizontalBlur);
+arena1.composer1.addPass(arena1.verticalBlur);
+arena1.composer2.addPass(arena1.horizontalBlur);
+arena1.composer2.addPass(arena1.verticalBlur);
 
 let fpsInterval = 1000 / 75; // 120 FPS
 let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
@@ -2967,8 +2959,8 @@ function animate()
             arena1.monitorArena();
             arena1.thirdPlayer.monitorThirdPlayerMovement();
             arena1.thirdPlayer.monitorProjectilesMovement();
-            composer1.render();
-            composer2.render();
+            arena1.composer1.render();
+            arena1.composer2.render();
         }
         else if (arena1.gameState.loading)
         {

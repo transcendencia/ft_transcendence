@@ -65,8 +65,8 @@
         "backToLogin": "Volver",
 
         "gamemodeNameText1": "Clasico",
-        "gamemodeNameText2": "No Poderes",
-        "gamemodeNameText3": "todo efecto",
+        "gamemodeNameText2": "Sin Poderes",
+        "gamemodeNameText3": "Curvatura",
 
         "settingsPlanetInfo1": "[Nombre] Ajustes",
         "settingsPlanetInfo2": "[ID] SO-0911",
@@ -117,7 +117,7 @@
 
         "gamemodeNameText1": "Classique",
         "gamemodeNameText2": "Sans Pouvoirs",
-        "gamemodeNameText3": "tout Effets",
+        "gamemodeNameText3": "Balles Courbes",
 
         "settingsPlanetInfo1": "[Nom]: Reglages",
         "settingsPlanetInfo2": "[ID]: SO-0911",
