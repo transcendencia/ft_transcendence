@@ -292,18 +292,44 @@
       <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
       <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
       <div class="background blueShadowfilter" style="flex-direction: column;">
-        <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white; margin-bottom: -10px; margin-top: -10px;"> Profile </div>
+        <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white; margin-top: -15px;"> Profile </div>
           <div class="userPage">
             <div class="rightColumn" style="width: 75%;">
               <div class="aboveStatsBlock">
-                <div class="userBlock"></div>
-                <div class="historyBlock"></div>
+                <div class="leftBlock">
+                  <div class="nameImgBlock">
+                    <div class="imgFrame"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
+                    <div class="mail-pseudo-info">
+                      <div style="color: rgb(255, 255, 255);">PSEUDO</div> 
+                      <div style="font-size: 10px; color: rgb(189, 209, 255);">hemorroides@herpes.com</div> 
+                    </div>
+                    <div class="pencilImg">
+                      <img src="{% static 'html/assets/icons/pencil.png' %}">
+                    </div>
+                  </div>
+                  <div class="winLoseTexts">
+                    <div style="font-family: 'Space'; font-size: 20px; margin-left: 10px; color: white"> Victoires : 5</div> 
+                    <div style="font-family: 'Space'; font-size: 20px; margin-left: 10px; color: white"> Defaites : 8</div>
+                    <div style="font-family: 'Space'; font-size: 15px; margin-left: 10px; color: white"> Buts : 33</div>
+                  </div>
+                  <div class="statsModes">
+    
+    <div class="statMode" style="background-color: #000f61b2; border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Stat1</div>
+                  <div class="statMode" style="border-radius: 0px;">Stat2</div>
+                  <div class="statMode" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
+                  </div>
+                </div>
+                <div class="rightBlock">
+                <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white;  margin-bottom: 4px">History</div>
+                  <div class="history"></div>
+                </div>
               </div>
               <div class="statsBlock"></div>
             </div>
-      <div class="leftColumn" style="width: 22%; height: 100%;">
-        <div id= "userlistText" style="font-size: 20px; font-family: 'space'; color: white;"> Friends List </div>
-        <div class="userlistBackground" style="height: 95%; width: 100%;">
+      <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between;">
+        <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
+        <div class="friendSearchBar"></div>
+        <div class="userlistBackground" style="height:85%; width: 100%; border-radius: 10px;">
           <div class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
             <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
             <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
