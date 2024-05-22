@@ -1,0 +1,41 @@
+{% extends "master.html" %}
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}
+  Tournament
+{% endblock %}
+
+{% block content %}
+</br>
+
+<button id="NewUser">Ajouter un joueur</button>
+<div id="casesTexte" style="display: none;">
+  <form action="{% url 'add_member' %}" method="post">
+    {% csrf_token %}
+    <label for="username">Username :</label>
+    <input type="text" id="username" name="username"><br>
+    {% if form.username.errors %}
+      <div class="error">{{ form.username.errors }}</div>
+    {% endif %}
+  
+    <input type="submit" value="Ajouter">
+  </form>
+</div>
+
+<script>
+  const newUserButton = document.getElementById("NewUser");
+  const casesTexteDiv = document.getElementById("casesTexte");
+
+  newUserButton.addEventListener("click", function() {
+      if (casesTexteDiv.style.display === "none") {
+          casesTexteDiv.style.display = "block";
+      } else {
+          casesTexteDiv.style.display = "none";
+      }
+  });
+</script>
+
+
+
+
+{% endblock %}
