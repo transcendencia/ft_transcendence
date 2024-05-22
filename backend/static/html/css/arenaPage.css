@@ -238,7 +238,7 @@
     flex-direction: column;
 }
 
-.startButton {
+.redButton {
     text-align: center;
     font-size: 30px;
     color: white;
@@ -254,7 +254,7 @@
     border: 5px solid rgb(255, 255, 255);
 }
 
-.startButton:hover {
+.redButton:hover {
     background-color: rgb(194, 0, 0);
     box-shadow: 0 0 40px #be1c00;
 }

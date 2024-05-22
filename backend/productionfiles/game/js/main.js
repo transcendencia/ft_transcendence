@@ -54,7 +54,7 @@ cameraLeft.lookAt(0, 0, 0);
 //RENDERERS
 const renderer = new THREE.WebGLRenderer({ // Renderer for full screen
     canvas: document.querySelector('#c1'),
-    antialias: false
+    antialias: true
 });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -63,7 +63,7 @@ renderer.autoClear = false;
 
 const renderer2 = new THREE.WebGLRenderer({ // Renderer for split screen
     canvas: document.querySelector('#c2'),
-    antialias: false
+    antialias: true
 })
 renderer2.setPixelRatio(window.devicePixelRatio);
 renderer2.setSize(window.innerWidth / 2, window.innerHeight); // Set width to half of window width
@@ -897,6 +897,8 @@ class Arena extends THREE.Mesh {
             return this.spaceMap;
         else if (this.skyMap.mapActive)
             return this.skyMap;
+        else if (this.dragonMap.mapActive)
+            return this.dragonMap;
     }
     blurScreen()
     {
@@ -1188,30 +1190,6 @@ class Paddle extends THREE.Group {
         this.isGoingDown = false;
 
     }
-    shakeCamera(camera, intensity, duration) {
-        const originalPosition = camera.position.clone();
-        const shake = new THREE.Vector3();
-        let time = 0;
-    
-        function update() {
-            time += 1;
-            if (time > duration) {
-                camera.position.copy(originalPosition);
-                return;
-            }
-    
-            shake.set(
-                Math.random() * intensity - intensity / 2,
-                Math.random() * intensity - intensity / 2,
-                Math.random() * intensity - intensity / 2
-            );
-    
-            camera.position.add(shake);
-            requestAnimationFrame(update);
-        }
-    
-        update();
-    }
     async changeBlenderModel(modelName, scale, position, rotationFactor)
     {
         this.remove(this.model);
@@ -1346,7 +1324,7 @@ class Paddle extends THREE.Group {
         }
         if (keyDown[this.chargeKey])
         {
-            this.material.color.set(this.superChargingColor);
+            this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleSuperchargingColor);
             this.isPowered = true;
         }
         if (this.arena.ball.isSupercharging && this.position.z * this.arena.ball.position.z > 0)
@@ -1355,7 +1333,7 @@ class Paddle extends THREE.Group {
     dash(range, isLeft)
     {
         let targetX;
-        this.material.color.set(this.dashingColor);
+        this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDashingColor);
         targetX = this.position.x + range * this.moveSpeed;
         if (!isLeft) {
             if (targetX > this.arena.rightCorner.x)
@@ -1378,9 +1356,9 @@ class Paddle extends THREE.Group {
         .onComplete(() => {
             setTimeout(() => {
                 if (this.isPowered)
-                    this.material.color.set(this.superChargingColor);
+                    this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleSuperchargingColor);
                 else
-                    this.material.color.set(this.defaultColor);
+                    this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDefaultColor);
             }, 50);
                 
         })
@@ -1575,13 +1553,6 @@ class Ball extends THREE.Mesh {
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
             this.bounceCount++;
-            if (this.bounceCount <= 10) {
-                // Calculate the interpolation factor
-                const factor = this.bounceCount / 20;
-                // Perform linear interpolation
-                // this.material.color.lerpColors(this.initialColor, this.finalColor, factor);
-            }
-            // make the spaceship do a backflip
             if (!paddle.isPowered)
             {
                 let targetPosition;
@@ -1609,13 +1580,6 @@ class Ball extends THREE.Mesh {
             this.isgoingRight = !this.isgoingRight;
             this.isgoingLeft = !this.isgoingLeft;
             this.bounceCount++;
-            if (this.bounceCount <= 10) {
-                // Calculate the interpolation factor
-                const factor = this.bounceCount / 20;
-                // Perform linear interpolation
-                // this.material.color.lerpColors(this.initialColor, this.finalColor, factor);
-            }
-            // make the spaceship do a backflip
             if (!paddle.isPowered)
             {
                 let targetPosition;
@@ -1692,7 +1656,7 @@ class Ball extends THREE.Mesh {
                 })
                 .start();
                 paddle.isPowered = false;
-                paddle.material.color.set(paddle.defaultColor);
+                paddle.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDefaultColor);
             }, 1500);
         }
     }
@@ -1754,7 +1718,7 @@ class Ball extends THREE.Mesh {
                 })
                 .start();
                 paddle.isPowered = false;
-                paddle.material.color.set(paddle.defaultColor);
+                paddle.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDefaultColor);
             }, 1500);
         }
     }
@@ -1881,6 +1845,10 @@ class OceanMap {
             envMapIntensity: 2,
             side: THREE.DoubleSide
         });
+        this.paddleDefaultColor = new THREE.Color(0xfd739d);
+        this.paddleDashingColor = new THREE.Color(0xf4ff69);
+        this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+
         this.ballGlassMaterial = new THREE.MeshPhysicalMaterial({
             color: 0x07386d,
             envMap: this.oceanCubeMapTexture,
@@ -1893,7 +1861,6 @@ class OceanMap {
             clearcoat: 1.0,
             clearcoatRoughness: 0.1,
           });
-
           this.trailMaterial = new THREE.MeshPhysicalMaterial({
             color: 0x07386d,
             envMap: this.oceanCubeMapTexture,
@@ -1927,7 +1894,6 @@ class OceanMap {
         this.mapActive = true;
         this.arena.bloomPass.strength = 0.2;
         this.scene.background = this.oceanCubeMapTexture;
-
         this.arena.material = this.reflectiveMaterial;
         this.arena.ball.material = this.ballGlassMaterial;
         this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
@@ -1936,7 +1902,7 @@ class OceanMap {
         this.arena.paddleRight.changeBlenderModel(this.modelName, 0.2, 6, 1);
 
         this.arena.paddleLeft.paddleMesh.material = this.paddleGlassMaterial;
-        this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial;
+        this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial.clone();
 
         this.arena.paddleLeft.particlesColor = this.particleColor;
         this.arena.paddleRight.particlesColor = this.particleColor;
@@ -1955,6 +1921,7 @@ class OceanMap {
         if (this.mapActive)
         {
             this.mapActive = false;
+            this.scene.remove(this.mountains);
             this.scene.remove(this.water);
             this.arena.material = this.arena.defaultMaterial;
             this.scene.remove(this.lightRight, this.lightLeft, this.ambientLight);
@@ -1991,6 +1958,8 @@ class SpaceMap {
             metalness: 0.9,
             opacity: 0.9
         });
+        this.paddleMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        this.ballMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
         this.trailMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             opacity: 0.2,
@@ -1999,7 +1968,10 @@ class SpaceMap {
         this.particleColor = new THREE.Color(0xffffff);
         this.mapActive = false;
         this.modelName = '../../static/game/models/spaceShip/scene.gltf';
-
+        // PADDLE COLORS
+        this.paddleDefaultColor = new THREE.Color(0xffffff);
+        this.paddleDashingColor = new THREE.Color(0xf4ff69);
+        this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
     }
     initMap()
     {
@@ -2013,6 +1985,9 @@ class SpaceMap {
 
         this.arena.paddleLeft.light.power = this.arena.paddleLeft.defaultLight;
         this.arena.paddleRight.light.power = this.arena.paddleRight.defaultLight;
+
+        this.arena.paddleLeft.material = this.paddleMaterial;
+        this.arena.paddleRight.material = this.paddleMaterial;
 
         this.arena.paddleLeft.particlesColor = this.particleColor;
         this.arena.paddleRight.particlesColor = this.particleColor;
@@ -2073,6 +2048,9 @@ class SkyMap {
             envMapIntensity: 2,
             side: THREE.DoubleSide
         });
+        this.paddleDefaultColor = new THREE.Color(0xff957b);
+        this.paddleDashingColor = new THREE.Color(0xf4ff69);
+        this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
         this.reflectiveBallMaterial = new THREE.MeshStandardMaterial({
             color: 0xfd739d,
             roughness: 0.0,
@@ -2118,7 +2096,7 @@ class SkyMap {
             this.arena.paddleRight.changeBlenderModel(this.modelName, 0.003, 1, 2);
         }
         this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
-        this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial;
+        this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial.clone();
         this.arena.paddleLeft.particlesColor = this.particleColor;
         this.arena.paddleRight.particlesColor = this.particleColor;
         this.arena.ball.material = this.reflectiveBallMaterial;
@@ -2163,7 +2141,14 @@ class DragonMap {
         this.mixer;
         this.particleColor = new THREE.Color(0xffff00)
         this.modelName = '../../static/game/models/dragonglb.glb';
-
+          // LOAD THE GLB MODEL OF MOUNTAINS
+        const loader = new GLTFLoader();
+        loader.load( '../../static/game/models/cuvetteDarkMode.glb', ( gltf ) => {
+            this.mountains = gltf.scene;
+            this.mountains.scale.set( 13, 13, 13);
+            this.mountains.position.set( 0, -this.arena.height * 120, 0 );
+            this.mountains.rotation.y = Math.PI;
+        });        
         // LAVA MATERIAL
         const textureLoader = new THREE.TextureLoader();
 
@@ -2200,16 +2185,19 @@ class DragonMap {
             side: THREE.DoubleSide
         });
         this.paddleMaterial = new THREE.MeshStandardMaterial({
-            color: 0xffffff,
+            color: 0xaaaaaa,
             roughness: 0.0,
             metalness: 1.4,
             envMap: this.redCubeMapTexture,
-            envMapIntensity: 3,
+            envMapIntensity: 1,
             side: THREE.DoubleSide
         });
+        this.paddleDefaultColor = new THREE.Color(0xaaaaaa);
+        this.paddleDashingColor = new THREE.Color(0xf4ff69);
+        this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+
         this.ballMaterial = new THREE.MeshStandardMaterial({
             color: 0xF3BB0B,
-            // color: 0x000000,
             roughness: 0.0,
             metalness: 0.8,
             envMap: this.redCubeMapTexture,
@@ -2231,6 +2219,7 @@ class DragonMap {
         this.lavaGround = new THREE.Mesh( groundGeometry, this.floorMaterial );
         this.lavaGround.rotation.x =  -Math.PI / 2;
         this.lavaGround.position.y -= 30;
+        this.ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
     }
     initMap()
     {
@@ -2238,20 +2227,20 @@ class DragonMap {
             return;
         this.mapActive = true;
         this.scene.background = this.redCubeMapTexture;
-        this.scene.add(this.lavaGround);
+        this.scene.add(this.lavaGround, this.mountains);
         this.arena.bloomPass.strength = 0.7;
         this.arena.material = this.arenaMaterial;
-
+        this.mountains.children.material = this.floorMaterial;
         this.arena.ball.material = this.ballMaterial;
         this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
-        this.arena.paddleLeft.paddleMesh.material = this.paddleMaterial;
-        this.arena.paddleRight.paddleMesh.material = this.paddleMaterial;
+        this.arena.paddleLeft.material = this.paddleMaterial;
+        this.arena.paddleRight.material = this.paddleMaterial;
         this.arena.paddleLeft.particlesColor = this.particleColor;
         this.arena.paddleRight.particlesColor = this.particleColor;
         this.arena.paddleRight.light.color.set(0xF3BB0B);
         this.arena.paddleLeft.light.color.set(0xF3BB0B);
-        // this.arena.paddleRight.light.color.set(0xff0000);
-        // this.arena.paddleLeft.light.color.set(0xff0000);
+        this.arena.paddleRight.light.intensity /= 10;
+        this.arena.paddleLeft.light.intensity /= 10;
 
         if (this.arena.paddleLeft.modelName != this.modelName)
         {
@@ -2266,15 +2255,18 @@ class DragonMap {
         if (this.arena.paddleRight.mixer != undefined)
             this.arena.paddleRight.mixer.update(0.01)
         this.uniforms[ 'time' ].value += 0.01;
+        this.mountains.rotation.y += 0.0003;
     }
     closeMap()
     {
         this.mapActive = false;
-        this.scene.remove(this.lavaGround);
+        this.scene.remove(this.lavaGround, this.mountains);
         this.arena.material = this.arena.defaultMaterial;
         this.arena.ball.material = this.arena.ball.defaultMaterial;
         this.arena.paddleLeft.paddleMesh.material = this.arena.paddleLeft.defaultMaterial;
         this.arena.paddleRight.paddleMesh.material = this.arena.paddleRight.defaultMaterial;
+        this.arena.paddleLeft.light.intensity *= 10;
+        this.arena.paddleRight.light.intensity *= 10;
         this.arena.paddleLeft.light.color.set(this.arena.paddleLeft.defaultLightColor);
         this.arena.paddleRight.light.color.set(this.arena.paddleRight.defaultLightColor);
     }
@@ -2686,8 +2678,8 @@ class GameState {
         this.highGraphics = false;
         this.spaceMap = true;
         this.oceanMap = false;
-        this.driftMap = false;
-        this.hellMap = false;
+        this.skyMap = false;
+        this.dragonMap = false;
     }
     switchLoadingToGame() {
         // Switches loading to false and inGame to true to account for the animation time

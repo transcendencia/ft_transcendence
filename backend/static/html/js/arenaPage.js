@@ -167,7 +167,7 @@ export function switchToGame() {
 const rsContainer = document.querySelector('.rightSideContainer');
 const loginPage = document.querySelector('.loginPage');
 const planetPanel = document.querySelector('.planetPanel');
-const startButton = document.querySelector('.startButton');
+const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
     switchToGame();
 });
@@ -205,10 +205,10 @@ function isBot(i) {
 }
 
 function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
-    clonedImg.src = '../assets/icons/whiteCross.png';
+    clonedImg.src = '../../../static/html/assets/icons/whiteCross.png';
     profilePic.style.borderColor = 'red';
     userInfoCont.style.borderColor = 'red';
-    userInfoCont.style.fontSize = '25px';
+    userInfoCont.style.fontSize = '20px';
     userInfoCont.style.fontFamily = 'computer';
     userInfoCont.childNodes[1].textContent = getTranslatedText('removePlayer');
 }

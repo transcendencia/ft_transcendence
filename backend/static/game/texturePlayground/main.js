@@ -161,7 +161,7 @@ let planeGeometry = new THREE.BoxGeometry(10, 10, 10);
 let planeMaterial = new THREE.ShaderMaterial({
     uniforms: {
         uTime: { value: 0 },
-        cameraPos: { value: new THREE.Vector3(0,0,-3) },
+        cameraPos: { value: new THREE.Vector3(0.5,-1.2,-15) },
         cameraDir: { value: new THREE.Vector3(0.4,0.4,0) }
     },
     vertexShader: rayMarchingVertexShader,

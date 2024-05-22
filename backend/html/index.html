@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{% static '../static/html/css/escapePage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/arenaPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/SignUpPage.css' %}">
+    <link rel="stylesheet" href="{% static '../static/html/css/userPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/game/style/style.css' %}">
     <script type="importmap">
         {
@@ -26,7 +27,7 @@
 </head>
 <body>
   <!-- LOGIN PAGE -->
-  <div class="loginPage page">
+    <div class="loginPage page">
     <div class="title">
       TRANSCENDENCIA
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
@@ -84,39 +85,39 @@
   <div class="signUpPage page">
     <form id="signupForm" method="post" action="signup/">
       {% csrf_token %}
-    <div class="perspective">
-      Sign Up
-      <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
-      <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
-        Login
-      <div class="textBar">
-        <input class="text-input" style="font-size: 30px;" spellcheck="false" ></input>
-        <img src="{%static 'html/assets/icons/frame.png' %}">
+      <div class="perspective">
+        Sign Up
+        <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
+        <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
+          Login
+        <div class="textBar">
+          <input class="text-input" name="username" style="font-size: 30px;" spellcheck="false" ></input>
+          <img src="{%static 'html/assets/icons/frame.png' %}">
+        </div>
       </div>
-    </div>
-    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
-        Password
-      <div class="textBar">
-        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
-        <img src="{%static 'html/assets/icons/frame.png' %}">
+      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
+          Password
+        <div class="textBar">
+          <input class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password"></input>
+          <img src="{%static 'html/assets/icons/frame.png' %}">
+        </div>
       </div>
-    </div>
-    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
-      confirm password
-      <div class="textBar">
-        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
-        <img src="{%static 'html/assets/icons/frame.png' %}">
+      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
+        confirm password
+        <div class="textBar">
+          <input class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password"></input>
+          <img src="{%static 'html/assets/icons/frame.png' %}">
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="perspective2">
-    <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button>
-  </div>
-</form>
+      </div>
+        <div class="perspective2">
+        <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button>
+      </div>
+    </form>
     <div class="backButton tinyWhiteShadowfilter">
       Back to login
     </div>
-</div>
+  </div>
 
   <!-- SIGN UP PAGE -->
   <!-- <div class="signUpPage page">
@@ -327,10 +328,49 @@
                 <div class="buttonCont"></div>
               </div>
             </div>
-            <div id="startText" class="startButton">Start</div>
+            <div id="startText" class="redButton">Start</div>
         </div>
       </div>
     </div> 
+
+    <!-- USER PLANET -->
+    <div class="planetPanel">
+      <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
+      <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
+      <div class="background blueShadowfilter" style="flex-direction: column;">
+        <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white; margin-bottom: -10px; margin-top: -10px;"> Profile </div>
+          <div class="userPage">
+            <div class="rightColumn" style="width: 75%;">
+              <div class="aboveStatsBlock">
+                <div class="userBlock"></div>
+                <div class="historyBlock"></div>
+              </div>
+              <div class="statsBlock"></div>
+            </div>
+      <div class="leftColumn" style="width: 22%; height: 100%;">
+        <div id= "userlistText" style="font-size: 20px; font-family: 'space'; color: white;"> Friends List </div>
+        <div class="userlistBackground" style="height: 95%; width: 100%;">
+          <div class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
+            <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
+            <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
+          </div>
+          <div class="userTile">
+            <div class="imgContainer"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
+            <div class="textContainer">Vatiroi</div>
+          </div>
+          <div class="userTile"> 
+            <div class="imgContainer"><img src="{% static 'html/assets/icons/BR_NU.png' %}"></div>
+            <div class="textContainer">Rise</div>
+          </div>
+          <div class="userTile"> 
+            <div class="imgContainer"><img src="{% static 'html/assets/icons/BR_NU.png' %}"></div>
+            <div class="textContainer">Sylvain</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
     <!-- ESCAPE PAGE -->
     <div class="coloredPanel"></div>
@@ -345,7 +385,7 @@
           <div class="languageColumn" id="graphicsText" style="width: 50%; height: 40%;">
             <div class="languageSettings">
             <div class="graphicsIcon" id="graphicsIcon1">Simple</div>
-            <div class="graphicsIcon glow" id="graphicsIcon2">Classic</div>
+            <div class="graphicsIcon redGlow" id="graphicsIcon2">Classic</div>
             <div class="graphicsIcon" id="graphicsIcon3">Detailed</div>
             </div>
             <div class="separator"></div>
@@ -377,9 +417,10 @@
           <img src="{% static 'html/assets/icons/ES_NU.png' %}">
         </div>
         AtomiK
-    </div>
-    </div>
       </div>
+    </div>
+      <div class="redButton" id="disconnectButton" style="margin-top: -30px;width: 35%; height: 8%;">Disconnect</div>
+    </div>
     </div>
 
     <!-- GAME STUFF -->

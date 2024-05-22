@@ -231,12 +231,12 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !lobbyStart) {
-        const token = localStorage.getItem('auth_token');
-        console.log(token);
-        if (token) {
+        // const token = localStorage.getItem('auth_token');
+        // console.log(token);
+        // if (token) {
             showPage('none');
             startAnimation();
-        }
+        // }
     }
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
