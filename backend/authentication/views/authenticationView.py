@@ -25,6 +25,8 @@ def login_page(request):
     username = request.POST.get("username")
     password = request.POST.get("password")
   
+    print(username)
+    print(password)
     user = authenticate(username=username, password=password)
     if user is not None:
       # login(request, user)
@@ -45,11 +47,14 @@ def signup(request):
   print("je suis dans sign up")
   serializer = SignupSerializer(data=request.data)
   if serializer.is_valid():
-    serializer.save()
-    user = User.objects.get(username=request.data['username'])
-    user.set_password(request.data['password'])
+    user_data = serializer.validated_data
+    user = User(username=user_data['username'])
+    user.set_password(user_data['password'])
+    print(user_data['username'])
+    print(user_data['password'])
+    print("Utilisateru cree")
     user.save()
-    return Response({"ok": True, "user": serializer.data})
+    return Response({"ok": True})
   print(serializer.errors)
   return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -69,7 +69,6 @@ languageIcons.forEach(function(icon) {
         TranslateAllTexts();
         languageIcons.forEach(function(otherIcon) {
             if (otherIcon != icon) {
-                removeGlow(otherIcon.id);
                 otherIcon.querySelector('.flag').style.opacity = 0;
                 otherIcon.querySelector('.icon').style.opacity = 1;
             }
@@ -79,6 +78,7 @@ languageIcons.forEach(function(icon) {
     if (icon.id === currentLanguage) {
         icon.querySelector('.flag').style.opacity = 1;
         icon.querySelector('.icon').style.opacity = 0;
+        console.log("Je choisi anglais")
     }
 
     icon.addEventListener('mouseenter', function () {
@@ -101,6 +101,8 @@ loginForm.addEventListener('submit', handleLogin);
 // Handle form submission
 function handleLogin(event) {
     event.preventDefault();
+
+    console.log(currentLanguage);
 
     const formData = new FormData(this);
     fetch('login_page/', {

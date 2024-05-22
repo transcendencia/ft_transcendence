@@ -1,0 +1,13 @@
+----ERROR----
+403 -> quand je cree un utilisateur mais pas tout le temps
+
+
+----USEFUL COMMAND----
+***Create a superuser to acces django admin page***
+python manage.py createsuperuser
+
+----QUESTION----
+-> Est ce que je stocke le langages dans le localStorage?
+
+----USER----
+-> Ajouter langages, email, nom, prenom
