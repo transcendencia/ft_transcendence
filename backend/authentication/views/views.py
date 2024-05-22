@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth import login, authenticate
-from . import forms
+from .. import forms
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render, redirect
-from .models import Member
-from .forms import MemberForm
+from ..models import Member
+from ..forms import MemberForm
 
 def add_member(request):
   if request.method == 'POST':
