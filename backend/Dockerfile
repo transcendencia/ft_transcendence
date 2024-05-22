@@ -21,6 +21,9 @@ RUN	pip install --upgrade pip
 
 RUN pip install --no-cache-dir -r ./requirements.txt
 
+RUN pip install djangorestframework
+
+RUN pip install django-password-validators
 #RUN pip install django
 
 #RUN pip install whitenoise
