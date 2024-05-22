@@ -1308,13 +1308,13 @@ class Paddle extends THREE.Group {
     }
     animatePaddle(arena)
     {
-        if (doubleKeyPress[this.rightKey] && this.canDash) {
+        if (doubleKeyPress[this.rightKey] && this.canDash && arena.game.powerUpsActivated) {
             this.canDash = false;
             this.isDashingRight = true;
             this.dash(arena.width * 20, false);
             doubleKeyPress[this.rightKey] = false;
         }
-        if (doubleKeyPress[this.leftKey] && this.canDash) {
+        if (doubleKeyPress[this.leftKey] && this.canDash && arena.game.powerUpsActivated) {
             this.canDash = false;
             this.isDashingLeft = true;
             this.dash(arena.width * -20, true);
@@ -1331,7 +1331,7 @@ class Paddle extends THREE.Group {
             if (arena.ball.isSupercharging && (this.position.z * arena.ball.position.z > 0))
                 arena.ball.position.x -= this.moveSpeed * arena.length;
         }
-        if (keyDown[this.chargeKey])
+        if (keyDown[this.chargeKey] && arena.game.powerUpsActivated)
         {
             this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleSuperchargingColor);
             this.isPowered = true;
@@ -1342,6 +1342,8 @@ class Paddle extends THREE.Group {
     dash(range, isLeft)
     {
         let targetX;
+        if (!this.arena.game.powerUpsActivated)
+            return ;
         this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDashingColor);
         targetX = this.position.x + range * this.moveSpeed;
         if (!isLeft) {
@@ -1624,6 +1626,13 @@ class Ball extends THREE.Mesh {
                 this.acceleration = this.accelerationStrength * this.speedZ;
             else if (paddle.isDashingLeft)
                 this.acceleration = -this.accelerationStrength * this.speedZ;
+            else if (this.arena.game.effectsOnly)
+            {
+                if (Math.random() > 0.5)
+                    this.acceleration = this.accelerationStrength * this.speedZ;
+                else
+                    this.acceleration = -this.accelerationStrength * this.speedZ;
+            }
             else
                 this.acceleration = 0;
             this.updateSpeedBar();
@@ -1686,6 +1695,13 @@ class Ball extends THREE.Mesh {
                 this.acceleration = -this.accelerationStrength * this.speedZ;
             else if (paddle.isDashingLeft)
                 this.acceleration = this.accelerationStrength * this.speedZ;
+            else if (this.arena.game.effectsOnly)
+            {
+                if (Math.random() > 0.5)
+                    this.acceleration = this.accelerationStrength * this.speedZ;
+                else
+                    this.acceleration = -this.accelerationStrength * this.speedZ;
+            }
             else
                 this.acceleration = 0;
             this.updateSpeedBar();
@@ -2676,7 +2692,9 @@ class Game {
         this.rightScore = 0;
         this.maxScore = 3;
         this.isPlaying = false;
+        this.effectsOnly = true;
         this.isOver = false;
+        this.powerUpsActivated = true;
         this.thirdPlayer = true;
         this.arena = arena;
         this.loserPaddle;
