@@ -52,7 +52,7 @@ def signup(request):
     user.set_password(user_data['password'])
     print(user_data['username'])
     print(user_data['password'])
-    print("Utilisateru cree")
+    print("Utilisateur cree")
     user.save()
     return Response({"ok": True})
   print(serializer.errors)
