@@ -23,32 +23,36 @@ export function getTranslatedText(key) {
     }
 }
 
-function addGlow(elementId) {
+function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-        element.classList.add('glow');
+        element.classList.add(glow);
 }
 
-// Function to remove glowing effect from an element
-function removeGlow(elementId) {
+function removeGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-        element.classList.remove('glow');
+        element.classList.remove(glow);
 }
 
-
-
-// Get all elements with the class "languageIcon"
-var languageIcons = document.querySelectorAll('.languageIcon');
-
+let languageIcons = document.querySelectorAll('.languageIcon');
+let graphicsIcons = document.querySelectorAll('.graphicsIcon');
 const signupHereButton = document.querySelector('.actionCont');
-
-
 signupHereButton.addEventListener('click', function() {
     moveCameraToFrontOfCockpit();
 });
 
 showPage('loginPage');
+
+graphicsIcons.forEach(function(icon) {
+    icon.addEventListener('click', function () {
+        addGlow(icon.id, 'redGlow');
+        graphicsIcons.forEach(function(otherIcon) {
+        if (otherIcon != icon)
+            removeGlow(otherIcon.id, 'redGlow');
+        });
+    });
+});
 
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
@@ -60,7 +64,7 @@ languageIcons.forEach(function(icon) {
             alien1.visible = true;
             alien2.visible = false;
         }
-        addGlow(icon.id);
+        addGlow(icon.id, 'glow');
         currentLanguage = icon.id;
         if (icon.id.length === 3)
             currentLanguage = icon.id.slice(0, 2);
@@ -69,6 +73,7 @@ languageIcons.forEach(function(icon) {
         TranslateAllTexts();
         languageIcons.forEach(function(otherIcon) {
             if (otherIcon != icon) {
+                removeGlow(otherIcon.id, 'glow');
                 otherIcon.querySelector('.flag').style.opacity = 0;
                 otherIcon.querySelector('.icon').style.opacity = 1;
             }
@@ -111,7 +116,6 @@ function handleLogin(event) {
     .then(response => response.json())
     .then(data => {
         if (data.status == "succes")
-            console.log("auth reussi");
             localStorage.setItem("auth_token", data.token)
         document.getElementById('messageContainer').innerText = data.message;
     })

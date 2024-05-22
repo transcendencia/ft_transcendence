@@ -33,10 +33,12 @@
         
         "pause": "Pause",
         "escapeLanguage": "language",
+        "graphicsTitle": "Graphics",
         "graphicsText1": "Simple",
         "graphicsText2": "Classic",
         "graphicsText3": "Detailed",
         "loggedAs": "Currently logged as :",
+        "disconnect": "Disconnect",
 
         "userlist": "User list",
         "chooseProfile": "Choose a profile",
@@ -82,10 +84,12 @@
 
         "pause": "Pausa",
         "escapeLanguage": "idioma",
+        "graphicsTitle": "Graficos",
         "graphicsText1": "Simple",
         "graphicsText2": "Clasico",
         "graphicsText3": "Detallado",
         "loggedAs": "conectado como :",
+        "disconnect": "Desconectar",
         
         "userlist": "Lista de usuarios",
         "chooseProfile": "Elige un perfil",
@@ -131,10 +135,12 @@
 
         "pause": "Pause",
         "escapeLanguage": "langue",
+        "graphicsTitle": "Graphismes",
         "graphicsText1": "Simple",
         "graphicsText2": "Classique",
         "graphicsText3": "Detaille",
         "loggedAs": "Connecte en tant que :",
+        "disconnect": "Deconnecter",
 
         "userlist": "Liste des utilisateurs",
         "chooseProfile": "Choisis un profile",

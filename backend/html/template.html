@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<body>
+
+<table border='1'>
+    <tr>
+      <th>username</th>
+      <th>Position</th>
+    </tr>
+    {% for x in mymembers|dictsort:"position"%}
+      <tr>
+        <td>{{ x.username }}</td>
+        <td>{{ x.position }}</td>
+      </tr>
+    {% endfor %}
+</table>
+
+<ul>
+    {% for x in mymembers %}
+      <li>{{ x.username }}</li>
+    {% endfor %}
+</ul>
+
+{% with username="Tobias" %}
+<h1>Hello {{ username }}, how are you?</h1>
+{% endwith %}
+
+<ul>
+    {% for x in mymembers %}
+        {% if 'paul' in x.username %}
+            <h1>Hello</h1>
+        {% else %}
+            <h1>Bye</h1>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+{% if 'paul' in mymembers.username %}
+  <h1>Hello</h1>
+{% else %}
+  <h1>Bye</h1>
+{% endif %}
+
+
+<body>
+<div class="root">
+  <span class="title">Judith</span>
+    <div class="lv1 level">
+      <div class="item">
+        <span class="title">Père</span>
+        <div class="lv2 level">
+          <div class="item">
+            <span class="title">Grand-Père</span>
+          </div>
+          <div class="item">
+            <span class="title">Grand-Mère</span>
+          </div>
+        </div>
+      </div>
+
+    <div class="item">
+      <span class="title">Mère</span>
+          <div class="lv2 level">
+            <div class="item">
+              <span class="title">Grand-Père</span>
+            </div>
+            <div class="item">
+              <span class="title">Grand-Mère</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</body>
+</html>

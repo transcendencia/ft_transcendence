@@ -139,8 +139,13 @@ body {
 }
 
 .glow {
-    border-color: #3777ff; /* Change border color to the shine color */
-    box-shadow: 0 0 100px #0724ff; /* Add a white shadow */
+    border-color: #3777ff; 
+    box-shadow: 0 0 100px #0724ff; 
+}
+
+.redGlow {
+    border-color: #ff3737; 
+    box-shadow: 0 0 100px #ff0707; 
 }
 
 .parallelogram {

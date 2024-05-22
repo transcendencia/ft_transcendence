@@ -54,7 +54,9 @@ const EscapeLanguageText = document.getElementById('EscapeLanguageText');
 const graphics1 = document.getElementById('graphicsIcon1');
 const graphics2 = document.getElementById('graphicsIcon2');
 const graphics3 = document.getElementById('graphicsIcon3');
+const graphicsTitle = document.getElementById('graphicsText');
 const currentlyLoggedAs = document.querySelector('.loggedAs');
+const disconnectButton = document.getElementById('disconnectButton');
 
 function translateEscapePageTexts() {
     pauseTitle.childNodes[2].textContent = getTranslatedText('pause');
@@ -63,6 +65,8 @@ function translateEscapePageTexts() {
     graphics2.textContent = getTranslatedText('graphicsText2');
     graphics3.textContent = getTranslatedText('graphicsText3');
     currentlyLoggedAs.childNodes[0].textContent = getTranslatedText('loggedAs');
+    graphicsTitle.childNodes[4].textContent = getTranslatedText('graphicsTitle');
+    disconnectButton.textContent = getTranslatedText('disconnect');
 }
 
 export function TranslateAllTexts() {
