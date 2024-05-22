@@ -37,7 +37,8 @@ def login_page(request):
       print("J'existe pas")
       return  Response({'status': "failure", 'message': "Username and/or password invalid"})
   except Exception as e:
-        return Response({'status': "error", 'message': str(e)})
+      logger.error("An error occurred during login: %s", str(e))
+      return Response({'status': "error", 'message': str(e)})
 
 #ajouter message d'erreur quand user existe deja
 ##checker que username pas deja pris
