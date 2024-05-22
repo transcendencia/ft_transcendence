@@ -1,0 +1,49 @@
+.userPage {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+    height: 93%;
+    width: 100%;
+}
+
+.statsBlock {
+    border-radius: 5px;
+    border: 4px solid #3777ff;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 55%;
+    width: 98%;
+}
+
+.aboveStatsBlock {
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    height: 55%;
+    width: 98%;
+}
+
+.historyBlock {
+    border-radius: 5px;
+    border: 4px solid #3777ff;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 90%;
+    width: 48%;
+}
+
+.userBlock {
+    background-color: #000f61b2;
+    border-radius: 5px;
+    border: 4px solid #3777ff;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 90%;
+    width: 48%;
+}

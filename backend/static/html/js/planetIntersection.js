@@ -59,7 +59,6 @@ function displayPlanetDesc(planet) {
 function stopAnimation() {
     timeouts.forEach(timeout => clearTimeout(timeout));
     timeouts = [];
-    console.log("stop");
 }
 
 export function getPlanetIntersection() {
