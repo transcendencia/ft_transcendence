@@ -78,7 +78,6 @@ languageIcons.forEach(function(icon) {
     if (icon.id === currentLanguage) {
         icon.querySelector('.flag').style.opacity = 1;
         icon.querySelector('.icon').style.opacity = 0;
-        console.log("Je choisi anglais")
     }
 
     icon.addEventListener('mouseenter', function () {
@@ -112,6 +111,7 @@ function handleLogin(event) {
     .then(response => response.json())
     .then(data => {
         if (data.status == "succes")
+            console.log("auth reussi");
             localStorage.setItem("auth_token", data.token)
         document.getElementById('messageContainer').innerText = data.message;
     })
