@@ -32,12 +32,12 @@
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
     </div>
     <div class="inputContainer">
-      <form id="loginForm" method="post" action="login/">
+      <form id="loginForm" method="post" action="login_page/">
         {% csrf_token %}
         <div class="titleText" id="loginText">
           - Login -
           <div class="textBar">
-            <input class="text-input" spellcheck="false"></input>
+            <input class="text-input" name="username" spellcheck="false"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
           <div class="littleMsgCont">
@@ -49,7 +49,7 @@
         <div class="titleText" id="passwordText">
           - Password -
           <div class="textBar">
-            <input class="text-input" spellcheck="false" type="password"></input>
+            <input class="text-input" name="password" spellcheck="false" type="password"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
           <div class="littleMsgCont">
@@ -83,6 +83,7 @@
   <!-- SIGN UP PAGE -->
   <div class="signUpPage page">
     <form id="signupForm" method="post" action="signup/">
+      {% csrf_token %}
       <div class="perspective">
         Sign Up
         <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
@@ -107,17 +108,15 @@
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
-    </div>
-    <div class="perspective2">
+      </div>
+        <div class="perspective2">
         <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button>
+      </div>
+    </form>
+    <div class="backButton tinyWhiteShadowfilter">
+      Back to login
     </div>
-  </form>
-  <div class="backButton tinyWhiteShadowfilter">
-    Back to login
   </div>
-</div>
-
-
 
   <!-- CANVAS -->
   <div id="a">
