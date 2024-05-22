@@ -10,4 +10,7 @@ venv/
 #pycache
 /backend/backend/__pycache__/
 
-/backend/authentication/
+
+#production files
+backend/productionfiles/
+
