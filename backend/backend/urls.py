@@ -24,5 +24,4 @@ import authentication.views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', authentication.views.login_page, name='login'),
-    path('game/', authentication.views.game, name='game'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
