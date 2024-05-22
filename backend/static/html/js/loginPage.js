@@ -106,8 +106,8 @@ languageIcons.forEach(function(icon) {
 });
 
 // Add event listener to the loginForm
-const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', handleLogin);
+// const loginForm = document.getElementById('loginForm');
+// loginForm.addEventListener('submit', handleLogin);
 
 // Handle form submission
 function handleLogin(event) {
