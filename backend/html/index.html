@@ -33,26 +33,33 @@
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
     </div>
     <div class="inputContainer">
-      <div class="titleText" id="loginText">
-        - Login -
-        <div class="textBar">
-          <input class="text-input" spellcheck="false"></input>
-          <img src="{%static 'html/assets/icons/frame.png' %}">
-        </div>
-        <div class="littleMsgCont">
-          <div class="newToTheGame">New to the game ?
-            <div class="actionCont tinyBlueShadowfilter">Sign Up Here</div>
+      <form id="loginForm" method="post" action="login_page/">
+        {% csrf_token %}
+        <div class="titleText" id="loginText">
+          - Login -
+          <div class="textBar">
+            <input class="text-input" name="username" spellcheck="false"></input>
+            <img src="{%static 'html/assets/icons/frame.png' %}">
+          </div>
+          <div class="littleMsgCont">
+            <div class="newToTheGame">New to the game ?
+              <div class="actionCont tinyBlueShadowfilter">Sign Up Here</div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="titleText" id="passwordText">
-        - Password -
-        <div class="textBar">
-          <input class="text-input" spellcheck="false" type="password"></input>
-          <img src="{%static 'html/assets/icons/frame.png' %}">
+        <div class="titleText" id="passwordText">
+          - Password -
+          <div class="textBar">
+            <input class="text-input" name="password" spellcheck="false" type="password"></input>
+            <img src="{%static 'html/assets/icons/frame.png' %}">
+          </div>
+          <div class="littleMsgCont">
+            <div class="actionCont tinyBlueShadowfilter">Forgotten password ?</div>
+          </div>
         </div>
-      </div>
-      <div class="errorMessageCont"></div>
+        <div id= "messageContainer" class="errorMessageCont"></div>
+        <button type="submit" style="display: none;"></button>
+      </form>
     </div>
     <div class="languageColumn" id="loginLanguageText">
       <div class="languageSettings">
@@ -76,40 +83,41 @@
 
   <!-- SIGN UP PAGE -->
   <div class="signUpPage page">
-    <div class="perspective">
-      Sign Up
-      <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
-      <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
-        Login
-      <div class="textBar">
-        <input class="text-input" style="font-size: 30px;" spellcheck="false" ></input>
-        <img src="{%static 'html/assets/icons/frame.png' %}">
+    <form id="signupForm" method="post" action="signup/">
+      {% csrf_token %}
+      <div class="perspective">
+        Sign Up
+        <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
+        <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
+          Login
+        <div class="textBar">
+          <input class="text-input" name="username" style="font-size: 30px;" spellcheck="false" ></input>
+          <img src="{%static 'html/assets/icons/frame.png' %}">
+        </div>
       </div>
-    </div>
-    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
-        Password
-      <div class="textBar">
-        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
-        <img src="{%static 'html/assets/icons/frame.png' %}">
+      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
+          Password
+        <div class="textBar">
+          <input class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password"></input>
+          <img src="{%static 'html/assets/icons/frame.png' %}">
+        </div>
       </div>
-    </div>
-    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
-      confirm password
-      <div class="textBar">
-        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
-        <img src="{%static 'html/assets/icons/frame.png' %}">
+      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
+        confirm password
+        <div class="textBar">
+          <input class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password"></input>
+          <img src="{%static 'html/assets/icons/frame.png' %}">
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="perspective2">
-      <div class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</div>
-  </div>
+      </div>
+        <div class="perspective2">
+        <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button>
+      </div>
+    </form>
     <div class="backButton tinyWhiteShadowfilter">
       Back to login
     </div>
-</div>
-
-
+  </div>
 
   <!-- CANVAS -->
   <div id="a">
