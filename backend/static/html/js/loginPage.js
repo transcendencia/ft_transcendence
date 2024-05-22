@@ -1,6 +1,6 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
-import { alien1, alien2 } from "./objs.js";
+import { alien1, alien2, alien3} from "./objs.js";
 import { TranslateAllTexts } from "./translatePages.js";
 
 export let currentLanguage = 'en';
@@ -59,10 +59,17 @@ languageIcons.forEach(function(icon) {
         if (icon.id === 'fr' || icon.id == 'fr1') {
             alien1.visible = false;
             alien2.visible = true;
+            alien3.visible = false;
         }
         if (icon.id === 'en'|| icon.id == 'en1') {
             alien1.visible = true;
             alien2.visible = false;
+            alien3.visible = false;
+        }
+        if (icon.id === 'es'|| icon.id == 'es1') {
+            alien1.visible = false;
+            alien2.visible = false;
+            alien3.visible = true;
         }
         addGlow(icon.id, 'glow');
         currentLanguage = icon.id;
