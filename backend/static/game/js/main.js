@@ -2687,18 +2687,29 @@ class Bot {
 }
 
 class Game {
-    constructor(arena) {
-        this.leftScore = 0;
-        this.rightScore = 0;
+    constructor() {
+
+        // STUFF FOR ME, DONT TOUCH
         this.maxScore = 3;
-        this.isPlaying = false;
-        this.effectsOnly = true;
         this.isOver = false;
+        this.isPlaying = false;
+
+        // INPUT
+        this.effectsOnly = false;
         this.powerUpsActivated = true;
         this.thirdPlayer = true;
-        this.arena = arena;
+        // next variables are all to be inputed in string format
+        this.user1; // User1 is the left paddle
+        this.user2; // User2 is the right paddle
+        this.user3; // User3 is the third player
+        this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
+        this.graphics; // (options = 'low', 'medium', 'high')
+        
+        // OUTPUT
         this.loserPaddle;
         this.winnerPaddle;
+        this.leftScore = 0;
+        this.rightScore = 0;
     }
 }
 
@@ -2708,14 +2719,7 @@ class GameState {
         this.loading = true;
         this.inGame = false;
         this.inLobby = false;
-        this.powerUps = false;
-        this.lowGraphics = false;
-        this.mediumGraphics = true;
-        this.highGraphics = false;
-        this.spaceMap = true;
-        this.oceanMap = false;
-        this.skyMap = false;
-        this.dragonMap = false;
+
     }
     switchLoadingToGame() {
         // Switches loading to false and inGame to true to account for the animation time
@@ -2993,3 +2997,5 @@ function animate()
     stats.time = performance.now();
 }
 animate();
+
+export {arena1}; // access the variable arena1.game :D
