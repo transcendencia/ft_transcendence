@@ -84,6 +84,44 @@
   <div class="signUpPage page">
     <form id="signupForm" method="post" action="signup/">
       {% csrf_token %}
+    <div class="perspective">
+      Sign Up
+      <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
+      <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
+        Login
+      <div class="textBar">
+        <input class="text-input" style="font-size: 30px;" spellcheck="false" ></input>
+        <img src="{%static 'html/assets/icons/frame.png' %}">
+      </div>
+    </div>
+    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
+        Password
+      <div class="textBar">
+        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
+        <img src="{%static 'html/assets/icons/frame.png' %}">
+      </div>
+    </div>
+    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
+      confirm password
+      <div class="textBar">
+        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
+        <img src="{%static 'html/assets/icons/frame.png' %}">
+      </div>
+    </div>
+  </div>
+  <div class="perspective2">
+    <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button>
+  </div>
+</form>
+    <div class="backButton tinyWhiteShadowfilter">
+      Back to login
+    </div>
+</div>
+
+  <!-- SIGN UP PAGE -->
+  <!-- <div class="signUpPage page">
+    <form id="signupForm" method="post" action="signup/">
+      {% csrf_token %}
       <div class="perspective">
         Sign Up
         <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
@@ -116,7 +154,7 @@
     <div class="backButton tinyWhiteShadowfilter">
       Back to login
     </div>
-  </div>
+  </div> -->
 
   <!-- CANVAS -->
   <div id="a">
