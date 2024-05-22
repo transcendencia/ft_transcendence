@@ -45,6 +45,7 @@ def login_page(request):
 @permission_classes([AllowAny])  
 def signup(request):
   print("je suis dans sign up")
+  print(request.data)
   serializer = SignupSerializer(data=request.data)
   if serializer.is_valid():
     user_data = serializer.validated_data

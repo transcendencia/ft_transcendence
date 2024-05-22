@@ -1,11 +1,11 @@
 from django.urls import path
-from .views import authenticationView, views
+from .views import authentication, views
 
 urlpatterns = [
-	path('', authenticationView.index, name='index'),
+	path('', authentication.index, name='index'),
 
-    path('login_page/', authenticationView.login_page, name='login_page'),
-    path('signup/', authenticationView.signup, name='signup'),
+    path('login_page/', authentication.login_page, name='login_page'),
+    path('signup/', authentication.signup, name='signup'),
     path('tournament/', views.main, name='main'),
     path('add_player/', views.add_member, name='add_member'),
     path('new_tournament/', views.result, name='new_tournament'),
