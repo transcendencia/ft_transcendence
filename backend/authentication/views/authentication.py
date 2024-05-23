@@ -39,11 +39,12 @@ def login_page(request):
       if language != user.language and languageClicked :
         user.language = language
         user.save()
-      return  Response({'status': "succes", 'token': token.key, 'message': "You are now logged in!\nPress [E] to enter a new galaxie"}) #return languages pour mettre a jour currenLanguage00000000000000000
+      return  Response({'status': "succes", 'token': token.key, 'language': user.language, 'message': "You are now logged in!\nPress [E] to enter a new galaxie"}) #return languages pour mettre a jour currenLanguage00000000000000000
     else:
       print("J'existe pas")
       return  Response({'status': "failure", 'message': "Username and/or password invalid"})
   except Exception as e:
+      print(str(e))
       return Response({'status': "error", 'message': str(e)})
 
 #ajouter message d'erreur quand user existe deja
