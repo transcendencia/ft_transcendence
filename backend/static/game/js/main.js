@@ -240,7 +240,7 @@ class LoadingScreen {
             this.isAnimatingCamera = false;
             this.iterations = 0;
             this.loadingCompleted = true;
-            const duration = 2500;
+            const duration = 500;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -1249,7 +1249,9 @@ class Paddle extends THREE.Group {
                         // this.model.rotation.y = Math.PI / 2;
                     }
                     else if (rotationFactor == 2)
-                        this.model.rotation.y = 0;                        
+                        this.model.rotation.y = 0;       
+                    else if (rotationFactor == 3)
+                        this.model.rotation.y = Math.PI / 2;                 
 
                 }
                 else
@@ -1268,6 +1270,8 @@ class Paddle extends THREE.Group {
                     }
                     else if (rotationFactor == 2)
                         this.model.rotation.y = Math.PI;
+                    else if (rotationFactor == 3)
+                        this.model.rotation.y = -Math.PI / 2;
                 }
 
                 this.model.scale.set(scale, scale, scale); // Adjust scale as needed
