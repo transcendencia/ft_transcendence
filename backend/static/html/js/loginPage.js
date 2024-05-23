@@ -122,7 +122,9 @@ function handleLogin(event) {
     .then(data => {
         if (data.status == "succes")
             localStorage.setItem("auth_token", data.token)
+            currentLanguage = data.language;
         document.getElementById('messageContainer').innerText = data.message;
+        console.log(currentLanguage);
     })
     .catch(error => {
         console.error('Une erreur s\'est produite:', error);
