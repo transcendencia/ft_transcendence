@@ -13,3 +13,4 @@ venv/
 
 #production files
 backend/productionfiles/
+backend/migrations/
