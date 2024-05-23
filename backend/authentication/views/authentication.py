@@ -18,26 +18,32 @@ from ..serializers import UserSerializer, SignupSerializer
 def index(request):
   return render(request, 'index.html')
 
+# change user status to online
 @api_view(['POST'])
 @permission_classes([AllowAny])  
 def login_page(request):
   try:
     username = request.POST.get("username")
     password = request.POST.get("password")
-  
+    language = request.POST.get("language")
+    languageClicked = request.POST.get("languageClicked")
+
     print(username)
     print(password)
+    print(language)
+    print(languageClicked)
     user = authenticate(username=username, password=password)
     if user is not None:
-      # login(request, user)
       print(user)
       token, created = Token.objects.get_or_create(user=user)
-      return  Response({'status': "succes", 'token': token.key, 'message': "You are now logged in!\nPress [E] to enter a new galaxie"})
+      if language != user.language and languageClicked :
+        user.language = language
+        user.save()
+      return  Response({'status': "succes", 'token': token.key, 'message': "You are now logged in!\nPress [E] to enter a new galaxie"}) #return languages pour mettre a jour currenLanguage00000000000000000
     else:
       print("J'existe pas")
       return  Response({'status': "failure", 'message': "Username and/or password invalid"})
   except Exception as e:
-      logger.error("An error occurred during login: %s", str(e))
       return Response({'status': "error", 'message': str(e)})
 
 #ajouter message d'erreur quand user existe deja
@@ -64,6 +70,7 @@ def signup(request):
 # @permission_classes([IsAuthenticated])
 # def logout(request):
 
+#change user status to online
 #view logout --> bien pense a supprime le token d'authentication dans le local storage
 
 # @api_view(['POST'])

@@ -24,6 +24,8 @@ RUN pip install --no-cache-dir -r ./requirements.txt
 RUN pip install djangorestframework
 
 RUN pip install django-password-validators
+
+RUN python -m pip install Pillow
 #RUN pip install django
 
 #RUN pip install whitenoise

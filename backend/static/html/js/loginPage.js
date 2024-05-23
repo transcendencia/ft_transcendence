@@ -5,6 +5,7 @@ import { TranslateAllTexts } from "./translatePages.js";
 
 export let currentLanguage = 'en';
 let languageFile;
+var languageIconsClicked = false;
 
 fetch('../../static/html/languages.json')
     .then(response => response.json())
@@ -65,6 +66,7 @@ languageIcons.forEach(function(icon) {
             alien2.visible = false;
         }
         addGlow(icon.id, 'glow');
+        languageIconsClicked = true;
         currentLanguage = icon.id;
         if (icon.id.length === 3)
             currentLanguage = icon.id.slice(0, 2);
@@ -106,9 +108,12 @@ loginForm.addEventListener('submit', handleLogin);
 function handleLogin(event) {
     event.preventDefault();
 
-    console.log(currentLanguage);
+    // console.log(currentLanguage);
 
     const formData = new FormData(this);
+    formData.append('language', currentLanguage);
+    formData.append('languageClicked', languageIconsClicked);
+    languageIconsClicked = false;
     fetch('login_page/', {
         method: 'POST',
         body: formData
