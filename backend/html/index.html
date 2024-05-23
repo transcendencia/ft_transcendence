@@ -257,7 +257,7 @@
                 <div class="buttonTitle">
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1); z-index: 5;">
                 <div id="gamemodeText">
-                  game mode
+                  gamemode
                 </div>
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
                 </div>
@@ -318,15 +318,27 @@
                   <div class="statsModesBlock">
                    <p>statistics</p> 
                     <div class="statsModes">
-                      <div class="statMode" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
-                      <div class="statMode" style="border-radius: 0px;">Stat2</div>
-                      <div class="statMode" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
+                      <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
+                      <div class="statButton" style="border-radius: 0px;">Stat2</div>
+                      <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
                     </div>
                   </div>
                 </div>
                 <div class="rightBlock">
                 <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white;  margin-bottom: 4px">History</div>
-                  <div class="history"></div>
+                  <div class="history">
+                    <div class="matchBlock">
+                      <div class="userHI">
+                        <div class="imgFrame" style="height: 50px; width: 50px; margin-right: 5px"></div>
+                        abcdefghijkl
+                      </div>
+                      <div style="font-family: 'Space'; font-size: 30px; color: white;">3 - 2</div>
+                      <div class="userHI" style="justify-content: flex-end;">
+                        salut
+                        <div class="imgFrame" style="height: 50px; width: 50px; margin-left: 5px;"></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="statsBlock"></div>
@@ -471,6 +483,8 @@
     <script type="module" src="{% static 'html/js/arenaPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/loginPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/translatePages.js' %}"></script>
+    <script type="module" src="{% static 'html/js/userPage.js' %}"></script>
     <script type="module" src="{% static 'game/js/main.js' %}"></script>
+
 </body>
 </html>
