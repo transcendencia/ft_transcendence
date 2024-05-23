@@ -195,8 +195,10 @@ function    initGame(game) {
         game.map = 'dragonMap';
 
     // toggle third player
-    if (playerNb === 3)
+    if (playerNb === 2)
         game.thirdPlayer = true;
+    else
+        game.thirdPlayer = false;
 
     // prepare for initialization
     game.hasToBeInitialized = true;
