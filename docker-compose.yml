@@ -1,11 +1,11 @@
 services:
-  db:
+  database:
     container_name: postgres
-    init: true 
     networks:
       - ft_transcendence
     build:
-      dockerfile: database/Dockerfile
+      context: ./database
+      dockerfile: Dockerfile
     env_file: .env
     restart: always
     ports:
@@ -16,48 +16,35 @@ services:
       timeout: 10s
       retries: 3
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - database_volume:/var/lib/postgresql/data
 
-  
   server:
     container_name: server
-    init: true
     networks:
       - ft_transcendence
     build:
-      dockerfile: backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     env_file: .env
     restart: on-failure
     ports:
       - "8000:8000"
     depends_on:
-      db:
+      database:
         condition: service_healthy
     volumes:
       - ./backend/:/backend
 
-#ou placer le dossier montee dans le docker /backend docker 
-#changer de path
-  # adminer:
-  #   image: adminer:4.8.1
-  #   ports:
-  #     - 8080:8080
-  #   depends_on:
-  #     - db
-  #   restart: on-failure
-
 volumes:
-  server:
-    name: server
+  server_volume:
+    name: server_volume
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
       device: $PWD/backend
-  postgres_data:
-    name: postgres_data
-
-
+  database_volume:
+    name: database_volume
 
 networks:
   ft_transcendence:

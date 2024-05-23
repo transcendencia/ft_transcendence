@@ -4,20 +4,12 @@
 #VENV DIRECTORIES AND FILES
 venv/
 
-#DATABASE
-db.sqlite3
-
-/__pycache__/
-
 # .vscode
 *.vscode
 
-/db
-
-.env
-
-#note 
-note 
-
-#backend
+#pycache
 /backend/backend/__pycache__/
+
+
+#production files
+backend/productionfiles/
