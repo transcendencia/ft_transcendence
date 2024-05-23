@@ -1,10 +1,17 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
+import { moveCameraToBackOfCockpit }  from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2 } from "./objs.js";
 import { TranslateAllTexts } from "./translatePages.js";
 
+export let oldLocation = null;
 export let currentLanguage = 'en';
 let languageFile;
+
+//if is empty
+window.location.hash = '#loginPage';
+//else 
+// 
 
 fetch('../../static/html/languages.json')
     .then(response => response.json())
@@ -38,9 +45,23 @@ function removeGlow(elementId, glow) {
 let languageIcons = document.querySelectorAll('.languageIcon');
 let graphicsIcons = document.querySelectorAll('.graphicsIcon');
 const signupHereButton = document.querySelector('.actionCont');
-signupHereButton.addEventListener('click', function() {
+
+if (signupHereButton.addEventListener('click', function() {
     moveCameraToFrontOfCockpit();
-});
+    console.log("\x1b[31m [PRESS BUTTON] VIEW [LOGIN]\x1b[0m");
+    console.log("\x1b[34m MOVE TO => [SIGNUP]\x1b[0m");
+    window.location.hash = '#signUpPage';
+}));
+
+
+else if (addEventListener("hashchange", (event) => {
+    if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage')
+    {
+        console.log("\x1b[33m[CLICK] [LOGINPAGE]\x1b[0m");
+        moveCameraToBackOfCockpit();
+    }
+    oldLocation = window.location.hash;
+}));
 
 showPage('loginPage');
 

@@ -26,8 +26,10 @@ anchors.forEach(function(anchor) {
     });
 });
 
-window.addEventListener('popstate', function(event) {
+
+//HAVE I TO DELETE ? 
+/*window.addEventListener('popstate', function(event) {
     showPage(event.state);
 });
 
-history.replaceState('home', null, null);
+history.replaceState('home', null, null);*/
