@@ -216,6 +216,7 @@ class LoadingScreen {
         this.light4.position.set(0, 0, -5);
         this.icoLight.position.set(0, 4, 0);
         this.starSpeed = 2;
+        this.loadingCompleted = false;
         this.scene.add(this.light, this.light2, this.light3, this.icoLight, this.light4);
         this.stars = []; // Store all stars added to the scene
         this.addStars(2000);
@@ -238,6 +239,7 @@ class LoadingScreen {
         if (this.isAnimatingCamera) {
             this.isAnimatingCamera = false;
             this.iterations = 0;
+            this.loadingCompleted = true;
             const duration = 2500;
     
             // Ship recall before going in the ball
@@ -368,10 +370,11 @@ class LoadingScreen {
         this.spaceShip.scale.set(0.03, 0.03, 0.03); // Scale the spaceship
         this.spaceShip.position.set(0, -1, 2); // Set the position of the spaceship
         this.isAnimatingSpaceship = false;
+        this.loadingComplete = false;
     }
 }
-const loadingScreen = new LoadingScreen();
 
+const loadingScreen = new LoadingScreen();
 
 // let moon;
 // const moonLoader = new GLTFLoader();
@@ -610,6 +613,18 @@ class Arena extends THREE.Mesh {
             this.scene.remove(star);
         });
     }
+    initializeGameSettings()
+    {
+        this.game.hasToBeInitialized = false;
+        if (this.game.map === 'oceanMap')
+            this.switchMap(this.oceanMap);
+        else if (this.game.map === 'spaceMap')
+            this.switchMap(this.spaceMap);
+        else if (this.game.map === 'skyMap')
+            this.switchMap(this.skyMap);
+        else if (this.game.map === 'dragonMap')
+            this.switchMap(this.dragonMap);
+    }
     idleCameraAnimation()
     {
         if (!this.isAnimatingCamera)
@@ -710,6 +725,8 @@ class Arena extends THREE.Mesh {
         this.paddleRight.light.position.copy(this.paddleRight.position);
         this.paddleLeft.particles.updateParticles();
         this.paddleRight.particles.updateParticles();
+        if (this.game.hasToBeInitialized)
+            this.initializeGameSettings();
         if (this.game.isPlaying)
         {
             this.paddleLeft.monitorIdleAnimation();
@@ -2694,16 +2711,17 @@ class Game {
         this.isOver = false;
         this.isPlaying = false;
 
-        // INPUT
+        // INPUT (arenaPage.js)
         this.effectsOnly = false;
         this.powerUpsActivated = true;
         this.thirdPlayer = true;
+        this.hasToBeInitialized = false;
         // next variables are all to be inputed in string format
         this.user1; // User1 is the left paddle
         this.user2; // User2 is the right paddle
         this.user3; // User3 is the third player
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
-        this.graphics; // (options = 'low', 'medium', 'high')
+
         
         // OUTPUT
         this.loserPaddle;
@@ -2719,6 +2737,7 @@ class GameState {
         this.loading = true;
         this.inGame = false;
         this.inLobby = false;
+        this.graphics; // (options = 'low', 'medium', 'high') (loginPage.js)
 
     }
     switchLoadingToGame() {
@@ -2919,6 +2938,7 @@ const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, win
 
 
 const centerPosition = new THREE.Vector3(0, 0, 0);
+
 const arena1 = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, bloomPass);
 scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball, arena1.thirdPlayer);
 arena1.idleCameraAnimation();
@@ -2965,11 +2985,9 @@ let lastUpdateTime = performance.now();
 function animate()
 {
     requestAnimationFrame( animate );
-    // controls.update();
-    // controls.enabled = true;
     updateFpsCounter();
-    if (!gameStarted)
-        return;
+    // if (!gameStarted)
+    //     return;
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
     // if (elapsed < fpsInterval) return; // Skip if too big FPS
@@ -2989,6 +3007,8 @@ function animate()
             if (keyDown['g'])
                 arena1.gameState.switchLoadingToGame();
             loadingScreen.animate();
+            if (loadingScreen.loadingCompleted)
+                arena1.monitorArena();            
         }
     }
 
