@@ -9,9 +9,8 @@
 }
 
 .statsBlock {
-    background-color: #5d75ff47;
     border-radius: 10px;
-    border-top-left-radius: 0px;
+    background-color: #5d75ff47;
     border: 4px solid #3777ff;
     display: flex;
     justify-content: center;
@@ -31,6 +30,43 @@
     width: 98%;
 }
 
+.statsModesBlock {
+    /* border: 2px solid #ff60ff; */
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    flex-direction: column;
+    color: white;
+    font-size: 20px;
+    font-family: 'Space';
+    width: 90%;
+    height: 40%;
+}
+
+.statsModes {
+    /* border: 4px solid #ff6600; */
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    flex-direction: row;
+    height: 50%;
+    width: 100%;
+}
+
+.statMode {
+    height: 100%;
+    width: 35%;
+    border: 4px solid #3777ff;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(189, 209, 255);
+    font-size: 15px;
+    font-family: 'Space';
+}
+
 .rightBlock {
     border-radius: 10px;
     /* border: 4px solid #9eff37; */
@@ -40,6 +76,7 @@
     flex-direction: column;
     height: 100%;
     width: 48%;
+    background-color: #00000000;
 }
 
 .history {
@@ -65,21 +102,30 @@
     width: 52%;
 }
 
-.nameImgBlock {
+.userInfoBlock {
     background-color: #000f61b2;
     border-radius: 10px;
     border: 4px solid #3777ff;
+    height: 70%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+}
+
+.nameImgBlock {
+    /* border: 4px solid #ff6600; */
+    width: 95%;
+    /* border: 1px solid seagreen; */
     display: flex;
     align-items: center;
     justify-content: flex-start;
     flex-direction: row;
-    height: 35%;
-    width: 90%;
 }
 
 .imgFrame {
     border-radius: 10px;
-    margin-left: 10px;
     height: 90px; /* Set a fixed height */
     width: 90px;
     border: 4px solid #3777ff;
@@ -93,7 +139,7 @@
     width: 60%;
     display: flex;
     align-items: flex-start;
-    justify-content: space-around;
+    justify-content: center;
     flex-direction: column;
     font-size: 30px;
     font-family: 'Space';
@@ -116,34 +162,8 @@
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
-    height: 25%;
-    width: 90%;
-}
-
-.statsModes {
-    margin-left: -4px;
-    /* border: 4px solid #ff6600; */
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-start;
-    flex-direction: row;
-    height: 35%;
+    height: 50%;
     width: 95%;
-}
-
-.statMode {
-    height: 40%;
-    width: 35%;
-    border: 4px solid #3777ff;
-    background-color: #5d75ff47;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgb(189, 209, 255);
-    font-size: 15px;
-    font-family: 'Space';
 }
 
 .friendSearchBar {
@@ -155,5 +175,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: row;
+    overflow: hidden; /* Ensure text input doesn't overflow */
+}
+
+.text-input2 {
+    position: absolute;
+    width: 20%; /* Match the width of the container */
+    height: 30%; /* Automatically adjust height based on content */
+    background: none;
+    border: none;
+    color: white; /* Set text color to white */
+    font-size: 30px; /* Adjust font size as needed */
+    font-family: "Space";
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center; /* Center text horizontally */
+    outline: none; /* Remove default focus outline */
+    resize: none; /* Remove resize handle */
+    overflow: hidden; /* Prevent scrolling */
 }
