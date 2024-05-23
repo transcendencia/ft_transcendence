@@ -24,18 +24,16 @@
 	align-items: center;
 	flex-direction: row;
 	overflow: hidden;
-	cursor: default;
 }
 
 /* .planetPanel img:first-child{
 	transform: rotate(180deg) translateX(12vh);
 }
 
-
 .planetPanel .profilePic img:first-child{
 	transform: none;
 }
-
+/* 
 .planetPanel .leftColumn img:first-child{
 	transform: rotate(180deg) scale(0.5) scaleX(-1);
 }
@@ -46,7 +44,7 @@
 
 
 @keyframes roll {
-	1%{opacity: 1;}
+	1%{opacity: 0;}
 	100% {opacity: 1;transform: translate(-50%, -50%) rotate(450deg) scale(1);}
 }
 
@@ -98,7 +96,7 @@
 @keyframes expandBGreverse {
 	0% {height: 75vh; width: 70vw;}
     10% {height: 75vh; width: 1vw;}
-	60% {height: 0%; width: 1vw; border: 2px solid #3777ff;}
-	100% {height: 0%; width: 1vw; border: none;}
+	60% {height: 0%; width: 1vw; border: 2px solid #3777ff; opacity: 1;}
+	100% {height: 0%; width: 1vw; border: none; opacity: 0;}
 }
 

@@ -73,10 +73,22 @@
     filter: drop-shadow(0px 0px 50px #0724ff);
 }
 
+.tinyBlueShadowfilter {
+    filter: drop-shadow(0px 0px 5px #0724ff);
+}
+
 .lightblueShadowfilter {
     filter: drop-shadow(0px 0px 5px #00fff2);
 }
 
 .redShadowfilter {
     filter: drop-shadow(0px 0px 50px #ff2600);
+}
+
+.tinyRedShadowfilter {
+    filter: drop-shadow(0px 0px 10px #ff2600);
+}
+
+.tinyWhiteShadowfilter {
+    filter: drop-shadow(0px 0px 10px #ffffff);
 }

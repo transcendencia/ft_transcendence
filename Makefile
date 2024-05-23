@@ -7,8 +7,7 @@ DOCKER_COMPOSE = docker-compose.yml
 # # ---- Launch rules ---- #
 
 all:
-	@docker compose -f ${DOCKER_COMPOSE} up -d --build
-
+	@docker compose -f ${DOCKER_COMPOSE} up -d --build 
 
 up: 
 	@docker compose -f ${DOCKER_COMPOSE} up
@@ -30,12 +29,6 @@ prune:
 
 fclean:
 	- @docker-compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
-# - @docker compose -f ${DOCKER_COMPOSE} stop $$(docker compose ps -qa)
-# - @docker-compose rm $$(docker compose ps -qa)
-# - @docker system prune --all --force
-# - @docker volume prune --force
-# - @docker network prune --force
-
 
 re: down
 	${MAKE} all
