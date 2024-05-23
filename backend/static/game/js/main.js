@@ -370,7 +370,7 @@ class LoadingScreen {
         this.spaceShip.scale.set(0.03, 0.03, 0.03); // Scale the spaceship
         this.spaceShip.position.set(0, -1, 2); // Set the position of the spaceship
         this.isAnimatingSpaceship = false;
-        this.loadingComplete = false;
+        this.loadingCompleted = false;
     }
 }
 
@@ -798,15 +798,26 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
-            this.paddleLeft.changePaddleControls(false);
-            this.paddleRight.changePaddleControls(false);
-            cameraLeft.lookAt(this.position);
-            swapToSplitScreen();
-            this.setSplitCameraPositions(camera, cameraLeft);
-            this.game.isPlaying = true;
             // this.bot.isPlaying = true;
-            this.isSplitScreen = true;
-            scoreUI[0].style.opacity = 1;
+            this.game.isPlaying = true;
+            if (!this.game.thirdPlayer)
+            {
+                this.isSplitScreen = true;
+                this.paddleLeft.changePaddleControls(false);
+                this.paddleRight.changePaddleControls(false);
+                cameraLeft.lookAt(this.position);
+                swapToSplitScreen();
+                this.setSplitCameraPositions(camera, cameraLeft);
+                scoreUI[0].style.opacity = 1;
+            }
+            else
+            {
+                scoreUI[0].style.opacity = 1;
+                swapToFullScreen();
+                this.setTopView(camera, false);
+                this.paddleLeft.changePaddleControls(true);
+                this.paddleRight.changePaddleControls(true);
+            }
         }
         if (keyDown['p'])
         {
@@ -1042,15 +1053,11 @@ class Arena extends THREE.Mesh {
             this.ball.light.power = this.ball.startingPower;
             this.ball.bounceCount = 0;
             this.isBeingReset = false;
-            if (this.game.isOver)
-            {
-                this.game.isPlaying = false;
-                this.game.isOver = false;
-                this.game.leftScore = 0;
-                this.game.rightScore = 0;
-                swapToFullScreen();
-                this.setTopView(camera, true);
-            }
+            this.game.isPlaying = false;
+            this.game.isOver = false;
+            this.game.leftScore = 0;
+            this.game.rightScore = 0;
+            swapToFullScreen();
             this.gameState.switchGameToLoading();
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
@@ -2722,7 +2729,6 @@ class Game {
         this.user3; // User3 is the third player
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
 
-        
         // OUTPUT
         this.loserPaddle;
         this.winnerPaddle;
@@ -3008,7 +3014,7 @@ function animate()
                 arena1.gameState.switchLoadingToGame();
             loadingScreen.animate();
             if (loadingScreen.loadingCompleted)
-                arena1.monitorArena();            
+                arena1.monitorArena();
         }
     }
 

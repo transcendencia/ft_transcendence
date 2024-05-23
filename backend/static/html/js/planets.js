@@ -69,7 +69,11 @@ class Planet {
 const planets = [];
 
 const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
-const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+const sphereMaterial = new THREE.MeshBasicMaterial({
+	 color: 0xffaa00,
+	 // make the sun visible from inside
+	 side: THREE.DoubleSide
+});
 const sun = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
 sun.scale.set(300, 300, 300);
