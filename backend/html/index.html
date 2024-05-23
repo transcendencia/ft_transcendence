@@ -16,8 +16,6 @@
     <link rel="stylesheet" href="{% static '../static/html/css/SignUpPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/userPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/game/style/style.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
     <script type="importmap">
         {
           "imports": {
@@ -31,37 +29,30 @@
   <!-- LOGIN PAGE -->
     <div class="loginPage page">
     <div class="title">
-      TRANSCENDENCIA
+      TRANSCENDENCIIA
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
     </div>
     <div class="inputContainer">
-      <form id="loginForm" method="post" action="login_page/">
-        {% csrf_token %}
-        <div class="titleText" id="loginText">
-          - Login -
-          <div class="textBar">
-            <input class="text-input" name="username" spellcheck="false"></input>
-            <img src="{%static 'html/assets/icons/frame.png' %}">
-          </div>
-          <div class="littleMsgCont">
-            <div class="newToTheGame">New to the game ?
-              <div class="actionCont tinyBlueShadowfilter">Sign Up Here</div>
-            </div>
+      <div class="titleText" id="loginText">
+        - Login -
+        <div class="textBar">
+          <input class="text-input" spellcheck="false"></input>
+          <img src="{%static 'html/assets/icons/frame.png' %}">
+        </div>
+        <div class="littleMsgCont">
+          <div class="newToTheGame">New to the game ?
+            <div class="actionCont tinyBlueShadowfilter">Sign Up Here</div>
           </div>
         </div>
-        <div class="titleText" id="passwordText">
-          - Password -
-          <div class="textBar">
-            <input class="text-input" name="password" spellcheck="false" type="password"></input>
-            <img src="{%static 'html/assets/icons/frame.png' %}">
-          </div>
-          <div class="littleMsgCont">
-            <div class="actionCont tinyBlueShadowfilter">Forgotten password ?</div>
-          </div>
+      </div>
+      <div class="titleText" id="passwordText">
+        - Password -
+        <div class="textBar">
+          <input class="text-input" spellcheck="false" type="password"></input>
+          <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
-        <div id= "messageContainer" class="errorMessageCont"></div>
-        <button type="submit" style="display: none;"></button>
-      </form>
+      </div>
+      <div class="errorMessageCont"></div>
     </div>
     <div class="languageColumn" id="loginLanguageText">
       <div class="languageSettings">
@@ -85,38 +76,40 @@
 
   <!-- SIGN UP PAGE -->
   <div class="signUpPage page">
-      <div class="perspective">
-        Sign Up
-        <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
-        <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
-          Login
-        <div class="textBar">
-          <input class="text-input" name="username" style="font-size: 30px;" spellcheck="false" ></input>
-          <img src="{%static 'html/assets/icons/frame.png' %}">
-        </div>
+    <div class="perspective">
+      Sign Up
+      <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
+      <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
+        Login
+      <div class="textBar">
+        <input class="text-input" style="font-size: 30px;" spellcheck="false" ></input>
+        <img src="{%static 'html/assets/icons/frame.png' %}">
       </div>
-      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
-          Password
-        <div class="textBar">
-          <input class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password"></input>
-          <img src="{%static 'html/assets/icons/frame.png' %}">
-        </div>
+    </div>
+    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
+        Password
+      <div class="textBar">
+        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
+        <img src="{%static 'html/assets/icons/frame.png' %}">
       </div>
-      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
-        confirm password
-        <div class="textBar">
-          <input class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password"></input>
-          <img src="{%static 'html/assets/icons/frame.png' %}">
-        </div>
+    </div>
+    <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
+      confirm password
+      <div class="textBar">
+        <input class="text-input" style="font-size: 30px;" spellcheck="false" type="password"></input>
+        <img src="{%static 'html/assets/icons/frame.png' %}">
       </div>
-      </div>
-        <div class="perspective2">
-        <div type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</div>
-      </div>
+    </div>
+  </div>
+  <div class="perspective2">
+      <div class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</div>
+  </div>
     <div class="backButton tinyWhiteShadowfilter">
       Back to login
     </div>
-  </div>
+</div>
+
+
 
   <!-- CANVAS -->
   <div id="a">
@@ -175,7 +168,7 @@
         <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
       <div class="background blueShadowfilter">
         <div class="leftColumn">
-    <div id= "userlistText" style="font-size: 20px; font-family: 'space'; color: white;"> User list </div>
+    <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white;"> User list </div>
       <div class="userlistBackground">
         <div class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
           <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
@@ -264,7 +257,7 @@
                 <div class="buttonTitle">
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1); z-index: 5;">
                 <div id="gamemodeText">
-                  gamemode
+                  game mode
                 </div>
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
                 </div>
@@ -304,26 +297,31 @@
             <div class="rightColumn" style="width: 75%;">
               <div class="aboveStatsBlock">
                 <div class="leftBlock">
-                  <div class="nameImgBlock">
-                    <div class="imgFrame"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
-                    <div class="mail-pseudo-info">
-                      <div style="color: rgb(255, 255, 255);">PSEUDO</div> 
-                      <div style="font-size: 10px; color: rgb(189, 209, 255);">hemorroides@herpes.com</div> 
+                  <div class="userInfoBlock">
+                    <div class="nameImgBlock">
+                      <div class="imgFrame"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
+                      <div class="mail-pseudo-info">
+                        <div style="color: rgb(255, 255, 255);">PSEUDO</div> 
+                        <div style="font-size: 10px; color: rgb(189, 209, 255);">hemorroides@herpes.com</div> 
+                      </div>
+                      <div class="pencilImg">
+                        <img src="{% static 'html/assets/icons/pencil.png' %}">
+                      </div>
                     </div>
-                    <div class="pencilImg">
-                      <img src="{% static 'html/assets/icons/pencil.png' %}">
+                      <div class="winLoseTexts">
+                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 13</div> 
+                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 5</div> 
+                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 8</div>
+                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : 33</div>
                     </div>
                   </div>
-                  <div class="winLoseTexts">
-                    <div style="font-family: 'Space'; font-size: 20px; margin-left: 10px; color: white"> Victoires : 5</div> 
-                    <div style="font-family: 'Space'; font-size: 20px; margin-left: 10px; color: white"> Defaites : 8</div>
-                    <div style="font-family: 'Space'; font-size: 15px; margin-left: 10px; color: white"> Buts : 33</div>
-                  </div>
-                  <div class="statsModes">
-    
-    <div class="statMode" style="background-color: #000f61b2; border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Stat1</div>
-                  <div class="statMode" style="border-radius: 0px;">Stat2</div>
-                  <div class="statMode" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
+                  <div class="statsModesBlock">
+                   <p>statistics</p> 
+                    <div class="statsModes">
+                      <div class="statMode" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
+                      <div class="statMode" style="border-radius: 0px;">Stat2</div>
+                      <div class="statMode" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
+                    </div>
                   </div>
                 </div>
                 <div class="rightBlock">
@@ -335,7 +333,9 @@
             </div>
       <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between;">
         <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
-        <div class="friendSearchBar"></div>
+        <div class="friendSearchBar">
+          <input class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . ."></input>
+        </div>
         <div class="userlistBackground" style="height:85%; width: 100%; border-radius: 10px;">
           <div class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
             <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
