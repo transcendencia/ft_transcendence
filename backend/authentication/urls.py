@@ -9,7 +9,9 @@ urlpatterns = [
     path('change_language/', authentication.change_language, name='change_language'),
     path('update_status/', authentication.update_status, name='update_status'),
     path('get_status/', authentication.get_status, name='get_status'),
-
+    path('render_profile/', authentication.render_profile, name='render_profile'),
+    path('render_profile/user_profile/', authentication.user_profile, name='user_profile'),
+    
     path('tournament/', tournament.result, name='result'),
     path('add_player/', tournament.add_member, name='add_member'),
 ]

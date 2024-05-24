@@ -19,8 +19,7 @@ class User(AbstractUser):
     ('in_game', 'in_game'),
   ]
   status = models.CharField(max_length = 10, choices=STATUS_CHOICE, default='offline')
-  
-  # profile_picutre = models.ImageField(default='default_profile_picute.png')
+  profile_picture = models.ImageField(default='default.png')
 
   # friends = models.ManyToManyField('self', through='Friendship', symmetrical=False)
 # histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)

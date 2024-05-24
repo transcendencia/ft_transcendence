@@ -17,6 +17,24 @@ from rest_framework.authentication import TokenAuthentication
 from ..models import User
 from ..serializers import UserSerializer, SignupSerializer
 
+from django.shortcuts import redirect
+
+
+# --------------- TEST PROFILE PICTURE -----------------------
+def render_profile(request):
+  return render(request, 'profile_picture.html')
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    user_profile_data = {
+        'profile_pic_url': request.user.profile_picture.url
+    }
+    return JsonResponse(user_profile_data)
+# --------------------------------------------------------------
+
+
 def index(request):
   return render(request, 'index.html')
 

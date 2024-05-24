@@ -15,3 +15,5 @@ python manage.py createsuperuser
 -> historique : joueur dans le match (2 ou 3) (image + pseudo), score de chaque partie, date du match, mode de jeux
 -> stat
 -> date du dernier login
+
+----CREATE USER----

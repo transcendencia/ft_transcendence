@@ -42,7 +42,7 @@ signupForm.addEventListener('submit', handleSignup);
 // Handle form submission
 function handleSignup(event) {
     event.preventDefault();
-
+    
     console.log(signupForm);
     const formData = new FormData(event.target);
     formData.append('language', currentLanguage);
