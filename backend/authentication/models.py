@@ -42,7 +42,6 @@ class User(AbstractUser):
   #point moyen a chaque game
   #meilleur score
 
-
 #class Torunament(models.Model): relation avec user
 
 class Member(models.Model):
@@ -53,10 +52,10 @@ class Member(models.Model):
     return f"{self.username}"
 
 class Game(models.Model):
-    player1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='games_as_player1')
-    player2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='games_as_player2')
-    player3 = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='games_as_player3')
-    scorePlayer1 = models.IntegerField(default=-1)
-    scorePlayer2 = models.IntegerField(default=-1)
-    gameplayMode = models.CharField(max_length=255)
+  player1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='games_as_player1')
+  player2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='games_as_player2')
+  player3 = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='games_as_player3')
+  scorePlayer1 = models.IntegerField(default=-1)
+  scorePlayer2 = models.IntegerField(default=-1)
+  gameplayMode = models.CharField(max_length=255)
     

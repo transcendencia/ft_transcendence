@@ -1,5 +1,7 @@
 {% extends "master.html" %}
 
+{% load static %}
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% block title %}
   Tournament
@@ -21,6 +23,34 @@
     <input type="submit" value="Ajouter">
   </form>
 </div>
+
+<form id="createGameForm">
+  <input type="hidden" name="player1" value="1">  <!-- Replace with actual values -->
+  <input type="hidden" name="player2" value="2">  <!-- Replace with actual values -->
+  <input type="hidden" name="player3" value="3">  <!-- Replace with actual values -->
+  <input type="hidden" name="scorePlayer1" value="10">
+  <input type="hidden" name="scorePlayer2" value="15">
+  <input type="hidden" name="gameplayMode" value="Classic">
+  <button type="submit">Create Game</button>
+</form>
+
+<h1>List of Games</h1>
+    <ul>
+        {% for game in games %}
+            <li>
+                <strong>Game ID:</strong> {{ game.id }}<br>
+                <strong>Player 1:</strong> {{ game.player1.username }}<br>
+                <strong>Player 2:</strong> {{ game.player2.username }}<br>
+                <strong>Player 3:</strong> {% if game.player3 %}{{ game.player3.username }}{% else %}None{% endif %}<br>
+                <strong>Score Player 1:</strong> {{ game.scorePlayer1 }}<br>
+                <strong>Score Player 2:</strong> {{ game.scorePlayer2 }}<br>
+                <strong>Gameplay Mode:</strong> {{ game.gameplayMode }}<br>
+            </li>
+        {% endfor %}
+    </ul>
+
+
+<script type="module" src="{% static 'tournament/js/addGameData.js' %}"></script>
 
 <script>
   const newUserButton = document.getElementById("NewUser");
