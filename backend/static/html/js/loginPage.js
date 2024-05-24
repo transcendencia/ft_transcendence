@@ -176,7 +176,12 @@ function handleLogin(event) {
         document.getElementById('messageContainer').innerText = data.message;
         console.log(currentLanguage);
     })
-    .catch(error => {
+    .catch(error => {const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}` // Ajouter le token d'authentification dans l'en-tête de la requête
+        }
+    };
         console.error('Une erreur s\'est produite:', error);
     })
 }

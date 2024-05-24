@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Utilisateur</title>
+</head>
+<body>
+    <h1>Profil Utilisateur</h1>
+    <div id="profile">
+        <img id="profile-pic" src="" alt="Photo de profil">
+    </div>
+
+    <script>
+        // Fonction pour récupérer les données de profil de l'utilisateur depuis le serveur Django
+        function getUserProfile() {
+            const token = localStorage.getItem('auth_token');
+            fetch('user_profile/', {
+                method: 'GET',
+                headers: {
+                'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des données de profil');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Mettre à jour l'élément img avec la photo de profil de l'utilisateur
+                document.getElementById('profile-pic').src = data.profile_pic_url;// Assurez-vous que la clé profile_pic_url correspond à la clé utilisée dans la réponse JSON
+            })
+            .catch(error => {
+                console.error('Erreur :', error);
+            });
+        }
+
+        // Appeler la fonction pour récupérer et afficher les données de profil de l'utilisateur lors du chargement de la page
+        window.onload = getUserProfile;
+    </script>
+</body>
+</html>
