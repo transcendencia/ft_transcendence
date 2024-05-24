@@ -32,9 +32,9 @@ class User(AbstractUser):
   #winner/loser
   #mode
 
-class Friendship(models.Model):
-  friend_1 = models.ForeignKey(User, related_name='friend_1', on_delete=models.CASCADE)
-  friend_2 = models.ForeignKey(User, related_name='friend_2', on_delete=models.CASCADE)
+# class Friendship(models.Model):
+#   friend_1 = models.ForeignKey(User, related_name='friend_1', on_delete=models.CASCADE)
+#   friend_2 = models.ForeignKey(User, related_name='friend_2', on_delete=models.CASCADE)
   #booleen pour savoir si la demande d'amis a etait accepte ?
 
   # Stats

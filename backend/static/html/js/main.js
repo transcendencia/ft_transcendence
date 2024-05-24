@@ -237,6 +237,7 @@ document.addEventListener('keydown', (event) => {
             showPage('none');
             startAnimation();
         // }
+        // localStorage.clear();
     }
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { camera } from './main.js';
 import { showPage } from './showPages.js';
+import { currentLanguage } from './loginPage.js';
 
 export let inCockpit = false;
 
@@ -44,6 +45,7 @@ function handleSignup(event) {
 
     console.log(signupForm);
     const formData = new FormData(event.target);
+    formData.append('language', currentLanguage);
     fetch('signup/', {
         method: 'POST',
         body: formData
