@@ -76,7 +76,15 @@ languageIcons.forEach(function(icon) {
         if (icon.id === 'fr' || icon.id == 'fr1') {
             alien1.visible = false;
             alien2.visible = true;
-        }
+        // Sélection du bouton par son ID
+var disconnectButton = document.getElementById("disconnectButton");
+
+// Ajout d'un gestionnaire d'événements pour le clic sur le bouton
+disconnectButton.addEventListener("click", function() {
+    // Code à exécuter lorsque le bouton est cliqué
+    console.log("Le bouton Disconnect a été cliqué !");
+    // Vous pouvez ajouter ici d'autres actions à effectuer lorsque le bouton est cliqué
+});}
         if (icon.id === 'en'|| icon.id == 'en1') {
             alien1.visible = true;
             alien2.visible = false;
@@ -98,29 +106,29 @@ languageIcons.forEach(function(icon) {
         });
 
         // Send POST request to change user language in the back if user is logged in
-        const token = localStorage.getItem('auth_token');
-        if (token) {
-            console.log("je change de langue");
-            console.log(currentLanguage);
-            fetch('change_language/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ language: currentLanguage })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la modification de la langue');
-                }
-                console.log('Langue modifiée avec succès');
-            })
-            .catch(error => {
-                console.error('Erreur :', error);
-            });
-        }
+        // const token = localStorage.getItem('auth_token');
+        // if (token) {
+        //     console.log("je change de langue");
+        //     console.log(currentLanguage);
+        //     fetch('change_language/', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization': `Token ${token}`,
+        //             'X-CSRFToken': getCookie('csrftoken')
+        //         },
+        //         body: JSON.stringify({ language: currentLanguage })
+        //     })
+        //     .then(response => {
+        //         if (!response.ok) {
+        //             throw new Error('Erreur lors de la modification de la langue');
+        //         }
+        //         console.log('Langue modifiée avec succès');
+        //     })
+        //     .catch(error => {
+        //         console.error('Erreur :', error);
+        //     });
+        // }
     });
     //init english flag
     if (icon.id === currentLanguage) {
@@ -154,8 +162,8 @@ function handleLogin(event) {
     const formData = new FormData(this);
     formData.append('language', currentLanguage);
     formData.append('languageClicked', languageIconsClicked);
-    languageIconsClicked = false;
     console.log(languageIconsClicked);
+    languageIconsClicked = false;
     fetch('login_page/', {
         method: 'POST',
         body: formData
@@ -172,3 +180,56 @@ function handleLogin(event) {
         console.error('Une erreur s\'est produite:', error);
     })
 }
+
+// Logout
+var disconnectButton = document.getElementById("disconnectButton");
+disconnectButton.addEventListener("click", handleLogout);
+
+function handleLogout() {
+    updateUserStatus('offline');
+    localStorage.clear();
+};
+
+function updateUserStatus(status) {
+    const token = localStorage.getItem('auth_token');
+    fetch('update_status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ status: status })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors du logout');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+};
+
+function getUserStatus() {
+    console.log("Je suis dans getUserStatus");
+    const token = localStorage.getItem('auth_token');
+    fetch('get_status/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}`,
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+};
