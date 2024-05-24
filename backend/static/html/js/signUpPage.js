@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { camera } from './main.js';
 import { showPage } from './showPages.js';
+import { currentLanguage } from './loginPage.js';
 
 export let inCockpit = false;
 
@@ -34,28 +35,29 @@ backToLoginButton.addEventListener('click', function() {
     moveCameraToBackOfCockpit();
 });
 
-// // Add event listener to the sign-up form
-// const signupForm = document.getElementById('signupForm');
-// signupForm.addEventListener('submit', handleSignup);
+// Add event listener to the sign-up form
+const signupForm = document.getElementById('signupForm');
+signupForm.addEventListener('submit', handleSignup);
 
-// // Handle form submission
-// function handleSignup(event) {
-//     event.preventDefault();
+// Handle form submission
+function handleSignup(event) {
+    event.preventDefault();
 
-//     console.log(signupForm);
-//     const formData = new FormData(event.target);
-//     fetch('signup/', {
-//         method: 'POST',
-//         body: formData
-//     })
-//     .then(response => {
-//         if (!response.ok) {
-//             console.log(response)
-//             throw new Error('Network response was not ok');
-//         }
-//         return response.json();
-//     })
-//     .catch(error => {
-//         console.error('There was a problem with the sign-up:', error);
-//     });
-// }
+    console.log(signupForm);
+    const formData = new FormData(event.target);
+    formData.append('language', currentLanguage);
+    fetch('signup/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.log(response)
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .catch(error => {
+        console.error('There was a problem with the sign-up:', error);
+    });
+}

@@ -1,6 +1,6 @@
 ----ERROR----
 403 -> quand je cree un utilisateur mais pas tout le temps
-
+500 -> SIGNUP -> password and confirmation_password nonidentique
 
 ----USEFUL COMMAND----
 ***Create a superuser to acces django admin page***

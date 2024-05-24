@@ -5,12 +5,14 @@ from django.template import loader
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 from django.http import JsonResponse
+from django.utils import timezone
 
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 from ..models import User
 from ..serializers import UserSerializer, SignupSerializer
@@ -18,26 +20,32 @@ from ..serializers import UserSerializer, SignupSerializer
 def index(request):
   return render(request, 'index.html')
 
+# change user status to online
 @api_view(['POST'])
 @permission_classes([AllowAny])  
 def login_page(request):
   try:
     username = request.POST.get("username")
     password = request.POST.get("password")
-  
-    print(username)
-    print(password)
+    new_language = request.POST.get("language")
+    languageClicked = request.POST.get("languageClicked") == 'true'
+
     user = authenticate(username=username, password=password)
     if user is not None:
-      # login(request, user)
-      print(user)
       token, created = Token.objects.get_or_create(user=user)
-      return  Response({'status': "succes", 'token': token.key, 'message': "You are now logged in!\nPress [E] to enter a new galaxie"})
+      if languageClicked and new_language != user.language:
+          print("Je change la langue") #LOG
+          user.language = new_language
+      user.last_login_date = timezone.now()
+      user.status = 'online'
+      print(user.last_login_date, user.status)
+      user.save()
+      return  Response({'status': "succes", 'token': token.key, 'language': user.language, 'message': "You are now logged in!\nPress [E] to enter a new galaxie"}) #return languages pour mettre a jour currenLanguage00000000000000000
     else:
-      print("J'existe pas")
+      print("J'existe pas") #LOG
       return  Response({'status': "failure", 'message': "Username and/or password invalid"})
   except Exception as e:
-      logger.error("An error occurred during login: %s", str(e))
+      print(str(e))
       return Response({'status': "error", 'message': str(e)})
 
 #ajouter message d'erreur quand user existe deja
@@ -45,26 +53,56 @@ def login_page(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])  
 def signup(request):
-  print("je suis dans sign up")
-  print(request.data)
+  print("je suis dans sign up", request.data) #LOG
+  new_language = request.POST.get("language")
+
+  print(new_language) #LOG
   serializer = SignupSerializer(data=request.data)
   if serializer.is_valid():
     user_data = serializer.validated_data
-    user = User(username=user_data['username'])
+    user = User(username=user_data['username'], language=new_language)
     user.set_password(user_data['password'])
-    print(user_data['username'])
-    print(user_data['password'])
-    print("Utilisateur cree")
+    print(user_data['username'], user_data['password'], user.status, "Utilisateur cree") #LOG
     user.save()
     return Response({"ok": True})
   print(serializer.errors)
   return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def logout(request):
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def change_language(request):
+  user = request.user
 
-#view logout --> bien pense a supprime le token d'authentication dans le local storage
+  print(user.username)
+  if request.method == 'POST':
+    new_language = request.data.get("language")
+    print(new_language) #LOG
+    if new_language != user.language:
+      user.language = new_language
+      user.save()
+      return Response(status=status.HTTP_200_OK)
+    else:
+      return Response(status=status.HTTP_400_BAD_REQUEST)
+  else:
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-# @api_view(['POST'])
-# def update_info(request):
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def update_status(request):
+  if request.method == 'POST':
+    request.user.status = request.data.get('status')
+    request.user.save()
+    print(request.user.username, request.user.status) #LOG
+    return Response(status=status.HTTP_200_OK)
+  else:
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_status(request):
+  user = request.user
+  return Response({'status': user.status}, status=status.HTTP_200_OK)
+
