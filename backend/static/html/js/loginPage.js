@@ -55,8 +55,24 @@ graphicsIcons.forEach(function(icon) {
     });
 });
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
+        console.log("Je clique pour changer de langue")
         if (icon.id === 'fr' || icon.id == 'fr1') {
             alien1.visible = false;
             alien2.visible = true;
@@ -80,6 +96,31 @@ languageIcons.forEach(function(icon) {
                 otherIcon.querySelector('.icon').style.opacity = 1;
             }
         });
+
+        // Send POST request to change user language in the back if user is logged in
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+            console.log("je change de langue");
+            console.log(currentLanguage);
+            fetch('change_language/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ language: currentLanguage })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la modification de la langue');
+                }
+                console.log('Langue modifiée avec succès');
+            })
+            .catch(error => {
+                console.error('Erreur :', error);
+            });
+        }
     });
     //init english flag
     if (icon.id === currentLanguage) {
@@ -114,6 +155,7 @@ function handleLogin(event) {
     formData.append('language', currentLanguage);
     formData.append('languageClicked', languageIconsClicked);
     languageIconsClicked = false;
+    console.log(languageIconsClicked);
     fetch('login_page/', {
         method: 'POST',
         body: formData
