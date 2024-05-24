@@ -35,10 +35,10 @@ const usernameLinks = document.querySelectorAll('.username-link');
     }
   }
 
-    function triggerInfiniteAnim() {
-        images[0].style.animation = "upDownImgL 2s infinite alternate ease-in-out";
-        images[1].style.animation = "upDownImgR 2s infinite alternate ease-in-out";
-    }
+  function triggerInfiniteAnim() {
+      images[0].style.animation = "upDownImgL 2s infinite alternate ease-in-out";
+      images[1].style.animation = "upDownImgR 2s infinite alternate ease-in-out";
+  }
 
   document.addEventListener('keydown', (event) => { 
     if (event.key === 'e')
@@ -94,17 +94,29 @@ const usernameLinks = document.querySelectorAll('.username-link');
     });
   }
 
+  function getRandomNumber(size, i) {
+    let number;
+    do {
+        number = Math.floor(Math.random() * size);
+    } while (number === i || number === i + 1);
+    return number;
+  }
+
   let currentMatch = [];
   let allMatch = [];
   let round = 1;
   let nbMatch;
   
+  let thirdPlayerMode = 1;
+
+
   function makeMatchup() {
     const ul = document.getElementById("match");
     ul.innerHTML = "";
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
     let j = 0;
     nbMatch = 0;
+    //all results are puts in allMatch
     currentMatch.forEach(function(match){
       allMatch.push(
         JSON.parse(JSON.stringify(match))
@@ -113,8 +125,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
     currentMatch = [];
     //put final position for players who lost
     if (round != 1){
-      const ul = document.getElementById("result");
-      ul.textContent = "";
       tournamentPlayer.forEach(function(player){
         if (player.round + 1 === round)
           player.position = playersInTournament.length + 1;
@@ -142,15 +152,30 @@ const usernameLinks = document.querySelectorAll('.username-link');
           "",
           -1,
           -1,
+          ""
         ]);
       }
       else{
-        currentMatch.push([
-          { myRef: playersInTournament[i] },
-          { myRef: playersInTournament[i + 1] },
-          -1,
-          -1
-        ]);
+        if (thirdPlayerMode){
+          let thirdPlayer = getRandomNumber(playersInTournament.length - 1, i);
+          console.log(thirdPlayer);
+          currentMatch.push([
+            { myRef: playersInTournament[i] },
+            { myRef: playersInTournament[i + 1] },
+            -1,
+            -1,
+            { myRef: playersInTournament[thirdPlayer]},
+          ]);
+        }
+        else{
+          currentMatch.push([
+            { myRef: playersInTournament[i] },
+            { myRef: playersInTournament[i + 1] },
+            -1,
+            -1,
+            "",
+          ]);
+        }
       }
       j ++;
     }
@@ -162,7 +187,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
     ul.appendChild(li);
     round ++;
   }
-  
+
   function printAllResult(){
     const ul = document.getElementById("allMatch");
     ul.innerHTML = "";
@@ -172,12 +197,13 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.appendChild(li);
     });
   }
-  
+
   const nbPlayerElement = document.getElementById("nbPlayer");
   const launchTournamentElement = document.getElementById("launch");
   const launchMatchElement = document.getElementById("launchMatch");
   const bracketElement = document.getElementById("bracket");
   const nextMatchElement = document.getElementById("next-match");
+  const matchElement = document.getElementById("match");
   
   
   const thirdA1Element = document.getElementById("third-A1");
@@ -219,18 +245,93 @@ const usernameLinks = document.querySelectorAll('.username-link');
   const secondTopElement = document.getElementById("second-top");
   const secondBotElement = document.getElementById("second-bot");
   const secondLineElement = document.getElementById("second-line");
-  
+
   //print the bracket structure with the first matchup
-  function printBracket() {
+  // function printBracket() {
+  //   if (tournamentPlayer.length > 0){
+  //     A1Element.style.display = "flex";
+  //     let ul = document.getElementById("A1_name");
+  //     console.log(currentMatch[0][0].myRef.username);
+  //     ul.textContent = tournamentPlayer[0].username;
+  //     A2Element.style.display = "flex";
+  //     ul = document.getElementById("A2_name");
+  //     ul.textContent = tournamentPlayer[1].username;
+  //     if (thirdPlayerMode)
+  //       thirdA1Element.style.display = "flex";
+  //   }
+  //   if (tournamentPlayer.length > 2){
+  //     A3Element.style.display = "flex";
+  //     let ul = document.getElementById("A3_name");
+  //     ul.textContent = tournamentPlayer[2].username;
+  //     A4Element.style.display = "flex";
+  //     ul = document.getElementById("A4_name");
+  //     if (tournamentPlayer.length > 3)
+  //       ul.textContent = tournamentPlayer[3].username;
+  //     else
+  //       ul.textContent = "...";
+  //     if (thirdPlayerMode)
+  //       thirdA2Element.style.display = "flex";
+  //     B1Element.style.display = "flex";
+  //     B2Element.style.display = "flex";
+  //     if (thirdPlayerMode)
+  //       thirdB1Element.style.display = "flex";
+  //     firstTopTopElement.style.display = "block";
+  //     firstTopBotElement.style.display = "block";
+  //     firstSecondTopElement.style.display = "block";
+  //   }
+  //   if (tournamentPlayer.length > 4){
+  //     A5Element.style.display = "flex";
+  //     let ul = document.getElementById("A5_name");
+  //     ul.textContent = tournamentPlayer[4].username;
+  //     A6Element.style.display = "flex";
+  //     ul = document.getElementById("A6_name");
+  //     if (tournamentPlayer.length > 5)
+  //       ul.textContent = tournamentPlayer[5].username;
+  //     else
+  //       ul.textContent = "...";
+  //     if (thirdPlayerMode)
+  //       thirdA3Element.style.display = "flex";
+  //     B3Element.style.display = "flex";
+  //     B4Element.style.display = "flex";
+  //     if (thirdPlayerMode)
+  //       thirdB2Element.style.display = "flex";
+  //     C1Element.style.display = "flex";
+  //     C2Element.style.display = "flex";
+  //     if (thirdPlayerMode)
+  //       thirdC1Element.style.display = "flex";
+  //     firstBotTopElement.style.display = "block";
+  //     firstSecondBotElement.style.display = "block";
+  //     secondTopElement.style.display = "block";
+  //     secondBotElement.style.display = "block";
+  //     secondLineElement.style.display = "block";
+  //   }
+  //   if (tournamentPlayer.length > 6){
+  //     A7Element.style.display = "flex";
+  //     let ul = document.getElementById("A7_name");
+  //     ul.textContent = tournamentPlayer[6].username;
+  //     A8Element.style.display = "flex";
+  //     ul = document.getElementById("A8_name");
+  //     if (tournamentPlayer.length > 7)
+  //       ul.textContent = tournamentPlayer[7].username;
+  //     else
+  //       ul.textContent = "...";
+  //     if (thirdPlayerMode)
+  //       thirdA4Element.style.display = "flex";
+  //     firstBotBotElement.style.display = "block";
+  //   }
+  // }
+  
+    function printBracket() {
     if (tournamentPlayer.length > 0){
       A1Element.style.display = "flex";
       let ul = document.getElementById("A1_name");
+      // console.log(currentMatch[0][0].myRef.username);
       ul.textContent = tournamentPlayer[0].username;
       A2Element.style.display = "flex";
       ul = document.getElementById("A2_name");
       ul.textContent = tournamentPlayer[1].username;
-      // if (thirdPlayerMode)
-      thirdA1Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdA1Element.style.display = "flex";
     }
     if (tournamentPlayer.length > 2){
       A3Element.style.display = "flex";
@@ -242,12 +343,12 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = tournamentPlayer[3].username;
       else
         ul.textContent = "...";
-      // if (thirdPlayerMode)
-      thirdA2Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdA2Element.style.display = "flex";
       B1Element.style.display = "flex";
       B2Element.style.display = "flex";
-      // if (thirdPlayerMode)
-      thirdB1Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdB1Element.style.display = "flex";
       firstTopTopElement.style.display = "block";
       firstTopBotElement.style.display = "block";
       firstSecondTopElement.style.display = "block";
@@ -262,16 +363,16 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = tournamentPlayer[5].username;
       else
         ul.textContent = "...";
-      // if (thirdPlayerMode)
-      thirdA3Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdA3Element.style.display = "flex";
       B3Element.style.display = "flex";
       B4Element.style.display = "flex";
-      // if (thirdPlayerMode)
-      thirdB2Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdB2Element.style.display = "flex";
       C1Element.style.display = "flex";
       C2Element.style.display = "flex";
-      // if (thirdPlayerMode)
-      thirdC1Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdC1Element.style.display = "flex";
       firstBotTopElement.style.display = "block";
       firstSecondBotElement.style.display = "block";
       secondTopElement.style.display = "block";
@@ -288,12 +389,12 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = tournamentPlayer[7].username;
       else
         ul.textContent = "...";
-      // if (thirdPlayerMode)
-      thirdA4Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdA4Element.style.display = "flex";
       firstBotBotElement.style.display = "block";
     }
   }
-  
+
   //launch the tournament when there is the right amount of players
   //create the matchup / print the bracket structure
 
@@ -329,6 +430,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
     launchMatchElement.style.display = "inline";
     bracketElement.style.display = "inline";
     nextMatchElement.style.display = "inline";
+    matchElement.style.display = "inline";
     const leftColumnElement = document.getElementById("leftColumn");
     const midColumnElement = document.getElementById("midColumn");
     const rightColumnElement = document.getElementById("rightColumn");
@@ -339,16 +441,14 @@ const usernameLinks = document.querySelectorAll('.username-link');
   });
 
   launchMatchElement.addEventListener("click", function(){
+    console.log("test");
     findWinner();
+    console.log("test");
   });
   
   function findWinner(){
-    let ul = document.getElementById("result");
-    ul.innerHTML = "";
-    let li = document.createElement("p");
     let winner_name;
     if (!currentMatch[nbMatch][1]){
-      li.textContent = currentMatch[nbMatch][0].myRef.username + " is the winner !";
       currentMatch[nbMatch][0].myRef.round ++;
       currentMatch[nbMatch][2] = 3;
       currentMatch[nbMatch][3] = 0;
@@ -357,21 +457,19 @@ const usernameLinks = document.querySelectorAll('.username-link');
     else{
       let result = Math.floor(Math.random() * 2);
       if (result === 0){
-        li.textContent = currentMatch[nbMatch][0].myRef.username + " is the winner !";
         currentMatch[nbMatch][0].myRef.round ++;
         currentMatch[nbMatch][2] = 3;
         currentMatch[nbMatch][3] = Math.floor(Math.random() * 3);
         winner_name = currentMatch[nbMatch][0].myRef.username;
       }
       else{
-        li.textContent = currentMatch[nbMatch][1].myRef.username + " is the winner !";
         currentMatch[nbMatch][1].myRef.round ++;
         currentMatch[nbMatch][3] = 3;
         currentMatch[nbMatch][2] = Math.floor(Math.random() * 3);
         winner_name = currentMatch[nbMatch][1].myRef.username;
       }
     }
-    ul.appendChild(li);
+    console.log(1);
     if (round == 2){
       if (nbMatch == 0){
         let ul = document.getElementById("B1_name");
@@ -426,6 +524,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = currentMatch[nbMatch][3];
       }
     }
+    console.log(2);
     if (round == 3){
       if (nbMatch == 0){
         let ul = document.getElementById("C1_name");
@@ -452,6 +551,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = currentMatch[nbMatch][3];
       }
     }
+    console.log(3);
     if (round == 4){
       if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
           C1C2matchElement.classList.add("winner-top");
@@ -462,13 +562,17 @@ const usernameLinks = document.querySelectorAll('.username-link');
       ul = document.getElementById("C2_score");
       ul.textContent = currentMatch[nbMatch][3];
     }
+    console.log(4);
     //print the nextMatch
     nbMatch ++;
-    ul = document.getElementById("match");
+    let ul = document.getElementById("match");
     ul.innerHTML = "";
-    li = document.createElement("p");
+    let li = document.createElement("p");
+    console.log(5);
     if (nbMatch >= currentMatch.length){
+      console.log(6);
       makeMatchup();
+      console.log(7);
       return ; 
     }
     else if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])

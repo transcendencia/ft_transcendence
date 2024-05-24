@@ -32,7 +32,7 @@ body {
 }
 
 .leftColumnTournament {
-  border: 5px solid wheat;
+  /* border: 5px solid wheat; */
   padding-top: 20px;
   display: flex;
   flex-direction: column;
@@ -43,7 +43,7 @@ body {
 }
 
 .centerColumnTournament {
-  border: 5px solid wheat;
+  /* border: 5px solid wheat; */
   padding-top: 20px;
   display: flex;
   flex-direction: column;
@@ -152,11 +152,13 @@ body {
 }
 
 .matchInfo{
+  /* border: 5px solid wheat; */
   height: 10%;
-  width: 100%;
+  width: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
+  /* padding: 0px 5px; */
 }
 
 h2 {
@@ -179,14 +181,14 @@ p{
 
 .startMatchButton {
   text-align: center;
-  font-size: 25px;
+  font-size: 20px;
   color: white;
   font-family: 'Space';
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 5px;
-  padding: 10px 0px;
+  padding: 10px 10px;
   background-color: rgb(161, 0, 0);
   border: 5px solid rgb(255, 255, 255);
 }
@@ -319,7 +321,7 @@ a:active{
   flex-direction: column;
   min-width: 240px;
   max-width: 240px;
-  height: 62px;
+  height: 93px;
   margin: 12px 24px 12px 0;
 }
 
