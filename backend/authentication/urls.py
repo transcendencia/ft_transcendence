@@ -12,4 +12,5 @@ urlpatterns = [
 
     path('tournament/', tournament.result, name='result'),
     path('add_player/', tournament.add_member, name='add_member'),
+    path('add_game/', tournament.add_game, name='add_game'),
 ]
