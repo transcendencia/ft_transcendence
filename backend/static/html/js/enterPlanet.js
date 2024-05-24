@@ -65,7 +65,7 @@ export function togglePlanet() {
         resetRotations();
         landedOnPlanet = false;
     }
-    // toggleRSContainerVisibility();
+    toggleRSContainerVisibility();
     resetOutlineAndText();
     toggleBlurDisplay();
     togglePanelDisplay();
