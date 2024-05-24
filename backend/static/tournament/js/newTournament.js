@@ -55,50 +55,14 @@ const usernameLinks = document.querySelectorAll('.username-link');
             position: 0,
             round: 1,
           });
-          // printTournamentPlayer();
       }
   }
 
-  function printTournamentPlayer() {
-    const tournamentTable = document.querySelector("#tournamentTable");
-    tournamentTable.innerHTML = "";
-    tournamentPlayer.forEach(function(player) {
-      const divRow = document.createElement("div");
-      divRow.classList.add("userTile");
-      
-      
-      const divUsername = document.createElement("div");
-      divUsername.classList.add("textContainer")
-      divUsername.textContent = player.username;
-      divRow.appendChild(divUsername);
-
-      const divImg = document.createElement("div");
-      divImg.classList.add("imgContainer");
-      divRow.appendChild(divImg);
-
-    // const divAction = document.createElement("div");
-    // const actionLink = document.createElement("a");
-    // actionLink.href = "#";
-    // actionLink.textContent = "-";
-    // divAction.appendChild(actionLink);
-    // divRow.appendChild(divAction);
-
-    // actionLink.addEventListener("click", function() {
-    //   const index = tournamentPlayer.indexOf(player);
-    //   if (index !== -1) {
-    //     tournamentPlayer.splice(index, 1);
-    //     printTournamentPlayer();
-    //   }
-    // });
-      tournamentTable.appendChild(divRow);
-    });
-  }
-
-  function getRandomNumber(size, i) {
+  function getRandomNumber(tournamentPlayer, player1, player2) {
     let number;
     do {
-        number = Math.floor(Math.random() * size);
-    } while (number === i || number === i + 1);
+        number = Math.floor(Math.random() * tournamentPlayer.length);
+    } while (tournamentPlayer[number].username === player1 || tournamentPlayer[number].username === player2);
     return number;
   }
 
@@ -106,9 +70,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
   let allMatch = [];
   let round = 1;
   let nbMatch;
-  
-  let thirdPlayerMode = 1;
-
+  let thirdPlayerMode = 1; //must be removed to use the real variable
 
   function makeMatchup() {
     const ul = document.getElementById("match");
@@ -141,7 +103,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
       li.textContent = playersInTournament[0].username + " have won the tournament!";
       ul.appendChild(li);
       launchMatchElement.style.display = "none";
-      // printAllResult();
       return ;
     }
     //put matchup in currentMatch variable
@@ -157,14 +118,13 @@ const usernameLinks = document.querySelectorAll('.username-link');
       }
       else{
         if (thirdPlayerMode){
-          let thirdPlayer = getRandomNumber(playersInTournament.length - 1, i);
-          console.log(thirdPlayer);
+          let thirdPlayer = getRandomNumber(tournamentPlayer, playersInTournament[i].username, playersInTournament[i + 1].username);
           currentMatch.push([
             { myRef: playersInTournament[i] },
             { myRef: playersInTournament[i + 1] },
             -1,
             -1,
-            { myRef: playersInTournament[thirdPlayer]},
+            { myRef: tournamentPlayer[thirdPlayer]},
           ]);
         }
         else{
@@ -185,17 +145,30 @@ const usernameLinks = document.querySelectorAll('.username-link');
     else if (currentMatch[nbMatch][0])
       li.textContent = currentMatch[nbMatch][0].myRef.username;
     ul.appendChild(li);
+    if (round > 1){
+      for (let i = 0; i < currentMatch.length; i ++) {
+        if (thirdPlayerMode){
+          if (round === 2){
+            if (i === 0){
+              let ul = document.getElementById("third-B1_name");
+              ul.textContent = currentMatch[0][4].myRef.username;
+            }
+            else if (i === 1){
+              let ul = document.getElementById("third-B2_name");
+              if (currentMatch[1][4])
+                ul.textContent = currentMatch[1][4].myRef.username;
+              else
+                ul.textContent = "...";
+            }
+          }
+          else if (round === 3){
+            let ul = document.getElementById("third-C1_name");
+            ul.textContent = currentMatch[0][4].myRef.username;
+          }
+        }
+      }
+    }
     round ++;
-  }
-
-  function printAllResult(){
-    const ul = document.getElementById("allMatch");
-    ul.innerHTML = "";
-    allMatch.forEach(function(match) {
-        const li = document.createElement("p");
-        li.textContent = match[0].myRef.username + " " + match[2] + " vs " + match[1].myRef.username + " " + match[3];
-        ul.appendChild(li);
-    });
   }
 
   const nbPlayerElement = document.getElementById("nbPlayer");
@@ -245,106 +218,44 @@ const usernameLinks = document.querySelectorAll('.username-link');
   const secondTopElement = document.getElementById("second-top");
   const secondBotElement = document.getElementById("second-bot");
   const secondLineElement = document.getElementById("second-line");
-
-  //print the bracket structure with the first matchup
-  // function printBracket() {
-  //   if (tournamentPlayer.length > 0){
-  //     A1Element.style.display = "flex";
-  //     let ul = document.getElementById("A1_name");
-  //     console.log(currentMatch[0][0].myRef.username);
-  //     ul.textContent = tournamentPlayer[0].username;
-  //     A2Element.style.display = "flex";
-  //     ul = document.getElementById("A2_name");
-  //     ul.textContent = tournamentPlayer[1].username;
-  //     if (thirdPlayerMode)
-  //       thirdA1Element.style.display = "flex";
-  //   }
-  //   if (tournamentPlayer.length > 2){
-  //     A3Element.style.display = "flex";
-  //     let ul = document.getElementById("A3_name");
-  //     ul.textContent = tournamentPlayer[2].username;
-  //     A4Element.style.display = "flex";
-  //     ul = document.getElementById("A4_name");
-  //     if (tournamentPlayer.length > 3)
-  //       ul.textContent = tournamentPlayer[3].username;
-  //     else
-  //       ul.textContent = "...";
-  //     if (thirdPlayerMode)
-  //       thirdA2Element.style.display = "flex";
-  //     B1Element.style.display = "flex";
-  //     B2Element.style.display = "flex";
-  //     if (thirdPlayerMode)
-  //       thirdB1Element.style.display = "flex";
-  //     firstTopTopElement.style.display = "block";
-  //     firstTopBotElement.style.display = "block";
-  //     firstSecondTopElement.style.display = "block";
-  //   }
-  //   if (tournamentPlayer.length > 4){
-  //     A5Element.style.display = "flex";
-  //     let ul = document.getElementById("A5_name");
-  //     ul.textContent = tournamentPlayer[4].username;
-  //     A6Element.style.display = "flex";
-  //     ul = document.getElementById("A6_name");
-  //     if (tournamentPlayer.length > 5)
-  //       ul.textContent = tournamentPlayer[5].username;
-  //     else
-  //       ul.textContent = "...";
-  //     if (thirdPlayerMode)
-  //       thirdA3Element.style.display = "flex";
-  //     B3Element.style.display = "flex";
-  //     B4Element.style.display = "flex";
-  //     if (thirdPlayerMode)
-  //       thirdB2Element.style.display = "flex";
-  //     C1Element.style.display = "flex";
-  //     C2Element.style.display = "flex";
-  //     if (thirdPlayerMode)
-  //       thirdC1Element.style.display = "flex";
-  //     firstBotTopElement.style.display = "block";
-  //     firstSecondBotElement.style.display = "block";
-  //     secondTopElement.style.display = "block";
-  //     secondBotElement.style.display = "block";
-  //     secondLineElement.style.display = "block";
-  //   }
-  //   if (tournamentPlayer.length > 6){
-  //     A7Element.style.display = "flex";
-  //     let ul = document.getElementById("A7_name");
-  //     ul.textContent = tournamentPlayer[6].username;
-  //     A8Element.style.display = "flex";
-  //     ul = document.getElementById("A8_name");
-  //     if (tournamentPlayer.length > 7)
-  //       ul.textContent = tournamentPlayer[7].username;
-  //     else
-  //       ul.textContent = "...";
-  //     if (thirdPlayerMode)
-  //       thirdA4Element.style.display = "flex";
-  //     firstBotBotElement.style.display = "block";
-  //   }
-  // }
   
-    function printBracket() {
+  function printBracket() {
+    if (!thirdPlayerMode){
+      document.querySelectorAll('.match').forEach(function(el) {
+        el.style.height = "62px";
+      });
+    }
     if (tournamentPlayer.length > 0){
       A1Element.style.display = "flex";
       let ul = document.getElementById("A1_name");
-      // console.log(currentMatch[0][0].myRef.username);
-      ul.textContent = tournamentPlayer[0].username;
+      ul.textContent = currentMatch[0][0].myRef.username;
       A2Element.style.display = "flex";
       ul = document.getElementById("A2_name");
-      ul.textContent = tournamentPlayer[1].username;
-      if (thirdPlayerMode)
+      ul.textContent = currentMatch[0][1].myRef.username;
+      if (thirdPlayerMode){
         thirdA1Element.style.display = "flex";
+        ul = document.getElementById("third-A1_name");
+        ul.textContent = currentMatch[0][4].myRef.username;
+      }
     }
     if (tournamentPlayer.length > 2){
       A3Element.style.display = "flex";
       let ul = document.getElementById("A3_name");
-      ul.textContent = tournamentPlayer[2].username;
+      ul.textContent = currentMatch[1][0].myRef.username;
       A4Element.style.display = "flex";
       ul = document.getElementById("A4_name");
       if (tournamentPlayer.length > 3)
-        ul.textContent = tournamentPlayer[3].username;
+        ul.textContent = currentMatch[1][1].myRef.username;
       else
         ul.textContent = "...";
-      if (thirdPlayerMode)
+      if (thirdPlayerMode){
         thirdA2Element.style.display = "flex";
+        ul = document.getElementById("third-A2_name");
+        if (tournamentPlayer.length > 3)
+          ul.textContent = currentMatch[1][4].myRef.username;
+        else
+          ul.textContent = "...";
+      }
       B1Element.style.display = "flex";
       B2Element.style.display = "flex";
       if (thirdPlayerMode)
@@ -356,15 +267,21 @@ const usernameLinks = document.querySelectorAll('.username-link');
     if (tournamentPlayer.length > 4){
       A5Element.style.display = "flex";
       let ul = document.getElementById("A5_name");
-      ul.textContent = tournamentPlayer[4].username;
+      ul.textContent = currentMatch[2][0].myRef.username;
       A6Element.style.display = "flex";
       ul = document.getElementById("A6_name");
       if (tournamentPlayer.length > 5)
-        ul.textContent = tournamentPlayer[5].username;
+        ul.textContent = currentMatch[2][1].myRef.username;
       else
         ul.textContent = "...";
-      if (thirdPlayerMode)
+      if (thirdPlayerMode){
         thirdA3Element.style.display = "flex";
+        ul = document.getElementById("third-A3_name");
+        if (tournamentPlayer.length > 5)
+          ul.textContent = currentMatch[2][4].myRef.username;
+        else
+          ul.textContent = "...";
+      }
       B3Element.style.display = "flex";
       B4Element.style.display = "flex";
       if (thirdPlayerMode)
@@ -382,15 +299,21 @@ const usernameLinks = document.querySelectorAll('.username-link');
     if (tournamentPlayer.length > 6){
       A7Element.style.display = "flex";
       let ul = document.getElementById("A7_name");
-      ul.textContent = tournamentPlayer[6].username;
+      ul.textContent = currentMatch[3][0].myRef.username;
       A8Element.style.display = "flex";
       ul = document.getElementById("A8_name");
       if (tournamentPlayer.length > 7)
-        ul.textContent = tournamentPlayer[7].username;
+        ul.textContent = currentMatch[3][1].myRef.username;
       else
         ul.textContent = "...";
-      if (thirdPlayerMode)
+      if (thirdPlayerMode){
         thirdA4Element.style.display = "flex";
+        ul = document.getElementById("third-A4_name");
+        if (tournamentPlayer.length > 7)
+          ul.textContent = currentMatch[3][4].myRef.username;
+        else
+          ul.textContent = "...";
+      }
       firstBotBotElement.style.display = "block";
     }
   }
@@ -426,7 +349,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
     document.querySelectorAll('.before-launch').forEach(function(el) {
       el.style.display = 'none';
    });
-    // printTournamentPlayer();
     launchMatchElement.style.display = "inline";
     bracketElement.style.display = "inline";
     nextMatchElement.style.display = "inline";
@@ -441,9 +363,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
   });
 
   launchMatchElement.addEventListener("click", function(){
-    console.log("test");
     findWinner();
-    console.log("test");
   });
   
   function findWinner(){
@@ -469,7 +389,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
         winner_name = currentMatch[nbMatch][1].myRef.username;
       }
     }
-    console.log(1);
     if (round == 2){
       if (nbMatch == 0){
         let ul = document.getElementById("B1_name");
@@ -524,7 +443,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = currentMatch[nbMatch][3];
       }
     }
-    console.log(2);
     if (round == 3){
       if (nbMatch == 0){
         let ul = document.getElementById("C1_name");
@@ -551,7 +469,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
         ul.textContent = currentMatch[nbMatch][3];
       }
     }
-    console.log(3);
     if (round == 4){
       if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
           C1C2matchElement.classList.add("winner-top");
@@ -562,17 +479,13 @@ const usernameLinks = document.querySelectorAll('.username-link');
       ul = document.getElementById("C2_score");
       ul.textContent = currentMatch[nbMatch][3];
     }
-    console.log(4);
     //print the nextMatch
     nbMatch ++;
     let ul = document.getElementById("match");
     ul.innerHTML = "";
     let li = document.createElement("p");
-    console.log(5);
     if (nbMatch >= currentMatch.length){
-      console.log(6);
       makeMatchup();
-      console.log(7);
       return ; 
     }
     else if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
@@ -580,7 +493,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
     else if (currentMatch[nbMatch][0])
       li.textContent = currentMatch[nbMatch][0].myRef.username;
     ul.appendChild(li);
-    // printTournamentPlayer();
   }
 
 const plusPlayerTournament = document.querySelectorAll(".plusPlayerTournament");

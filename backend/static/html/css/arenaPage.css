@@ -9,7 +9,7 @@
 }
 
 .rightColumn {
-    border: 5px solid wheat;
+    /* border: 5px solid wheat; */
     display: flex;
     flex-direction: column;
     justify-content: center;

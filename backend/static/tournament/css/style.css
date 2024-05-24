@@ -54,7 +54,7 @@ body {
 }
 
 .rightColumnTournament {
-  border: 5px solid wheat;
+  /* border: 5px solid wheat; */
   padding-top: 20px;
   display: flex;
   flex-direction: column;
@@ -83,40 +83,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: row;
-}
-
-.movingSpaceShip3 {
-  border-right: 5px solid white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  width: 50px;
-  animation: moveUpDown 2s infinite alternate linear;
-}
-
-.movingSpaceShip4 {
-  border-left: 5px solid white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  width: 50px;
-  animation: moveUpDown 2s infinite alternate 2s linear;
-}
-
-@keyframes ballMoveLeftRight1 {
-  0% {transform: translateX(0px); /* Initial position */}
-  100% {transform: translateX(163px); /* Move up by 50px */}
-}
-
-.ball1 {
-  margin-left: -163px;
-  background-color: #ffffff;
-  border-radius: 50%;
-  width: 10px;
-  height: 10px;
-  animation: ballMoveLeftRight1 2s linear infinite 0.9s alternate;
 }
 
 .userlistTournament {
@@ -378,7 +344,7 @@ a:active{
 }
 
 .match-lines .line.two {
-  height: 44px;
+  height: 59px; 
   width: 1px;
   left: 11px;
 }
@@ -404,7 +370,7 @@ a:active{
 }
 
 .column:nth-child(2) .match-lines .line.two {
-  height: 88px;
+  height: 120px;
 }
 
 .column:nth-child(3) .match-lines .line.two {
