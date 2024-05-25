@@ -54,7 +54,7 @@
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
         </div>
-        <div id= "messageContainer" class="errorMessageCont"></div>
+        <div id= "messageContainer" class="loginMessageCont"></div>
         <button type="submit" style="display: none;"></button>
       </form>
     </div>
@@ -80,9 +80,9 @@
 
   <!-- SIGN UP PAGE -->
   <div class="signUpPage page">
-    <form id="signupForm" method="post" action="signup/">
-      {% csrf_token %}
-      <div class="perspective">
+    <div class="perspective">
+        <form id="signupForm" method="post" action="signup/">
+          {% csrf_token %}
         Sign Up
         <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
         <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
@@ -107,7 +107,10 @@
         </div>
       </div>
       </div>
-        <div class="perspective2">
+      <div class="perspective3">
+        <div id= "messageContainerSignup" class="loginMessageCont"></div>
+      </div>
+      <div class="perspective2">
         <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button>
       </div>
     </form>

@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 from django.http import JsonResponse
 from django.utils import timezone
+from django.template.response import TemplateResponse
 
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
@@ -32,6 +33,22 @@ def user_profile(request):
         'profile_pic_url': request.user.profile_picture.url
     }
     return JsonResponse(user_profile_data)
+
+def render_change_picture(request):
+  return render(request, 'upload_img.html')
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def change_profile_picture(request):
+    if 'file' in request.FILES:
+        uploaded_file = request.FILES['file']
+        request.user.profile_picture = uploaded_file
+        request.user.save()
+        print("picture changed") #LOG
+        return Response(status=status.HTTP_200_OK)
+    else:
+        return Response(request, status=status.HTTP_400_BAD_REQUEST)
 # --------------------------------------------------------------
 
 
@@ -58,7 +75,7 @@ def login_page(request):
       user.status = 'online'
       print(user.last_login_date, user.status)
       user.save()
-      return  Response({'status': "succes", 'token': token.key, 'language': user.language, 'message': "You are now logged in!\nPress [E] to enter a new galaxie"}) #return languages pour mettre a jour currenLanguage00000000000000000
+      return  Response({'status': "succes", 'token': token.key, 'language': user.language, 'message': "You are now logged in!\nPress [E] to enter the galaxy"})
     else:
       print("J'existe pas") #LOG
       return  Response({'status': "failure", 'message': "Username and/or password invalid"})
@@ -68,7 +85,7 @@ def login_page(request):
 
 #ajouter message d'erreur quand user existe deja
 ##checker que username pas deja pris
-@api_view(['POST'])
+@api_view(['POST']) 
 @permission_classes([AllowAny])  
 def signup(request):
   print("je suis dans sign up", request.data) #LOG
@@ -82,9 +99,10 @@ def signup(request):
     user.set_password(user_data['password'])
     print(user_data['username'], user_data['password'], user.status, "Utilisateur cree") #LOG
     user.save()
-    return Response({"ok": True})
-  print(serializer.errors)
-  return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"ok": True, "message": "User created"}, status=status.HTTP_200_OK)
+  first_error = next(iter(serializer.errors.values()))[0]
+  print(first_error)
+  return Response({"message": first_error})
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])

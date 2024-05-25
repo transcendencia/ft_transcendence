@@ -71,15 +71,24 @@
     background-color: white;
 }
 
-.errorMessageCont {
+.loginMessageCont {
     pointer-events: none;
-    margin-top: -30px;
+    /* position: absolute; */
+    margin-top: -10px;
     display: flex;
     justify-content: center;
+    text-align: center;
     align-items: center;
-    color: red; /* Set text color */
     font-size: 10px; /* Set font size */
     font-family: 'Space'; /* Set font family */
+}
+
+.loginMessageCont.failure {
+    color: red;
+}
+
+.loginMessageCont.success {
+    color: #00ff00;
 }
 
 .languageColumn {
