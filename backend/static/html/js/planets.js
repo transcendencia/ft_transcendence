@@ -71,17 +71,11 @@ const planets = [];
 const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
 const sphereMaterial = new THREE.MeshBasicMaterial({
 	 color: 0xffaa00,
-	 // make the sun visible from inside
-	 side: THREE.DoubleSide,
-	 // map a texture to the inside
-	 map: new THREE.TextureLoader().load('../static/game/assets/mpale.jpg'),
 });
 const sun = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
 const boxGeometry = new THREE.BoxGeometry(40, 40, 40);
 const boxMaterial = new THREE.MeshBasicMaterial({
-	 map: new THREE.TextureLoader().load('../static/game/assets/mpale.jpg'),
-	 side: THREE.DoubleSide
 });
 const box = new THREE.Mesh(boxGeometry, boxMaterial);
 
