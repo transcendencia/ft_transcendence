@@ -1295,7 +1295,6 @@ class Paddle extends THREE.Group {
                                 animation1.play();
                             }, 500);
                         }
-
                     }
                 }
             },
@@ -2996,7 +2995,7 @@ function animate()
 {
     requestAnimationFrame( animate );
     updateFpsCounter();
-    // if (!gameStarted)
+    // if (gameStarted != undefined && !gameStarted)
     //     return;
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
