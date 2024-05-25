@@ -57,6 +57,10 @@ function handleSignup(event) {
         }
         return response.json();
     })
+    .then(data => {
+        console.log(data.message);
+        document.getElementById('messageContainerSignup').innerText = data.message;
+    })
     .catch(error => {
         console.error('There was a problem with the sign-up:', error);
     });

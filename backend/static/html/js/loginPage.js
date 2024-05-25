@@ -157,8 +157,6 @@ loginForm.addEventListener('submit', handleLogin);
 function handleLogin(event) {
     event.preventDefault();
 
-    // console.log(currentLanguage);
-
     const formData = new FormData(this);
     formData.append('language', currentLanguage);
     formData.append('languageClicked', languageIconsClicked);
@@ -170,20 +168,20 @@ function handleLogin(event) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status == "succes")
+        var loginMessageCont = document.querySelector('.loginMessageCont');
+        if (data.status == "succes") {
             localStorage.setItem("auth_token", data.token)
             currentLanguage = data.language;
+            loginMessageCont.classList.remove("failure");
+            loginMessageCont.classList.add("success");
+        } else
+            loginMessageCont.classList.remove("success");
+            loginMessageCont.classList.add("failure");
         document.getElementById('messageContainer').innerText = data.message;
-        console.log(currentLanguage);
     })
-    .catch(error => {const requestOptions = {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}` // Ajouter le token d'authentification dans l'en-tête de la requête
-        }
-    };
-        console.error('Une erreur s\'est produite:', error);
-    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
 }
 
 // Logout
