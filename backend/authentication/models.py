@@ -21,8 +21,12 @@ class User(AbstractUser):
   status = models.CharField(max_length = 10, choices=STATUS_CHOICE, default='offline')
   profile_picture = models.ImageField(default='default.png')
 
-  # friends = models.ManyToManyField('self', through='Friendship', symmetrical=False)
+  # friends = models.ManyToManyField("User", blank=True)
 # histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)
+
+# class Friend_Request(models.Model):
+#   from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
+#   to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
 
 # class Game(models.Model):
   #player_1 = 
