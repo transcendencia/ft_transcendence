@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			#profile-pic {
+            	width: 200px; 
+            	height: auto; 
+            	display: block; 
+            	margin-bottom: 10px;
+        	}
+
+        	#username,
+        	#bio {
+            	display: block;
+            	margin-bottom: 10px;
+        	}
+		</style>
+		<title>Profil Utilisateur</title>
+	</head>
+	<body>
+		<div id="profile_info">
+			<img id="profile-pic" src="" alt="Photo de profil">
+			<div>
+				<span>Nom d'utilisateur : </span><span id="username"></span>
+			</div>
+			<div>
+				<span>Bio : </span><span id="bio"></span>
+			</div>
+		</div>
+		<div>
+			<button onclick="window.location.href = '{% url 'render_change_profile_info' %}';">Changer les informations</button>
+		</div>
+
+		<script>
+			function getProfileInfo() {
+				const token = localStorage.getItem('auth_token');
+				fetch('get_profile_info/', {
+					method: 'GET',
+					headers: {
+						'Authorization': `Token ${token}`,
+					}
+				})
+				.then(response => {
+					if (!response.ok)
+						throw new Error('Error lors de la recuperation des donne');
+					return response.json();
+				})
+				.then(data=> {
+					document.getElementById('username').textContent = data.profile_info.username;
+					document.getElementById('bio').textContent = data.profile_info.bio;
+					document.getElementById('profile-pic').src = data.profile_info.profile_picture;
+				})
+				.catch(error => {
+					console.error('Erreur :', error);
+				});
+			}
+			window.onload = getProfileInfo;
+		</script>
+	</body>
+</html>

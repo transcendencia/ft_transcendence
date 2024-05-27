@@ -20,8 +20,12 @@ class User(AbstractUser):
   ]
   status = models.CharField(max_length = 10, choices=STATUS_CHOICE, default='offline')
   profile_picture = models.ImageField(default='default.png')
+  bio = models.CharField(max_length = 28, null=True, blank=True)
+  
+  def get_profile_info(self):
+    return({'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url})
 
-  # friends = models.ManyToManyField("User", blank=True)
+# friends = models.ManyToManyField("User", blank=True)
 # histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)
 
 # class Friend_Request(models.Model):
