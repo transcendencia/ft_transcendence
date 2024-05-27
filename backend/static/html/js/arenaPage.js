@@ -1,6 +1,6 @@
 import { getTranslatedText } from "./loginPage.js";
 import { showPage } from "./showPages.js";
-import { arena1 } from "../../game/js/main.js";
+import { gameState } from "../../game/js/main.js";
 
 const userlist = document.querySelector(".userlistBackground");
 const userTiles = userlist.querySelectorAll(":scope > *");
@@ -164,45 +164,47 @@ export function switchToGame() {
     rsContainer.style.display = 'none';
     document.getElementById('c4').style.display = 'none';
     document.getElementById('c1').style.display = 'block';
-    initGame(arena1.game, arena1.gameState);
+    initGame(gameState);
 }
 
-function    initGame(game, gameState) {
-
+function    initGame(gameState) {
+    // prepare for initialization
+    gameState.loading = true;
+    gameState.inLobby = false;
+    setTimeout(() => {
+        
+        gameState.arena.game.hasToBeInitialized = true;
     // choose gameMode
     if (gamemodeCounter === 0) {
-        game.powerUpsActivated = true;
-        game.effectsOnly = false;
+        gameState.arena.game.powerUpsActivated = true;
+        gameState.arena.game.effectsOnly = false;
     }
 
     if (gamemodeCounter === 1) {
-        game.powerUpsActivated = false;
-        game.effectsOnly = false;
+        gameState.arena.game.powerUpsActivated = false;
+        gameState.arena.game.effectsOnly = false;
     }
     if (gamemodeCounter === 2) {
-        game.powerUpsActivated = true;
-        game.effectsOnly = true;
+        gameState.arena.game.powerUpsActivated = true;
+        gameState.arena.game.effectsOnly = true;
     }
 
     // choose map
     if (mapCounter === 0)
-        game.map = 'spaceMap';
+        gameState.arena.game.map = 'spaceMap';
     if (mapCounter === 1)
-        game.map = 'oceanMap';
+        gameState.arena.game.map = 'oceanMap';
     if (mapCounter === 2)
-        game.map = 'skyMap';
+        gameState.arena.game.map = 'skyMap';
     if (mapCounter === 3)
-        game.map = 'dragonMap';
+        gameState.arena.game.map = 'dragonMap';
 
     // toggle third player
     if (playerNb === 2)
-        game.thirdPlayer = true;
+        gameState.arena.game.thirdPlayer = true;
     else
-        game.thirdPlayer = false;
-
-    // prepare for initialization
-    game.hasToBeInitialized = true;
-    gameState.loading = true;
+        gameState.arena.game.thirdPlayer = false;
+}, 250);
 }
 
 const rsContainer = document.querySelector('.rightSideContainer');
