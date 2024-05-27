@@ -559,20 +559,13 @@ class Arena extends THREE.Mesh {
         this.ball = new Ball(this);
         this.bot = new Bot(this, this.paddleRight, this.paddleLeft);
         this.isActive = true;
-        this.horizontalBlur = new ShaderPass(HorizontalBlurShader);
-        this.verticalBlur = new ShaderPass(VerticalBlurShader);
-        this.horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-        this.verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-        this.horizontalBlur.renderToScreen = true; // Render to a texture
-        this.verticalBlur.renderToScreen = true; // Render to the screen
-        this.horizontalBlur.uniforms.h.value = 0;
-        this.verticalBlur.uniforms.v.value = 0;
         this.isBlurred = false;
         this.isBeingBlurred = false;
         this.isBeingReset = false;
         this.scene = scene;
         this.game = new Game(this);
         this.maxSpeed = this.width / 40;
+        this.addedToScene = false;
         this.isSplitScreen = false;
         this.isAnimatingCamera = false;
         this.loadingScreen = loadingScreen;
@@ -583,7 +576,23 @@ class Arena extends THREE.Mesh {
         this.viewPoint4 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
         this.defaultMaterial = material;
         this.stars = []; // Store all stars added to the scene
-        this.bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );;
+        
+        // POST PROCESSING
+        this.renderPass1 = new RenderPass(this.scene, this.camera);
+        this.renderPass2 = new RenderPass(this.scene, cameraLeft);
+        this.bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+        this.horizontalBlur = new ShaderPass(HorizontalBlurShader);
+        this.verticalBlur = new ShaderPass(VerticalBlurShader);
+        this.horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
+        this.verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
+        this.horizontalBlur.renderToScreen = true; // Render to a texture
+        this.verticalBlur.renderToScreen = true; // Render to the screen
+        this.horizontalBlur.uniforms.h.value = 0;
+        this.verticalBlur.uniforms.v.value = 0;
+        this.glitchLeft = new GlitchPass(64);
+        this.glitchRight = new GlitchPass(64);
+        this.glitchLeft.renderToScreen = true;
+        this.glitchRight.renderToScreen = true;
         this.bloomPass.threshold = 0.5;
         this.bloomPass.strength = 1.0;
         this.bloomPass.radius = 0.5;
@@ -594,6 +603,30 @@ class Arena extends THREE.Mesh {
         this.spaceMap.initMap();
         this.composer1 = new EffectComposer(renderer);
         this.composer2 = new EffectComposer(renderer2);
+
+        // INIT ARENA
+        this.initPostProcessing();
+        this.idleCameraAnimation();
+    }
+    addArenaToScene()
+    {
+        this.scene.add(this, this.paddleRight, this.paddleLeft, this.ball, this.thirdPlayer);
+    }
+    initPostProcessing()
+    {
+        this.composer1.addPass(this.renderPass1);
+        this.composer1.addPass(this.bloomPass);
+        this.composer1.addPass(this.horizontalBlur);
+        this.composer1.addPass(this.verticalBlur);
+        this.composer1.addPass(this.glitchLeft);
+        this.glitchLeft.enabled = false;
+
+        this.composer2.addPass(this.renderPass2);
+        this.composer2.addPass(this.bloomPass);
+        this.composer2.addPass(this.horizontalBlur);
+        this.composer2.addPass(this.verticalBlur);
+        this.composer2.addPass(this.glitchRight);
+        this.glitchRight.enabled = false;
     }
     addStar() {
         const geometry = new THREE.SphereGeometry(1.125, 12, 12);
@@ -624,6 +657,8 @@ class Arena extends THREE.Mesh {
             this.switchMap(this.skyMap);
         else if (this.game.map === 'dragonMap')
             this.switchMap(this.dragonMap);
+        this.addArenaToScene();
+        console.log("added arena to scene");
     }
     idleCameraAnimation()
     {
@@ -856,12 +891,12 @@ class Arena extends THREE.Mesh {
         if (this.game.rightScore >= this.game.maxScore && !this.isBeingReset)
         {
             this.isBeingReset = true;
-            this.resetPositions(this.paddleLeft, this.paddleRight, false, glitchLeft);
+            this.resetPositions(this.paddleLeft, this.paddleRight, false, this.glitchLeft);
         }
         else if (this.game.leftScore >= this.game.maxScore && !this.isBeingReset)
         {
             this.isBeingReset = true;
-            this.resetPositions(this.paddleRight, this.paddleLeft, true, glitchRight);
+            this.resetPositions(this.paddleRight, this.paddleLeft, true, this.glitchRight);
         }
     }
     setSplitCameraPositions(_cameraRight, _cameraLeft)
@@ -2743,9 +2778,9 @@ class Game {
 class GameState {
     constructor(arena) {
         this.arena = arena;
-        this.loading = true;
+        this.loading = false;
         this.inGame = false;
-        this.inLobby = false;
+        this.inLobby = true;
         this.graphics; // (options = 'low', 'medium', 'high') (loginPage.js)
 
     }
@@ -2943,29 +2978,9 @@ function swapToFullScreen()
         .start();
 }
 
-const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-
-
 const centerPosition = new THREE.Vector3(0, 0, 0);
 
-const arena1 = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, bloomPass);
-scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball, arena1.thirdPlayer);
-arena1.idleCameraAnimation();
-
-let renderPass1 = new RenderPass(scene, camera);
-let glitchLeft = new GlitchPass(64);
-glitchLeft.renderToScreen = true;
-arena1.composer1.addPass(renderPass1);
-arena1.composer1.addPass(glitchLeft);
-
-let renderPass2 = new RenderPass(scene, cameraLeft);
-let glitchRight = new GlitchPass(64);
-glitchRight.renderToScreen = true;
-arena1.composer2.addPass(renderPass2);
-arena1.composer2.addPass(glitchRight);
-
-glitchRight.enabled = false;
-glitchLeft.enabled = false;
+const arena1 = new Arena(centerPosition, 28, 1.7, 34, loadingScreen);
 
 function glitch(glitchEffect)
 {
@@ -2977,18 +2992,8 @@ function glitch(glitchEffect)
     }, 500);
 }
 
-
-arena1.composer1.addPass(arena1.bloomPass);
-arena1.composer2.addPass(arena1.bloomPass);
-
-
-arena1.composer1.addPass(arena1.horizontalBlur);
-arena1.composer1.addPass(arena1.verticalBlur);
-arena1.composer2.addPass(arena1.horizontalBlur);
-arena1.composer2.addPass(arena1.verticalBlur);
-
-let fpsInterval = 1000 / 75; // 120 FPS
-let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
+let fpsInterval = 1000 / 75; // 75 FPS
+let stats = new Stats();
 let lastUpdateTime = performance.now();
 
 function animate()
@@ -3009,7 +3014,8 @@ function animate()
             arena1.thirdPlayer.monitorThirdPlayerMovement();
             arena1.thirdPlayer.monitorProjectilesMovement();
             arena1.composer1.render();
-            arena1.composer2.render();
+            if (arena1.isSplitScreen)
+                arena1.composer2.render();
         }
         else if (arena1.gameState.loading)
         {
@@ -3027,4 +3033,4 @@ function animate()
 }
 animate();
 
-export {arena1}; // access the variable arena1.game :D
+export {arena1};

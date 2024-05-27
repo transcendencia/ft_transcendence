@@ -164,10 +164,10 @@ export function switchToGame() {
     rsContainer.style.display = 'none';
     document.getElementById('c4').style.display = 'none';
     document.getElementById('c1').style.display = 'block';
-    initGame(arena1.game);
+    initGame(arena1.game, arena1.gameState);
 }
 
-function    initGame(game) {
+function    initGame(game, gameState) {
 
     // choose gameMode
     if (gamemodeCounter === 0) {
@@ -202,6 +202,7 @@ function    initGame(game) {
 
     // prepare for initialization
     game.hasToBeInitialized = true;
+    gameState.loading = true;
 }
 
 const rsContainer = document.querySelector('.rightSideContainer');
