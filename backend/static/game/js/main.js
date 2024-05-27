@@ -1210,7 +1210,8 @@ class Paddle extends THREE.Group {
         this.left = left;
         this.canDash = true;
         // Add other properties and methods as needed
-        this.particles = new Particle(this.scene, 500, left, this, false);
+        this.particleNumber = 250;
+        this.particles = new Particle(this.scene, this.particleNumber, left, this, false);
         this.light = new THREE.PointLight(0x4B4FC5);
         scene.add(this.light);
         this.defaultMaterial = this.material.clone();
@@ -2195,6 +2196,8 @@ class SkyMap {
         this.arena.paddleRight.particlesColor = this.particleColor;
         this.arena.ball.material = this.reflectiveBallMaterial;
         this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
+        this.arena.paddleLeft.particles.changeParticleNumber(this.arena.paddleLeft.particleNumber * 2);
+        this.arena.paddleRight.particles.changeParticleNumber(this.arena.paddleRight.particleNumber * 2);
         this.scene.add(this.lightRight, this.lightLeft);
     }
     updateMap()
@@ -2214,6 +2217,8 @@ class SkyMap {
             this.arena.paddleLeft.paddleMesh.material = this.arena.paddleLeft.defaultMaterial;
             this.arena.paddleRight.paddleMesh.material = this.arena.paddleRight.defaultMaterial;
             this.scene.remove(this.lightRight, this.lightLeft);
+            this.arena.paddleLeft.particles.changeParticleNumber(this.arena.paddleLeft.particleNumber);
+            this.arena.paddleRight.particles.changeParticleNumber(this.arena.paddleRight.particleNumber);
         }
     }
 }
@@ -2782,6 +2787,7 @@ class GameState {
         this.arenaCreated = false;
         this.inGame = false;
         this.inLobby = true;
+        this.graphicsNeedToChange = false;
         this.graphics; // (options = 'low', 'medium', 'high') (loginPage.js)
 
     }
@@ -2809,84 +2815,77 @@ class Particle {
         this.scene = scene;
         this.particleCount = particleCount;
         this.paddle = paddle;
-
+        this.isBall = isBall;
+        this.particlesColor = new THREE.Color(0xffffff);
+        this.offsetZ = left ? -2 : 2;
+        this.isActive = false;
+        
+        this.initializeParticles();
+    }
+    
+    initializeParticles() {
         // Create particle geometry
         this.geometry = new THREE.BufferGeometry();
         this.positions = new Float32Array(this.particleCount * 3);
         this.colors = new Float32Array(this.particleCount * 3);
+        
         // Add initial position and color for each particle
         for (let i = 0; i < this.particleCount; i++) {
             this.positions[i * 3] = 1;
             this.positions[i * 3 + 1] = 1;
             this.positions[i * 3 + 2] = 1;
-
+            
             this.colors[i * 3] = 1;
             this.colors[i * 3 + 1] = 1;
             this.colors[i * 3 + 2] = 1;
         }
-
+        
         this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
         this.geometry.setAttribute('color', new THREE.BufferAttribute(this.colors, 3));
-
+        
         // Create particle material
         this.material = new THREE.PointsMaterial({
             size: 0.1, // Adjust size as needed
             vertexColors: THREE.VertexColors // Enable vertex colors
         });
-
+        
         // Create particle system
         this.particleSystem = new THREE.Points(this.geometry, this.material);
         this.scene.add(this.particleSystem);
-        this.isBall = isBall;
-        this.particlesColor = new THREE.Color(0xffffff);
-        this.offsetZ;
-        if (!left)
-            this.offsetZ = 2;
-        else
-            this.offsetZ = -2;
-        this.isActive = false;
-        // Initialize particle velocities (for example, random initial velocities)
+        
+        // Initialize particle velocities
+        this.initializeVelocities();
+    }
+    
+    initializeVelocities() {
         this.velocities = [];
-        if (!isBall)
-        {
-            if (!left)
-            {
-                for (let i = 0; i < this.particleCount; i++) {
-                    let velocity = new THREE.Vector3(
-                        (Math.random() - 0.5) * 0.2,
-                        (Math.random() - 0.5) * 0.2,
-                        (Math.random()) * 1
-                    );
-                    this.velocities.push(velocity);
-                }
-            }
-            else
-            {
-                for (let i = 0; i < this.particleCount; i++) {
-                    let velocity = new THREE.Vector3(
-                        (Math.random() - 0.5) * 0.2,
-                        (Math.random() - 0.5) * 0.2,
-                        (Math.random()) * -1
-                    );
-                    this.velocities.push(velocity);
-                }
-            }
-        }
-        else
-        {
-            for (let i = 0; i < this.particleCount; i++) {
-                let velocity = new THREE.Vector3(
+        for (let i = 0; i < this.particleCount; i++) {
+            let velocity;
+            if (!this.isBall) {
+                velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.2,
+                    (Math.random() - 0.5) * 0.2,
+                    (Math.random()) * (this.offsetZ > 0 ? 1 : -1)
+                );
+            } else {
+                velocity = new THREE.Vector3(
                     (Math.random() - 0.5) * 6,
                     (Math.random() - 0.5) * 6,
                     (Math.random() - 0.5) * 0
                 );
-                this.velocities.push(velocity);
             }
+            this.velocities.push(velocity);
         }
     }
+    
+    changeParticleNumber(newNb) {
+        this.particleCount = newNb;
+        this.scene.remove(this.particleSystem);
+        this.initializeParticles();
+    }
+    
     explodeParticles(position, color) {
-        if (this.isActive)
-        {
+        if (this.isActive) {
             for (let i = 0; i < this.particleCount; i++) {
                 let index = i * 3;
                 this.positions[index] = position.x;
@@ -2900,31 +2899,27 @@ class Particle {
             this.geometry.attributes.color.needsUpdate = true;
         }
     }
+    
     updateParticles() {
-        if (this.isActive)
-        {
+        if (this.isActive) {
             for (let i = 0; i < this.particleCount; i++) {
                 let index = i * 3;
                 this.positions[index] += this.velocities[i].x;
                 this.positions[index + 1] += this.velocities[i].y;
                 this.positions[index + 2] += this.velocities[i].z;
-                if (!this.isBall)
-                {
-                    if (Math.abs(this.positions[index + 2]) - Math.abs(this.paddle.position.z) >= this.paddle.arena.length)
-                    {
+                if (!this.isBall) {
+                    if (Math.abs(this.positions[index + 2]) - Math.abs(this.paddle.position.z) >= this.paddle.arena.length) {
                         this.positions[index + 2] = this.paddle.position.z + this.offsetZ;
                         this.positions[index + 1] = this.paddle.position.y;
                         this.positions[index] = this.paddle.position.x;
-                        if (this.paddle.arena.skyMap.mapActive)
-                        {
+                        if (this.paddle.arena.skyMap.mapActive) {
                             const result = Math.random();
                             if (result < 0.5)
                                 this.positions[index] = this.paddle.position.x + 2.5;
                             else
                                 this.positions[index] = this.paddle.position.x - 2.5;
                         }
-                        if (this.paddle.arena.dragonMap.mapActive)
-                        {
+                        if (this.paddle.arena.dragonMap.mapActive) {
                             this.positions[index + 1] -= 1.5;
                             this.positions[index + 2] *= 1.17;
                         }
@@ -3024,6 +3019,7 @@ function animate()
             gameState.arena.composer1.render();
             if (gameState.arena.isSplitScreen)
                 gameState.arena.composer2.render();
+            console.log("graphics = " + gameState.graphics);
         }
         else if (gameState.loading)
         {
