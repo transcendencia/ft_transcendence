@@ -89,29 +89,9 @@ let cubeMapTexture = cubeLoader.load([
 
 let water;
 
-const waterGeometry = new THREE.PlaneGeometry( 3000, 3000 );
+// const waterGeometry = new THREE.PlaneGeometry( 3000, 3000 );
 
-water = new Water(
-  waterGeometry,
-  {
-    textureWidth: 512,
-    textureHeight: 512,
-    waterNormals: new THREE.TextureLoader().load( '../../static/game/texturePlayground/water/water.jpg', function ( texture ) {
 
-      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-
-    } ),
-    sunDirection: new THREE.Vector3(),
-    sunColor: 0xffffff,
-    waterColor: 0x001e0f,
-    distortionScale: 3.7,
-    opacity: 1.0,
-    fog: scene.fog !== undefined
-  }
-);
-
-water.rotation.x = - Math.PI / 2;
-water.position.y = -10;
 
 // scene.add( water );
 
@@ -519,7 +499,7 @@ function cameraDebug()
 
 //ARENA CLASS
 class Arena extends THREE.Mesh {
-    constructor(centerPosition, width, height, depth, loadingScreen)
+    constructor(centerPosition, width, height, depth, loadingScreen, gameState)
     {
 
         // Create geometry for the arena
@@ -552,7 +532,7 @@ class Arena extends THREE.Mesh {
         this.height = height;
         this.width = depth;
         this.camera = camera;
-        this.gameState = new GameState(this);
+        this.gameState = gameState;
         this.thirdPlayer = new ThirdPlayer(this);
         this.paddleRight = new Paddle(this, false);
         this.paddleLeft = new Paddle(this, true);
@@ -658,7 +638,6 @@ class Arena extends THREE.Mesh {
         else if (this.game.map === 'dragonMap')
             this.switchMap(this.dragonMap);
         this.addArenaToScene();
-        console.log("added arena to scene");
     }
     idleCameraAnimation()
     {
@@ -1908,6 +1887,28 @@ class OceanMap {
     constructor(arena) {
         this.arena = arena;
         this.scene = arena.scene;
+        this.waterGeometry = new THREE.PlaneGeometry(3000, 3000);
+        this.water = new Water(
+            this.waterGeometry,
+            {
+              textureWidth: 512,
+              textureHeight: 512,
+              waterNormals: new THREE.TextureLoader().load( '../../static/game/texturePlayground/water/water.jpg', function ( texture ) {
+          
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          
+              } ),
+              sunDirection: new THREE.Vector3(),
+              sunColor: 0xffffff,
+              waterColor: 0x001e0f,
+              distortionScale: 3.7,
+              opacity: 1.0,
+              fog: scene.fog !== undefined
+            }
+          );
+          
+          this.water.rotation.x = - Math.PI / 2;
+          this.water.position.y = -10;
         this.oceanCubeMapTexture = cubeLoader.load([
             '../../static/game/texturePlayground/skyMap/nx.jpg',
             '../../static/game/texturePlayground/skyMap/px.jpg',
@@ -1965,7 +1966,6 @@ class OceanMap {
           });
 
 
-        this.water = water;
         this.mapActive = false;
         this.particleColor = new THREE.Color(0x89CFF0);
         this.modelName = '../../static/game/models/ship/scene.gltf';
@@ -2776,9 +2776,10 @@ class Game {
 }
 
 class GameState {
-    constructor(arena) {
-        this.arena = arena;
+    constructor() {
+        this.arena;
         this.loading = false;
+        this.arenaCreated = false;
         this.inGame = false;
         this.inLobby = true;
         this.graphics; // (options = 'low', 'medium', 'high') (loginPage.js)
@@ -2792,6 +2793,14 @@ class GameState {
         this.inGame = false;
         this.loading = true;
         this.arena.loadingScreen.activateLoadingScreen();
+    }
+    monitorGameState() {
+        if (this.loading && !this.arenaCreated)
+        {
+            this.arenaCreated = true;
+            const centerPosition = new THREE.Vector3(0, 0, 0);
+            this.arena = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, this);
+        }
     }
 }
 
@@ -2978,9 +2987,7 @@ function swapToFullScreen()
         .start();
 }
 
-const centerPosition = new THREE.Vector3(0, 0, 0);
-
-const arena1 = new Arena(centerPosition, 28, 1.7, 34, loadingScreen);
+const gameState = new GameState();
 
 function glitch(glitchEffect)
 {
@@ -3000,30 +3007,31 @@ function animate()
 {
     requestAnimationFrame( animate );
     updateFpsCounter();
-    // if (gameStarted != undefined && !gameStarted)
-    //     return;
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
     // if (elapsed < fpsInterval) return; // Skip if too big FPS
     // else
     {
+        gameState.monitorGameState();
+        if (gameState.inLobby)
+            return ;
         TWEEN.update();
-        if (arena1.gameState.inGame)
+        if (gameState.inGame)
         {
-            arena1.monitorArena();
-            arena1.thirdPlayer.monitorThirdPlayerMovement();
-            arena1.thirdPlayer.monitorProjectilesMovement();
-            arena1.composer1.render();
-            if (arena1.isSplitScreen)
-                arena1.composer2.render();
+            gameState.arena.monitorArena();
+            gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
+            gameState.arena.thirdPlayer.monitorProjectilesMovement();
+            gameState.arena.composer1.render();
+            if (gameState.arena.isSplitScreen)
+                gameState.arena.composer2.render();
         }
-        else if (arena1.gameState.loading)
+        else if (gameState.loading)
         {
             if (keyDown['g'])
-                arena1.gameState.switchLoadingToGame();
+                gameState.switchLoadingToGame();
             loadingScreen.animate();
             if (loadingScreen.loadingCompleted)
-                arena1.monitorArena();
+                gameState.arena.monitorArena();
         }
     }
 
@@ -3033,4 +3041,4 @@ function animate()
 }
 animate();
 
-export {arena1};
+export {gameState};
