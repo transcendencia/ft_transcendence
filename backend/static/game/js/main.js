@@ -14,7 +14,6 @@ import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import { Water } from 'three/addons/objects/Water.js';
 import { Sky } from 'three/addons/objects/Sky.js';
-// import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
 import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
@@ -220,7 +219,7 @@ class LoadingScreen {
             this.isAnimatingCamera = false;
             this.iterations = 0;
             this.loadingCompleted = true;
-            const duration = 500;
+            const duration = 2500;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -356,24 +355,6 @@ class LoadingScreen {
 
 const loadingScreen = new LoadingScreen();
 
-// let moon;
-// const moonLoader = new GLTFLoader();
-// moonLoader.load(
-//     'moon/scene.gltf',
-//     function(gltf) {
-//         moon = gltf.scene;
-//         moon.scale.set(250,250,250);
-//         scene.add(moon);
-//         moon.position.set(250, 250, 250);
-//     },
-//     function(xhr) {
-//         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
-//     },
-//     function (error) {
-//         console.error(error);
-//     }
-// )
-
 // HELPERS
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 const gridHelper = new THREE.GridHelper(1000, 500, 100,  0xAA00ff);
@@ -468,34 +449,6 @@ function cameraDebug()
     console.log("camera.rotation.y =  " + camera.rotation.y);
     console.log("camera.rotation.z =  " + camera.rotation.z);
 }
-
-// const greenShaderMaterial = new THREE.ShaderMaterial({
-//     uniforms: {
-//         time: { value: 0.0 },
-//         resolution: { value: new THREE.Vector2() }
-//     },
-//     vertexShader: vertexShader,
-//     fragmentShader: greenFragmentShader
-// });
-
-// // Create shader materials
-// const redShaderMaterial = new THREE.ShaderMaterial({
-//     vertexShader: vertexShader,
-//     fragmentShader: redFragmentShader,
-//     uniforms: {
-//         time: { value: 0 },
-//         color: { value: new THREE.Color(0xffffff) } // Default color
-//     }
-// });
-
-// const blueShaderMaterial = new THREE.ShaderMaterial({
-//     vertexShader: vertexShader,
-//     fragmentShader: blueFragmentShader,
-//     uniforms: {
-//         time: { value: 0 },
-//         color: { value: new THREE.Color(0xffffff) } // Default color
-//     }
-// });
 
 //ARENA CLASS
 class Arena extends THREE.Mesh {
