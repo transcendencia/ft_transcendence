@@ -58,6 +58,15 @@ function handleSignup(event) {
         return response.json();
     })
     .then(data => {
+        console.log(data);
+        var signupMessageCont = document.querySelector('.signupMessageCont');
+        if (data.status == "success") {
+            signupMessageCont.classList.remove("failure");
+            signupMessageCont.classList.add("success");
+        } else {
+            signupMessageCont.classList.remove("success");
+            signupMessageCont.classList.add("failure");
+        }
         console.log(data.message);
         document.getElementById('messageContainerSignup').innerText = data.message;
     })

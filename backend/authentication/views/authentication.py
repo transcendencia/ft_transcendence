@@ -99,10 +99,10 @@ def signup(request):
     user.set_password(user_data['password'])
     print(user_data['username'], user_data['password'], user.status, "Utilisateur cree") #LOG
     user.save()
-    return Response({"ok": True, "message": "User created"}, status=status.HTTP_200_OK)
+    return Response({'status': "success", "message": "User created"}, status=status.HTTP_200_OK)
   first_error = next(iter(serializer.errors.values()))[0]
   print(first_error)
-  return Response({"message": first_error})
+  return Response({'status': "failure", "message": first_error})
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
