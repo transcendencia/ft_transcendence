@@ -2,37 +2,37 @@ import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
 import { TranslateAllTexts } from "./translatePages.js";
-
+// import { changeGraphics } from "./arenaPage.js";
 export let currentLanguage = 'en';
 let languageFile;
 
 fetch('../../static/html/languages.json')
-    .then(response => response.json())
-    .then(data => {
-        languageFile = data;
-    })
-    .catch(error => {
-        console.error('Error fetching language data:', error);
-    });
+.then(response => response.json())
+.then(data => {
+    languageFile = data;
+})
+.catch(error => {
+    console.error('Error fetching language data:', error);
+});
 
 export function getTranslatedText(key) {
     if (languageFile) {
         if (languageFile[currentLanguage])
-            return languageFile[currentLanguage][key];
-        else console.error('Current language ' + currentLanguage + 'not found in language file');
-    }
+        return languageFile[currentLanguage][key];
+    else console.error('Current language ' + currentLanguage + 'not found in language file');
+}
 }
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-        element.classList.add(glow);
+    element.classList.add(glow);
 }
 
 function removeGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-        element.classList.remove(glow);
+    element.classList.remove(glow);
 }
 
 let languageIcons = document.querySelectorAll('.languageIcon');
@@ -46,6 +46,12 @@ showPage('loginPage');
 
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
+        // if (icon.id === 'graphicsIcon1') // ALED COLAS JSP COMMENT CA MARCHE OSECOUR
+        //     changeGraphics('low');
+        // if (icon.id === 'graphicsIcon2')
+        //     changeGraphics('medium');
+        // if (icon.id === 'graphicsIcon3')
+        //     changeGraphics('high');
         addGlow(icon.id, 'redGlow');
         graphicsIcons.forEach(function(otherIcon) {
         if (otherIcon != icon)

@@ -207,6 +207,14 @@ function    initGame(gameState) {
 }, 250);
 }
 
+export function changeGraphics(mode) {
+    if (gameState.graphics === mode)
+        return;
+    gameState.graphics = mode;
+    gameState.graphicsNeedToChange = true;
+}
+
+
 const rsContainer = document.querySelector('.rightSideContainer');
 const loginPage = document.querySelector('.loginPage');
 const planetPanel = document.querySelector('.planetPanel');
