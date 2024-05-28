@@ -507,7 +507,7 @@ class Arena extends THREE.Mesh {
         this.viewPoint4 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
         this.defaultMaterial = material;
         this.stars = []; // Store all stars added to the scene
-        
+
         // POST PROCESSING
         this.renderPass1 = new RenderPass(this.scene, this.camera);
         this.renderPass2 = new RenderPass(this.scene, cameraLeft);
@@ -752,6 +752,8 @@ class Arena extends THREE.Mesh {
             this.paddleRight.light.power += 0.1;
             this.bot.isPlaying = !this.bot.isPlaying;
         }
+        if (keyDown['i'])
+            this.bot.calculateBallLandingPosition();
         if (keyDown['e'])
         {
             // cameraLeft.position.copy(this.position);
@@ -2688,6 +2690,8 @@ class Bot {
         this.ownPaddle = ownPaddle;
         this.enemyPaddle = enemyPaddle;
         this.isPlaying = false;
+        this.zValue = this.ownPaddle.paddleMesh.position.z; // rightpaddle : x positive to the right, z positive
+        this.enemyZValue = this.enemyPaddle.paddleMesh.position.z;
     }
     play()
     {
@@ -2704,6 +2708,28 @@ class Bot {
             this.ownPaddle.position.x += 0.016 * this.arena.length;
         if (this.ownPaddle.position.x > targetX)
             this.ownPaddle.position.x -= 0.016 * this.arena.length;
+    }
+    calculateBallLandingPosition()
+    {
+        if (this.arena.ball.speedZ * this.ownPaddle.position.z < 0)
+            return;
+        let ballPosition = this.arena.ball.position.clone();
+        let ballSpeedX = this.arena.ball.speedX;
+        let loops = 0;
+        const ballSpeedZ = this.arena.ball.speedZ;
+        while (ballPosition.z <= this.zValue)
+        {
+            ballPosition.x += ballSpeedX;
+            ballPosition.z += ballSpeedZ;
+            if (ballPosition.x < -this.arena.width / 2 || ballPosition.x > this.arena.width / 2)
+            {
+                console.log("found wall collision");
+                ballSpeedX = -ballSpeedX;
+            }
+            loops++;
+        }
+        console.log("loops: ", loops);
+        this.ownPaddle.position.x = ballPosition.x;
     }
 }
 
@@ -2973,7 +2999,6 @@ function animate()
             gameState.arena.composer1.render();
             if (gameState.arena.isSplitScreen)
                 gameState.arena.composer2.render();
-            console.log("graphics = " + gameState.graphics);
         }
         else if (gameState.loading)
         {
