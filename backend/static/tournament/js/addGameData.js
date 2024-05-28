@@ -10,8 +10,8 @@ async function createGame() {
             player1: 1,  // Replace with the actual player1 ID
             player2: 2,  // Replace with the actual player2 ID
             player3: 3,  // Replace with the actual player3 ID (optional)
-            scorePlayer1: 10,
-            scorePlayer2: 15,
+            scorePlayer1: 3,
+            scorePlayer2: 0,
             gameplayMode: 'Classic'
         })
     });
