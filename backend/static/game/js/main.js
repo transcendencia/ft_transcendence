@@ -454,11 +454,9 @@ function cameraDebug()
 class Arena extends THREE.Mesh {
     constructor(centerPosition, width, height, depth, loadingScreen, gameState)
     {
-
         // Create geometry for the arena
         const geometry = new THREE.BoxGeometry(width, height, depth);
         const textureLoader = new THREE.TextureLoader();
-        // const texture = textureLoader.load('purplebox.jpeg');
         const arenaColor = 0x000000;
         // Create material
         const material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
@@ -1036,8 +1034,11 @@ class Arena extends THREE.Mesh {
             this.resetUI();
             // endGame();
         });
+        let targetLight = loserPaddle.defaultLight;
+        if (this.getCurrentMap() === this.dragonMap)
+           targetLight = loserPaddle.defaultLight / 10; 
         const powerPaddleLight = new TWEEN.Tween(loserPaddle.light)
-        .to({power: loserPaddle.defaultLight}, duration)
+        .to({power: targetLight}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(() => {
             winnerPaddle.light.power = loserPaddle.light.power;
