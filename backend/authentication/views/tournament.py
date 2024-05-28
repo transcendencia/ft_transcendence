@@ -29,12 +29,8 @@ def result(request):
   }
   return HttpResponse(template.render(context, request))
 
-# def game_list(request):
-#   games = Game.objects.all()
-#   return render(request, 'addPlayer.html', {'games': games})
-
 def game_list(request):
-  allGames = Game.objects.all().values()
+  allGames = Game.objects.all()
   template = loader.get_template('addPlayer.html')
   context = {
     'allGames': allGames,

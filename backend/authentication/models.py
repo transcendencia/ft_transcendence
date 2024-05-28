@@ -58,4 +58,7 @@ class Game(models.Model):
   scorePlayer1 = models.IntegerField(default=-1)
   scorePlayer2 = models.IntegerField(default=-1)
   gameplayMode = models.CharField(max_length=255)
+
+  def __str__(self):
+    return f"{self.gameplayMode}"
     
