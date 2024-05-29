@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3=6z0v0=t#kgt@n&iph-ncz-2fi2#a+5^lqupfa03wc$33gc*s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # Change to False in production
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -100,7 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
     {
-        'NAME': 'django_password_validators.password_character_requirements.password_validation.PasswordCharacterValidator',
+        'NAME': 'authentication.validators.CustomPasswordCharacterValidator',
         'OPTIONS': {
             'min_length_digit': 1,
             'min_length_alpha': 1,
@@ -108,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
             'min_length_lower': 1,
             'min_length_upper': 1,
             'special_characters': "~!@#$%^&*()_+{}\":;'[]",
-         }
+        }
     },
 ]
 
@@ -155,3 +155,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
