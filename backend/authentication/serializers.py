@@ -98,4 +98,4 @@ class PasswordValidationError(serializers.ValidationError):
 class UserListSerializer(serializers.ModelSerializer):
 	class Meta():
 		model = User
-		fields = ['username', 'profile_picture']
+		fields = '__all__'
