@@ -19,8 +19,10 @@ urlpatterns = [
     path('render_change_profile_info/', updateUserInfo.render_change_profile_info, name="render_change_profile_info"),
     path('render_change_profile_info/change_profile_info/', updateUserInfo.change_profile_info, name="change_profile_info"),
     path('render_display_profile_info/', updateUserInfo.render_display_profile_info, name="render_display_profile_info"),
-    path('render_display_profile_info/get_profile_info/', updateUserInfo.get_profile_info, name="get_profile_info"),
-
+    path('get_profile_info/', updateUserInfo.get_profile_info, name="get_profile_info"),
+    path('user_list/', updateUserInfo.user_list, name="user_list"),
+    path('get_user_list/', updateUserInfo.get_user_list, name="get_user_list"),
+    
     #friendship.py
 
     #tounament.py

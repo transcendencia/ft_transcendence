@@ -215,7 +215,7 @@
 
 .text-input {
     position: absolute;
-    width: 90%; /* Match the width of the container */
+    width: 80%; /* Match the width of the container */
     height: 30%; /* Automatically adjust height based on content */
     background: none;
     border: none;
