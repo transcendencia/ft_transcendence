@@ -1,14 +1,16 @@
 .userPage {
+    /* border: 2px solid white; */
     display: flex;
     align-items: center;
     justify-content: space-around;
     flex-direction: row;
-    height: 93%;
+    height: 90%;
     width: 100%;
 }
 
 .statsBlock {
-    border-radius: 5px;
+    border-radius: 10px;
+    background-color: #5d75ff47;
     border: 4px solid #3777ff;
     display: flex;
     justify-content: center;
@@ -17,8 +19,15 @@
     width: 98%;
 }
 
+@keyframes switchStats {
+    0% {opacity: 1;}
+    50% {opacity: 0;}
+    100% {opacity: 1;}
+}
+
 .aboveStatsBlock {
-    border-radius: 5px;
+    /* border: 2px solid green; */
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -27,23 +36,289 @@
     width: 98%;
 }
 
-.historyBlock {
-    border-radius: 5px;
-    border: 4px solid #3777ff;
+.statsModesBlock {
+    /* border: 2px solid #ff60ff; */
     display: flex;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-end;
     flex-direction: column;
-    height: 90%;
-    width: 48%;
+    color: white;
+    font-size: 20px;
+    font-family: 'Space';
+    width: 90%;
+    height: 40%;
 }
 
-.userBlock {
-    background-color: #000f61b2;
-    border-radius: 5px;
-    border: 4px solid #3777ff;
+.statsModes {
+    /* border: 4px solid #ff6600; */
     display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    flex-direction: row;
+    height: 50%;
+    width: 100%;
+}
+
+.statButton {
+    transition: background-color 0.5s;
+    height: 100%;
+    width: 35%;
+    border: 4px solid #3777ff;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-family: 'Space';
+}
+
+.rightBlock {
+    border-radius: 10px;
+    /* border: 4px solid #9eff37; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    height: 100%;
+    width: 48%;
+    background-color: #00000000;
+}
+
+.history {
+    background-color: #000f61b2;
+    border: 4px solid #3777ff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    height: 85%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden; 
+}
+
+.matchBlock {
+    margin-top: 2px;
+    background-color: #ff373777;
+    border: 4px solid #ff3737;
+    border-radius: 10px;
+    width: 97%;
+    height: 25%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.firstLine{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    flex-direction: row;
+    width: 100%;
+    height: 30%;
+    font-family: 'Space';
+    font-size: 12px;
+    color: #ff3737;
+}
+
+.date {
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
+    width: 13%; 
+    height: 80%; 
+    font-size: 10px;
+    border: 4px solid #ff3737;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: #a3000087;
+}
+
+.secondLine {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    height: 70%;
+}
+
+.scoreAndThirdPlayer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    align-items: center;
+    flex-direction: column;
+    width: 15%;
+    height: 100%;
+    color: white;
+    font-family: 'Space';
+}
+
+.thirdPlayer {
+    width: 600%;
+    height: 20%;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.593)
+}
+
+.matchScore {
+    background-color: #a3000087;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+    width: 100%;
+    border-radius: 5px;
+    border: 4px solid #ff3737;
+    font-size: 22px;
+}
+
+.userHI {
+    width: 40%;
+    height: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-family: 'Space';
+    color: white;
+    font-size: 16px;
+}
+
+.userHI[text-length-mode="long"] {
+    font-size: 10px;
+}
+
+.userHI[text-length-mode="mid"] {
+    font-size: 13px;
+}
+
+.leftBlock {
+    border-radius: 10px;
+    /* border: 4px solid red; */
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
+    width: 52%;
+}
+
+.userInfoBlock {
+    background-color: #000f61b2;
+    border-radius: 10px;
+    border: 4px solid #3777ff;
+    height: 70%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+}
+
+.nameImgBlock {
+    /* border: 4px solid #ff6600; */
+    width: 95%;
+    /* border: 1px solid seagreen; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+}
+
+.imgFrame {
+    border-radius: 10px;
+    height: 90px; /* Set a fixed height */
+    width: 90px;
+    border: 4px solid #3777ff;
+    display: flex; /* Add display flex */
+    align-items: center; /* Vertically center the items */
+    justify-content: center;
+    overflow: hidden;
+}
+
+.mail-pseudo-info {
+    width: 60%;
+    display: flex;
+    align-items: flex-start;
     justify-content: center;
     flex-direction: column;
-    height: 90%;
-    width: 48%;
+    font-size: 20px;
+    font-family: 'Space';
+    margin-left: 10px;
+}
+
+.pencilImg img {
+    height: 40px;
+    width: 40px;
+}
+
+.loupeImg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 25%;
+}
+
+.loupeImg img {
+    height: auto;
+    width: 50px;
+    transform: rotate(-30deg);
+}
+
+.imgFrame img {
+    width: auto; /* Make the image fill the container */
+    height: 100%; /* Make the image fill the container */
+}
+
+.winLoseTexts {
+    /* border: 4px solid #ff6600; */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    height: 50%;
+    width: 95%;
+}
+
+.friendSearchBar {
+    border: 4px solid #3777ff;
+    background-color: #000f61b2;
+    border-radius: 10px;
+    height: 8%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Ensure text input doesn't overflow */
+}
+
+.text-input2 {
+    position: absolute;
+    width: 20%; /* Match the width of the container */
+    height: 30%; /* Automatically adjust height based on content */
+    background: none;
+    border: none;
+    color: white; /* Set text color to white */
+    font-size: 30px; /* Adjust font size as needed */
+    font-family: "Space";
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center; /* Center text horizontally */
+    outline: none; /* Remove default focus outline */
+    resize: none; /* Remove resize handle */
+    overflow: hidden; /* Prevent scrolling */
 }

@@ -16,7 +16,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
 from ..models import User
-from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer
+from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
 
 from django.shortcuts import redirect
 
@@ -127,3 +127,15 @@ def	change_profile_info(request):
 	first_error = next(iter(serializer.errors.values()))[0]
 	print(first_error)
 	return Response({"message": first_error})
+
+def user_list(request):
+  return render(request, 'user_list.html')
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_list(request):
+  if request.method == 'GET':
+    users = User.objects.all()
+    serializers = UserListSerializer(users, many=True)
+    return Response(serializers.data)

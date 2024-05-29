@@ -13,7 +13,7 @@
 	background-color: #4a65ff1f;
 	border-radius: 5px;
 	border: 4px solid #3777ff;
-	width: 0;
+	width: 0%;
 	height: 5%;
 	position: absolute;
 	transform: translate(-50%, -50%) rotate(-90deg);
@@ -65,8 +65,8 @@
 @keyframes expandBG {
 	0% {height: 0%; width: 1vw;}
 	40% {height: 0%; width: 1vw;}
-	90% {height: 75vh; width: 1vw;}
-	100% {width: 70vw; height: 75vh}
+	90% {width: 1vw; height:  85vh;}
+	100% {width: 70vw; height: 85vh}
 }
 
 @keyframes moveImageLeftreverse {
@@ -94,8 +94,8 @@
 }
 
 @keyframes expandBGreverse {
-	0% {height: 75vh; width: 70vw;}
-    10% {height: 75vh; width: 1vw;}
+	0% {height: 85vh; width: 70vw;}
+    10% {height: 80vh; width: 1vw;}
 	60% {height: 0%; width: 1vw; border: 2px solid #3777ff; opacity: 1;}
 	100% {height: 0%; width: 1vw; border: none; opacity: 0;}
 }

@@ -94,3 +94,8 @@ class PasswordValidationError(serializers.ValidationError):
 		if detail is None:
 			detail = "Mot de passe invalide."
 		super().__init__(detail)
+
+class UserListSerializer(serializers.ModelSerializer):
+	class Meta():
+		model = User
+		fields = ['username', 'profile_picture']

@@ -15,7 +15,7 @@ import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame } from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
-import { mixer1, mixer2 } from './objs.js';
+import { mixer1, mixer2, mixer3} from './objs.js';
 
 let cubeLoader = new THREE.CubeTextureLoader();
 let spaceCubeMapTexture = cubeLoader.load([
@@ -230,7 +230,7 @@ function toggleEscapeContainerVisibility() {
 let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
-    if (event.key === 'e' && !lobbyStart) {
+    if (event.key === 'e' && !lobbyStart && event.target.tagName !== 'INPUT') {
         // const token = localStorage.getItem('host_auth_token');
         // console.log(token);
         // if (token) {
@@ -239,7 +239,7 @@ document.addEventListener('keydown', (event) => {
         // }
         // localStorage.clear();
     }
-    if (event.key === 'e' && inRange && !gameStarted)
+    if (event.key === 'e' && inRange && !gameStarted && event.target.tagName !== 'INPUT')
         togglePlanet();
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
@@ -332,6 +332,7 @@ function animate()
     composer.render();
     mixer1.update(0.025);
     mixer2.update(0.025);
+    mixer3.update(0.025);
     // renderer.render(scene, camera);
 }
 
