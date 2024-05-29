@@ -17,7 +17,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
-import { gameStarted } from '../../html/js/arenaPage.js';
+// import { gameStarted } from '../../html/js/arenaPage.js';
 // import { endGame } from '../../html/js/arenaPage.js';
 
 // FPS COUNTER

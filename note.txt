@@ -1,6 +1,6 @@
 ----ERROR----
 403 -> quand je cree un utilisateur mais pas tout le temps
-
+500 -> SIGNUP -> password and confirmation_password nonidentique
 
 ----USEFUL COMMAND----
 ***Create a superuser to acces django admin page***
@@ -15,3 +15,5 @@ python manage.py createsuperuser
 -> historique : joueur dans le match (2 ou 3) (image + pseudo), score de chaque partie, date du match, mode de jeux
 -> stat
 -> date du dernier login
+
+----CREATE USER----

@@ -128,5 +128,3 @@ function RenderUsersSearched(query) {
     const searchQuery = this.value.trim();
     RenderUsersSearched(searchQuery);
   });
-
-  
