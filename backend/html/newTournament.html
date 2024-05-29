@@ -26,7 +26,7 @@
           {% for x in mymembers %}
             <div class="userTile">
               <div class="imgContainer"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
-              <div class="textContainer username-link">{{ x.username }}</div>
+              <div class="textContainer username-link" data-id="{{ x.id }}">{{ x.username }}</div>
             </div>
           {% endfor %}
         </div>
@@ -122,7 +122,7 @@
                 <span id="A2_name" class="name"></span>
                 <span id="A2_score" class="score"></span>
               </div>
-              <div id="third-A1" class="match-third team" style="display:none;">
+              <div id="third-A1" class="match-third team third" style="display:none;">
                 <span id="third-A1_name" class="name"></span>
               </div>
               <div id="first-top-top" style="display:none;">
@@ -144,7 +144,7 @@
                 <span id="A4_name" class="name"></span>
                 <span id="A4_score" class="score"></span>
               </div>
-              <div id="third-A2" class="match-third team" style="display:none;">
+              <div id="third-A2" class="match-third team third" style="display:none;">
                 <span id="third-A2_name" class="name"></span>
               </div>
               <div id="first-top-bot" style="display:none;">
@@ -166,7 +166,7 @@
             <span id="A6_name" class="name"></span>
             <span id="A6_score" class="score"></span>
           </div>
-          <div id="third-A3" class="match-third team" style="display:none;">
+          <div id="third-A3" class="match-third team third" style="display:none;">
             <span id="third-A3_name" class="name"></span>
           </div>
           <div id="first-bot-top" style="display:none;">
@@ -188,7 +188,7 @@
             <span id="A8_name" class="name"></span>
             <span id="A8_score" class="score"></span>
           </div>
-          <div id="third-A4" class="match-third team" style="display:none;">
+          <div id="third-A4" class="match-third team third" style="display:none;">
             <span id="third-A4_name" class="name"></span>
           </div>
           <div id="first-bot-bot" style="display:none;">
@@ -212,7 +212,7 @@
             <span id="B2_name" class="name"></span>
             <span id="B2_score" class="score"></span>
           </div>
-          <div id="third-B1" class="match-third team" style="display:none;">
+          <div id="third-B1" class="match-third team third" style="display:none;">
             <span id="third-B1_name" class="name"></span>
           </div>
           <div id="second-top" class="match-lines" style="display:none;">
@@ -232,7 +232,7 @@
             <span id="B4_name" class="name"></span>
             <span id="B4_score" class="score"></span>
           </div>
-          <div id="third-B2" class="match-third team" style="display:none;">
+          <div id="third-B2" class="match-third team third" style="display:none;">
             <span id="third-B2_name" class="name"></span>
           </div>
           <div id="second-bot" class="match-lines" style="display:none;">
@@ -254,7 +254,7 @@
             <span id="C2_name" class="name"></span>
             <span id="C2_score" class="score"></span>
           </div>
-          <div id="third-C1" class="match-third team" style="display:none;">
+          <div id="third-C1" class="match-third team third" style="display:none;">
             <span id="third-C1_name" class="name"></span>
           </div>
           <div class="match-lines">
@@ -273,6 +273,7 @@
   </div>
 </div>
 
+<script type="module" src="{% static 'tournament/js/addGameData.js' %}"></script>
 <script type="module" src="{% static 'tournament/js/newTournament.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 <script type="module" src="{% static 'html/js/main.js' %}"></script>
