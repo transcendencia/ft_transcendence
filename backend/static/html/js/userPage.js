@@ -93,7 +93,7 @@ const users = [
   ];
   
   // Function to render user tiles based on search query
-  function renderUsers(query) {
+function RenderUsersSearched(query) {
     const userListBackground = document.getElementById('userlistUserPage');
     userListBackground.innerHTML = ''; // Clear existing user tiles
   
@@ -126,7 +126,7 @@ const users = [
   // Function to handle input event on search input
   document.getElementById('searchInput').addEventListener('input', function(event) {
     const searchQuery = this.value.trim();
-    renderUsers(searchQuery);
+    RenderUsersSearched(searchQuery);
   });
 
   

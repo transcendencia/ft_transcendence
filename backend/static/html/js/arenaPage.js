@@ -20,6 +20,40 @@ const purple = 'rgb(164, 67, 255)'
 const grey = '#141414';
 const lightGrey = '#323232';
 
+const users = [
+    { username: 'Vatiroi', avatar: '../../../static/html/assets/icons/FR_NU.png'},
+    { username: 'Rise' , avatar: '../../../static/html/assets/icons/BR_NU.png'},
+    { username: 'Sylvain', avatar: '../../../static/html/assets/icons/ES_NU.png'},
+    { username: 'Doggodito', avatar: '../../../static/html/assets/icons/FR_NU.png'},
+    { username: 'biboup654432', avatar: '../../../static/html/assets/icons/BR_NU.png'},
+    { username: 'wolff', avatar: '../../../static/html/assets/icons/ES_NU.png'},
+    { username: 'paul968', avatar: '../../../static/html/assets/icons/FR_NU.png'},
+    { username: 'dsal968', avatar: '../../../static/html/assets/icons/BR_NU.png'},
+    { username: 'optyes', avatar: '../../../static/html/assets/icons/ES_NU.png'},
+  ];
+
+export function RenderAllUsers(query) {
+    const userListBackground = document.getElementById('userlistArenaPage');
+    
+    users.forEach(user => {
+      const userTile = document.createElement('div');
+      userTile.classList.add('userTile');
+  
+      const imgContainer = document.createElement('div');
+      imgContainer.classList.add('imgContainer');
+      imgContainer.innerHTML = `<img src="${user.avatar}">`;
+  
+      const textContainer = document.createElement('div');
+      textContainer.classList.add('textContainer');
+      textContainer.textContent = user.username;
+  
+      userTile.appendChild(imgContainer);
+      userTile.appendChild(textContainer);
+  
+      userListBackground.appendChild(userTile);
+    });
+}
+
 function Glow() {
     userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
     userlist.style.borderColor = '#ffb30eff';

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
-
+import { RenderAllUsers } from './arenaPage.js';
 export let landedOnPlanet = false;
 
 let planetPanel = document.querySelectorAll(".planetPanel");
@@ -14,6 +14,7 @@ export function togglePanelDisplay() {
     if (anim)
         clearTimeout(anim);
     if (landedOnPlanet && planetInRange.name == "arena") {
+        RenderAllUsers();
         anim = setTimeout(function () {triggerInfiniteAnim(imagesArena[0], imagesArena[1])}, 2000);
         planetPanel[0].style.animation = "roll 2s forwards";
         imagesArena[0].style.animation = "moveImageRight 2s forwards";
@@ -22,8 +23,8 @@ export function togglePanelDisplay() {
     } else {
         imagesArena[0].style.animation = "moveImageRightreverse 1s forwards";
         imagesArena[1].style.animation = "moveImageLeftreverse 1s forwards";
-        background[0].style.animation = "expandBGreverse 1s forwards"
-        anim = setTimeout(function() {planetPanel[0].style.animation = "";}, 1000)
+        background[0].style.animation = "expandBGreverse 1s forwards";
+        anim = setTimeout(function() {planetPanel[0].style.animation = "";}, 1000);
     }
 
     if (landedOnPlanet && planetInRange.name == "settings") {
