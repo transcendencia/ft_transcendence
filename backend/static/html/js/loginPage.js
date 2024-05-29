@@ -199,8 +199,6 @@ function handleLogin(event) {
     });
 }
 
-// document.addEventListener('DOMContentLoaded', getProfileInfo);
-
 function getProfileInfo() {
 	const token = localStorage.getItem('host_auth_token');
 		fetch('get_profile_info/', {
