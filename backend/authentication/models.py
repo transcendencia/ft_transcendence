@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.conf import settings
+from django.utils import timezone
+
 class User(AbstractUser):
   LANGUAGE_CHOICE = [
     ('en', 'english'),
@@ -90,6 +92,8 @@ class Game(models.Model):
   scorePlayer1 = models.IntegerField(default=-1)
   scorePlayer2 = models.IntegerField(default=-1)
   gameplayMode = models.CharField(max_length=255)
+  modeGame = models.CharField(max_length=255, default="test")
+  date = models.DateTimeField(default=timezone.now)
 
   def __str__(self):
     return f"{self.gameplayMode}"
