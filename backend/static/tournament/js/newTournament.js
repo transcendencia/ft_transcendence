@@ -1,10 +1,14 @@
+import { createGame } from "./addGameData.js";
+
 const usernameLinks = document.querySelectorAll('.username-link');
 
   usernameLinks.forEach(function(link) {
     link.addEventListener('click', function(event) {
       event.preventDefault();
+      let playerId = link.dataset.id;
+      console.log("player id: " + playerId); 
       const username = link.textContent.trim();
-      addUserToTournament(username);
+      addUserToTournament(playerId, username);
     });
   });
 
@@ -47,9 +51,10 @@ const usernameLinks = document.querySelectorAll('.username-link');
 
   const tournamentPlayer = [];
 
-  function addUserToTournament(username) {
+  function addUserToTournament(playerId, username) {
       if (!tournamentPlayer.some(player => player.username === username)) {
           tournamentPlayer.push({
+            playerId: playerId,
             username: username,
             order: -1,
             position: 0,
@@ -224,6 +229,9 @@ const usernameLinks = document.querySelectorAll('.username-link');
       document.querySelectorAll('.match').forEach(function(el) {
         el.style.height = "62px";
       });
+      document.querySelectorAll('.match-bottom').forEach(function(el) {
+        el.style.borderRadius = "0 0 5px 5px";
+      });
     }
     if (tournamentPlayer.length > 0){
       A1Element.style.display = "flex";
@@ -388,6 +396,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
         currentMatch[nbMatch][2] = Math.floor(Math.random() * 3);
         winner_name = currentMatch[nbMatch][1].myRef.username;
       }
+      createGame(currentMatch[nbMatch][0].myRef.playerId, currentMatch[nbMatch][1].myRef.playerId, currentMatch[nbMatch][4].myRef.playerId, currentMatch[nbMatch][2], currentMatch[nbMatch][3], "tournament");
     }
     if (round == 2){
       if (nbMatch == 0){

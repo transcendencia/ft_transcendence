@@ -24,12 +24,8 @@
   </form>
 </div>
 
-<form id="createGameForm">
-  <button type="submit">Create Game</button>
-</form>
-
 <h1>List of Games</h1>
-<ul>
+<ul style="overflow-y: auto; max-height: 500px;">
   {% for game in allGames %}
     <span>{{ game.id }}</span>
     <span>{{ game.player1.username }}</span>
