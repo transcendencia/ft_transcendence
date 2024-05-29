@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de fichier</title>
+</head>
+<body>
+    <h2>Formulaire d'upload de fichier</h2>
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="file">Sélectionnez un fichier :</label>
+        <input type="file" id="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            const token = localStorage.getItem('host_auth_token');
+            const formData = new FormData(); // Create FormData object
+            const fileInput = document.getElementById('file');
+            formData.append('file', fileInput.files[0]); 
+
+            fetch('change_profile_picture/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Token ${token}`
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des données de profil');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur :', error);
+            });
+        });
+    </script>
+</body>
+</html>

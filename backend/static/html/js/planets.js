@@ -69,14 +69,22 @@ class Planet {
 const planets = [];
 
 const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
-const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+const sphereMaterial = new THREE.MeshBasicMaterial({
+	 color: 0xffaa00,
+});
 const sun = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+const boxGeometry = new THREE.BoxGeometry(40, 40, 40);
+const boxMaterial = new THREE.MeshBasicMaterial({
+});
+const box = new THREE.Mesh(boxGeometry, boxMaterial);
 
 sun.scale.set(300, 300, 300);
 sun.position.set(0, -10, 0);
 
 function setupPlanets(models) {
 	scene.add(sun);
+	scene.add(box);
 	const planetData = [
 		{name: 'arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80},
 		{name: 'settings', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40},
@@ -88,4 +96,4 @@ function setupPlanets(models) {
 	});
 }
 
-export {sun, planets, setupPlanets}
+export {sun, planets, setupPlanets, box}

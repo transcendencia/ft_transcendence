@@ -15,38 +15,87 @@ class SignupSerializer(serializers.ModelSerializer):
 		model = User
 		fields = ['username', 'password', 'confirmation_password']
 	
+	def validate_username(self, value):
+		if len(value) > 13:
+			raise serializers.ValidationError("Username must contains 12 characters maximum.")
+		return value
+
 	# def validate_password(self, value):
 	# 	try:
 	# 		validate_password(value)
 	# 	except ValidationError as e:
-	# 		messages = {
-	# 			'password_too_short': "Le mot de passe est trop court.",
-	# 			'password_too_common': "Le mot de passe est trop courant.",
-	# 			'password_entirely_numeric': "Le mot de passe ne peut pas être entièrement numérique.",
-	# 			'password_too_similar': "Le mot de passe est trop similaire à votre nom d'utilisateur.",
-	# 			'password_character_requirements': "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial parmi les suivants : ~!@#$%^&*()_+{}\":;'[].",
-	# 		}
-
-	# 		logging.error(f"Password validation errors: {e.error_list[0]}")
-	# 		logging.error(e.error_list[0].code)
-	# 		error_code = e.error_list[0].code if e.error_list else None
-	# 		message = messages.get(error_code, "Le mot de passe ne respecte pas les critères de sécurité.")
-
-	# 		raise PasswordValidationError(detail=message)
-		# return value
+	# 		raise PasswordValidationError(detail=e.error_list[0])
+	# 	return value
 	
 	def validate_confirmation_password(self, value):
 		confirmation_password = value
 		password = self.initial_data.get('password')
 
 		if password != confirmation_password:
-			raise PasswordValidationError(detail=message)
+			raise PasswordValidationError(detail="Password not identical")
 		return value
+
+class UpdateInfoSerializer(serializers.ModelSerializer):
+	confirmation_password = serializers.CharField(write_only=True, required=False)
+	class Meta():
+		model = User
+		fields = ['username', 'password', 'bio', 'profile_picture', 'confirmation_password']
+		extra_kwargs = {
+			'password': {'write_only': True, 'required': False},
+			'username': {'required': False},
+			'bio': {'required': False},
+			'profile_picture': {'required': False}
+		}
+
+	def	validate_username(self, value):
+		if value:
+			if len(value) > 13:
+				raise serializers.ValidationError("Username must contains 12 characters maximum.")
+			if User.objects.filter(username=value).exists():
+				raise serializers.ValidationError("Username already exist")
+		return value
+
+	def validate_password(self, value):
+		if value:
+			try:
+				validate_password(value)
+			except ValidationError as e:
+				raise PasswordValidationError(detail=e.error_list[0])
+		return value
+
+	def validate_bio(self, value):
+		if value:
+			if len(value) > 28:
+				raise serializers.ValidationError("Bio must contains 28 characters maximum.")
+		return value
+
+	def validate(self, data):
+		password = data.get('password')
+		confirmation_password = data.pop('confirmation_password', None)
+
+		if password:
+			if not confirmation_password:
+				raise serializers.ValidationError("You need to confirm your password.")
+			if password != confirmation_password:
+				raise serializers.ValidationError("Password not identical")
+		return data
 	
-	# def check_username
-	
+	def update(self, instance, validated_data):
+		for attr, value in validated_data.items():
+			if attr == 'password' and value:
+				instance.set_password(value)
+			elif value:
+				setattr(instance, attr, value)
+		instance.save()
+		return instance
+
 class PasswordValidationError(serializers.ValidationError):
 	def __init__(self, detail=None):
 		if detail is None:
 			detail = "Mot de passe invalide."
 		super().__init__(detail)
+
+class UserListSerializer(serializers.ModelSerializer):
+	class Meta():
+		model = User
+		fields = ['username', 'profile_picture']
