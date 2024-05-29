@@ -18,7 +18,7 @@
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
             
-            const token = localStorage.getItem('auth_token');
+            const token = localStorage.getItem('host_auth_token');
             const formData = new FormData(); // Create FormData object
             const fileInput = document.getElementById('file');
             formData.append('file', fileInput.files[0]); 

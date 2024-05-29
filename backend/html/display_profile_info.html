@@ -35,7 +35,7 @@
 
 		<script>
 			function getProfileInfo() {
-				const token = localStorage.getItem('auth_token');
+				const token = localStorage.getItem('host_auth_token');
 				fetch('get_profile_info/', {
 					method: 'GET',
 					headers: {

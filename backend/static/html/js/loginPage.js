@@ -106,7 +106,7 @@ disconnectButton.addEventListener("click", function() {
         });
 
         // Send POST request to change user language in the back if user is logged in
-        // const token = localStorage.getItem('auth_token');
+        // const token = localStorage.getItem('host_auth_token');
         // if (token) {
         //     console.log("je change de langue");
         //     console.log(currentLanguage);
@@ -170,7 +170,7 @@ function handleLogin(event) {
     .then(data => {
         var loginMessageCont = document.querySelector('.loginMessageCont');
         if (data.status == "succes") {
-            localStorage.setItem("auth_token", data.token)
+            localStorage.setItem("host_auth_token", data.token)
             currentLanguage = data.language;
             loginMessageCont.classList.remove("failure");
             loginMessageCont.classList.add("success");
@@ -194,7 +194,7 @@ function handleLogout() {
 };
 
 function updateUserStatus(status) {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('host_auth_token');
     fetch('update_status/', {
         method: 'POST',
         headers: {
@@ -216,7 +216,7 @@ function updateUserStatus(status) {
 
 function getUserStatus() {
     console.log("Je suis dans getUserStatus");
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('host_auth_token');
     fetch('get_status/', {
         method: 'GET',
         headers: {

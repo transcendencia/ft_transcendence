@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
-
+from django.conf import settings
 class User(AbstractUser):
   LANGUAGE_CHOICE = [
     ('en', 'english'),
@@ -10,7 +10,7 @@ class User(AbstractUser):
     ('es', 'espagnol'),
   ]
   language = models.CharField(max_length = 10, choices=LANGUAGE_CHOICE, default='en')
-  
+
   last_login_date = models.DateField(null=True)
 
   STATUS_CHOICE = [
@@ -21,43 +21,60 @@ class User(AbstractUser):
   status = models.CharField(max_length = 10, choices=STATUS_CHOICE, default='offline')
   profile_picture = models.ImageField(default='default.png')
   bio = models.CharField(max_length = 28, null=True, blank=True)
-  
+  # friends = models.ManyToManyField('self', related_name='friends', blank=True)
+
   def get_profile_info(self):
     return({'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url})
 
-# friends = models.ManyToManyField("User", blank=True)
-# histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)
+#histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)
 
-# class Friend_Request(models.Model):
-#   from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
-#   to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
+class Friendlist(models.Model):
+  user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user")
+  friends = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
 
-# class Game(models.Model):
-  #player_1 = 
-  #player_2
-  #player_3
-  #score
-  #winner/loser
-  #mode
+  def add_friend(self, account):
+    if not account in self.friends.all():
+      self.friends.add(account)
+      self.save()
+  
+  def remove_friend(self, account):
+    if account in self.friends.all():
+      self.friends.remove(account)
+      self.save()
+  
+  def unfriend(self, removee):
+    remover_friends_list = self
+    remover_frind_list.remove_frind(removee)
+    frind_list = Friendlist.object.get(user=removee)
+    frien_list.remove_friend(self.user)
+  
+  def is_mutal_friend(self, friend):
+    if friend in self.friends.all():
+      return True
+    return False
 
-# class Friendship(models.Model):
-#   friend_1 = models.ForeignKey(User, related_name='friend_1', on_delete=models.CASCADE)
-#   friend_2 = models.ForeignKey(User, related_name='friend_2', on_delete=models.CASCADE)
-  #booleen pour savoir si la demande d'amis a etait accepte ?
+class FriendRequest(models.Model):
+  sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sender")
+  receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="receiver")
+  is_active = models.BooleanField(blank=True, null=False, default=True)
 
-  # Stats
-  #game_won = models.PositiveIntegerField(default=0)
-  #game_lost = models.PositiveIntegerField(default=0)
-  #game_played = models.PositiveIntegerField(default=0)
-  # goals = models.PositiveIntegerField(default=0)
-  #point en tournois
-  #point en partie solo
-  #point totaux
-  #point moyen a chaque game
-  #meilleur score
+  def accept(self):
+    reveiver_friend_list = Friendlist.object.get(user=self.reveiver)
+    if receiver_friend_list:
+      receiver_friend_list.add_friend(self.sender)
+      sender_friend_list = FriendList.objects.get(user=self.sender)
+      if sender_friend_list:
+        sender_friend_list.add_friend(self.receiver)
+        self.is_active = False
+        self.save()
 
+  def decline(self):
+    self.is_active = False
+    self.save()
 
-#class Torunament(models.Model): relation avec user
+  def cancel(self):
+    self.is_active = False
+    self.save()
 
 class Member(models.Model):
   username = models.CharField(max_length=255)

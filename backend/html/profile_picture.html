@@ -14,7 +14,7 @@
     <script>
         // Fonction pour récupérer les données de profil de l'utilisateur depuis le serveur Django
         function getUserProfile() {
-            const token = localStorage.getItem('auth_token');
+            const token = localStorage.getItem('host_auth_token');
             fetch('user_profile/', {
                 method: 'GET',
                 headers: {

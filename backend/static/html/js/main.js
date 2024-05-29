@@ -231,7 +231,7 @@ let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
     if (event.key === 'e' && !lobbyStart) {
-        // const token = localStorage.getItem('auth_token');
+        // const token = localStorage.getItem('host_auth_token');
         // console.log(token);
         // if (token) {
             showPage('none');
