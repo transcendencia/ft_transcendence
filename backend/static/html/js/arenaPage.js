@@ -355,3 +355,18 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(error => console.error('Error:', error));
 });
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     const token = localStorage.getItem('host_auth_token');
+//     fetch('get_game_list/', {
+//         method: 'GET',
+//         headers: {
+//             'Authorization': `Token ${token}`,
+//         }
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log(data);
+//     })
+//     .catch(error => console.error('Error:', error));
+// });

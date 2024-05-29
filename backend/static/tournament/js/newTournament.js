@@ -1,4 +1,4 @@
-import { createGame } from "./addGameData.js";
+import { createGame } from "./gameData.js";
 
 const usernameLinks = document.querySelectorAll('.username-link');
 
@@ -396,7 +396,7 @@ const usernameLinks = document.querySelectorAll('.username-link');
         currentMatch[nbMatch][2] = Math.floor(Math.random() * 3);
         winner_name = currentMatch[nbMatch][1].myRef.username;
       }
-      createGame(currentMatch[nbMatch][0].myRef.playerId, currentMatch[nbMatch][1].myRef.playerId, currentMatch[nbMatch][4].myRef.playerId, currentMatch[nbMatch][2], currentMatch[nbMatch][3], "tournament");
+      createGame(currentMatch[nbMatch][0].myRef.playerId, currentMatch[nbMatch][1].myRef.playerId, currentMatch[nbMatch][4].myRef.playerId, currentMatch[nbMatch][2], currentMatch[nbMatch][3], "tournament", "test");
     }
     if (round == 2){
       if (nbMatch == 0){

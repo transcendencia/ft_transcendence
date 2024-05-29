@@ -11,7 +11,7 @@ statsButtons.forEach((button) => {
     });
 });
 
-function createMatchBlock(tournament, date, mode, player1Name, player1ImgSrc, Score, player2Name, player2ImgSrc, thirdPlayer, victory) {
+function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory) {
 
     let borderColor = '#ff3737';
     let bgColor = '#ff373777';
@@ -30,7 +30,7 @@ function createMatchBlock(tournament, date, mode, player1Name, player1ImgSrc, Sc
     const firstLine = document.createElement('div');
     firstLine.classList.add('firstLine');
     firstLine.style.color = borderColor;
-    firstLine.innerHTML = `<div id="type" style="width: 30%;">${tournament}</div><div class="date" id="date" style="border-color: ${borderColor}; background-color: ${bg2Color}">${date}</div><div id="mode" style="width: 30%;">${mode}</div>`;
+    firstLine.innerHTML = `<div id="type" style="width: 30%;">${tournament}</div><div class="date" id="date" style="border-color: ${borderColor}; background-color: ${bg2Color}">${date}</div><div id="mode" style="width: 30%;">${modeGame}</div>`;
   
     const secondLine = document.createElement('div');
     secondLine.classList.add('secondLine');
@@ -40,10 +40,10 @@ function createMatchBlock(tournament, date, mode, player1Name, player1ImgSrc, Sc
     if (player1Name.length > 8)
         userHI1.setAttribute('text-length-mode', 'long');
     userHI1.innerHTML = `<div class="imgFrame" style="height: 40px; width: 50px; margin-right: 5px; border-color: ${borderColor};"><img src="${player1ImgSrc}"></div>${player1Name}`;
-  
+ 
     const scoreAndThirdPlayer = document.createElement('div');
     scoreAndThirdPlayer.classList.add('scoreAndThirdPlayer');
-    scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${Score}</div><div class="thirdPlayer">Third Player : ${thirdPlayer}</div>`;
+    scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">Third Player : ${thirdPlayer}</div>`;
   
     const userHI2 = document.createElement('div');
     userHI2.classList.add('userHI');
@@ -64,19 +64,63 @@ function createMatchBlock(tournament, date, mode, player1Name, player1ImgSrc, Sc
     const historyContainer = document.querySelector('.history');
     historyContainer.appendChild(matchBlock);
 }
-  
-// Example usage:
-createMatchBlock('Tournament', '13-10-2000', 'Powerless', 'Doggodito', '../../../static/html/assets/icons/FR_NU.png', '3 - 2', 'Player 2', '../../../static/html/assets/icons/FR_NU.png', 'Player 3', true);
-createMatchBlock('Arena', '15-10-2000', 'Spin Only', 'Doggodito', '../../../static/html/assets/icons/FR_NU.png', '1 - 3', 'biboup654432', '../../../static/html/assets/icons/FR_NU.png', 'Player 3', false);
-createMatchBlock('Tournament', '19-10-2000', 'Spin Only', 'Doggodito', '../../../static/html/assets/icons/BR_NU.png', '1 - 3', 'biboup654432', '../../../static/html/assets/icons/BR_NU.png', 'Player 3', false);
-createMatchBlock('Arena', '21-10-2000', 'Powerless', 'Doggodito', '../../../static/html/assets/icons/BR_NU.png', '3 - 2', 'Player 2', '../../../static/html/assets/icons/BR_NU.png', 'Player 3', true);
-createMatchBlock('Tournament', '17-10-2000', 'Powerless', 'Doggodito', '../../../static/html/assets/icons/BR_NU.png', '3 - 0', 'Player 2', '../../../static/html/assets/icons/FR_NU.png', 'Player 3', true);
-createMatchBlock('Tournament', '25-10-2000', 'Powerless', 'Doggodito', '../../../static/html/assets/icons/FR_NU.png', '3 - 0', 'Player 2', '../../../static/html/assets/icons/FR_NU.png', 'Player 3', true);
-createMatchBlock('Arena', '27-10-2000', 'Spin Only', 'Doggodito', '../../../static/html/assets/icons/ES_NU.png', '1 - 3', 'biboup654432', '../../../static/html/assets/icons/ES_NU.png', 'Player 3', false);
-createMatchBlock('Tournament', '23-10-2000', 'Spin Only', 'Doggodito', '../../../static/html/assets/icons/ES_NU.png', '1 - 3', 'biboup654432', '../../../static/html/assets/icons/ES_NU.png', 'Player 3', false);
-createMatchBlock('Tournament', '31-10-2000', 'Spin Only', 'Doggodito', '../../../static/html/assets/icons/FR_NU.png', '1 - 3', 'biboup654432', '../../../static/html/assets/icons/FR_NU.png', 'Player 3', false);
-createMatchBlock('Tournament', '29-10-2000', 'Powerless', 'Doggodito', '../../../static/html/assets/icons/FR_NU.png', '3 - 2', 'Player 2', '../../../static/html/assets/icons/FR_NU.png', 'Player 3', true);
-createMatchBlock('Arena', '02-11-2000', 'Powerless', 'Doggodito', '../../../static/html/assets/icons/FR_NU.png', '3 - 2', 'Player 2', '../../../static/html/assets/icons/FR_NU.png', 'Player 3', true);
+
+function getGameInfo() {
+	const token = localStorage.getItem('host_auth_token');
+		fetch('get_game_user/', {
+		    method: 'GET',
+			headers: {
+				'Authorization': `Token ${token}`,
+			}
+		})
+		.then(response => {
+			if (!response.ok)
+				throw new Error('Error lors de la recuperation des donnees');
+				return response.json();
+		})
+		.then(data=> {
+            console.log(data);
+			data.games.forEach(game => {
+                let winner = false;
+                let player1;
+                let player1Score;
+                let player1Picture;
+                let player2;
+                let player2Score;
+                let player2Picture;
+
+                if (data.user_id === game.player1){
+                    player1 = game.player1_username;
+                    player1Score = game.scorePlayer1;
+                    player1Picture = game.player1_profilePicture;
+                    player2 = game.player2_username;
+                    player2Score = game.scorePlayer2;
+                    player2Picture = game.player2_profilePicture;
+                    if (game.scorePlayer1 > game.scorePlayer2)
+                        winner = true
+                }
+                else{
+                    player1 = game.player2_username;
+                    player1Score = game.scorePlayer2;
+                    player1Picture = game.player2_profilePicture;
+                    player2 = game.player1_username;
+                    player2Score = game.scorePlayer1;
+                    player2Picture = game.player1_profilePicture;
+                    if (game.scorePlayer2 > game.scorePlayer1)
+                        winner = true
+                }
+                createMatchBlock(game.gameplayMode, game.Date, game.modeGame, player1, player1Picture, player1Score, player2Score, player2, player2Picture, game.player3_username, winner);
+            })
+		})
+		.catch(error => {
+			console.error('Erreur :', error);
+		});
+}
+
+document.addEventListener('keydown', (event) => { 
+    if (event.key === 't')
+        getGameInfo();
+  });
 
 // Sample user data
 //generate more random users
