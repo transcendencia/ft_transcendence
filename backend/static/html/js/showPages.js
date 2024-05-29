@@ -25,11 +25,3 @@ anchors.forEach(function(anchor) {
         showPage(id);
     });
 });
-
-
-//HAVE I TO DELETE ? 
-/*window.addEventListener('popstate', function(event) {
-    showPage(event.state);
-});
-
-history.replaceState('home', null, null);*/

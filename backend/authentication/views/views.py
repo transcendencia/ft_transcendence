@@ -45,3 +45,4 @@ def testing(request):
     'mymembers': mymembers,
   }
   return HttpResponse(template.render(context, request))
+

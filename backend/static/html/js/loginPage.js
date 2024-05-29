@@ -10,8 +10,15 @@ let languageFile;
 
 //if is empty
 window.location.hash = '#loginPage';
-//else 
-// 
+
+
+export function setOldLocation(newLocation) {
+    oldLocation = newLocation;
+}
+
+export function getOldLocation() {
+    return oldLocation;
+}
 
 fetch('../../static/html/languages.json')
     .then(response => response.json())
@@ -48,21 +55,17 @@ const signupHereButton = document.querySelector('.actionCont');
 
 if (signupHereButton.addEventListener('click', function() {
     moveCameraToFrontOfCockpit();
-    console.log("\x1b[31m [PRESS BUTTON] VIEW [LOGIN]\x1b[0m");
-    console.log("\x1b[34m MOVE TO => [SIGNUP]\x1b[0m");
-    window.location.hash = '#signUpPage';
+    window.location.hash = '#signUpPage';  
 }));
 
 
 else if (addEventListener("hashchange", (event) => {
-    if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage')
+    if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage' )
     {
-        console.log("\x1b[33m[CLICK] [LOGINPAGE]\x1b[0m");
-        moveCameraToBackOfCockpit();
+        moveCameraToBackOfCockpit();   
     }
-    oldLocation = window.location.hash;
+    setOldLocation(window.location.hash);
 }));
-
 showPage('loginPage');
 
 graphicsIcons.forEach(function(icon) {

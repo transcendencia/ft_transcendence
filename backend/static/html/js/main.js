@@ -16,6 +16,8 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame } from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { mixer1, mixer2 } from './objs.js';
+import { oldLocation, setOldLocation, getOldLocation } from "./loginPage.js";
+
 
 let cubeLoader = new THREE.CubeTextureLoader();
 let spaceCubeMapTexture = cubeLoader.load([
@@ -226,7 +228,49 @@ function toggleEscapeContainerVisibility() {
     }
 }
 
+// =============================== refresh ======================
 
+window.addEventListener('beforeunload', function (e) {
+    // Store a flag indicating the page is being unloaded
+    sessionStorage.setItem('is_refresh', 'true');
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (sessionStorage.getItem('is_refresh') === 'true') {
+        // Handle the refresh logic here
+        console.log('%cPage was refreshed', 'color: red;');
+        
+        // Clear the flag
+        sessionStorage.removeItem('is_refresh');
+    }
+});
+
+//========================== refresh ===========================
+
+//============= Galaxy issue ===================================
+
+/*document.addEventListener('DOMContentLoaded', function () {
+    // Function to handle hash changes
+    function onHashChange() {
+        let currentHash = window.location.hash;
+        if (currentHash === '#galaxy' && getOldLocation() == '#galaxy') {
+            console.log('%cHash is now #galaxy', 'color: red;');
+            console.log(getOldLocation());
+        }
+    }
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', onHashChange);
+
+    // Initial check in case the hash is already set
+    onHashChange();
+    //setOldLocation('#galaxy');
+});*/
+
+
+
+//============= Galaxy issue ====================================
 let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
@@ -237,9 +281,14 @@ document.addEventListener('keydown', (event) => {
             showPage('none');
             startAnimation();
         // }
+        window.location.hash = '#galaxy';
+        //setOldLocation('#galaxy');
     }
     if (event.key === 'e' && inRange && !gameStarted)
+    {
+        window.location.hash = '#planet';
         togglePlanet();
+    }
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
             togglePlanet();
