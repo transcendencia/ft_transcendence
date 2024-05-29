@@ -377,15 +377,17 @@ userTiles.forEach((tile, i) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('host_auth_token');
-    fetch('get_user_list/', {
+    fetch('get_user_list/', { // Ensure this URL is correct and accessible
         method: 'GET',
         headers: {
             'Authorization': `Token ${token}`,
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
+   .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error status: ${response.status}`);
+        }
+        return response.json();
     })
-    .catch(error => console.error('Error:', error));
+   .catch(error => console.error('Error fetching user list:', error));
 });
