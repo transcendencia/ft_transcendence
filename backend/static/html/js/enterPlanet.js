@@ -38,6 +38,7 @@ export function togglePanelDisplay() {
         background[1].style.animation = "expandBGreverse 1s forwards"
         anim = setTimeout(function() {planetPanel[1].style.animation = "";}, 1000)
     }
+
 }
 
 function resetRotations() {
