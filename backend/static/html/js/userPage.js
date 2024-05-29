@@ -1,3 +1,4 @@
+import { userList } from './arenaPage.js';
 const statsButtons = document.querySelectorAll('.statButton');
 const statsScreen = document.querySelector('.statsBlock');
 const colorClicked = '#5d75ff47';
@@ -80,24 +81,13 @@ createMatchBlock('Arena', '02-11-2000', 'Powerless', 'Doggodito', '../../../stat
 
 // Sample user data
 //generate more random users
-const users = [
-    { username: 'Vatiroi', avatar: '../../../static/html/assets/icons/FR_NU.png'},
-    { username: 'Rise' , avatar: '../../../static/html/assets/icons/BR_NU.png'},
-    { username: 'Sylvain', avatar: '../../../static/html/assets/icons/ES_NU.png'},
-    { username: 'Doggodito', avatar: '../../../static/html/assets/icons/FR_NU.png'},
-    { username: 'biboup654432', avatar: '../../../static/html/assets/icons/BR_NU.png'},
-    { username: 'wolff', avatar: '../../../static/html/assets/icons/ES_NU.png'},
-    { username: 'paul968', avatar: '../../../static/html/assets/icons/FR_NU.png'},
-    { username: 'dsal968', avatar: '../../../static/html/assets/icons/BR_NU.png'},
-    { username: 'optyes', avatar: '../../../static/html/assets/icons/ES_NU.png'},
-  ];
   
   // Function to render user tiles based on search query
 function RenderUsersSearched(query) {
     const userListBackground = document.getElementById('userlistUserPage');
     userListBackground.innerHTML = ''; // Clear existing user tiles
   
-    const filteredUsers = users.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
+    const filteredUsers = userList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
   
     filteredUsers.forEach(user => {
       const userTile = document.createElement('div');
@@ -105,7 +95,7 @@ function RenderUsersSearched(query) {
   
       const imgContainer = document.createElement('div');
       imgContainer.classList.add('imgContainer');
-      imgContainer.innerHTML = `<img src="${user.avatar}">`;
+      imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
   
       const textContainer = document.createElement('div');
       textContainer.classList.add('textContainer');

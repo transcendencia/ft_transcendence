@@ -1,9 +1,7 @@
 import { getTranslatedText } from "./loginPage.js";
-import { showPage } from "./showPages.js";
 import { gameState } from "../../game/js/main.js";
 
 const userlist = document.querySelector(".userlistBackground");
-const userTiles = userlist.querySelectorAll(":scope > *");
 const plusButtons = document.querySelectorAll(".plusPlayer");
 
 const leftColumn = document.querySelector(".leftColumn");
@@ -19,40 +17,6 @@ const blue = '#3777ff';
 const purple = 'rgb(164, 67, 255)'
 const grey = '#141414';
 const lightGrey = '#323232';
-
-const users = [
-    { username: 'Vatiroi', avatar: '../../../static/html/assets/icons/FR_NU.png'},
-    { username: 'Rise' , avatar: '../../../static/html/assets/icons/BR_NU.png'},
-    { username: 'Sylvain', avatar: '../../../static/html/assets/icons/ES_NU.png'},
-    { username: 'Doggodito', avatar: '../../../static/html/assets/icons/FR_NU.png'},
-    { username: 'biboup654432', avatar: '../../../static/html/assets/icons/BR_NU.png'},
-    { username: 'wolff', avatar: '../../../static/html/assets/icons/ES_NU.png'},
-    { username: 'paul968', avatar: '../../../static/html/assets/icons/FR_NU.png'},
-    { username: 'dsal968', avatar: '../../../static/html/assets/icons/BR_NU.png'},
-    { username: 'optyes', avatar: '../../../static/html/assets/icons/ES_NU.png'},
-  ];
-
-export function RenderAllUsers(query) {
-    const userListBackground = document.getElementById('userlistArenaPage');
-    
-    users.forEach(user => {
-      const userTile = document.createElement('div');
-      userTile.classList.add('userTile');
-  
-      const imgContainer = document.createElement('div');
-      imgContainer.classList.add('imgContainer');
-      imgContainer.innerHTML = `<img src="${user.avatar}">`;
-  
-      const textContainer = document.createElement('div');
-      textContainer.classList.add('textContainer');
-      textContainer.textContent = user.username;
-  
-      userTile.appendChild(imgContainer);
-      userTile.appendChild(textContainer);
-  
-      userListBackground.appendChild(userTile);
-    });
-}
 
 function Glow() {
     userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
@@ -289,7 +253,7 @@ function isBot(i) {
     return (i === botID)
 }
 
-function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
+export function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
     clonedImg.src = '../../../static/html/assets/icons/whiteCross.png';
     profilePic.style.borderColor = 'red';
     userInfoCont.style.borderColor = 'red';
@@ -337,8 +301,9 @@ function createUserInfoObject(tile, i) {
     return {userInfoCont, clonedImg, profilePic, tileText};
 }
 
-userTiles.forEach((tile, i) => {
-    profileAdded[i] = false;
+function addEventListenerToTiles() {
+    userTiles.forEach((tile, i) => {
+        profileAdded[i] = false;
     tile.addEventListener('click', function(){
         if (plusClicked && !profileAdded[i]) {
             profileAdded[i] = true;
@@ -362,32 +327,60 @@ userTiles.forEach((tile, i) => {
             });
         }
     });
-
+    
     const textCont = tile.querySelector(".textContainer");
     textCont.addEventListener('mouseenter', function () {
         if (plusClicked && !profileAdded[i])
-            textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.219)';
+        textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.219)';
     });
     textCont.addEventListener('mouseleave', function () {
         if (plusClicked && !profileAdded[i])
-            textCont.style.backgroundColor = '#00000031';
+        textCont.style.backgroundColor = '#00000031';
     });
-});
+    });
+}
 
+export let userList;
+export const userTiles = [];  // Array to store the user tiles
+
+export function RenderAllUsers(users) {
+    const userListBackground = document.getElementById('userlistArenaPage');
+    userTiles.push(document.getElementById("botUserTile"));
+
+    users.forEach(user => {
+        const userTile = document.createElement('div');
+        userTile.classList.add('userTile');
+
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('imgContainer');
+        imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
+
+        const textContainer = document.createElement('div');
+        textContainer.classList.add('textContainer');
+        textContainer.textContent = user.username;
+
+        userTile.appendChild(imgContainer);
+        userTile.appendChild(textContainer);
+
+        userListBackground.appendChild(userTile);
+        
+        userTiles.push(userTile);
+    });
+    addEventListenerToTiles();
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('host_auth_token');
-    fetch('get_user_list/', { // Ensure this URL is correct and accessible
+    fetch('get_user_list/', {
         method: 'GET',
         headers: {
             'Authorization': `Token ${token}`,
         }
     })
-   .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error status: ${response.status}`);
-        }
-        return response.json();
+    .then(response => response.json())
+    .then(data => {
+        userList = data;
+        RenderAllUsers(data);
     })
-   .catch(error => console.error('Error fetching user list:', error));
+    .catch(error => console.error('Error:', error));
 });
