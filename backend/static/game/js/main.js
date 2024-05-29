@@ -2768,7 +2768,7 @@ class GameState {
         this.inGame = false;
         this.inLobby = true;
         this.graphicsNeedToChange = false;
-        this.graphics; // (options = 'low', 'medium', 'high') (loginPage.js)
+        this.graphics = 'medium'; // (options = 'low', 'medium', 'high') (loginPage.js)
 
     }
     switchLoadingToGame() {
@@ -2787,9 +2787,13 @@ class GameState {
             const centerPosition = new THREE.Vector3(0, 0, 0);
             this.arena = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, this);
         }
+        if (this.graphicsNeedToChange)
+            this.changeGraphics();
+    }
+    changeGraphics() {
+        this.graphicsNeedToChange = false;
     }
 }
-
 class Particle {
     constructor(scene, particleCount, left, paddle, isBall) {
         this.scene = scene;
