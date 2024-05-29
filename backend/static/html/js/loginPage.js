@@ -184,7 +184,6 @@ function handleLogin(event) {
     })
     .then(response => response.json())
     .then(data => {
-        var loginMessageCont = document.querySelector('.loginMessageCont');
         if (data.status == "succes") {
             localStorage.setItem("host_auth_token", data.token)
             currentLanguage = data.language;
