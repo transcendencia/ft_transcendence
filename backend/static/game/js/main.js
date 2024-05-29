@@ -17,7 +17,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
-import { gameStarted } from '../../html/js/arenaPage.js';
+// import { gameStarted } from '../../html/js/arenaPage.js';
 // import { endGame } from '../../html/js/arenaPage.js';
 
 // FPS COUNTER
@@ -496,6 +496,7 @@ class Arena extends THREE.Mesh {
         this.scene = scene;
         this.game = new Game(this);
         this.maxSpeed = this.width / 40;
+        this.graphics = this.gameState.graphics;
         this.addedToScene = false;
         this.isSplitScreen = false;
         this.isAnimatingCamera = false;
@@ -2768,7 +2769,7 @@ class GameState {
         this.inGame = false;
         this.inLobby = true;
         this.graphicsNeedToChange = false;
-        this.graphics; // (options = 'low', 'medium', 'high') (loginPage.js)
+        this.graphics = 'medium'; // (options = 'low', 'medium', 'high') (loginPage.js)
 
     }
     switchLoadingToGame() {
@@ -2787,6 +2788,11 @@ class GameState {
             const centerPosition = new THREE.Vector3(0, 0, 0);
             this.arena = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, this);
         }
+        if (this.graphicsNeedToChange)
+            this.changeGraphics();
+    }
+    changeGraphics() {
+        this.graphicsNeedToChange = false;
     }
 }
 
@@ -2984,8 +2990,8 @@ function animate()
     updateFpsCounter();
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
-    // if (elapsed < fpsInterval) return; // Skip if too big FPS
-    // else
+    if (elapsed < fpsInterval) return; // Skip if too big FPS
+    else
     {
         gameState.monitorGameState();
         if (gameState.inLobby)

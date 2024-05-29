@@ -2,7 +2,8 @@ import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
 import { TranslateAllTexts } from "./translatePages.js";
-// import { changeGraphics } from "./arenaPage.js";
+import { gameState } from "../../game/js/main.js";
+
 export let currentLanguage = 'en';
 let languageFile;
 
@@ -44,14 +45,24 @@ signupHereButton.addEventListener('click', function() {
 
 showPage('loginPage');
 
+
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
-        // if (icon.id === 'graphicsIcon1') // ALED COLAS JSP COMMENT CA MARCHE OSECOUR
-        //     changeGraphics('low');
-        // if (icon.id === 'graphicsIcon2')
-        //     changeGraphics('medium');
-        // if (icon.id === 'graphicsIcon3')
-        //     changeGraphics('high');
+        if (icon.id === 'graphicsIcon1' && gameState.graphics != 'low')
+        {
+            gameState.graphicsNeedToChange = true;
+            gameState.graphics = 'low';
+        }
+        if (icon.id === 'graphicsIcon2' && gameState.graphics != 'medium')
+        {
+            gameState.graphicsNeedToChange = true;
+            gameState.graphics = 'medium';
+        }
+        if (icon.id === 'graphicsIcon3' && gameState.graphics != 'high')
+        {
+            gameState.graphicsNeedToChange = true;
+            gameState.graphics = 'high';
+        }
         addGlow(icon.id, 'redGlow');
         graphicsIcons.forEach(function(otherIcon) {
         if (otherIcon != icon)
