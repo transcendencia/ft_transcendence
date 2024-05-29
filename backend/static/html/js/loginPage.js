@@ -2,6 +2,7 @@ import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
 import { TranslateAllTexts } from "./translatePages.js";
+import { startAnimation } from "./main.js";
 // import { changeGraphics } from "./arenaPage.js";
 export let currentLanguage = 'en';
 let languageFile;
@@ -167,7 +168,7 @@ languageIcons.forEach(function(icon) {
 // Add event listener to the loginForm
 const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', handleLogin);
-loginForm.addEventListener('submit', getProfileInfo);
+
 // Handle form submission
 function handleLogin(event) {
     event.preventDefault();
@@ -183,24 +184,20 @@ function handleLogin(event) {
     })
     .then(response => response.json())
     .then(data => {
-        var loginMessageCont = document.querySelector('.loginMessageCont');
         if (data.status == "succes") {
             localStorage.setItem("host_auth_token", data.token)
             currentLanguage = data.language;
             TranslateAllTexts();
-            loginMessageCont.classList.remove("failure");
-            loginMessageCont.classList.add("success");
-        } else
-            loginMessageCont.classList.remove("success");
-            loginMessageCont.classList.add("failure");
-        document.getElementById('messageContainer').innerText = data.message;
+            getProfileInfo();
+            showPage('none');
+            startAnimation();
+        } else 
+            document.getElementById('messageContainer').innerText = data.message;
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
 }
-
-// document.addEventListener('DOMContentLoaded', getProfileInfo);
 
 function getProfileInfo() {
 	const token = localStorage.getItem('host_auth_token');

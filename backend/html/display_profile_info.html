@@ -32,31 +32,5 @@
 		<div>
 			<button onclick="window.location.href = '{% url 'render_change_profile_info' %}';">Changer les informations</button>
 		</div>
-
-		<script>
-			function getProfileInfo() {
-				const token = localStorage.getItem('host_auth_token');
-				fetch('get_profile_info/', {
-					method: 'GET',
-					headers: {
-						'Authorization': `Token ${token}`,
-					}
-				})
-				.then(response => {
-					if (!response.ok)
-						throw new Error('Error lors de la recuperation des donne');
-					return response.json();
-				})
-				.then(data=> {
-					document.getElementById('username').textContent = data.profile_info.username;
-					document.getElementById('bio').textContent = data.profile_info.bio;
-					document.getElementById('profile-pic').src = data.profile_info.profile_picture;
-				})
-				.catch(error => {
-					console.error('Erreur :', error);
-				});
-			}
-			window.onload = getProfileInfo;
-		</script>
 	</body>
 </html>

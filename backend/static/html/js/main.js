@@ -179,7 +179,7 @@ function planetMovement() {
     });
 }
 
-function startAnimation() {
+export function startAnimation() {
     let target = -1298;
     let duration = 500;
     let anim1 = new TWEEN.Tween(spaceShip.position)

@@ -15,6 +15,11 @@ class SignupSerializer(serializers.ModelSerializer):
 		model = User
 		fields = ['username', 'password', 'confirmation_password']
 	
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		for field_name, field in self.fields.items():
+			field.error_messages['blank'] = "All fields must be completed."
+	
 	def validate_username(self, value):
 		if len(value) > 13:
 			raise serializers.ValidationError("Username must contains 12 characters maximum.")
@@ -88,6 +93,7 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 				setattr(instance, attr, value)
 		instance.save()
 		return instance
+	
 
 class PasswordValidationError(serializers.ValidationError):
 	def __init__(self, detail=None):
@@ -98,7 +104,7 @@ class PasswordValidationError(serializers.ValidationError):
 class UserListSerializer(serializers.ModelSerializer):
 	class Meta():
 		model = User
-		fields = ['username', 'profile_picture']
+		fields = ['language', 'last_login_date', 'status', 'profile_picture', 'bio', 'is_host']
 
 
 class GameListSerializer(serializers.ModelSerializer):
