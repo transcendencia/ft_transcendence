@@ -39,6 +39,89 @@ const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
+class LobbyVisuals
+{
+    constructor(scene, camera, renderer)
+    {
+        this.scene = scene;
+        this.camera = camera;
+        this.renderer = renderer;
+        this.currentGraphics = 'medium';
+        this.composer;
+        this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        this.bloomPass.threshold = 0.1;
+        this.bloomPass.strength = 0.2;
+        this.bloomPass.radius = 0.5;
+        this.stars = [];
+        this.addStars(1000);
+    }
+    addStar() {
+        const geometry = new THREE.SphereGeometry(1.125, 12, 12);
+        const material = new THREE.MeshStandardMaterial({color: 0xffffff});
+        const star = new THREE.Mesh(geometry, material);
+        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(4000));
+
+        star.position.set(x, y, z);
+        this.scene.add(star);
+        this.stars.push(star); // Add the star to the stars array
+    }
+    addStars(numStars) {
+        Array(numStars).fill().forEach(this.addStar.bind(this));
+    }
+    removeStars() {
+        this.stars.forEach(star => {
+            this.scene.remove(star);
+        });
+    }
+    changeGraphics(graphics)
+    {
+        if (graphics === 'low' && this.currentGraphics != 'low')
+        {
+            if (this.currentGraphics === 'high')
+            {
+                this.composer.removePass(this.bloomPass);
+            }
+            this.removeStars();
+            this.addStars(500);
+            this.camera.far = 1500;
+            this.renderer.shadowMap.enabled = false;
+            this.renderer.setPixelRatio(0.5);
+            this.scene.background = new THREE.Color(0x000020);
+            this.currentGraphics = 'low';
+        }
+        else if (graphics === 'medium' && this.currentGraphics != 'medium')
+        {
+            if (this.currentGraphics === 'high')
+            {
+                this.composer.removePass(this.bloomPass);
+            }
+            this.removeStars();
+            this.addStars(1000);
+            this.camera.far = 2000;
+            this.renderer.setPixelRatio(1);
+            this.renderer.shadowMap.enabled = true;
+            this.scene.background = spaceCubeMapTexture;
+            this.currentGraphics = 'medium';
+        }
+        else if (graphics === 'high' && this.currentGraphics != 'high')
+        {
+            this.composer.addPass(this.bloomPass);
+            this.camera.far = 3000;
+            this.removeStars();
+            this.addStars(1200);
+            this.renderer.setPixelRatio(1);
+            this.renderer.shadowMap.enabled = true;
+            this.scene.background = spaceCubeMapTexture;
+            this.currentGraphics = 'high';
+        }
+        this.camera.updateProjectionMatrix();
+    }
+}
+
+export const lobbyVisuals = new LobbyVisuals(scene, camera, renderer);
+
+
+
 // Define the size of the minimap
 const minimapWidth = 200; // Adjust as needed
 const minimapHeight = 200;
@@ -50,7 +133,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     -minimapHeight * 12,  // top
     minimapHeight * 12, // bottom
     1,                // near
-    2000              // far
+    4000              // far
     );
      
     minimapCamera.position.set(sun.position.x + 200, sun.position.y + 500, sun.position.z);
@@ -69,7 +152,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
     minimapBG.position.set(-200, -600, 0); 
     minimapBG.lookAt(minimapCamera.position); // Make the plane face the camera
-    scene.add(minimapBG);
+    // scene.add(minimapBG);
 
     minimapBG.layers.set(1);
     minimapCamera.layers.enable(1);
@@ -197,7 +280,6 @@ export const outlinePass = new OutlinePass(
     const lightHelper = new THREE.PointLightHelper(pointLight);
     scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
     
-    Array(800).fill().forEach(addStar);
 
 function planetMovement() {
     planets.forEach((planet) => {
@@ -323,7 +405,7 @@ horizontalBlur.uniforms.h.value = targetBlur;
 verticalBlur.uniforms.v.value = targetBlur;
 composer.addPass(horizontalBlur);
 composer.addPass(verticalBlur);
-
+lobbyVisuals.composer = composer;
 const coloredPanel = document.querySelector(".coloredPanel");
 
 export function toggleBlurDisplay(displayColoredPanel = false) {
@@ -344,11 +426,6 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
     }
 }
 
-// Bloom Pass
-const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-bloomPass.threshold = 0.1;
-bloomPass.strength = 0.2;
-bloomPass.radius = 0.5;
 // composer.addPass(bloomPass);
 
 function update() {
