@@ -194,6 +194,8 @@ function disconnectLoggedGuest(userInfoCont) {
 }
 
 function displayUsersLogged() {
+    if (!userList)
+        return;
     userList.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 

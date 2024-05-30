@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Game
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 import logging
@@ -104,4 +104,17 @@ class PasswordValidationError(serializers.ValidationError):
 class UserListSerializer(serializers.ModelSerializer):
 	class Meta():
 		model = User
-		fields = '__all__'
+		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'bio', 'is_host']
+
+
+class GameListSerializer(serializers.ModelSerializer):
+	player1_username = serializers.CharField(source='player1.username', read_only=True)
+	player1_profilePicture = serializers.CharField(source='player1.profile_picture.url', read_only=True)
+	player2_username = serializers.CharField(source='player2.username', read_only=True)
+	player2_profilePicture = serializers.CharField(source='player2.profile_picture.url', read_only=True)
+	player3_username = serializers.CharField(source='player3.username', read_only=True, allow_null=True)
+	Date = serializers.DateTimeField(format="%Y-%m-%d %H:%M", source='date', read_only=True)
+
+	class Meta:
+		model = Game
+		fields = ['id', 'player1', 'player1_username', 'player1_profilePicture', 'player2', 'player2_username', 'player2_profilePicture', 'player3', 'player3_username', 'scorePlayer1', 'scorePlayer2', 'gameplayMode', 'modeGame', 'Date']
