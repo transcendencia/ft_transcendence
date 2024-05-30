@@ -1,10 +1,14 @@
+import { createGame } from "./addGameData.js";
+
 const usernameLinks = document.querySelectorAll('.username-link');
 
   usernameLinks.forEach(function(link) {
     link.addEventListener('click', function(event) {
       event.preventDefault();
+      let playerId = link.dataset.id;
+      console.log("player id: " + playerId); 
       const username = link.textContent.trim();
-      addUserToTournament(username);
+      addUserToTournament(playerId, username);
     });
   });
 
@@ -35,10 +39,10 @@ const usernameLinks = document.querySelectorAll('.username-link');
     }
   }
 
-    function triggerInfiniteAnim() {
-        images[0].style.animation = "upDownImgL 2s infinite alternate ease-in-out";
-        images[1].style.animation = "upDownImgR 2s infinite alternate ease-in-out";
-    }
+  function triggerInfiniteAnim() {
+      images[0].style.animation = "upDownImgL 2s infinite alternate ease-in-out";
+      images[1].style.animation = "upDownImgR 2s infinite alternate ease-in-out";
+  }
 
   document.addEventListener('keydown', (event) => { 
     if (event.key === 'e')
@@ -47,64 +51,39 @@ const usernameLinks = document.querySelectorAll('.username-link');
 
   const tournamentPlayer = [];
 
-  function addUserToTournament(username) {
+  function addUserToTournament(playerId, username) {
       if (!tournamentPlayer.some(player => player.username === username)) {
           tournamentPlayer.push({
+            playerId: playerId,
             username: username,
             order: -1,
             position: 0,
             round: 1,
           });
-          // printTournamentPlayer();
       }
   }
 
-  function printTournamentPlayer() {
-    const tournamentTable = document.querySelector("#tournamentTable");
-    tournamentTable.innerHTML = "";
-    tournamentPlayer.forEach(function(player) {
-      const divRow = document.createElement("div");
-      divRow.classList.add("userTile");
-      
-      
-      const divUsername = document.createElement("div");
-      divUsername.classList.add("textContainer")
-      divUsername.textContent = player.username;
-      divRow.appendChild(divUsername);
-
-      const divImg = document.createElement("div");
-      divImg.classList.add("imgContainer");
-      divRow.appendChild(divImg);
-
-    // const divAction = document.createElement("div");
-    // const actionLink = document.createElement("a");
-    // actionLink.href = "#";
-    // actionLink.textContent = "-";
-    // divAction.appendChild(actionLink);
-    // divRow.appendChild(divAction);
-
-    // actionLink.addEventListener("click", function() {
-    //   const index = tournamentPlayer.indexOf(player);
-    //   if (index !== -1) {
-    //     tournamentPlayer.splice(index, 1);
-    //     printTournamentPlayer();
-    //   }
-    // });
-      tournamentTable.appendChild(divRow);
-    });
+  function getRandomNumber(tournamentPlayer, player1, player2) {
+    let number;
+    do {
+        number = Math.floor(Math.random() * tournamentPlayer.length);
+    } while (tournamentPlayer[number].username === player1 || tournamentPlayer[number].username === player2);
+    return number;
   }
 
   let currentMatch = [];
   let allMatch = [];
   let round = 1;
   let nbMatch;
-  
+  let thirdPlayerMode = 1; //must be removed to use the real variable
+
   function makeMatchup() {
     const ul = document.getElementById("match");
     ul.innerHTML = "";
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
     let j = 0;
     nbMatch = 0;
+    //all results are puts in allMatch
     currentMatch.forEach(function(match){
       allMatch.push(
         JSON.parse(JSON.stringify(match))
@@ -113,8 +92,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
     currentMatch = [];
     //put final position for players who lost
     if (round != 1){
-      const ul = document.getElementById("result");
-      ul.textContent = "";
       tournamentPlayer.forEach(function(player){
         if (player.round + 1 === round)
           player.position = playersInTournament.length + 1;
@@ -131,7 +108,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
       li.textContent = playersInTournament[0].username + " have won the tournament!";
       ul.appendChild(li);
       launchMatchElement.style.display = "none";
-      // printAllResult();
       return ;
     }
     //put matchup in currentMatch variable
@@ -142,15 +118,29 @@ const usernameLinks = document.querySelectorAll('.username-link');
           "",
           -1,
           -1,
+          ""
         ]);
       }
       else{
-        currentMatch.push([
-          { myRef: playersInTournament[i] },
-          { myRef: playersInTournament[i + 1] },
-          -1,
-          -1
-        ]);
+        if (thirdPlayerMode){
+          let thirdPlayer = getRandomNumber(tournamentPlayer, playersInTournament[i].username, playersInTournament[i + 1].username);
+          currentMatch.push([
+            { myRef: playersInTournament[i] },
+            { myRef: playersInTournament[i + 1] },
+            -1,
+            -1,
+            { myRef: tournamentPlayer[thirdPlayer]},
+          ]);
+        }
+        else{
+          currentMatch.push([
+            { myRef: playersInTournament[i] },
+            { myRef: playersInTournament[i + 1] },
+            -1,
+            -1,
+            "",
+          ]);
+        }
       }
       j ++;
     }
@@ -160,24 +150,38 @@ const usernameLinks = document.querySelectorAll('.username-link');
     else if (currentMatch[nbMatch][0])
       li.textContent = currentMatch[nbMatch][0].myRef.username;
     ul.appendChild(li);
+    if (round > 1){
+      for (let i = 0; i < currentMatch.length; i ++) {
+        if (thirdPlayerMode){
+          if (round === 2){
+            if (i === 0){
+              let ul = document.getElementById("third-B1_name");
+              ul.textContent = currentMatch[0][4].myRef.username;
+            }
+            else if (i === 1){
+              let ul = document.getElementById("third-B2_name");
+              if (currentMatch[1][4])
+                ul.textContent = currentMatch[1][4].myRef.username;
+              else
+                ul.textContent = "...";
+            }
+          }
+          else if (round === 3){
+            let ul = document.getElementById("third-C1_name");
+            ul.textContent = currentMatch[0][4].myRef.username;
+          }
+        }
+      }
+    }
     round ++;
   }
-  
-  function printAllResult(){
-    const ul = document.getElementById("allMatch");
-    ul.innerHTML = "";
-    allMatch.forEach(function(match) {
-        const li = document.createElement("p");
-        li.textContent = match[0].myRef.username + " " + match[2] + " vs " + match[1].myRef.username + " " + match[3];
-        ul.appendChild(li);
-    });
-  }
-  
+
   const nbPlayerElement = document.getElementById("nbPlayer");
   const launchTournamentElement = document.getElementById("launch");
   const launchMatchElement = document.getElementById("launchMatch");
   const bracketElement = document.getElementById("bracket");
   const nextMatchElement = document.getElementById("next-match");
+  const matchElement = document.getElementById("match");
   
   
   const thirdA1Element = document.getElementById("third-A1");
@@ -220,34 +224,50 @@ const usernameLinks = document.querySelectorAll('.username-link');
   const secondBotElement = document.getElementById("second-bot");
   const secondLineElement = document.getElementById("second-line");
   
-  //print the bracket structure with the first matchup
   function printBracket() {
+    if (!thirdPlayerMode){
+      document.querySelectorAll('.match').forEach(function(el) {
+        el.style.height = "62px";
+      });
+      document.querySelectorAll('.match-bottom').forEach(function(el) {
+        el.style.borderRadius = "0 0 5px 5px";
+      });
+    }
     if (tournamentPlayer.length > 0){
       A1Element.style.display = "flex";
       let ul = document.getElementById("A1_name");
-      ul.textContent = tournamentPlayer[0].username;
+      ul.textContent = currentMatch[0][0].myRef.username;
       A2Element.style.display = "flex";
       ul = document.getElementById("A2_name");
-      ul.textContent = tournamentPlayer[1].username;
-      // if (thirdPlayerMode)
-      thirdA1Element.style.display = "flex";
+      ul.textContent = currentMatch[0][1].myRef.username;
+      if (thirdPlayerMode){
+        thirdA1Element.style.display = "flex";
+        ul = document.getElementById("third-A1_name");
+        ul.textContent = currentMatch[0][4].myRef.username;
+      }
     }
     if (tournamentPlayer.length > 2){
       A3Element.style.display = "flex";
       let ul = document.getElementById("A3_name");
-      ul.textContent = tournamentPlayer[2].username;
+      ul.textContent = currentMatch[1][0].myRef.username;
       A4Element.style.display = "flex";
       ul = document.getElementById("A4_name");
       if (tournamentPlayer.length > 3)
-        ul.textContent = tournamentPlayer[3].username;
+        ul.textContent = currentMatch[1][1].myRef.username;
       else
         ul.textContent = "...";
-      // if (thirdPlayerMode)
-      thirdA2Element.style.display = "flex";
+      if (thirdPlayerMode){
+        thirdA2Element.style.display = "flex";
+        ul = document.getElementById("third-A2_name");
+        if (tournamentPlayer.length > 3)
+          ul.textContent = currentMatch[1][4].myRef.username;
+        else
+          ul.textContent = "...";
+      }
       B1Element.style.display = "flex";
       B2Element.style.display = "flex";
-      // if (thirdPlayerMode)
-      thirdB1Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdB1Element.style.display = "flex";
       firstTopTopElement.style.display = "block";
       firstTopBotElement.style.display = "block";
       firstSecondTopElement.style.display = "block";
@@ -255,23 +275,29 @@ const usernameLinks = document.querySelectorAll('.username-link');
     if (tournamentPlayer.length > 4){
       A5Element.style.display = "flex";
       let ul = document.getElementById("A5_name");
-      ul.textContent = tournamentPlayer[4].username;
+      ul.textContent = currentMatch[2][0].myRef.username;
       A6Element.style.display = "flex";
       ul = document.getElementById("A6_name");
       if (tournamentPlayer.length > 5)
-        ul.textContent = tournamentPlayer[5].username;
+        ul.textContent = currentMatch[2][1].myRef.username;
       else
         ul.textContent = "...";
-      // if (thirdPlayerMode)
-      thirdA3Element.style.display = "flex";
+      if (thirdPlayerMode){
+        thirdA3Element.style.display = "flex";
+        ul = document.getElementById("third-A3_name");
+        if (tournamentPlayer.length > 5)
+          ul.textContent = currentMatch[2][4].myRef.username;
+        else
+          ul.textContent = "...";
+      }
       B3Element.style.display = "flex";
       B4Element.style.display = "flex";
-      // if (thirdPlayerMode)
-      thirdB2Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdB2Element.style.display = "flex";
       C1Element.style.display = "flex";
       C2Element.style.display = "flex";
-      // if (thirdPlayerMode)
-      thirdC1Element.style.display = "flex";
+      if (thirdPlayerMode)
+        thirdC1Element.style.display = "flex";
       firstBotTopElement.style.display = "block";
       firstSecondBotElement.style.display = "block";
       secondTopElement.style.display = "block";
@@ -281,19 +307,25 @@ const usernameLinks = document.querySelectorAll('.username-link');
     if (tournamentPlayer.length > 6){
       A7Element.style.display = "flex";
       let ul = document.getElementById("A7_name");
-      ul.textContent = tournamentPlayer[6].username;
+      ul.textContent = currentMatch[3][0].myRef.username;
       A8Element.style.display = "flex";
       ul = document.getElementById("A8_name");
       if (tournamentPlayer.length > 7)
-        ul.textContent = tournamentPlayer[7].username;
+        ul.textContent = currentMatch[3][1].myRef.username;
       else
         ul.textContent = "...";
-      // if (thirdPlayerMode)
-      thirdA4Element.style.display = "flex";
+      if (thirdPlayerMode){
+        thirdA4Element.style.display = "flex";
+        ul = document.getElementById("third-A4_name");
+        if (tournamentPlayer.length > 7)
+          ul.textContent = currentMatch[3][4].myRef.username;
+        else
+          ul.textContent = "...";
+      }
       firstBotBotElement.style.display = "block";
     }
   }
-  
+
   //launch the tournament when there is the right amount of players
   //create the matchup / print the bracket structure
 
@@ -325,10 +357,10 @@ const usernameLinks = document.querySelectorAll('.username-link');
     document.querySelectorAll('.before-launch').forEach(function(el) {
       el.style.display = 'none';
    });
-    // printTournamentPlayer();
     launchMatchElement.style.display = "inline";
     bracketElement.style.display = "inline";
     nextMatchElement.style.display = "inline";
+    matchElement.style.display = "inline";
     const leftColumnElement = document.getElementById("leftColumn");
     const midColumnElement = document.getElementById("midColumn");
     const rightColumnElement = document.getElementById("rightColumn");
@@ -343,12 +375,8 @@ const usernameLinks = document.querySelectorAll('.username-link');
   });
   
   function findWinner(){
-    let ul = document.getElementById("result");
-    ul.innerHTML = "";
-    let li = document.createElement("p");
     let winner_name;
     if (!currentMatch[nbMatch][1]){
-      li.textContent = currentMatch[nbMatch][0].myRef.username + " is the winner !";
       currentMatch[nbMatch][0].myRef.round ++;
       currentMatch[nbMatch][2] = 3;
       currentMatch[nbMatch][3] = 0;
@@ -357,21 +385,19 @@ const usernameLinks = document.querySelectorAll('.username-link');
     else{
       let result = Math.floor(Math.random() * 2);
       if (result === 0){
-        li.textContent = currentMatch[nbMatch][0].myRef.username + " is the winner !";
         currentMatch[nbMatch][0].myRef.round ++;
         currentMatch[nbMatch][2] = 3;
         currentMatch[nbMatch][3] = Math.floor(Math.random() * 3);
         winner_name = currentMatch[nbMatch][0].myRef.username;
       }
       else{
-        li.textContent = currentMatch[nbMatch][1].myRef.username + " is the winner !";
         currentMatch[nbMatch][1].myRef.round ++;
         currentMatch[nbMatch][3] = 3;
         currentMatch[nbMatch][2] = Math.floor(Math.random() * 3);
         winner_name = currentMatch[nbMatch][1].myRef.username;
       }
+      createGame(currentMatch[nbMatch][0].myRef.playerId, currentMatch[nbMatch][1].myRef.playerId, currentMatch[nbMatch][4].myRef.playerId, currentMatch[nbMatch][2], currentMatch[nbMatch][3], "tournament");
     }
-    ul.appendChild(li);
     if (round == 2){
       if (nbMatch == 0){
         let ul = document.getElementById("B1_name");
@@ -464,9 +490,9 @@ const usernameLinks = document.querySelectorAll('.username-link');
     }
     //print the nextMatch
     nbMatch ++;
-    ul = document.getElementById("match");
+    let ul = document.getElementById("match");
     ul.innerHTML = "";
-    li = document.createElement("p");
+    let li = document.createElement("p");
     if (nbMatch >= currentMatch.length){
       makeMatchup();
       return ; 
@@ -476,7 +502,6 @@ const usernameLinks = document.querySelectorAll('.username-link');
     else if (currentMatch[nbMatch][0])
       li.textContent = currentMatch[nbMatch][0].myRef.username;
     ul.appendChild(li);
-    // printTournamentPlayer();
   }
 
 const plusPlayerTournament = document.querySelectorAll(".plusPlayerTournament");

@@ -6,6 +6,8 @@ import { gameState } from "../../game/js/main.js";
 import { RenderAllUsersInList } from "./arenaPage.js";
 
 
+import { startAnimation } from "./main.js";
+// import { changeGraphics } from "./arenaPage.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -156,7 +158,7 @@ languageIcons.forEach(function(icon) {
 // Add event listener to the loginForm
 const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', handleLogin);
-loginForm.addEventListener('submit', getProfileInfo);
+
 // Handle form submission
 function handleLogin(event) {
     event.preventDefault();
@@ -171,18 +173,16 @@ function handleLogin(event) {
     })
     .then(response => response.json())
     .then(data => {
-        var loginMessageCont = document.querySelector('.loginMessageCont');
         if (data.status == "succes") {
             localStorage.setItem("host_auth_token", data.token)
             setCurrentLanguage(data.language);
             TranslateAllTexts();
             get_user_list();
-            loginMessageCont.classList.remove("failure");
-            loginMessageCont.classList.add("success");
-        } else
-            loginMessageCont.classList.remove("success");
-            loginMessageCont.classList.add("failure");
-        document.getElementById('messageContainer').innerText = data.message;
+            getProfileInfo();
+            showPage('none');
+            startAnimation();
+        } else 
+            document.getElementById('messageContainer').innerText = data.message;
     })
     .catch(error => {
         console.error('Erreur :', error);

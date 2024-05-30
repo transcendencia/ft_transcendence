@@ -81,14 +81,7 @@
     align-items: center;
     font-size: 10px; /* Set font size */
     font-family: 'Space'; /* Set font family */
-}
-
-.loginMessageCont.failure {
     color: red;
-}
-
-.loginMessageCont.success {
-    color: #00ff00;
 }
 
 .languageColumn {
