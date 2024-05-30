@@ -2502,6 +2502,8 @@ class DragonMap {
     {
         this.arena = arena;
         this.scene = this.arena.scene;
+        this.currentGraphics = arena.graphics;
+
         this.redCubeMapTexture = cubeLoader.load([
             '../../static/game/texturePlayground/redMap/nx.png',
             '../../static/game/texturePlayground/redMap/px.png',
@@ -2557,6 +2559,7 @@ class DragonMap {
             envMapIntensity: 1,
             side: THREE.DoubleSide
         });
+        this.lowGraphicArenaMaterial = new THREE.MeshStandardMaterial({color: 0x9E3515});
         this.paddleMaterial = new THREE.MeshStandardMaterial({
             color: 0xaaaaaa,
             roughness: 0.0,
@@ -2565,6 +2568,7 @@ class DragonMap {
             envMapIntensity: 1,
             side: THREE.DoubleSide
         });
+        this.lowGraphicPaddleMaterial = new THREE.MeshStandardMaterial({color: 0xffffff});
         this.paddleDefaultColor = new THREE.Color(0xaaaaaa);
         this.paddleDashingColor = new THREE.Color(0xf4ff69);
         this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
@@ -2580,6 +2584,7 @@ class DragonMap {
             envMapIntensity: 5,
             side: THREE.DoubleSide
         });
+        this.lowGraphicBallMaterial = new THREE.MeshStandardMaterial({ color: 0xf3bb0b });
         this.trailMaterial = new THREE.MeshPhysicalMaterial({
             color: 0xF3BB0B,
             metalness: 0,
@@ -2591,25 +2596,71 @@ class DragonMap {
             clearcoat: 1.0,
             clearcoatRoughness: 0.1,
         });
+        this.lowGraphicTrailMaterial = new THREE.MeshStandardMaterial({
+            color: 0xf3bb0b,
+            opacity: 0.2,
+            transparent: true
+        });
         const groundGeometry = new THREE.PlaneGeometry( 10000, 10000 );
         this.lavaGround = new THREE.Mesh( groundGeometry, this.floorMaterial );
         this.lavaGround.rotation.x =  -Math.PI / 2;
         this.lavaGround.position.y -= 30;
+        this.fakeLavaGround = new THREE.Mesh( groundGeometry, new THREE.MeshStandardMaterial({color: 0xff0000}));
+        this.fakeLavaGround.rotation.x = -Math.PI / 2;
+        this.fakeLavaGround.position.y -= 30;
+        this.ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     }
     initMap()
     {
         if (this.mapActive)
             return;
+        this.currentGraphics = this.arena.graphics;
         this.mapActive = true;
-        this.scene.background = this.redCubeMapTexture;
-        this.scene.add(this.lavaGround, this.mountains);
-        this.arena.bloomPass.strength = 0.7;
-        this.arena.material = this.arenaMaterial;
-        this.mountains.children.material = this.floorMaterial;
-        this.arena.ball.material = this.ballMaterial;
-        this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
-        this.arena.paddleLeft.material = this.paddleMaterial;
-        this.arena.paddleRight.material = this.paddleMaterial;
+        if (this.currentGraphics === 'medium' || this.currentGraphics === 'high')
+        {
+            this.scene.background = this.redCubeMapTexture;
+            this.scene.add(this.lavaGround, this.mountains);
+            this.arena.bloomPass.strength = 0.7;
+            this.arena.material = this.arenaMaterial;
+            this.mountains.children.material = this.floorMaterial;
+            this.arena.ball.material = this.ballMaterial;
+            this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
+            this.arena.paddleLeft.paddleMesh.material = this.paddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.paddleMaterial;
+            if (this.currentGraphics === 'high')
+            {
+                this.arena.paddleLeft.particleNumber = 500;
+                this.arena.paddleRight.particleNumber = 500;
+                this.arena.paddleLeft.particles.changeParticleNumber(500);
+                this.arena.paddleRight.particles.changeParticleNumber(500);
+                this.arena.ball.particles.changeParticleNumber(15000);
+            }
+            else if (this.currentGraphics === 'medium')
+            {
+                this.arena.paddleLeft.particleNumber = 250;
+                this.arena.paddleRight.particleNumber = 250;
+                this.arena.paddleLeft.particles.changeParticleNumber(250);
+                this.arena.paddleRight.particles.changeParticleNumber(250);
+                this.arena.ball.particles.changeParticleNumber(1000);
+            }
+        }
+        else if (this.currentGraphics === 'low')
+        {
+            this.scene.background = new THREE.Color(0x9E3515);
+            this.scene.add(this.fakeLavaGround);
+            this.arena.bloomPass.strength = 0;
+            this.arena.material = this.lowGraphicArenaMaterial;
+            this.arena.ball.material = this.lowGraphicBallMaterial;
+            this.arena.ball.trailParticles.changeMaterial(this.lowGraphicTrailMaterial);
+            this.arena.paddleLeft.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.scene.add(this.ambientLight);
+            this.arena.paddleLeft.particleNumber = 0;
+            this.arena.paddleRight.particleNumber = 0;
+            this.arena.paddleLeft.particles.changeParticleNumber(0);
+            this.arena.paddleRight.particles.changeParticleNumber(0);
+            this.arena.ball.particles.changeParticleNumber(0);
+        }
         this.arena.paddleLeft.particlesColor = this.particleColor;
         this.arena.paddleRight.particlesColor = this.particleColor;
         this.arena.paddleRight.light.color.set(0xF3BB0B);
@@ -2629,13 +2680,19 @@ class DragonMap {
             this.arena.paddleLeft.mixer.update(0.01);
         if (this.arena.paddleRight.mixer != undefined)
             this.arena.paddleRight.mixer.update(0.01)
-        this.uniforms[ 'time' ].value += 0.01;
-        this.mountains.rotation.y += 0.0003;
+        if (this.currentGraphics != 'low')
+        {
+            this.uniforms[ 'time' ].value += 0.01;
+            this.mountains.rotation.y += 0.0003;
+        }
     }
     closeMap()
     {
         this.mapActive = false;
-        this.scene.remove(this.lavaGround, this.mountains);
+        if (this.currentGraphics === 'low')
+            this.scene.remove(this.fakeLavaGround, this.ambientLight);
+        else
+            this.scene.remove(this.lavaGround, this.mountains);
         this.arena.material = this.arena.defaultMaterial;
         this.arena.ball.material = this.arena.ball.defaultMaterial;
         this.arena.paddleLeft.paddleMesh.material = this.arena.paddleLeft.defaultMaterial;
@@ -2644,6 +2701,69 @@ class DragonMap {
         this.arena.paddleRight.light.intensity *= 10;
         this.arena.paddleLeft.light.color.set(this.arena.paddleLeft.defaultLightColor);
         this.arena.paddleRight.light.color.set(this.arena.paddleRight.defaultLightColor);
+    }
+    changeGraphics(graphic)
+    {
+        if (graphic === 'low' && this.currentGraphics != 'low')
+        {
+            this.scene.remove(this.lavaGround, this.mountains);
+            this.scene.add(this.fakeLavaGround, this.ambientLight);
+            this.arena.material = this.lowGraphicArenaMaterial;
+            this.arena.ball.material = this.lowGraphicBallMaterial;
+            this.arena.paddleLeft.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.arena.ball.trailParticles.changeMaterial(this.lowGraphicTrailMaterial);
+            this.scene.background = new THREE.Color(0x9E3515);
+            this.arena.bloomPass.strength = 0;
+            this.arena.paddleLeft.particleNumber = 0;
+            this.arena.paddleRight.particleNumber = 0;
+            this.arena.paddleLeft.particles.changeParticleNumber(0);
+            this.arena.paddleRight.particles.changeParticleNumber(0);
+            this.arena.ball.particles.changeParticleNumber(0);
+            this.currentGraphics = 'low';
+        }
+        else if (graphic === 'medium' && this.currentGraphics != 'medium')
+        {
+            if (this.currentGraphics === 'low')
+            {
+                this.scene.remove(this.fakeLavaGround, this.ambientLight);
+                this.scene.add(this.lavaGround, this.mountains);
+                this.arena.material = this.arenaMaterial;
+                this.arena.ball.material = this.ballMaterial;
+                this.arena.paddleLeft.paddleMesh.material = this.paddleMaterial;
+                this.arena.paddleRight.paddleMesh.material = this.paddleMaterial;
+                this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
+                this.scene.background = this.redCubeMapTexture;
+                this.arena.bloomPass.strength = 0.7;
+            }
+            this.arena.paddleLeft.particleNumber = 250;
+            this.arena.paddleRight.particleNumber = 250;
+            this.arena.paddleLeft.particles.changeParticleNumber(250);
+            this.arena.paddleRight.particles.changeParticleNumber(250);
+            this.arena.ball.particles.changeParticleNumber(1000);
+            this.currentGraphics = 'medium';
+        }
+        else if (graphic === 'high' && this.currentGraphics != 'high')
+        {
+            if (this.currentGraphics === 'low')
+                {
+                    this.scene.remove(this.fakeLavaGround, this.ambientLight);
+                    this.scene.add(this.lavaGround, this.mountains);
+                    this.arena.material = this.arenaMaterial;
+                    this.arena.ball.material = this.ballMaterial;
+                    this.arena.paddleLeft.paddleMesh.material = this.paddleMaterial;
+                    this.arena.paddleRight.paddleMesh.material = this.paddleMaterial;
+                    this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
+                    this.scene.background = this.redCubeMapTexture;
+                    this.arena.bloomPass.strength = 0.7;
+                }
+                this.arena.paddleLeft.particleNumber = 500;
+                this.arena.paddleRight.particleNumber = 500;
+                this.arena.paddleLeft.particles.changeParticleNumber(500);
+                this.arena.paddleRight.particles.changeParticleNumber(500);
+                this.arena.ball.particles.changeParticleNumber(15000);
+                this.currentGraphics = 'high';
+        }
     }
 }
 
