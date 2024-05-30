@@ -3225,13 +3225,7 @@ class Game {
         // OUTPUT
         this.loserPaddle;
         this.winnerPaddle;
-        this.gameMode;
-        if (!this.powerUpsActivated)
-            this.gameMode = 'powerless';
-        else if (this.effectsOnly)
-            this.gameMode = 'effectsOnly';
-        else
-            this.gameMode = 'classic';
+        this.gameMode = 'classic';
         // for each paddle
         this.paddleBounces;
         this.nbPowerUsed;
@@ -3241,6 +3235,7 @@ class Game {
     }
     sendDataToBack()
     {
+        this.updateGameMode(); // ne pas enlever
         console.log("game finished, data to send to back:");
         console.log("user1 = ", this.user1);
         console.log("user2 = ", this.user2);
@@ -3254,6 +3249,15 @@ class Game {
         this.user1.reset();
         this.user2.reset();
         this.user3.reset();
+    }
+    updateGameMode()
+    {
+        if (!this.powerUpsActivated)
+            this.gameMode = 'powerless';
+        else if (this.effectsOnly)
+            this.gameMode = 'effectsOnly';
+        else
+            this.gameMode = 'classic';
     }
 }
 
