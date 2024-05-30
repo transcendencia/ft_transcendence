@@ -1,5 +1,6 @@
 import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
+import { togglePlanet } from "./enterPlanet.js";
 
 const userlist = document.querySelector(".userlistBackground");
 const plusButtons = document.querySelectorAll(".plusPlayer");
@@ -366,3 +367,9 @@ export function RenderAllUsersInList(users) {
     });
     addEventListenerToTiles();
 }
+
+const backButtonArenaPage = document.querySelector(".planetBackButton");
+backButtonArenaPage.addEventListener('click', () => {
+    console.log(".")
+    togglePlanet();
+  });

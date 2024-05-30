@@ -1,3 +1,4 @@
+import { togglePlanet } from './enterPlanet.js';
 import { userList } from './loginPage.js';
 const statsButtons = document.querySelectorAll('.statButton');
 const statsScreen = document.querySelector('.statsBlock');
@@ -81,7 +82,20 @@ createMatchBlock('Arena', '02-11-2000', 'Powerless', 'Doggodito', '../../../stat
 
 // Sample user data
 //generate more random users
-  const userPagesCont= document.querySelector(".userPagesContainer");
+  const hostUserPage = document.getElementById("hostUserPage");
+  const exploreUserPage = document.getElementById("exploreUserPage");
+  const backButtonUserPage = document.querySelectorAll(".planetBackButton")[1];
+
+  backButtonUserPage.addEventListener('click', () => {
+    if (!onHostUserPage) {
+      exploreUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";    
+      hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
+      onHostUserPage = true;
+    }
+    else togglePlanet();
+  });
+
+  let onHostUserPage = true;
   // Function to render user tiles based on search query
 function RenderUsersSearched(query) {
     const userListBackground = document.getElementById('userlistUserPage');
@@ -105,7 +119,12 @@ function RenderUsersSearched(query) {
       loupeContainer.classList.add('loupeImg');
       loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
         loupeContainer.addEventListener('click', () => {
-            userPagesCont.style.animation = "slideUserPage 1s forwards";    
+          if (onHostUserPage) {
+            exploreUserPage.style.animation = "slideUserPage 1s forwards ease-in-out";    
+            hostUserPage.style.animation = "slideUserPage 1s forwards ease-in-out";
+            onHostUserPage = false; 
+          }
+          // else displayOtherUser(){}
         });
       userTile.appendChild(imgContainer);
       userTile.appendChild(textContainer);
