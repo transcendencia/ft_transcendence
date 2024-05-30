@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { showPage } from './showPages.js';
 import {spaceShip, spaceShipInt, allModelsLoaded} from "./objs.js";
-import { addStar } from "./stars.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
