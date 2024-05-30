@@ -8,6 +8,7 @@ import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js'
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
@@ -48,6 +49,9 @@ class LobbyVisuals
         this.currentGraphics = 'medium';
         this.composer;
         this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        this.afterImagePass = new AfterimagePass();
+        this.afterImagePass.uniforms.damp.value = 0;
+
         this.bloomPass.threshold = 0.1;
         this.bloomPass.strength = 0.2;
         this.bloomPass.radius = 0.5;
@@ -79,6 +83,7 @@ class LobbyVisuals
             if (this.currentGraphics === 'high')
             {
                 this.composer.removePass(this.bloomPass);
+                this.composer.removePass(this.afterImagePass);
             }
             this.removeStars();
             this.addStars(500);
@@ -93,6 +98,7 @@ class LobbyVisuals
             if (this.currentGraphics === 'high')
             {
                 this.composer.removePass(this.bloomPass);
+                this.composer.removePass(this.afterImagePass);
             }
             this.removeStars();
             this.addStars(1000);
@@ -105,6 +111,7 @@ class LobbyVisuals
         else if (graphics === 'high' && this.currentGraphics != 'high')
         {
             this.composer.addPass(this.bloomPass);
+            this.composer.addPass(this.afterImagePass);
             this.camera.far = 3000;
             this.removeStars();
             this.addStars(1200);
