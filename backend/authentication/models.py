@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.conf import settings
+from django.utils import timezone
 
 class User(AbstractUser):
   LANGUAGE_CHOICE = [
@@ -25,10 +26,9 @@ class User(AbstractUser):
   is_host = models.BooleanField(default=False)
 
   def get_profile_info(self):
-    return({'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url})
+    return({'id': self.id, 'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url})
 
 #histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)
-
 
 class Member(models.Model):
   username = models.CharField(max_length=255)
@@ -44,6 +44,8 @@ class Game(models.Model):
   scorePlayer1 = models.IntegerField(default=-1)
   scorePlayer2 = models.IntegerField(default=-1)
   gameplayMode = models.CharField(max_length=255)
+  modeGame = models.CharField(max_length=255, default="test")
+  date = models.DateTimeField(default=timezone.now)
 
   def __str__(self):
     return f"{self.gameplayMode}"

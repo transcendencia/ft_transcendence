@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import authentication, tournament, updateUserInfo
+from .views import authentication, tournament, updateUserInfo, gameInfo
 
 urlpatterns = [
 	path('', authentication.index, name='index'),
@@ -28,6 +28,14 @@ urlpatterns = [
     #tounament.py
     path('tournament/', tournament.result, name='result'),
     path('addPlayer/', tournament.add_member, name='add_member'),
-    path('game_list/', tournament.game_list, name='game_list'),
-    path('add_game/', tournament.add_game, name='add_game'),
+    path('add_game/', gameInfo.add_game, name='add_game'),
+    path('game_list/', gameInfo.game_list, name='game_list'),
+    path('get_game_list/', gameInfo.get_game_list, name='get_game_list'),
+    path('get_game_user/', gameInfo.get_game_user, name='get_game_user'),
+
+
+    
+    # path('get_game_list/', gameInfo.get_game_list, name='get_game_list'),
+    # path('get_game_info/', gameInfo.get_game_info, name='get_game_info'),
+
 ]
