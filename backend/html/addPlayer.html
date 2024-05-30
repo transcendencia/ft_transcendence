@@ -1,5 +1,7 @@
 {% extends "master.html" %}
 
+{% load static %}
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% block title %}
   Tournament
@@ -22,6 +24,25 @@
   </form>
 </div>
 
+<h1>List of Games</h1>
+<ul style="overflow-y: auto; max-height: 500px;">
+  {% for game in allGames %}
+    <span>{{ game.id }}</span>
+    <span>{{ game.player1.username }}</span>
+    <span>{{ game.scorePlayer1 }}</span>
+    <span>vs</span>
+    <span>{{ game.scorePlayer2 }}</span>
+    <span>{{ game.player2.username }}</span>
+    <span>in</span>
+    <span>{{ game.gameplayMode }}</span>
+    <span>mode</span>
+    </br>
+  {% endfor %}
+</ul>
+
+
+<script type="module" src="{% static 'tournament/js/addGameData.js' %}"></script>
+
 <script>
   const newUserButton = document.getElementById("NewUser");
   const casesTexteDiv = document.getElementById("casesTexte");
@@ -34,8 +55,5 @@
       }
   });
 </script>
-
-
-
 
 {% endblock %}
