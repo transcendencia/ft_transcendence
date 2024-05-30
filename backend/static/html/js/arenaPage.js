@@ -1,9 +1,7 @@
-import { getTranslatedText } from "./loginPage.js";
-import { showPage } from "./showPages.js";
+import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 
 const userlist = document.querySelector(".userlistBackground");
-const userTiles = userlist.querySelectorAll(":scope > *");
 const plusButtons = document.querySelectorAll(".plusPlayer");
 
 const leftColumn = document.querySelector(".leftColumn");
@@ -255,7 +253,7 @@ function isBot(i) {
     return (i === botID)
 }
 
-function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
+export function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
     clonedImg.src = '../../../static/html/assets/icons/whiteCross.png';
     profilePic.style.borderColor = 'red';
     userInfoCont.style.borderColor = 'red';
@@ -303,8 +301,9 @@ function createUserInfoObject(tile, i) {
     return {userInfoCont, clonedImg, profilePic, tileText};
 }
 
-userTiles.forEach((tile, i) => {
-    profileAdded[i] = false;
+function addEventListenerToTiles() {
+    userTiles.forEach((tile, i) => {
+        profileAdded[i] = false;
     tile.addEventListener('click', function(){
         if (plusClicked && !profileAdded[i]) {
             profileAdded[i] = true;
@@ -328,30 +327,42 @@ userTiles.forEach((tile, i) => {
             });
         }
     });
-
     const textCont = tile.querySelector(".textContainer");
     textCont.addEventListener('mouseenter', function () {
         if (plusClicked && !profileAdded[i])
-            textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.219)';
+        textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.219)';
     });
     textCont.addEventListener('mouseleave', function () {
         if (plusClicked && !profileAdded[i])
-            textCont.style.backgroundColor = '#00000031';
+        textCont.style.backgroundColor = '#00000031';
     });
-});
+    });
+}
 
+export const userTiles = [];  // Array to store the user tiles
 
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_user_list/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => console.error('Error:', error));
-});
+export function RenderAllUsersInList(users) {
+    const userListBackground = document.getElementById('userlistArenaPage');
+    userTiles.push(document.getElementById("botUserTile"));
+
+    users.forEach(user => {
+        const userTile = document.createElement('div');
+        userTile.classList.add('userTile');
+
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('imgContainer');
+        imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
+
+        const textContainer = document.createElement('div');
+        textContainer.classList.add('textContainer');
+        textContainer.textContent = user.username;
+
+        userTile.appendChild(imgContainer);
+        userTile.appendChild(textContainer);
+
+        userListBackground.appendChild(userTile);
+        
+        userTiles.push(userTile);
+    });
+    addEventListenerToTiles();
+}

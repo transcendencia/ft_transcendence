@@ -1,4 +1,31 @@
-import { getTranslatedText } from './loginPage.js';
+export let currentLanguage = 'en';
+let languageFile;
+export let languageIconsClicked = false;
+
+export function setlanguageIconsClicked(value) {
+    languageIconsClicked = value;
+}
+
+export function setCurrentLanguage(value) {
+    currentLanguage = value;
+}
+
+fetch('../../static/html/languages.json')
+.then(response => response.json())
+.then(data => {
+    languageFile = data;
+})
+.catch(error => {
+    console.error('Error fetching language data:', error);
+});
+
+export function getTranslatedText(key) {
+    if (languageFile) {
+        if (languageFile[currentLanguage])
+        return languageFile[currentLanguage][key];
+    else console.error('Current language ' + currentLanguage + 'not found in language file');
+    }
+}
 
 const userlistText = document.getElementById('userlistText');
 const arenaTitleText = document.getElementById('arenaTitleText');
