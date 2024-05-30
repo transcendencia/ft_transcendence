@@ -1,0 +1,25 @@
+.rgpd {
+    /*============= RECTANGLE =========*/
+    /*Couleur du rectangle*/
+    background-color: hsla(0, 86%, 46%, 0.122);
+    border: 5px solid #ff3737;
+    border-top:  25px solid rgb(114, 103, 199);
+    /*taille du rectangle*/
+    width: 60%;
+    padding: 20px;
+    max-width: 600px;
+    height: 40%;
+    /*Position du rectangle*/
+    left: 50%;
+    position: fixed;
+    /*forme du rectangle*/
+    border-radius: 0px;
+    /*couleur du texte*/
+    color: #000000;
+    /*Position du texte*/
+    transform: translate(-50%, 50%);
+    display: center;
+    padding-top: 50px;
+    text-align: justify;
+    
+}
