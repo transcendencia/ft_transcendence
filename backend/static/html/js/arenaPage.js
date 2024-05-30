@@ -1,9 +1,7 @@
 import { getTranslatedText } from "./loginPage.js";
-import { showPage } from "./showPages.js";
 import { gameState } from "../../game/js/main.js";
 
 const userlist = document.querySelector(".userlistBackground");
-const userTiles = userlist.querySelectorAll(":scope > *");
 const plusButtons = document.querySelectorAll(".plusPlayer");
 
 const leftColumn = document.querySelector(".leftColumn");
@@ -15,10 +13,10 @@ const botID = 0;
 let playerNb = 0;
 
 
-const blue = '#3777ff';
-const purple = 'rgb(164, 67, 255)'
-const grey = '#141414';
-const lightGrey = '#323232';
+export const blue = '#3777ff';
+export const purple = 'rgb(164, 67, 255)'
+export const grey = '#141414';
+export const lightGrey = '#323232';
 
 function Glow() {
     userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
@@ -27,7 +25,7 @@ function Glow() {
     userTiles.forEach((tile, i) => {
         if (profileAdded[i])
             return;
-        const tileChildren = tile.querySelectorAll(":scope > *");
+        const tileChildren = tile.HTMLelement.querySelectorAll(":scope > *");
         tileChildren.forEach(function(element) {
             element.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
             element.style.borderColor = '#ffb30eff';
@@ -92,7 +90,6 @@ buttonHeaders.forEach((buttonHeader, index) => {
             image.classList.remove('lightblueShadowfilter');
         });
         image.addEventListener('click', function () {
-            // console.log(imgIndex);
             if (index === 0)
                 toggleGamemode(buttonHeader, imgIndex);
             if (index === 1)
@@ -106,7 +103,7 @@ function resetGlow() {
     userlist.style.borderColor = blue;
     userlist.style.animation = '';
     userTiles.forEach((child, i) => {
-        const children = child.querySelectorAll(":scope > *");
+        const children = child.HTMLelement.querySelectorAll(":scope > *");
         children.forEach(element => {
             element.style.borderColor = blue;
             element.style.animation = '';
@@ -255,7 +252,7 @@ function isBot(i) {
     return (i === botID)
 }
 
-function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
+export function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
     clonedImg.src = '../../../static/html/assets/icons/whiteCross.png';
     profilePic.style.borderColor = 'red';
     userInfoCont.style.borderColor = 'red';
@@ -264,7 +261,7 @@ function displayRemovePlayerVisual(userInfoCont, clonedImg, profilePic) {
     userInfoCont.childNodes[1].textContent = getTranslatedText('removePlayer');
 }
 
-function resetUserInfoVisual(userInfoCont, clonedImg, profilePic, tileText, i, tile) {
+export function resetUserInfoVisual(userInfoCont, clonedImg, profilePic, tileText, i, tile) {
     if (isBot(i)) {
         userInfoCont.style.borderColor = purple;
         profilePic.style.borderColor = purple;
@@ -273,19 +270,19 @@ function resetUserInfoVisual(userInfoCont, clonedImg, profilePic, tileText, i, t
         profilePic.style.borderColor = blue;
         userInfoCont.style.borderColor = blue;
     }
-    clonedImg.src = tile.querySelector('.imgContainer').querySelector('img').src;
+    clonedImg.src = tile.HTMLelement.querySelector('.imgContainer').querySelector('img').src;
     userInfoCont.childNodes[1].textContent = tileText;
     userInfoCont.style.fontFamily = 'space';
     userInfoCont.style.fontSize = '15px';
 }
 
-function resetToPlusButton(userInfoCont, oldObj, textCont) {
+export function resetToPlusButton(userInfoCont, oldObj, textCont) {
     userInfoCont.parentNode.replaceChild(oldObj, userInfoCont)
     textCont.style.backgroundColor = '#00000031';
     oldObj.style.backgroundColor = grey;
 }
 
-function createUserInfoObject(tile, i) {
+export function createUserInfoObject(tile, i) {
     const userInfoCont = document.createElement('div');
     const profilePic = document.createElement('div');
     const clonedImg = tile.querySelector('.imgContainer').querySelector('img').cloneNode(true);
@@ -303,13 +300,18 @@ function createUserInfoObject(tile, i) {
     return {userInfoCont, clonedImg, profilePic, tileText};
 }
 
-userTiles.forEach((tile, i) => {
-    profileAdded[i] = false;
-    tile.addEventListener('click', function(){
+function addEventListenerToTiles() {
+    userTiles.forEach((tile, i) => {
+        profileAdded[i] = false;
+      tile.HTMLelement.addEventListener('click', function(){
         if (plusClicked && !profileAdded[i]) {
             profileAdded[i] = true;
             playerNb++;
-            const newObj = createUserInfoObject(tile, i);
+            const newObj = createUserInfoObject(tile.HTMLelement, i);
+            if (plusClicked === 1)
+                addUserToMatch(tile.user.id, tile.user.id, 1);
+            else
+                addUserToMatch(tile.user.id, tile.user.id, 0);
             const oldObj = plusButtons[plusClicked - 1];
             oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
             resetGlow();
@@ -325,21 +327,139 @@ userTiles.forEach((tile, i) => {
                 profileAdded[i] = false;
                 profileAdded[botID] = false;
                 playerNb--;
+                removeUserFromMatch(tile.user.id);
             });
         }
     });
-
-    const textCont = tile.querySelector(".textContainer");
+    const textCont = tile.HTMLelement.querySelector(".textContainer");
     textCont.addEventListener('mouseenter', function () {
         if (plusClicked && !profileAdded[i])
-            textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.219)';
+        textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.219)';
     });
     textCont.addEventListener('mouseleave', function () {
         if (plusClicked && !profileAdded[i])
-            textCont.style.backgroundColor = '#00000031';
+        textCont.style.backgroundColor = '#00000031';
     });
-});
+    });
+}
 
+const matchPlayer = [];
+
+function addUserToMatch(playerId, username, thirdPlayer) {
+    if (!matchPlayer.some(player => player.username === username)) {
+        matchPlayer.push({
+          playerId: playerId,
+          username: username,
+          thirdPlayer: thirdPlayer,
+        });
+        console.log("player add");
+    }
+}
+
+function removeUserFromMatch(playerId) {
+  const playerIndex = matchPlayer.findIndex(player => player.playerId === playerId);
+  //remove if player is find
+  if (playerIndex !== -1) {
+      matchPlayer.splice(playerIndex, 1);
+      console.log(`Player with ID ${playerId} has been removed from the match.`);
+  } else {
+      console.log(`Player with ID ${playerId} is not in the match.`);
+  }
+}
+
+export let userList;
+export const userTiles = [];  // Array to store the user tiles
+
+export function RenderAllUsers(users) {
+    const userListBackground = document.getElementById('userlistArenaPage');
+    userTiles.push({
+        user: null,
+        HTMLelement : document.getElementById("botUserTile"),
+    });
+
+    users.forEach(user => {
+        if (user.is_host)
+            return;
+        const userTile = document.createElement('div');
+        userTile.classList.add('userTile');
+
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('imgContainer');
+        imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
+
+        const textContainer = document.createElement('div');
+        textContainer.classList.add('textContainer');
+        textContainer.textContent = user.username;
+
+        userTile.appendChild(imgContainer);
+        userTile.appendChild(textContainer);
+
+        userListBackground.appendChild(userTile);
+        
+        userTiles.push({
+            user: user,
+            HTMLelement: userTile,
+        });
+    });
+    addEventListenerToTiles();
+}
+
+import { addEventListenerToTilesTournament } from "../../tournament/js/newTournament.js";
+export const userTilesTournament = [];  // Array to store the user tiles
+
+
+function RenderAllUsersTournament(users) {
+    const userListBackground = document.getElementById('userlistTournamentPage');
+    userTilesTournament.push({
+        user: null,
+        HTMLelement : document.getElementById("botUserTournamentTile"),
+    });
+
+    users.forEach(user => {
+        if (user.is_host)
+            return;
+        const userTile = document.createElement('div');
+        userTile.classList.add('userTile');
+
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('imgContainer');
+        imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
+
+        const textContainer = document.createElement('div');
+        textContainer.classList.add('textContainer');
+        textContainer.textContent = user.username;
+
+        userTile.appendChild(imgContainer);
+        userTile.appendChild(textContainer);
+
+        userListBackground.appendChild(userTile);
+
+        userTilesTournament.push({
+            user: user,
+            HTMLelement: userTile,
+        });
+    });
+    addEventListenerToTilesTournament();
+  }
+
+  function RenderUserMatch(user) {
+    const usernameElement = document.getElementById('player1MatchUsername');
+    usernameElement.textContent = user.username;
+    const pictureElement = document.getElementById('player1MatchPicture');
+    pictureElement.src = user.profile_picture;
+    addUserToMatch(user.id, user.username, 0);
+  }
+
+  import { addUserToTournament } from "../../tournament/js/newTournament.js";
+
+  function RenderUserTournament(user) {
+    const usernameElement = document.getElementById('player1TournamentUsername');
+    usernameElement.textContent = user.username;
+    const pictureElement = document.getElementById('player1TournamentPicture');
+    pictureElement.src = user.profile_picture;
+    console.log("id: ", user, " username: ", user.username);
+    addUserToTournament(user.id, user.username);
+  }
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('host_auth_token');
@@ -351,7 +471,26 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then(response => response.json())
     .then(data => {
+        userList = data;
+        RenderAllUsers(data);
+        RenderAllUsersTournament(data);
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('host_auth_token');
+    fetch('get_profile_info/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}`,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
         console.log(data);
+        RenderUserMatch(data.profile_info);
+        RenderUserTournament(data.profile_info);
     })
     .catch(error => console.error('Error:', error));
 });

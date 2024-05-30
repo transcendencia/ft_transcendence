@@ -10,7 +10,6 @@ venv/
 #pycache
 /backend/backend/__pycache__/
 
-
 #production files
 backend/productionfiles/
 backend/migrations/

@@ -104,7 +104,7 @@ class PasswordValidationError(serializers.ValidationError):
 class UserListSerializer(serializers.ModelSerializer):
 	class Meta():
 		model = User
-		fields = ['language', 'last_login_date', 'status', 'profile_picture', 'bio', 'is_host']
+		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'bio', 'is_host']
 
 
 class GameListSerializer(serializers.ModelSerializer):
