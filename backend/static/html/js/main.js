@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { showPage } from './showPages.js';
 import {spaceShip, spaceShipInt, allModelsLoaded} from "./objs.js";
-import { addStar } from "./stars.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
@@ -9,6 +8,7 @@ import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js'
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
@@ -16,7 +16,7 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { mixer1, mixer2, mixer3} from './objs.js';
-import { userList } from './arenaPage.js';
+import { userList } from './loginPage.js';
 
 let cubeLoader = new THREE.CubeTextureLoader();
 let spaceCubeMapTexture = cubeLoader.load([
@@ -39,6 +39,95 @@ const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
+class LobbyVisuals
+{
+    constructor(scene, camera, renderer)
+    {
+        this.scene = scene;
+        this.camera = camera;
+        this.renderer = renderer;
+        this.currentGraphics = 'medium';
+        this.composer;
+        this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        this.afterImagePass = new AfterimagePass();
+        this.afterImagePass.uniforms.damp.value = 0;
+
+        this.bloomPass.threshold = 0.1;
+        this.bloomPass.strength = 0.2;
+        this.bloomPass.radius = 0.5;
+        this.stars = [];
+        this.addStars(1000);
+    }
+    addStar() {
+        const geometry = new THREE.SphereGeometry(1.125, 12, 12);
+        const material = new THREE.MeshStandardMaterial({color: 0xffffff});
+        const star = new THREE.Mesh(geometry, material);
+        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(4000));
+
+        star.position.set(x, y, z);
+        this.scene.add(star);
+        this.stars.push(star); // Add the star to the stars array
+    }
+    addStars(numStars) {
+        Array(numStars).fill().forEach(this.addStar.bind(this));
+    }
+    removeStars() {
+        this.stars.forEach(star => {
+            this.scene.remove(star);
+        });
+    }
+    changeGraphics(graphics)
+    {
+        if (graphics === 'low' && this.currentGraphics != 'low')
+        {
+            if (this.currentGraphics === 'high')
+            {
+                this.composer.removePass(this.bloomPass);
+                this.composer.removePass(this.afterImagePass);
+            }
+            this.removeStars();
+            this.addStars(500);
+            this.camera.far = 1500;
+            this.renderer.shadowMap.enabled = false;
+            this.renderer.setPixelRatio(0.5);
+            this.scene.background = new THREE.Color(0x000020);
+            this.currentGraphics = 'low';
+        }
+        else if (graphics === 'medium' && this.currentGraphics != 'medium')
+        {
+            if (this.currentGraphics === 'high')
+            {
+                this.composer.removePass(this.bloomPass);
+                this.composer.removePass(this.afterImagePass);
+            }
+            this.removeStars();
+            this.addStars(1000);
+            this.camera.far = 2000;
+            this.renderer.setPixelRatio(1);
+            this.renderer.shadowMap.enabled = true;
+            this.scene.background = spaceCubeMapTexture;
+            this.currentGraphics = 'medium';
+        }
+        else if (graphics === 'high' && this.currentGraphics != 'high')
+        {
+            this.composer.addPass(this.bloomPass);
+            this.composer.addPass(this.afterImagePass);
+            this.camera.far = 3000;
+            this.removeStars();
+            this.addStars(1200);
+            this.renderer.setPixelRatio(1);
+            this.renderer.shadowMap.enabled = true;
+            this.scene.background = spaceCubeMapTexture;
+            this.currentGraphics = 'high';
+        }
+        this.camera.updateProjectionMatrix();
+    }
+}
+
+export const lobbyVisuals = new LobbyVisuals(scene, camera, renderer);
+
+
+
 // Define the size of the minimap
 const minimapWidth = 200; // Adjust as needed
 const minimapHeight = 200;
@@ -50,7 +139,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     -minimapHeight * 12,  // top
     minimapHeight * 12, // bottom
     1,                // near
-    2000              // far
+    4000              // far
     );
      
     minimapCamera.position.set(sun.position.x + 200, sun.position.y + 500, sun.position.z);
@@ -69,7 +158,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
     minimapBG.position.set(-200, -600, 0); 
     minimapBG.lookAt(minimapCamera.position); // Make the plane face the camera
-    scene.add(minimapBG);
+    // scene.add(minimapBG);
 
     minimapBG.layers.set(1);
     minimapCamera.layers.enable(1);
@@ -105,6 +194,8 @@ function disconnectLoggedGuest(userInfoCont) {
 }
 
 function displayUsersLogged() {
+    if (!userList)
+        return;
     userList.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
@@ -197,7 +288,6 @@ export const outlinePass = new OutlinePass(
     const lightHelper = new THREE.PointLightHelper(pointLight);
     scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
     
-    Array(800).fill().forEach(addStar);
 
 function planetMovement() {
     planets.forEach((planet) => {
@@ -323,7 +413,7 @@ horizontalBlur.uniforms.h.value = targetBlur;
 verticalBlur.uniforms.v.value = targetBlur;
 composer.addPass(horizontalBlur);
 composer.addPass(verticalBlur);
-
+lobbyVisuals.composer = composer;
 const coloredPanel = document.querySelector(".coloredPanel");
 
 export function toggleBlurDisplay(displayColoredPanel = false) {
@@ -340,16 +430,10 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
     .easing(TWEEN.Easing.Quadratic.Out)
         .start();
     if (displayColoredPanel) {
-        console.log(targetBlur);
         targetBlur === 0 ? coloredPanel.style.opacity = "0" : coloredPanel.style.opacity = "1";
     }
 }
 
-// Bloom Pass
-const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-bloomPass.threshold = 0.1;
-bloomPass.strength = 0.2;
-bloomPass.radius = 0.5;
 // composer.addPass(bloomPass);
 
 function update() {

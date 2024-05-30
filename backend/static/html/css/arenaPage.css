@@ -6,6 +6,7 @@
     height: 100%;
     width: 20%;
     text-align: center;
+    z-index: 1;
 }
 
 .rightColumn {
@@ -16,6 +17,7 @@
     align-items: center;
     height: 100%;
     width: 80%;
+    overflow: hidden;
 }
 
 .rightColumn * {
