@@ -339,19 +339,3 @@ userTiles.forEach((tile, i) => {
             textCont.style.backgroundColor = '#00000031';
     });
 });
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_user_list/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => console.error('Error:', error));
-});

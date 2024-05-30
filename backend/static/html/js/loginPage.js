@@ -189,6 +189,7 @@ function handleLogin(event) {
             currentLanguage = data.language;
             TranslateAllTexts();
             getProfileInfo();
+            get_user_list()
             showPage('none');
             startAnimation();
         } else 
@@ -227,13 +228,21 @@ var disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", handleLogout);
 
 function handleLogout() {
-    updateUserStatus('offline');
-    localStorage.clear();
+    updateUserStatus('offline')
+    .then(() => {
+        return get_user_list();
+    })
+    .then(() => {
+        localStorage.clear();
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
 };
 
 function updateUserStatus(status) {
     const token = localStorage.getItem('host_auth_token');
-    fetch('update_status/', {
+    return fetch('update_status/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -249,6 +258,31 @@ function updateUserStatus(status) {
     })
     .catch(error => {
         console.error('Erreur :', error);
+    });
+};
+
+export let userList;
+
+export function get_user_list(){
+    const token = localStorage.getItem('host_auth_token');
+    // console.log(token);
+    fetch('get_user_list/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        userList = data;
+        // console.log(userList);
+        // console.log(data);
+        return data;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        throw error;
     });
 };
 
