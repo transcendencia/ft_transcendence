@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Member
-from .models import User, Friendlist, FriendRequest, Game
+from .models import User, Game
 
 class MemberAdmin(admin.ModelAdmin):
     list_display = ("username", "position",)

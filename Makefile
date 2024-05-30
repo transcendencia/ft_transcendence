@@ -28,7 +28,7 @@ prune:
 	@docker volume prune;
 
 fclean:
-	- @docker-compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
+	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
 
 re: down
 	${MAKE} all

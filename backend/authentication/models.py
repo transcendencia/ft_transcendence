@@ -26,7 +26,7 @@ class User(AbstractUser):
   is_host = models.BooleanField(default=False)
 
   def get_profile_info(self):
-    return({'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url})
+    return({'id': self.id, 'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url})
 
 #histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)
 

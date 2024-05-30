@@ -13,9 +13,10 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-import { gameStarted, switchToGame } from './arenaPage.js';
+import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { mixer1, mixer2, mixer3} from './objs.js';
+import { userList } from './arenaPage.js';
 
 let cubeLoader = new THREE.CubeTextureLoader();
 let spaceCubeMapTexture = cubeLoader.load([
@@ -90,7 +91,50 @@ function renderMinimap() {
     minimapRenderer.render(scene, minimapCamera);
 }
 
-let languageData
+function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
+    clonedImg.src = user.profile_picture;
+    profilePic.style.borderColor = '#3777ff';
+    userInfoCont.style.borderColor = '#3777ff';
+    userInfoCont.style.fontFamily = 'space';
+    userInfoCont.style.fontSize = '15px';
+    userInfoCont.childNodes[1].textContent = user.username;
+}
+
+function disconnectLoggedGuest(userInfoCont) {
+    lsCont.removeChild(userInfoCont);
+}
+
+function displayUsersLogged() {
+    userList.forEach(user => {
+        const lsCont = document.getElementById('lsCont');
+
+        const userInfoCont = document.createElement('div');
+        userInfoCont.classList.add('userInfoCont', 'log');
+
+        const profilePic = document.createElement('div');
+        profilePic.classList.add('profilePic');
+
+        const img = document.createElement('img');
+        img.src = user.profile_picture;
+
+        profilePic.appendChild(img);
+        userInfoCont.appendChild(profilePic);
+        const usernameText = document.createTextNode(user.username);
+        userInfoCont.appendChild(usernameText);
+        lsCont.appendChild(userInfoCont);
+        // if (user.isHost)
+        //     return;
+        userInfoCont.addEventListener('mouseenter', function () {
+            displayRemovePlayerVisual(userInfoCont, img, profilePic);
+        });
+        userInfoCont.addEventListener('mouseleave', function () {
+            resetUserInfoLoggedVisual(userInfoCont, img, profilePic, user);
+        });
+        userInfoCont.addEventListener('click', function () {
+            disconnectLoggedGuest(userInfoCont);
+        });
+    });
+}
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -106,8 +150,7 @@ export function toggleRSContainerVisibility() {
     if (rsContVisible) {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '-50%';
-        leftSideContainer.style.transition = 'left 0.5s ease-in-out';
-        leftSideContainer.style.left = '-50%';
+
         rsContVisible = false;
     } else {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
@@ -117,6 +160,8 @@ export function toggleRSContainerVisibility() {
         rsContVisible = true;
     }
 }
+
+
 const composer = new EffectComposer(renderer);
 composer.setSize(window.innerWidth, window.innerHeight);
 const renderPass = new RenderPass( scene, camera );
@@ -229,17 +274,20 @@ function toggleEscapeContainerVisibility() {
 
 let pauseGame = false;
 
-document.addEventListener('keydown', (event) => { 
-    if (event.key === 'e' && !lobbyStart && event.target.tagName !== 'INPUT') {
+document.addEventListener('keydown', (event) => {
+    if (event.target.tagName === 'INPUT')
+        return;
+    if (event.key === 'e' && !lobbyStart) {
         // const token = localStorage.getItem('host_auth_token');
         // console.log(token);
         // if (token) {
             showPage('none');
             startAnimation();
+            displayUsersLogged();
         // }
         // localStorage.clear();
     }
-    if (event.key === 'e' && inRange && !gameStarted && event.target.tagName !== 'INPUT')
+    if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
