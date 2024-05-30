@@ -65,7 +65,7 @@ function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc
     historyContainer.appendChild(matchBlock);
 }
 
-function getGameInfo() {
+export function getGameInfo() {
 	const token = localStorage.getItem('host_auth_token');
 		fetch('get_game_user/', {
 		    method: 'GET',
@@ -116,11 +116,6 @@ function getGameInfo() {
 			console.error('Erreur :', error);
 		});
 }
-
-document.addEventListener('keydown', (event) => { 
-    if (event.key === 't')
-        getGameInfo();
-  });
 
 // Sample user data
 //generate more random users

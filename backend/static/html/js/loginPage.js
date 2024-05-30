@@ -3,6 +3,7 @@ import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
 import { TranslateAllTexts } from "./translatePages.js";
 import { startAnimation } from "./main.js";
+import { getGameInfo } from "./userPage.js";
 // import { changeGraphics } from "./arenaPage.js";
 export let currentLanguage = 'en';
 let languageFile;
@@ -189,6 +190,7 @@ function handleLogin(event) {
             currentLanguage = data.language;
             TranslateAllTexts();
             getProfileInfo();
+            getGameInfo();
             showPage('none');
             startAnimation();
         } else 
