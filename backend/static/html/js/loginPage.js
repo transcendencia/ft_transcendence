@@ -1,31 +1,11 @@
-//loginpage
-
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
-import { TranslateAllTexts } from "./translatePages.js";
+import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
+import { RenderAllUsersInList } from "./arenaPage.js";
 
-export let currentLanguage = 'en';
-let languageFile;
-var languageIconsClicked = false;
 
-fetch('../../static/html/languages.json')
-.then(response => response.json())
-.then(data => {
-    languageFile = data;
-})
-.catch(error => {
-    console.error('Error fetching language data:', error);
-});
-
-export function getTranslatedText(key) {
-    if (languageFile) {
-        if (languageFile[currentLanguage])
-        return languageFile[currentLanguage][key];
-    else console.error('Current language ' + currentLanguage + 'not found in language file');
-}
-}
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -100,7 +80,6 @@ function getCookie(name) {
 
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
-        console.log("Je clique pour changer de langue")
         if (icon.id === 'fr' || icon.id == 'fr1') {
             alien1.visible = false;
             alien2.visible = true;
@@ -118,10 +97,10 @@ languageIcons.forEach(function(icon) {
             alien3.visible = true;
         }
         addGlow(icon.id, 'glow');
-        languageIconsClicked = true;
-        currentLanguage = icon.id;
+        setlanguageIconsClicked(true);
+        setCurrentLanguage(icon.id);
         if (icon.id.length === 3)
-            currentLanguage = icon.id.slice(0, 2);
+            setCurrentLanguage(icon.id.slice(0, 2));
         icon.querySelector('.flag').style.opacity = 1;
         icon.querySelector('.icon').style.opacity = 0;
         TranslateAllTexts();
@@ -136,8 +115,6 @@ languageIcons.forEach(function(icon) {
         // Send POST request to change user language in the back if user is logged in
         const token = localStorage.getItem('host_auth_token');
         if (token) {
-            console.log("je change de langue");
-            console.log(currentLanguage);
             fetch('change_language/', {
                 method: 'POST',
                 headers: {
@@ -151,7 +128,6 @@ languageIcons.forEach(function(icon) {
                 if (!response.ok) {
                     throw new Error('Erreur lors de la modification de la langue');
                 }
-                console.log('Langue modifiée avec succès');
             })
             .catch(error => {
                 console.error('Erreur :', error);
@@ -188,8 +164,7 @@ function handleLogin(event) {
     const formData = new FormData(this);
     formData.append('language', currentLanguage);
     formData.append('languageClicked', languageIconsClicked);
-    console.log(languageIconsClicked);
-    languageIconsClicked = false;
+    setlanguageIconsClicked(false);
     fetch('login_page/', {
         method: 'POST',
         body: formData
@@ -199,8 +174,9 @@ function handleLogin(event) {
         var loginMessageCont = document.querySelector('.loginMessageCont');
         if (data.status == "succes") {
             localStorage.setItem("host_auth_token", data.token)
-            currentLanguage = data.language;
+            setCurrentLanguage(data.language);
             TranslateAllTexts();
+            get_user_list();
             loginMessageCont.classList.remove("failure");
             loginMessageCont.classList.add("success");
         } else
@@ -213,7 +189,7 @@ function handleLogin(event) {
     });
 }
 
-// document.addEventListener('DOMContentLoaded', getProfileInfo);
+document.addEventListener('DOMContentLoaded', get_user_list());
 
 function getProfileInfo() {
 	const token = localStorage.getItem('host_auth_token');
@@ -269,7 +245,6 @@ function updateUserStatus(status) {
 };
 
 function getUserStatus() {
-    console.log("Je suis dans getUserStatus");
     const token = localStorage.getItem('host_auth_token');
     fetch('get_status/', {
         method: 'GET',
@@ -285,9 +260,26 @@ function getUserStatus() {
     })
     .then(data => {
         console.log(data);
-        
     })
     .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
     });
+};
+
+export let userList;
+
+export function get_user_list() {
+    const token = localStorage.getItem('host_auth_token');
+    fetch('get_user_list/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}`,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        userList = data;
+        RenderAllUsersInList(data);
+    })
+    .catch(error => console.error('Error:', error));
 };

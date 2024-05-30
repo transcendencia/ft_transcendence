@@ -16,7 +16,7 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { mixer1, mixer2, mixer3} from './objs.js';
-import { userList } from './arenaPage.js';
+import { userList } from './loginPage.js';
 
 let cubeLoader = new THREE.CubeTextureLoader();
 let spaceCubeMapTexture = cubeLoader.load([
@@ -340,7 +340,6 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
     .easing(TWEEN.Easing.Quadratic.Out)
         .start();
     if (displayColoredPanel) {
-        console.log(targetBlur);
         targetBlur === 0 ? coloredPanel.style.opacity = "0" : coloredPanel.style.opacity = "1";
     }
 }
