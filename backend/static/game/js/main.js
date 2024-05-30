@@ -14,7 +14,6 @@ import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import { Water } from 'three/addons/objects/Water.js';
 import { Sky } from 'three/addons/objects/Sky.js';
-// import { vertexShader, redFragmentShader, blueFragmentShader, greenFragmentShader } from './shaders.js';
 import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
@@ -89,29 +88,9 @@ let cubeMapTexture = cubeLoader.load([
 
 let water;
 
-const waterGeometry = new THREE.PlaneGeometry( 3000, 3000 );
+// const waterGeometry = new THREE.PlaneGeometry( 3000, 3000 );
 
-water = new Water(
-  waterGeometry,
-  {
-    textureWidth: 512,
-    textureHeight: 512,
-    waterNormals: new THREE.TextureLoader().load( '../../static/game/texturePlayground/water/water.jpg', function ( texture ) {
 
-      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-
-    } ),
-    sunDirection: new THREE.Vector3(),
-    sunColor: 0xffffff,
-    waterColor: 0x001e0f,
-    distortionScale: 3.7,
-    opacity: 1.0,
-    fog: scene.fog !== undefined
-  }
-);
-
-water.rotation.x = - Math.PI / 2;
-water.position.y = -10;
 
 // scene.add( water );
 
@@ -164,7 +143,14 @@ class LoadingScreen {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.composer = new EffectComposer(this.renderer);
         this.renderPass = new RenderPass(this.scene, this.camera);
+        this.afterimagePass = new AfterimagePass();
+        this.afterimagePass.uniforms['damp'].value = 0.90;
+        this.bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 1.0, 0.5 );
+        this.bloomPass.threshold = 0.5;
+        this.bloomPass.strength = 1.0;
+        this.bloomPass.radius = 0.5;
         this.composer.addPass(this.renderPass);
+        this.composer.addPass(this.bloomPass);
         this.cameraInitialZ = 4;
         this.cameraCloseZ = 4;
         this.cameraFarZ = 45;
@@ -209,6 +195,7 @@ class LoadingScreen {
         this.light4.position.set(0, 0, -5);
         this.icoLight.position.set(0, 4, 0);
         this.starSpeed = 2;
+        this.loadingCompleted = false;
         this.scene.add(this.light, this.light2, this.light3, this.icoLight, this.light4);
         this.stars = []; // Store all stars added to the scene
         this.addStars(2000);
@@ -231,7 +218,8 @@ class LoadingScreen {
         if (this.isAnimatingCamera) {
             this.isAnimatingCamera = false;
             this.iterations = 0;
-            const duration = 500;
+            this.loadingCompleted = true;
+            const duration = 2500;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -275,6 +263,7 @@ class LoadingScreen {
                 .to({ z: this.cameraFarZ }, duration / 2)
                 .easing(TWEEN.Easing.Linear.None)
                 .onStart(() => {
+                    this.composer.addPass(this.afterimagePass);
                     this.starSpeed = 1;
                 })
                 .onComplete(() => {
@@ -347,6 +336,7 @@ class LoadingScreen {
     activateLoadingScreen()
     {
         this.isAnimatingCamera = true;
+        this.composer.removePass(this.afterimagePass);
         document.getElementById('c3').style.display = 'inline';
         this.cameraInitialZ = 4;
         this.camera.position.z = this.cameraInitialZ;
@@ -359,28 +349,11 @@ class LoadingScreen {
         this.spaceShip.scale.set(0.03, 0.03, 0.03); // Scale the spaceship
         this.spaceShip.position.set(0, -1, 2); // Set the position of the spaceship
         this.isAnimatingSpaceship = false;
+        this.loadingCompleted = false;
     }
 }
+
 const loadingScreen = new LoadingScreen();
-
-
-// let moon;
-// const moonLoader = new GLTFLoader();
-// moonLoader.load(
-//     'moon/scene.gltf',
-//     function(gltf) {
-//         moon = gltf.scene;
-//         moon.scale.set(250,250,250);
-//         scene.add(moon);
-//         moon.position.set(250, 250, 250);
-//     },
-//     function(xhr) {
-//         console.log((xhr.loaded / xhr.total * 100) + '%loaded');
-//     },
-//     function (error) {
-//         console.error(error);
-//     }
-// )
 
 // HELPERS
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -477,43 +450,13 @@ function cameraDebug()
     console.log("camera.rotation.z =  " + camera.rotation.z);
 }
 
-// const greenShaderMaterial = new THREE.ShaderMaterial({
-//     uniforms: {
-//         time: { value: 0.0 },
-//         resolution: { value: new THREE.Vector2() }
-//     },
-//     vertexShader: vertexShader,
-//     fragmentShader: greenFragmentShader
-// });
-
-// // Create shader materials
-// const redShaderMaterial = new THREE.ShaderMaterial({
-//     vertexShader: vertexShader,
-//     fragmentShader: redFragmentShader,
-//     uniforms: {
-//         time: { value: 0 },
-//         color: { value: new THREE.Color(0xffffff) } // Default color
-//     }
-// });
-
-// const blueShaderMaterial = new THREE.ShaderMaterial({
-//     vertexShader: vertexShader,
-//     fragmentShader: blueFragmentShader,
-//     uniforms: {
-//         time: { value: 0 },
-//         color: { value: new THREE.Color(0xffffff) } // Default color
-//     }
-// });
-
 //ARENA CLASS
 class Arena extends THREE.Mesh {
-    constructor(centerPosition, width, height, depth, loadingScreen)
+    constructor(centerPosition, width, height, depth, loadingScreen, gameState)
     {
-
         // Create geometry for the arena
         const geometry = new THREE.BoxGeometry(width, height, depth);
         const textureLoader = new THREE.TextureLoader();
-        // const texture = textureLoader.load('purplebox.jpeg');
         const arenaColor = 0x000000;
         // Create material
         const material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
@@ -540,27 +483,20 @@ class Arena extends THREE.Mesh {
         this.height = height;
         this.width = depth;
         this.camera = camera;
-        this.gameState = new GameState(this);
+        this.gameState = gameState;
         this.thirdPlayer = new ThirdPlayer(this);
         this.paddleRight = new Paddle(this, false);
         this.paddleLeft = new Paddle(this, true);
         this.ball = new Ball(this);
         this.bot = new Bot(this, this.paddleRight, this.paddleLeft);
         this.isActive = true;
-        this.horizontalBlur = new ShaderPass(HorizontalBlurShader);
-        this.verticalBlur = new ShaderPass(VerticalBlurShader);
-        this.horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-        this.verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-        this.horizontalBlur.renderToScreen = true; // Render to a texture
-        this.verticalBlur.renderToScreen = true; // Render to the screen
-        this.horizontalBlur.uniforms.h.value = 0;
-        this.verticalBlur.uniforms.v.value = 0;
         this.isBlurred = false;
         this.isBeingBlurred = false;
         this.isBeingReset = false;
         this.scene = scene;
         this.game = new Game(this);
         this.maxSpeed = this.width / 40;
+        this.addedToScene = false;
         this.isSplitScreen = false;
         this.isAnimatingCamera = false;
         this.loadingScreen = loadingScreen;
@@ -571,7 +507,23 @@ class Arena extends THREE.Mesh {
         this.viewPoint4 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
         this.defaultMaterial = material;
         this.stars = []; // Store all stars added to the scene
-        this.bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );;
+
+        // POST PROCESSING
+        this.renderPass1 = new RenderPass(this.scene, this.camera);
+        this.renderPass2 = new RenderPass(this.scene, cameraLeft);
+        this.bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+        this.horizontalBlur = new ShaderPass(HorizontalBlurShader);
+        this.verticalBlur = new ShaderPass(VerticalBlurShader);
+        this.horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
+        this.verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
+        this.horizontalBlur.renderToScreen = true; // Render to a texture
+        this.verticalBlur.renderToScreen = true; // Render to the screen
+        this.horizontalBlur.uniforms.h.value = 0;
+        this.verticalBlur.uniforms.v.value = 0;
+        this.glitchLeft = new GlitchPass(64);
+        this.glitchRight = new GlitchPass(64);
+        this.glitchLeft.renderToScreen = true;
+        this.glitchRight.renderToScreen = true;
         this.bloomPass.threshold = 0.5;
         this.bloomPass.strength = 1.0;
         this.bloomPass.radius = 0.5;
@@ -580,6 +532,32 @@ class Arena extends THREE.Mesh {
         this.skyMap = new SkyMap(this);
         this.dragonMap = new DragonMap(this);
         this.spaceMap.initMap();
+        this.composer1 = new EffectComposer(renderer);
+        this.composer2 = new EffectComposer(renderer2);
+
+        // INIT ARENA
+        this.initPostProcessing();
+        this.idleCameraAnimation();
+    }
+    addArenaToScene()
+    {
+        this.scene.add(this, this.paddleRight, this.paddleLeft, this.ball, this.thirdPlayer);
+    }
+    initPostProcessing()
+    {
+        this.composer1.addPass(this.renderPass1);
+        this.composer1.addPass(this.bloomPass);
+        this.composer1.addPass(this.horizontalBlur);
+        this.composer1.addPass(this.verticalBlur);
+        this.composer1.addPass(this.glitchLeft);
+        this.glitchLeft.enabled = false;
+
+        this.composer2.addPass(this.renderPass2);
+        this.composer2.addPass(this.bloomPass);
+        this.composer2.addPass(this.horizontalBlur);
+        this.composer2.addPass(this.verticalBlur);
+        this.composer2.addPass(this.glitchRight);
+        this.glitchRight.enabled = false;
     }
     addStar() {
         const geometry = new THREE.SphereGeometry(1.125, 12, 12);
@@ -598,6 +576,19 @@ class Arena extends THREE.Mesh {
         this.stars.forEach(star => {
             this.scene.remove(star);
         });
+    }
+    initializeGameSettings()
+    {
+        this.game.hasToBeInitialized = false;
+        if (this.game.map === 'oceanMap')
+            this.switchMap(this.oceanMap);
+        else if (this.game.map === 'spaceMap')
+            this.switchMap(this.spaceMap);
+        else if (this.game.map === 'skyMap')
+            this.switchMap(this.skyMap);
+        else if (this.game.map === 'dragonMap')
+            this.switchMap(this.dragonMap);
+        this.addArenaToScene();
     }
     idleCameraAnimation()
     {
@@ -699,6 +690,8 @@ class Arena extends THREE.Mesh {
         this.paddleRight.light.position.copy(this.paddleRight.position);
         this.paddleLeft.particles.updateParticles();
         this.paddleRight.particles.updateParticles();
+        if (this.game.hasToBeInitialized)
+            this.initializeGameSettings();
         if (this.game.isPlaying)
         {
             this.paddleLeft.monitorIdleAnimation();
@@ -759,6 +752,8 @@ class Arena extends THREE.Mesh {
             this.paddleRight.light.power += 0.1;
             this.bot.isPlaying = !this.bot.isPlaying;
         }
+        if (keyDown['i'])
+            this.bot.calculateBallLandingPosition();
         if (keyDown['e'])
         {
             // cameraLeft.position.copy(this.position);
@@ -770,15 +765,26 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
-            this.paddleLeft.changePaddleControls(false);
-            this.paddleRight.changePaddleControls(false);
-            cameraLeft.lookAt(this.position);
-            swapToSplitScreen();
-            this.setSplitCameraPositions(camera, cameraLeft);
-            this.game.isPlaying = true;
             // this.bot.isPlaying = true;
-            this.isSplitScreen = true;
-            scoreUI[0].style.opacity = 1;
+            this.game.isPlaying = true;
+            if (!this.game.thirdPlayer)
+            {
+                this.isSplitScreen = true;
+                this.paddleLeft.changePaddleControls(false);
+                this.paddleRight.changePaddleControls(false);
+                cameraLeft.lookAt(this.position);
+                swapToSplitScreen();
+                this.setSplitCameraPositions(camera, cameraLeft);
+                scoreUI[0].style.opacity = 1;
+            }
+            else
+            {
+                scoreUI[0].style.opacity = 1;
+                swapToFullScreen();
+                this.setTopView(camera, false);
+                this.paddleLeft.changePaddleControls(true);
+                this.paddleRight.changePaddleControls(true);
+            }
         }
         if (keyDown['p'])
         {
@@ -787,8 +793,6 @@ class Arena extends THREE.Mesh {
             this.paddleLeft.changePaddleControls(true);
             this.paddleRight.changePaddleControls(true);
         }
-        if(keyDown['o'])
-            this.paddleRight.changeBlenderModel('../../static/game/models/godzilla/scene.gltf');
         if (this.game.leftScore >= this.game.maxScore || this.game.rightScore >= this.game.maxScore)
         {
             this.game.isPlaying = false;
@@ -819,12 +823,12 @@ class Arena extends THREE.Mesh {
         if (this.game.rightScore >= this.game.maxScore && !this.isBeingReset)
         {
             this.isBeingReset = true;
-            this.resetPositions(this.paddleLeft, this.paddleRight, false, glitchLeft);
+            this.resetPositions(this.paddleLeft, this.paddleRight, false, this.glitchLeft);
         }
         else if (this.game.leftScore >= this.game.maxScore && !this.isBeingReset)
         {
             this.isBeingReset = true;
-            this.resetPositions(this.paddleRight, this.paddleLeft, true, glitchRight);
+            this.resetPositions(this.paddleRight, this.paddleLeft, true, this.glitchRight);
         }
     }
     setSplitCameraPositions(_cameraRight, _cameraLeft)
@@ -1016,15 +1020,11 @@ class Arena extends THREE.Mesh {
             this.ball.light.power = this.ball.startingPower;
             this.ball.bounceCount = 0;
             this.isBeingReset = false;
-            if (this.game.isOver)
-            {
-                this.game.isPlaying = false;
-                this.game.isOver = false;
-                this.game.leftScore = 0;
-                this.game.rightScore = 0;
-                swapToFullScreen();
-                this.setTopView(camera, true);
-            }
+            this.game.isPlaying = false;
+            this.game.isOver = false;
+            this.game.leftScore = 0;
+            this.game.rightScore = 0;
+            swapToFullScreen();
             this.gameState.switchGameToLoading();
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
@@ -1036,8 +1036,11 @@ class Arena extends THREE.Mesh {
             this.resetUI();
             // endGame();
         });
+        let targetLight = loserPaddle.defaultLight;
+        if (this.getCurrentMap() === this.dragonMap)
+           targetLight = loserPaddle.defaultLight / 10; 
         const powerPaddleLight = new TWEEN.Tween(loserPaddle.light)
-        .to({power: loserPaddle.defaultLight}, duration)
+        .to({power: targetLight}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(() => {
             winnerPaddle.light.power = loserPaddle.light.power;
@@ -1163,7 +1166,8 @@ class Paddle extends THREE.Group {
         this.left = left;
         this.canDash = true;
         // Add other properties and methods as needed
-        this.particles = new Particle(this.scene, 500, left, this, false);
+        this.particleNumber = 250;
+        this.particles = new Particle(this.scene, this.particleNumber, left, this, false);
         this.light = new THREE.PointLight(0x4B4FC5);
         scene.add(this.light);
         this.defaultMaterial = this.material.clone();
@@ -1216,7 +1220,9 @@ class Paddle extends THREE.Group {
                         // this.model.rotation.y = Math.PI / 2;
                     }
                     else if (rotationFactor == 2)
-                        this.model.rotation.y = 0;                        
+                        this.model.rotation.y = 0;       
+                    else if (rotationFactor == 3)
+                        this.model.rotation.y = Math.PI / 2;                 
 
                 }
                 else
@@ -1235,6 +1241,8 @@ class Paddle extends THREE.Group {
                     }
                     else if (rotationFactor == 2)
                         this.model.rotation.y = Math.PI;
+                    else if (rotationFactor == 3)
+                        this.model.rotation.y = -Math.PI / 2;
                 }
 
                 this.model.scale.set(scale, scale, scale); // Adjust scale as needed
@@ -1258,7 +1266,6 @@ class Paddle extends THREE.Group {
                                 animation1.play();
                             }, 500);
                         }
-
                     }
                 }
             },
@@ -1299,13 +1306,13 @@ class Paddle extends THREE.Group {
     }
     animatePaddle(arena)
     {
-        if (doubleKeyPress[this.rightKey] && this.canDash) {
+        if (doubleKeyPress[this.rightKey] && this.canDash && arena.game.powerUpsActivated) {
             this.canDash = false;
             this.isDashingRight = true;
             this.dash(arena.width * 20, false);
             doubleKeyPress[this.rightKey] = false;
         }
-        if (doubleKeyPress[this.leftKey] && this.canDash) {
+        if (doubleKeyPress[this.leftKey] && this.canDash && arena.game.powerUpsActivated) {
             this.canDash = false;
             this.isDashingLeft = true;
             this.dash(arena.width * -20, true);
@@ -1322,7 +1329,7 @@ class Paddle extends THREE.Group {
             if (arena.ball.isSupercharging && (this.position.z * arena.ball.position.z > 0))
                 arena.ball.position.x -= this.moveSpeed * arena.length;
         }
-        if (keyDown[this.chargeKey])
+        if (keyDown[this.chargeKey] && arena.game.powerUpsActivated)
         {
             this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleSuperchargingColor);
             this.isPowered = true;
@@ -1333,6 +1340,8 @@ class Paddle extends THREE.Group {
     dash(range, isLeft)
     {
         let targetX;
+        if (!this.arena.game.powerUpsActivated)
+            return ;
         this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDashingColor);
         targetX = this.position.x + range * this.moveSpeed;
         if (!isLeft) {
@@ -1424,7 +1433,7 @@ class Paddle extends THREE.Group {
         const tmp = this.leftKey;
         this.leftKey = this.rightKey;
         this.rightKey = tmp;
-        this.material.color.set(this.invertedColor);
+        this.paddleMesh.material.color.set(this.arena.getCurrentMap().invertedColor);
         this.defaultColor.set(this.invertedColor);
 
         setTimeout(() => {
@@ -1433,9 +1442,9 @@ class Paddle extends THREE.Group {
             this.rightKey = tmp;
             this.defaultColor.set(this.untouchedDefaultColor);
             if (!this.isPowered)
-                this.material.color.set(this.defaultColor);
+                this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDefaultColor);
             else
-                this.material.color.set(this.superChargingColor);
+                this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleSuperchargingColor);
         }, 1000);
     }
     slowDown()
@@ -1444,11 +1453,11 @@ class Paddle extends THREE.Group {
         {
             this.moveSpeed *= 0.6;
         if (!this.isPowered)
-            this.material.color.set(this.slowedColor);
+            this.paddleMesh.material.color.set(this.arena.getCurrentMap().slowedColor);
         this.defaultColor.set(this.slowedColor);
         setTimeout(() => {
             if (!this.isPowered)
-                this.material.color.set(this.untouchedDefaultColor);
+                this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDefaultColor);
             this.defaultColor.set(this.untouchedDefaultColor);
             this.moveSpeed = this.defaultSpeed;
         }, 1000);
@@ -1615,6 +1624,13 @@ class Ball extends THREE.Mesh {
                 this.acceleration = this.accelerationStrength * this.speedZ;
             else if (paddle.isDashingLeft)
                 this.acceleration = -this.accelerationStrength * this.speedZ;
+            else if (this.arena.game.effectsOnly)
+            {
+                if (Math.random() > 0.5)
+                    this.acceleration = this.accelerationStrength * this.speedZ;
+                else
+                    this.acceleration = -this.accelerationStrength * this.speedZ;
+            }
             else
                 this.acceleration = 0;
             this.updateSpeedBar();
@@ -1677,6 +1693,13 @@ class Ball extends THREE.Mesh {
                 this.acceleration = -this.accelerationStrength * this.speedZ;
             else if (paddle.isDashingLeft)
                 this.acceleration = this.accelerationStrength * this.speedZ;
+            else if (this.arena.game.effectsOnly)
+            {
+                if (Math.random() > 0.5)
+                    this.acceleration = this.accelerationStrength * this.speedZ;
+                else
+                    this.acceleration = -this.accelerationStrength * this.speedZ;
+            }
             else
                 this.acceleration = 0;
             this.updateSpeedBar();
@@ -1739,9 +1762,9 @@ class Ball extends THREE.Mesh {
         this.speedZ *= -1;
         this.isgoingLeft = !this.isgoingLeft;
         this.isgoingRight = !this.isgoingRight;
-        this.material.color.set(this.invertedColor);
+        this.material.color.set(this.arena.getCurrentMap().invertedColor);
         setTimeout(() => {
-            this.material.color.set(this.initialColor);
+            this.material.color.set(this.arena.getCurrentMap().ballColor);
         }, 500);
     }
     increaseSpeed()
@@ -1749,9 +1772,9 @@ class Ball extends THREE.Mesh {
         const hasToDivide = Math.abs(this.speedZ) > 0;
         this.speedZ *= this.arena.thirdPlayer.speedBoost;
         this.speedX *= this.arena.thirdPlayer.speedBoost;
-        this.material.color.set(this.speedColor);
+        this.material.color.set(this.arena.getCurrentMap().slowedColor);
         setTimeout(() => {
-            this.material.color.set(this.initialColor);
+            this.material.color.set(this.arena.getCurrentMap().ballColor);
             if (hasToDivide)
             {
                 this.speedZ /= this.arena.thirdPlayer.speedBoost;
@@ -1821,6 +1844,28 @@ class OceanMap {
     constructor(arena) {
         this.arena = arena;
         this.scene = arena.scene;
+        this.waterGeometry = new THREE.PlaneGeometry(3000, 3000);
+        this.water = new Water(
+            this.waterGeometry,
+            {
+              textureWidth: 512,
+              textureHeight: 512,
+              waterNormals: new THREE.TextureLoader().load( '../../static/game/texturePlayground/water/water.jpg', function ( texture ) {
+          
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          
+              } ),
+              sunDirection: new THREE.Vector3(),
+              sunColor: 0xffffff,
+              waterColor: 0x001e0f,
+              distortionScale: 3.7,
+              opacity: 1.0,
+              fog: scene.fog !== undefined
+            }
+          );
+          
+          this.water.rotation.x = - Math.PI / 2;
+          this.water.position.y = -10;
         this.oceanCubeMapTexture = cubeLoader.load([
             '../../static/game/texturePlayground/skyMap/nx.jpg',
             '../../static/game/texturePlayground/skyMap/px.jpg',
@@ -1848,6 +1893,9 @@ class OceanMap {
         this.paddleDefaultColor = new THREE.Color(0xfd739d);
         this.paddleDashingColor = new THREE.Color(0xf4ff69);
         this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+        this.invertedColor = new THREE.Color(0x31FBF3);
+        this.slowedColor = new THREE.Color(0xffbb12);
+        this.ballColor = new THREE.Color(0x07386d);
 
         this.ballGlassMaterial = new THREE.MeshPhysicalMaterial({
             color: 0x07386d,
@@ -1875,7 +1923,6 @@ class OceanMap {
           });
 
 
-        this.water = water;
         this.mapActive = false;
         this.particleColor = new THREE.Color(0x89CFF0);
         this.modelName = '../../static/game/models/ship/scene.gltf';
@@ -1921,10 +1968,8 @@ class OceanMap {
         if (this.mapActive)
         {
             this.mapActive = false;
-            this.scene.remove(this.mountains);
-            this.scene.remove(this.water);
             this.arena.material = this.arena.defaultMaterial;
-            this.scene.remove(this.lightRight, this.lightLeft, this.ambientLight);
+            this.scene.remove(this.lightRight, this.lightLeft, this.ambientLight, this.mountains, this.water);
             this.arena.paddleLeft.paddleMesh.material = this.arena.paddleLeft.defaultMaterial;
             this.arena.paddleRight.paddleMesh.material = this.arena.paddleRight.defaultMaterial;
             this.arena.ball.material = this.arena.ball.defaultMaterial;
@@ -1972,6 +2017,9 @@ class SpaceMap {
         this.paddleDefaultColor = new THREE.Color(0xffffff);
         this.paddleDashingColor = new THREE.Color(0xf4ff69);
         this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+        this.invertedColor = new THREE.Color(0x31FBF3);
+        this.slowedColor = new THREE.Color(0xffbb12);
+        this.ballColor = new THREE.Color(0xffffff);
     }
     initMap()
     {
@@ -2051,6 +2099,9 @@ class SkyMap {
         this.paddleDefaultColor = new THREE.Color(0xff957b);
         this.paddleDashingColor = new THREE.Color(0xf4ff69);
         this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+        this.invertedColor = new THREE.Color(0x31FBF3);
+        this.slowedColor = new THREE.Color(0xffbb12);
+        this.ballColor = new THREE.Color(0xfd739d);
         this.reflectiveBallMaterial = new THREE.MeshStandardMaterial({
             color: 0xfd739d,
             roughness: 0.0,
@@ -2101,6 +2152,8 @@ class SkyMap {
         this.arena.paddleRight.particlesColor = this.particleColor;
         this.arena.ball.material = this.reflectiveBallMaterial;
         this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
+        this.arena.paddleLeft.particles.changeParticleNumber(this.arena.paddleLeft.particleNumber * 2);
+        this.arena.paddleRight.particles.changeParticleNumber(this.arena.paddleRight.particleNumber * 2);
         this.scene.add(this.lightRight, this.lightLeft);
     }
     updateMap()
@@ -2120,6 +2173,8 @@ class SkyMap {
             this.arena.paddleLeft.paddleMesh.material = this.arena.paddleLeft.defaultMaterial;
             this.arena.paddleRight.paddleMesh.material = this.arena.paddleRight.defaultMaterial;
             this.scene.remove(this.lightRight, this.lightLeft);
+            this.arena.paddleLeft.particles.changeParticleNumber(this.arena.paddleLeft.particleNumber);
+            this.arena.paddleRight.particles.changeParticleNumber(this.arena.paddleRight.particleNumber);
         }
     }
 }
@@ -2195,6 +2250,9 @@ class DragonMap {
         this.paddleDefaultColor = new THREE.Color(0xaaaaaa);
         this.paddleDashingColor = new THREE.Color(0xf4ff69);
         this.paddleSuperchargingColor = new THREE.Color(0xff6e6e);
+        this.invertedColor = new THREE.Color(0x31FBF3);
+        this.slowedColor = new THREE.Color(0xffbb12);
+        this.ballColor = new THREE.Color(0xF3BB0B);
 
         this.ballMaterial = new THREE.MeshStandardMaterial({
             color: 0xF3BB0B,
@@ -2219,7 +2277,6 @@ class DragonMap {
         this.lavaGround = new THREE.Mesh( groundGeometry, this.floorMaterial );
         this.lavaGround.rotation.x =  -Math.PI / 2;
         this.lavaGround.position.y -= 30;
-        this.ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
     }
     initMap()
     {
@@ -2633,6 +2690,8 @@ class Bot {
         this.ownPaddle = ownPaddle;
         this.enemyPaddle = enemyPaddle;
         this.isPlaying = false;
+        this.zValue = this.ownPaddle.paddleMesh.position.z; // rightpaddle : x positive to the right, z positive
+        this.enemyZValue = this.enemyPaddle.paddleMesh.position.z;
     }
     play()
     {
@@ -2650,36 +2709,67 @@ class Bot {
         if (this.ownPaddle.position.x > targetX)
             this.ownPaddle.position.x -= 0.016 * this.arena.length;
     }
+    calculateBallLandingPosition()
+    {
+        if (this.arena.ball.speedZ * this.ownPaddle.position.z < 0)
+            return;
+        let ballPosition = this.arena.ball.position.clone();
+        let ballSpeedX = this.arena.ball.speedX;
+        let loops = 0;
+        const ballSpeedZ = this.arena.ball.speedZ;
+        while (ballPosition.z <= this.zValue)
+        {
+            ballPosition.x += ballSpeedX;
+            ballPosition.z += ballSpeedZ;
+            if (ballPosition.x < -this.arena.width / 2 || ballPosition.x > this.arena.width / 2)
+            {
+                console.log("found wall collision");
+                ballSpeedX = -ballSpeedX;
+            }
+            loops++;
+        }
+        console.log("loops: ", loops);
+        this.ownPaddle.position.x = ballPosition.x;
+    }
 }
 
 class Game {
-    constructor(arena) {
-        this.leftScore = 0;
-        this.rightScore = 0;
+    constructor() {
+
+        // STUFF FOR ME, DONT TOUCH
         this.maxScore = 3;
-        this.isPlaying = false;
         this.isOver = false;
+        this.isPlaying = false;
+
+        // INPUT (arenaPage.js)
+        this.effectsOnly = false;
+        this.powerUpsActivated = true;
         this.thirdPlayer = true;
-        this.arena = arena;
+        this.hasToBeInitialized = false;
+        // next variables are all to be inputed in string format
+        this.user1; // User1 is the left paddle
+        this.user2; // User2 is the right paddle
+        this.user3; // User3 is the third player
+        this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
+
+        // OUTPUT
         this.loserPaddle;
         this.winnerPaddle;
+        this.leftScore = 0;
+        this.rightScore = 0;
     }
 }
 
 class GameState {
-    constructor(arena) {
-        this.arena = arena;
-        this.loading = true;
+    constructor() {
+        this.arena;
+        this.loading = false;
+        this.arenaCreated = false;
         this.inGame = false;
-        this.inLobby = false;
-        this.powerUps = false;
-        this.lowGraphics = false;
-        this.mediumGraphics = true;
-        this.highGraphics = false;
-        this.spaceMap = true;
-        this.oceanMap = false;
-        this.skyMap = false;
-        this.dragonMap = false;
+        this.inLobby = true;
+        this.graphicsNeedToChange = false;
+        this.graphics; // (options = 'low', 'medium', 'high') (loginPage.js)
+
     }
     switchLoadingToGame() {
         // Switches loading to false and inGame to true to account for the animation time
@@ -2690,6 +2780,14 @@ class GameState {
         this.loading = true;
         this.arena.loadingScreen.activateLoadingScreen();
     }
+    monitorGameState() {
+        if (this.loading && !this.arenaCreated)
+        {
+            this.arenaCreated = true;
+            const centerPosition = new THREE.Vector3(0, 0, 0);
+            this.arena = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, this);
+        }
+    }
 }
 
 class Particle {
@@ -2697,84 +2795,77 @@ class Particle {
         this.scene = scene;
         this.particleCount = particleCount;
         this.paddle = paddle;
-
+        this.isBall = isBall;
+        this.particlesColor = new THREE.Color(0xffffff);
+        this.offsetZ = left ? -2 : 2;
+        this.isActive = false;
+        
+        this.initializeParticles();
+    }
+    
+    initializeParticles() {
         // Create particle geometry
         this.geometry = new THREE.BufferGeometry();
         this.positions = new Float32Array(this.particleCount * 3);
         this.colors = new Float32Array(this.particleCount * 3);
+        
         // Add initial position and color for each particle
         for (let i = 0; i < this.particleCount; i++) {
             this.positions[i * 3] = 1;
             this.positions[i * 3 + 1] = 1;
             this.positions[i * 3 + 2] = 1;
-
+            
             this.colors[i * 3] = 1;
             this.colors[i * 3 + 1] = 1;
             this.colors[i * 3 + 2] = 1;
         }
-
+        
         this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
         this.geometry.setAttribute('color', new THREE.BufferAttribute(this.colors, 3));
-
+        
         // Create particle material
         this.material = new THREE.PointsMaterial({
             size: 0.1, // Adjust size as needed
             vertexColors: THREE.VertexColors // Enable vertex colors
         });
-
+        
         // Create particle system
         this.particleSystem = new THREE.Points(this.geometry, this.material);
         this.scene.add(this.particleSystem);
-        this.isBall = isBall;
-        this.particlesColor = new THREE.Color(0xffffff);
-        this.offsetZ;
-        if (!left)
-            this.offsetZ = 2;
-        else
-            this.offsetZ = -2;
-        this.isActive = false;
-        // Initialize particle velocities (for example, random initial velocities)
+        
+        // Initialize particle velocities
+        this.initializeVelocities();
+    }
+    
+    initializeVelocities() {
         this.velocities = [];
-        if (!isBall)
-        {
-            if (!left)
-            {
-                for (let i = 0; i < this.particleCount; i++) {
-                    let velocity = new THREE.Vector3(
-                        (Math.random() - 0.5) * 0.2,
-                        (Math.random() - 0.5) * 0.2,
-                        (Math.random()) * 1
-                    );
-                    this.velocities.push(velocity);
-                }
-            }
-            else
-            {
-                for (let i = 0; i < this.particleCount; i++) {
-                    let velocity = new THREE.Vector3(
-                        (Math.random() - 0.5) * 0.2,
-                        (Math.random() - 0.5) * 0.2,
-                        (Math.random()) * -1
-                    );
-                    this.velocities.push(velocity);
-                }
-            }
-        }
-        else
-        {
-            for (let i = 0; i < this.particleCount; i++) {
-                let velocity = new THREE.Vector3(
+        for (let i = 0; i < this.particleCount; i++) {
+            let velocity;
+            if (!this.isBall) {
+                velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.2,
+                    (Math.random() - 0.5) * 0.2,
+                    (Math.random()) * (this.offsetZ > 0 ? 1 : -1)
+                );
+            } else {
+                velocity = new THREE.Vector3(
                     (Math.random() - 0.5) * 6,
                     (Math.random() - 0.5) * 6,
                     (Math.random() - 0.5) * 0
                 );
-                this.velocities.push(velocity);
             }
+            this.velocities.push(velocity);
         }
     }
+    
+    changeParticleNumber(newNb) {
+        this.particleCount = newNb;
+        this.scene.remove(this.particleSystem);
+        this.initializeParticles();
+    }
+    
     explodeParticles(position, color) {
-        if (this.isActive)
-        {
+        if (this.isActive) {
             for (let i = 0; i < this.particleCount; i++) {
                 let index = i * 3;
                 this.positions[index] = position.x;
@@ -2788,31 +2879,27 @@ class Particle {
             this.geometry.attributes.color.needsUpdate = true;
         }
     }
+    
     updateParticles() {
-        if (this.isActive)
-        {
+        if (this.isActive) {
             for (let i = 0; i < this.particleCount; i++) {
                 let index = i * 3;
                 this.positions[index] += this.velocities[i].x;
                 this.positions[index + 1] += this.velocities[i].y;
                 this.positions[index + 2] += this.velocities[i].z;
-                if (!this.isBall)
-                {
-                    if (Math.abs(this.positions[index + 2]) - Math.abs(this.paddle.position.z) >= this.paddle.arena.length)
-                    {
+                if (!this.isBall) {
+                    if (Math.abs(this.positions[index + 2]) - Math.abs(this.paddle.position.z) >= this.paddle.arena.length) {
                         this.positions[index + 2] = this.paddle.position.z + this.offsetZ;
                         this.positions[index + 1] = this.paddle.position.y;
                         this.positions[index] = this.paddle.position.x;
-                        if (this.paddle.arena.skyMap.mapActive)
-                        {
+                        if (this.paddle.arena.skyMap.mapActive) {
                             const result = Math.random();
                             if (result < 0.5)
                                 this.positions[index] = this.paddle.position.x + 2.5;
                             else
                                 this.positions[index] = this.paddle.position.x - 2.5;
                         }
-                        if (this.paddle.arena.dragonMap.mapActive)
-                        {
+                        if (this.paddle.arena.dragonMap.mapActive) {
                             this.positions[index + 1] -= 1.5;
                             this.positions[index + 2] *= 1.17;
                         }
@@ -2875,36 +2962,7 @@ function swapToFullScreen()
         .start();
 }
 
-function monitorScreen()
-{
-    if (keyDown['o'])
-        swapToSplitScreen();
-}
-
-const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-
-
-const centerPosition = new THREE.Vector3(0, 0, 0);
-const arena1 = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, bloomPass);
-scene.add(arena1, arena1.paddleRight, arena1.paddleLeft, arena1.ball, arena1.thirdPlayer);
-arena1.idleCameraAnimation();
-
-let renderPass1 = new RenderPass(scene, camera);
-const composer1 = new EffectComposer( renderer );
-let glitchLeft = new GlitchPass(64);
-glitchLeft.renderToScreen = true;
-composer1.addPass(renderPass1);
-composer1.addPass(glitchLeft);
-
-let renderPass2 = new RenderPass(scene, cameraLeft);
-const composer2 = new EffectComposer( renderer2 );
-let glitchRight = new GlitchPass(64);
-glitchRight.renderToScreen = true;
-composer2.addPass(renderPass2);
-composer2.addPass(glitchRight);
-
-glitchRight.enabled = false;
-glitchLeft.enabled = false;
+const gameState = new GameState();
 
 function glitch(glitchEffect)
 {
@@ -2916,70 +2974,46 @@ function glitch(glitchEffect)
     }, 500);
 }
 
-// // Bloom Pass
-// arena1.bloomPass.threshold = 0.5;
-// arena1.bloomPass.strength = 1.0;
-// arena1.bloomPass.radius = 0.5;
-composer1.addPass(arena1.bloomPass);
-composer2.addPass(arena1.bloomPass);
-
-
-composer1.addPass(arena1.horizontalBlur);
-composer1.addPass(arena1.verticalBlur);
-composer2.addPass(arena1.horizontalBlur);
-composer2.addPass(arena1.verticalBlur);
-
-// after image pass
-let afterimagePass = new AfterimagePass();
-afterimagePass.uniforms.damp.value = 0.90;
-// composer1.addPass(afterimagePass);
-// loadingScreen.composer.addPass(afterimagePass);
-loadingScreen.composer.addPass(arena1.bloomPass);
-
-// // dotScreen
-// const effect1 = new ShaderPass( DotScreenShader );
-// 				effect1.uniforms[ 'scale' ].value = 256;
-// 				composer1.addPass( effect1 );
-
-let fpsInterval = 1000 / 75; // 120 FPS
-let stats = new Stats(); // Assuming you're using Three.js stats for performance monitoring
+let fpsInterval = 1000 / 75; // 75 FPS
+let stats = new Stats();
 let lastUpdateTime = performance.now();
 
 function animate()
 {
     requestAnimationFrame( animate );
-    // controls.update();
-    // controls.enabled = true;
     updateFpsCounter();
-    if (!gameStarted)
-        return;
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
     // if (elapsed < fpsInterval) return; // Skip if too big FPS
     // else
     {
+        gameState.monitorGameState();
+        if (gameState.inLobby)
+            return ;
         TWEEN.update();
-        if (arena1.gameState.inGame)
+        if (gameState.inGame)
         {
-            arena1.monitorArena();
-            arena1.thirdPlayer.monitorThirdPlayerMovement();
-            arena1.thirdPlayer.monitorProjectilesMovement();
-            // if (arena1.thirdPlayer.isPlaying)
-            //     controls.enabled = false;
-            composer1.render();
-            composer2.render();
-            // console.log("camera.rotation.y = ", camera.rotation.y);
+            gameState.arena.monitorArena();
+            gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
+            gameState.arena.thirdPlayer.monitorProjectilesMovement();
+            gameState.arena.composer1.render();
+            if (gameState.arena.isSplitScreen)
+                gameState.arena.composer2.render();
         }
-        else if (arena1.gameState.loading)
+        else if (gameState.loading)
         {
             if (keyDown['g'])
-                arena1.gameState.switchLoadingToGame();
+                gameState.switchLoadingToGame();
             loadingScreen.animate();
+            if (loadingScreen.loadingCompleted)
+                gameState.arena.monitorArena();
         }
     }
 
-    stats.update(); // Update Three.js stats
+    stats.update();
     lastUpdateTime = now - (elapsed % fpsInterval);
     stats.time = performance.now();
 }
 animate();
+
+export {gameState};
