@@ -155,6 +155,7 @@ class LoadingScreen {
         this.cameraCloseZ = 4;
         this.cameraFarZ = 45;
         this.camera.position.z = this.cameraInitialZ;
+        this.currentGraphics = 'medium';
 
         const loader = new GLTFLoader();
         loader.load('../../static/game/models/spaceShip/scene.gltf', (gltf) => {
@@ -171,6 +172,9 @@ class LoadingScreen {
         this.spaceShipGoingDown = false;
         this.isAnimatingSpaceship = false;
         this.ico2 = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 20), shaderBallMaterial);
+        this.lowGraphicsGeometry = new THREE.IcosahedronGeometry(0.6, 1);
+        this.highGraphicsGeometry = new THREE.IcosahedronGeometry(0.6, 20);
+        this.mediumGraphicsGeometry = new THREE.IcosahedronGeometry(0.6, 20);
         this.ico2.position.set(0, 0, 0);
         this.xSpeedInitial = 0.005;
         this.ySpeedInitial = 0.015;
@@ -263,7 +267,8 @@ class LoadingScreen {
                 .to({ z: this.cameraFarZ }, duration / 2)
                 .easing(TWEEN.Easing.Linear.None)
                 .onStart(() => {
-                    this.composer.addPass(this.afterimagePass);
+                    if (this.currentGraphics === 'mid')
+                        this.composer.addPass(this.afterimagePass);
                     this.starSpeed = 1;
                 })
                 .onComplete(() => {
@@ -350,6 +355,27 @@ class LoadingScreen {
         this.spaceShip.position.set(0, -1, 2); // Set the position of the spaceship
         this.isAnimatingSpaceship = false;
         this.loadingCompleted = false;
+    }
+    changeGraphics(graphics)
+    {
+        if (graphics === 'low' && this.currentGraphics != 'low')
+        {
+            this.bloomPass.strength = 0.0;
+            this.ico2.geometry = this.lowGraphicsGeometry;
+            this.currentGraphics = 'low';
+        }
+        if (graphics === 'medium' && this.currentGraphics != 'medium')
+        {
+            this.bloomPass.strength = 1.0;
+            this.ico2.geometry = this.mediumGraphicsGeometry;
+            this.currentGraphics = 'medium';
+        }
+        if (graphics === 'high' && this.currentGraphics != 'high')
+            {
+                this.bloomPass.strength = 1.0;
+                this.ico2.geometry = this.highGraphicsGeometry;
+                this.currentGraphics = 'high';
+            }
     }
 }
 
@@ -3215,10 +3241,11 @@ class GameState {
             this.arena = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, this);
         }
         if (this.graphicsNeedToChange)
-            this.changeGraphics();
+            this.changeGraphics(this.graphics);
     }
     changeGraphics() {
         this.graphicsNeedToChange = false;
+        loadingScreen.changeGraphics(this.graphics);
         if (this.arenaCreated)
         {
             this.arena.getCurrentMap().changeGraphics(this.graphics);
