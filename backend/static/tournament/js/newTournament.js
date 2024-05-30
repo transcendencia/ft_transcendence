@@ -1,5 +1,5 @@
 import { createGame } from "./gameData.js";
-import { getTranslatedText } from "../../html/js/loginPage.js";
+import { getTranslatedText } from "../../html/js/translatePages.js";
 
 //affichage info
 
@@ -225,7 +225,6 @@ export function addEventListenerToTilesTournament() {
             position: 0,
             round: 1,
           });
-          console.log("player add");
       }
   }
 

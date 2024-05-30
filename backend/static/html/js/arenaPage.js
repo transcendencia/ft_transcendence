@@ -1,5 +1,6 @@
-import { getTranslatedText } from "./loginPage.js";
+import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
+import { togglePlanet } from "./enterPlanet.js";
 
 const userlist = document.querySelector(".userlistBackground");
 const plusButtons = document.querySelectorAll(".plusPlayer");
@@ -352,7 +353,6 @@ function addUserToMatch(playerId, username, thirdPlayer) {
           username: username,
           thirdPlayer: thirdPlayer,
         });
-        console.log("player add");
     }
 }
 
@@ -367,16 +367,19 @@ function removeUserFromMatch(playerId) {
   }
 }
 
-export let userList;
 export const userTiles = [];  // Array to store the user tiles
 
-export function RenderAllUsers(users) {
+export function RenderAllUsersInList(users) {
     const userListBackground = document.getElementById('userlistArenaPage');
+    
+    // clean the list before addinmg all the lines
+    // userListBackground.innerHTML = '';
+    
     userTiles.push({
         user: null,
         HTMLelement : document.getElementById("botUserTile"),
     });
-
+    
     users.forEach(user => {
         if (user.is_host)
             return;
@@ -408,8 +411,12 @@ import { addEventListenerToTilesTournament } from "../../tournament/js/newTourna
 export const userTilesTournament = [];  // Array to store the user tiles
 
 
-function RenderAllUsersTournament(users) {
-    const userListBackground = document.getElementById('userlistTournamentPage');
+export function RenderAllUsersTournament(users) {
+    let userListBackground = document.getElementById('userlistTournamentPage');
+
+    // clean the list before addinmg all the lines
+    // userListBackground.innerHTML = '';
+
     userTilesTournament.push({
         user: null,
         HTMLelement : document.getElementById("botUserTournamentTile"),
@@ -442,7 +449,7 @@ function RenderAllUsersTournament(users) {
     addEventListenerToTilesTournament();
   }
 
-  function RenderUserMatch(user) {
+  export function RenderUserMatch(user) {
     const usernameElement = document.getElementById('player1MatchUsername');
     usernameElement.textContent = user.username;
     const pictureElement = document.getElementById('player1MatchPicture');
@@ -452,60 +459,16 @@ function RenderAllUsersTournament(users) {
 
   import { addUserToTournament } from "../../tournament/js/newTournament.js";
 
-  function RenderUserTournament(user) {
+  export function RenderUserTournament(user) {
     const usernameElement = document.getElementById('player1TournamentUsername');
     usernameElement.textContent = user.username;
     const pictureElement = document.getElementById('player1TournamentPicture');
     pictureElement.src = user.profile_picture;
-    console.log("id: ", user, " username: ", user.username);
     addUserToTournament(user.id, user.username);
   }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_user_list/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        userList = data;
-        RenderAllUsers(data);
-        RenderAllUsersTournament(data);
-    })
-    .catch(error => console.error('Error:', error));
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_profile_info/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        RenderUserMatch(data.profile_info);
-        RenderUserTournament(data.profile_info);
-    })
-    .catch(error => console.error('Error:', error));
-});
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     const token = localStorage.getItem('host_auth_token');
-//     fetch('get_game_list/', {
-//         method: 'GET',
-//         headers: {
-//             'Authorization': `Token ${token}`,
-//         }
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         console.log(data);
-//     })
-//     .catch(error => console.error('Error:', error));
-// });
+const backButtonArenaPage = document.querySelector(".planetBackButton");
+backButtonArenaPage.addEventListener('click', () => {
+    console.log(".")
+    togglePlanet();
+  });

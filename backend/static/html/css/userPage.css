@@ -1,4 +1,26 @@
+.userPagesContainer {
+    /* border: 1px solid wheat; */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 78%;
+    overflow: hidden;
+    z-index: 0;
+}
+
 .userPage {
+    /* border: 2px solid wheat; */
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row;
+    height: 90%;
+    width: 101.5%;
+}
+
+.exploreUserPage {
     /* border: 2px solid white; */
     display: flex;
     align-items: center;
@@ -6,6 +28,24 @@
     flex-direction: row;
     height: 90%;
     width: 100%;
+}
+
+@keyframes slideUserPage {
+    from {
+        transform: translateX(0); /* Start position */
+    }
+    to {
+        transform: translateX(-100%); /* Slide to the right */
+    }
+}
+
+@keyframes slideHostPage {
+    to {
+        transform: translateX(0); /* Start position */
+    }
+    from {
+        transform: translateX(-100%); /* Slide to the right */
+    }
 }
 
 .statsBlock {
@@ -259,10 +299,26 @@
     margin-left: 10px;
 }
 
+.pencilImg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    width: 60px;
+    background-color: #5d75ff47;
+    border: 2px solid #3777ff;
+    border-radius: 5px;
+    cursor: pointer;
+}
 .pencilImg img {
     height: 40px;
     width: 40px;
 }
+
+.pencilImg:hover {
+    background-color: #000f61b2;
+}
+
 
 .loupeImg {
     display: flex;
@@ -270,12 +326,20 @@
     justify-content: center;
     height: 100%;
     width: 25%;
+    background-color: #5d75ff47;
+    border: 2px solid #3777ff;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .loupeImg img {
     height: auto;
     width: 50px;
     transform: rotate(-30deg);
+}
+
+.loupeImg:hover {
+    background-color: #000f61b2;
 }
 
 .imgFrame img {
@@ -291,6 +355,11 @@
     flex-direction: column;
     height: 50%;
     width: 95%;
+}
+
+.userBackButton:hover {
+    background-color: #ff373773;
+    color: #ff37374d;
 }
 
 .friendSearchBar {
