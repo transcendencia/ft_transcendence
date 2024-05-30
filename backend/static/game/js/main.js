@@ -5,7 +5,6 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
@@ -13,7 +12,6 @@ import { DotScreenShader } from 'three/addons/shaders/DotScreenShader.js';
 import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import { Water } from 'three/addons/objects/Water.js';
-import { Sky } from 'three/addons/objects/Sky.js';
 import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
@@ -69,31 +67,7 @@ renderer2.setPixelRatio(window.devicePixelRatio);
 renderer2.setSize(window.innerWidth / 2, window.innerHeight); // Set width to half of window width
 renderer2.render(scene, cameraLeft);
 
-// TORUS THINGY (VERY IOMPORTNATNT)
-// const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
-// const material = new THREE.MeshStandardMaterial({color:0xFFFFFF, wireframe:true});
-// const torus = new THREE.Mesh(geometry, material);
-// scene.add(torus);
-
 let cubeLoader = new THREE.CubeTextureLoader();
-let cubeMapTexture = cubeLoader.load([
-  '../../static/game/texturePlayground/skyMap/nx.jpg',
-  '../../static/game/texturePlayground/skyMap/px.jpg',
-    '../../static/game/texturePlayground/skyMap/py.jpg',
-    '../../static/game/texturePlayground/skyMap/ny.jpg',
-    '../../static/game/texturePlayground/skyMap/nz.jpg',
-    '../../static/game/texturePlayground/skyMap/pz.jpg'
-]);
-
-// scene.background = cubeMapTexture;
-
-let water;
-
-// const waterGeometry = new THREE.PlaneGeometry( 3000, 3000 );
-
-
-
-// scene.add( water );
 
 const shaderBallMaterial = new THREE.MeshStandardMaterial({
     onBeforeCompile: (shader) => {
@@ -268,7 +242,7 @@ class LoadingScreen {
                 .to({ z: this.cameraFarZ }, duration / 2)
                 .easing(TWEEN.Easing.Linear.None)
                 .onStart(() => {
-                    if (this.currentGraphics === 'mid')
+                    if (this.currentGraphics === 'high')
                         this.composer.addPass(this.afterimagePass);
                     this.starSpeed = 1;
                 })
@@ -342,7 +316,8 @@ class LoadingScreen {
     activateLoadingScreen()
     {
         this.isAnimatingCamera = true;
-        this.composer.removePass(this.afterimagePass);
+        if (this.currentGraphics === 'high')
+            this.composer.removePass(this.afterimagePass);
         document.getElementById('c3').style.display = 'inline';
         this.cameraInitialZ = 4;
         this.camera.position.z = this.cameraInitialZ;
@@ -688,6 +663,8 @@ class Arena extends THREE.Mesh {
             scorePoints.item(this.game.leftScore).style.borderColor = "rgb(171, 31, 0)";
             scorePoints.item(this.game.leftScore).style.backgroundColor = "#ab1f0051";
             this.game.leftScore++;
+            this.game.user1.pointsScored++;
+            this.game.user2.pointsTaken++;
             this.game.winnerPaddle = this.paddleRight;
             this.game.loserPaddle = this.paddleLeft;
         }
@@ -695,6 +672,8 @@ class Arena extends THREE.Mesh {
             scorePoints.item(this.game.rightScore + 3).style.borderColor = "rgb(171, 31, 0)";
             scorePoints.item(this.game.rightScore + 3).style.backgroundColor = "#ab1f0051";
             this.game.rightScore++;
+            this.game.user2.pointsScored++;
+            this.game.user1.pointsTaken++;
             this.game.winnerPaddle = this.paddleLeft;
             this.game.loserPaddle = this.paddleRight;
         }
@@ -851,11 +830,13 @@ class Arena extends THREE.Mesh {
         if (this.game.rightScore >= this.game.maxScore && !this.isBeingReset)
         {
             this.isBeingReset = true;
+            this.game.user2.isWinner = true;
             this.resetPositions(this.paddleLeft, this.paddleRight, false, this.glitchLeft);
         }
         else if (this.game.leftScore >= this.game.maxScore && !this.isBeingReset)
         {
             this.isBeingReset = true;
+            this.game.user1.isWinner = true;
             this.resetPositions(this.paddleRight, this.paddleLeft, true, this.glitchRight);
         }
     }
@@ -1062,6 +1043,7 @@ class Arena extends THREE.Mesh {
             this.ball.particles.isActive = false;
             this.idleCameraAnimation();
             this.resetUI();
+            this.game.sendDataToBack();
             // endGame();
         });
         let targetLight = loserPaddle.defaultLight;
@@ -1375,6 +1357,10 @@ class Paddle extends THREE.Group {
         let targetX;
         if (!this.arena.game.powerUpsActivated)
             return ;
+        if (this.left)
+            this.arena.game.user1.nbDashes++;
+        else
+            this.arena.game.user2.nbDashes++;
         this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDashingColor);
         targetX = this.position.x + range * this.moveSpeed;
         if (!isLeft) {
@@ -1597,6 +1583,7 @@ class Ball extends THREE.Mesh {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && Math.abs(this.speedZ) > 0)
         {
             paddle.particles.explodeParticles(paddle.position, paddle.particlesColor);
+            this.arena.game.user1.nbBounces++;
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
@@ -1623,6 +1610,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight && this.speedZ > 0)
         {
+            this.arena.game.user2.nbBounces++;
             paddle.particles.explodeParticles(paddle.position, paddle.particlesColor);
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
@@ -1708,6 +1696,7 @@ class Ball extends THREE.Mesh {
                         else
                             paddle.model.rotation.z = 0;
                     }
+                    this.arena.game.user2.nbPowerUsed++;
                 })
                 .start();
                 paddle.isPowered = false;
@@ -1777,6 +1766,7 @@ class Ball extends THREE.Mesh {
                         else
                             paddle.model.rotation.z = 0;
                     }
+                    this.arena.game.user1.nbPowerUsed++;
                 })
                 .start();
                 paddle.isPowered = false;
@@ -3187,6 +3177,32 @@ class Bot {
     }
 }
 
+class UserStats {
+    constructor(isThirdPlayer) {
+        // done and working
+        this.isThirdPlayer = isThirdPlayer; // boolean done
+        this.isWinner = false; // boolean done
+        this.pointsScored = 0; // int done
+        this.pointsTaken = 0; // int done
+        this.nbDashes = 0; // int done
+        this.nbPowerUsed = 0; // int done
+        this.nbBounces = 0; // int done
+        // TODO
+        this.username; //string
+        this.isBot = false; // boolean
+    }
+    reset()
+    {
+        this.isBot = false; // boolean
+        this.isWinner = false; // boolean
+        this.pointsScored = 0; // int
+        this.pointsTaken = 0; // int
+        this.nbDashes = 0; // int
+        this.nbPowerUsed = 0; // int
+        this.nbBounces = 0; // int
+    }
+}
+
 class Game {
     constructor() {
 
@@ -3201,16 +3217,43 @@ class Game {
         this.thirdPlayer = true;
         this.hasToBeInitialized = false;
         // next variables are all to be inputed in string format
-        this.user1; // User1 is the left paddle
-        this.user2; // User2 is the right paddle
-        this.user3; // User3 is the third player
+        this.user1 = new UserStats(false); // User1 is the left paddle
+        this.user2 = new UserStats(false); // User2 is the right paddle
+        this.user3 = new UserStats(true); // User3 is the third player
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
 
         // OUTPUT
         this.loserPaddle;
         this.winnerPaddle;
+        this.gameMode;
+        if (!this.powerUpsActivated)
+            this.gameMode = 'powerless';
+        else if (this.effectsOnly)
+            this.gameMode = 'effectsOnly';
+        else
+            this.gameMode = 'classic';
+        // for each paddle
+        this.paddleBounces;
+        this.nbPowerUsed;
+        this.nbDash;
         this.leftScore = 0;
         this.rightScore = 0;
+    }
+    sendDataToBack()
+    {
+        console.log("game finished, data to send to back:");
+        console.log("user1 = ", this.user1);
+        console.log("user2 = ", this.user2);
+        console.log("user3 = ", this.user3);
+        console.log("map = ", this.map);
+        console.log("game mode = ", this.gameMode);
+        this.resetUsers();
+    }
+    resetUsers()
+    {
+        this.user1.reset();
+        this.user2.reset();
+        this.user3.reset();
     }
 }
 
