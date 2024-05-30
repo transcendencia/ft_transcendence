@@ -1,5 +1,6 @@
 import { THREE, spaceShip, camera, spaceShipPointLight, landedOnPlanet, lobbyStart } from "./main.js";
 import {planetInRange} from "./planetIntersection.js";
+import { lobbyVisuals } from "./main.js";
 
 let leftArrowPressed = false;
 let rightArrowPressed = false;
@@ -23,11 +24,17 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'w')
         wKeyPressed = true;
     if (event.key === 'a')
-        aKeyPressed = true;
+        {
+            // lobbyVisuals.removeAfterPass();
+            aKeyPressed = true;
+        }
     if (event.key === 's')
         sKeyPressed = true;    
     if (event.key === 'd')
-        dKeyPressed = true;
+        {
+            // lobbyVisuals.removeAfterPass();
+            dKeyPressed = true;
+        }
     aKeyIsPressed = true;
 });
 
@@ -83,6 +90,7 @@ function startBoost() {
         boostedMoveSpeed = moveSpeed * 5;
         boostStartTime = Date.now();
         boost = true;
+        lobbyVisuals.afterImagePass.uniforms.damp.value = 0.95;
         smoothBoost();
     }
 }
@@ -111,6 +119,7 @@ function smoothBoost() {
 function endBoost() {
     moveSpeed = originalMoveSpeed;
     boost = false;
+    lobbyVisuals.afterImagePass.uniforms.damp.value = 0;
 }
 
 function spaceShipMovement() {
@@ -129,6 +138,7 @@ function spaceShipMovement() {
             rotateSpaceShipAnim(0);
     }
     if (leftArrowPressed || aKeyPressed) {
+        // lobbyVisuals.afterImagePass.uniforms.damp.value = 0.5;
         if (downArrowPressed || sKeyPressed) {
             spaceShip.rotation.y -= 0.05;
         }
@@ -136,7 +146,8 @@ function spaceShipMovement() {
             spaceShip.rotation.y += 0.05;
         rotateSpaceShipAnim(-0.80);
     }
-    if (rightArrowPressed || dKeyPressed) {
+    else if (rightArrowPressed || dKeyPressed) {
+        // lobbyVisuals.afterImagePass.uniforms.damp.value = 0.5;
         if (downArrowPressed || sKeyPressed)
             spaceShip.rotation.y += 0.05;
         else 
@@ -144,6 +155,8 @@ function spaceShipMovement() {
         rotateSpaceShipAnim(0.80);
 
     }
+    // else
+    //     lobbyVisuals.afterImagePass.uniforms.damp.value = 0.92;
     spaceShipPointLight.position.copy(spaceShip.position);
 }
 
