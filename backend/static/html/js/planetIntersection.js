@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {currentLanguage, getTranslatedText } from './loginPage.js';
+import {getTranslatedText } from './translatePages.js';
 import { spaceShip, camera, cameraDirection, scene, outlinePass } from "./main.js";
 
 const planetInfoLines = document.getElementsByClassName('planetInfoText');

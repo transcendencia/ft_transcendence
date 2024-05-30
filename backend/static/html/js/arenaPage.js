@@ -1,4 +1,4 @@
-import { getTranslatedText } from "./loginPage.js";
+import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 
 const userlist = document.querySelector(".userlistBackground");
@@ -327,7 +327,6 @@ function addEventListenerToTiles() {
             });
         }
     });
-    
     const textCont = tile.querySelector(".textContainer");
     textCont.addEventListener('mouseenter', function () {
         if (plusClicked && !profileAdded[i])
@@ -340,10 +339,9 @@ function addEventListenerToTiles() {
     });
 }
 
-export let userList;
 export const userTiles = [];  // Array to store the user tiles
 
-export function RenderAllUsers(users) {
+export function RenderAllUsersInList(users) {
     const userListBackground = document.getElementById('userlistArenaPage');
     userTiles.push(document.getElementById("botUserTile"));
 
@@ -368,19 +366,3 @@ export function RenderAllUsers(users) {
     });
     addEventListenerToTiles();
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_user_list/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        userList = data;
-        RenderAllUsers(data);
-    })
-    .catch(error => console.error('Error:', error));
-});

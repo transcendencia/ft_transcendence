@@ -1,4 +1,4 @@
-import { userList } from './arenaPage.js';
+import { userList } from './loginPage.js';
 const statsButtons = document.querySelectorAll('.statButton');
 const statsScreen = document.querySelector('.statsBlock');
 const colorClicked = '#5d75ff47';
@@ -81,7 +81,7 @@ createMatchBlock('Arena', '02-11-2000', 'Powerless', 'Doggodito', '../../../stat
 
 // Sample user data
 //generate more random users
-  
+  const userPagesCont= document.querySelector(".userPagesContainer");
   // Function to render user tiles based on search query
 function RenderUsersSearched(query) {
     const userListBackground = document.getElementById('userlistUserPage');
@@ -104,7 +104,9 @@ function RenderUsersSearched(query) {
       const loupeContainer = document.createElement('div');
       loupeContainer.classList.add('loupeImg');
       loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
-  
+        loupeContainer.addEventListener('click', () => {
+            userPagesCont.style.animation = "slideUserPage 1s forwards";    
+        });
       userTile.appendChild(imgContainer);
       userTile.appendChild(textContainer);
       userTile.appendChild(loupeContainer);
