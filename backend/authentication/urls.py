@@ -27,5 +27,7 @@ urlpatterns = [
 
     #tounament.py
     path('tournament/', tournament.result, name='result'),
-    path('add_player/', tournament.add_member, name='add_member'),
+    path('addPlayer/', tournament.add_member, name='add_member'),
+    path('game_list/', tournament.game_list, name='game_list'),
+    path('add_game/', tournament.add_game, name='add_game'),
 ]

@@ -40,6 +40,7 @@ def login_page(request):
           user.language = new_language
       user.last_login_date = timezone.now()
       user.status = 'online'
+      user.is_host = True
       user.save()
       return  Response({'status': "succes", 'token': token.key, 'language': user.language, 'message': "You are now logged in!\nPress [E] to enter the galaxy"})
     else:
@@ -62,7 +63,7 @@ def signup(request):
     user.set_password(user_data['password'])
     user.save()
     print(user.username, user.id)
-    return Response({'status': "success", "message": "User created"}, status=status.HTTP_200_OK)
+    return Response({'status': "success", "message": "User created You may now log in"}, status=status.HTTP_200_OK)
   first_error = next(iter(serializer.errors.values()))[0]
   print(first_error)
   return Response({'status': "failure", "message": first_error})
