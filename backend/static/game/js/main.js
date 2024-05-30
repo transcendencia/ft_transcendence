@@ -17,6 +17,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
+import { lobbyVisuals } from '../../html/js/main.js';
 // import { gameStarted } from '../../html/js/arenaPage.js';
 // import { endGame } from '../../html/js/arenaPage.js';
 
@@ -3220,7 +3221,7 @@ class GameState {
         this.arenaCreated = false;
         this.inGame = false;
         this.inLobby = true;
-        this.graphicsNeedToChange = false;
+        this.graphicsNeedToChange = false; 
         this.graphics = 'medium'; // (options = 'low', 'medium', 'high') (loginPage.js)
 
     }
@@ -3246,6 +3247,7 @@ class GameState {
     changeGraphics() {
         this.graphicsNeedToChange = false;
         loadingScreen.changeGraphics(this.graphics);
+        lobbyVisuals.changeGraphics(this.graphics);
         if (this.arenaCreated)
         {
             this.arena.getCurrentMap().changeGraphics(this.graphics);
