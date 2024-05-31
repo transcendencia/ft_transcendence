@@ -19,15 +19,6 @@ import { mixer1, mixer2, mixer3} from './objs.js';
 import { userList } from './loginPage.js';
 
 let cubeLoader = new THREE.CubeTextureLoader();
-let spaceCubeMapTexture = cubeLoader.load([
-    '../../static/game/texturePlayground/spaceMap/nx.png',
-    '../../static/game/texturePlayground/spaceMap/px.png',
-      '../../static/game/texturePlayground/spaceMap/py.png',
-      '../../static/game/texturePlayground/spaceMap/ny.png',
-      '../../static/game/texturePlayground/spaceMap/nz.png',
-      '../../static/game/texturePlayground/spaceMap/pz.png'
-  ]);
-
 export let lobbyStart = false;
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c4')
@@ -51,6 +42,24 @@ class LobbyVisuals
         this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
         this.afterImagePass = new AfterimagePass();
         this.afterImagePass.uniforms.damp.value = 0;
+
+        this.spaceCubeMapTexture = cubeLoader.load([
+            '../../static/game/texturePlayground/spaceMap/nx.png',
+            '../../static/game/texturePlayground/spaceMap/px.png',
+              '../../static/game/texturePlayground/spaceMap/py.png',
+              '../../static/game/texturePlayground/spaceMap/ny.png',
+              '../../static/game/texturePlayground/spaceMap/nz.png',
+              '../../static/game/texturePlayground/spaceMap/pz.png'
+          ]);
+
+        this.boostCubeMapTexture = cubeLoader.load([
+            '../../static/game/texturePlayground/boostSpaceMap/nx.png',
+            '../../static/game/texturePlayground/boostSpaceMap/px.png',
+              '../../static/game/texturePlayground/boostSpaceMap/py.png',
+              '../../static/game/texturePlayground/boostSpaceMap/ny.png',
+              '../../static/game/texturePlayground/boostSpaceMap/nz.png',
+              '../../static/game/texturePlayground/boostSpaceMap/pz.png'
+          ]);
 
         this.bloomPass.threshold = 0.1;
         this.bloomPass.strength = 0.2;
@@ -105,7 +114,7 @@ class LobbyVisuals
             this.camera.far = 2000;
             this.renderer.setPixelRatio(1);
             this.renderer.shadowMap.enabled = true;
-            this.scene.background = spaceCubeMapTexture;
+            this.scene.background = this.spaceCubeMapTexture;
             this.currentGraphics = 'medium';
         }
         else if (graphics === 'high' && this.currentGraphics != 'high')
@@ -117,10 +126,43 @@ class LobbyVisuals
             this.addStars(1200);
             this.renderer.setPixelRatio(1);
             this.renderer.shadowMap.enabled = true;
-            this.scene.background = spaceCubeMapTexture;
+            this.scene.background = this.spaceCubeMapTexture;
             this.currentGraphics = 'high';
         }
         this.camera.updateProjectionMatrix();
+    }
+    activateSpeedEffect()
+    {
+        //tween animation to augment camera fov
+        new TWEEN.Tween(this.camera)
+        .to({fov: 75}, 100)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            this.camera.updateProjectionMatrix();
+        })
+        .onComplete(() => {
+            if (this.currentGraphics === 'high')
+            {
+                this.afterImagePass.uniforms.damp.value = 0.95;
+                this.scene.background = this.boostCubeMapTexture;
+            }
+        })
+        .start();
+    }
+    deactivateSpeedEffect()
+    {
+        new TWEEN.Tween(this.camera)
+        .to({fov: 60}, 500)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            this.camera.updateProjectionMatrix();
+        })
+        .start();
+        if (this.currentGraphics != 'high')
+            return;
+        this.afterImagePass.uniforms.damp.value = 0;
+        this.scene.background = this.spaceCubeMapTexture;
+    
     }
 }
 

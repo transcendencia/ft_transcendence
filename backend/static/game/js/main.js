@@ -3189,6 +3189,8 @@ class UserStats {
         this.nbBounces = 0; // int done
         // TODO
         this.username; //string
+        this.id; // string
+        this.profilePicture; // string
         this.isBot = false; // boolean
     }
     reset()
@@ -3200,6 +3202,12 @@ class UserStats {
         this.nbDashes = 0; // int
         this.nbPowerUsed = 0; // int
         this.nbBounces = 0; // int
+    }
+    setUser(username, id, profilePicture)
+    {
+        this.username = username;
+        this.id = id;
+        this.profilePicture = profilePicture;
     }
 }
 
