@@ -22,17 +22,23 @@ class User(AbstractUser):
   profile_picture = models.ImageField(default='default.png')
   bio = models.TextField(max_length=28, null=True, blank=True)
   is_host = models.BooleanField(default=False)
-  friends = models.ManyToManyField("self", blank = True)
+  friends = models.ManyToManyField("self", through="FriendRequest", symmetrical=False, related_name='related_friends', blank=True)
 
   def get_profile_info(self):
     return {'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url}
 
-#histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)
 
 class FriendRequest(models.Model):
   sender = models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
   receiver = models.ForeignKey(User, related_name="receiver", on_delete=models.CASCADE)
-  is_active = models.BooleanField(default=False)
+  status_choices = [
+    ('accepted', 'accepted'),
+    ('pending', 'pending'),
+    ('declined', 'declined'),
+  ]
+  status = models.CharField(max_length=10, choices=status_choices, default='pending')
+
+#histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)
 
 class Member(models.Model):
   username = models.CharField(max_length=255)

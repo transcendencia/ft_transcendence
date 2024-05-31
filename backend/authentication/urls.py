@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import authentication, tournament, updateUserInfo
+from .views import authentication, tournament, updateUserInfo, friendship
 
 urlpatterns = [
 	path('', authentication.index, name='index'),
@@ -19,6 +19,13 @@ urlpatterns = [
     path('get_user_list/', updateUserInfo.get_user_list, name="get_user_list"),
     
     #friendship.py
+    path('send_friendrequest/send_friend_request/', friendship.send_friend_request, name="send_friend_request"),
+    path('render_request/accept_friend_request/', friendship.accept_friend_request, name="accept_friend_request"),
+    path('render_request/reject_friend_request/', friendship.reject_friend_request, name="reject_friend_request"),
+    path('send_friendrequest/', friendship.send_friendrequest, name="send_friendrequest"),
+    path('render_request/', friendship.render_request, name="render_request"),
+    path('render_request/return_request/', friendship.return_request, name="return_request"),
+    path('reject_friend_request/', friendship.reject_friend_request, name="reject_friend_request"),
 
     #tounament.py
     path('tournament/', tournament.result, name='result'),

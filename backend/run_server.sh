@@ -26,7 +26,7 @@ from django.core.management import call_command
 from authentication.models import User
 
 if not User.objects.filter(username='${USER_USERNAME}').exists():
-    User.objects.create_user(username='${USER_USERNAME}', password='${USER_PASSWORD}', status="active")
+    User.objects.create_user(username='${USER_USERNAME}', password='${USER_PASSWORD}', status="online")
     user.save()
 EOF
 
