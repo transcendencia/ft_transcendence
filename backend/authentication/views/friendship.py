@@ -22,8 +22,6 @@ from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
 from django.db.models import Q
-# def	show_friendrequest(request):
-# 	return render(request, 'show_friendrequest.html')
 
 def	send_friendrequest(request):
 	return render(request, 'send_friendrequest.html')
@@ -85,7 +83,7 @@ def	accept_friend_request(request):
 	return Response('friend request accepted')
 	# else:
 	# 	return Response('friend request not accepted')
-#
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -111,3 +109,6 @@ def return_request(request):
     print(list_request)
     return Response({'list': list_request})
     # return Response({"message": "je suis dans return message"})
+
+
+#faire une view pour supprimer la demande d'amis qui a pas encore ete accepter

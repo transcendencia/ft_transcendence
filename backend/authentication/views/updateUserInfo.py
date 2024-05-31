@@ -80,19 +80,24 @@ def get_profile_info(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def	change_profile_info(request):
-	serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
-	if 'profile-pic' in request.FILES:
-		uploaded_file = request.FILES['profile-pic']
-		request.user.profile_picture = uploaded_file
-		request.user.save()
-		print("picture changed") #LOG
-	if serializer.is_valid():
-		serializer.save()
-		return Response({'id': request.user.id, 'serializer': serializer, 'message': "info changer"}, status=status.HTTP_200_OK)
-	first_error = next(iter(serializer.errors.values()))[0]
-	print(first_error)
-	return Response({"message": first_error})
+def change_profile_info(request):
+    if request.method == 'POST':
+        print(request.data)
+        serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
+        if 'profile_picture' in request.FILES:
+            # if request.user.profile_picture.url != 'media/default.png':
+            #       print("coucou")
+            #       request.user.profile_picture.delete()
+            uploaded_file = request.FILES['profile_picture']
+            request.user.profile_picture = uploaded_file
+            request.user.save()
+            print("picture changed") #LOG
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=status.HTTP_200_OK)
+        first_error = next(iter(serializer.errors.values()))[0]
+        print(first_error)
+        return Response({"message": first_error}, status=status.HTTP_400_BAD_REQUEST)
 
 def user_list(request):
   return render(request, 'user_list.html')
