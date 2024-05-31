@@ -48,7 +48,7 @@ def update_status(request):
     request.user.status = request.data.get('status')
     request.user.save()
     print(request.user.username, request.user.status) #LOG
-    return Response({'user_id': user.id, 'status': user.status}, status=status.HTTP_200_OK)
+    return Response({'user_id': request.user.id, 'status': request.user.status}, status=status.HTTP_200_OK)
   else:
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
