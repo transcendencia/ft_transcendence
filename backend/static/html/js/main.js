@@ -24,7 +24,6 @@ const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c4')
 });
 const scene = new THREE.Scene();
-scene.background = spaceCubeMapTexture;
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
@@ -42,15 +41,16 @@ class LobbyVisuals
         this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
         this.afterImagePass = new AfterimagePass();
         this.afterImagePass.uniforms.damp.value = 0;
-
+        
         this.spaceCubeMapTexture = cubeLoader.load([
             '../../static/game/texturePlayground/spaceMap/nx.png',
             '../../static/game/texturePlayground/spaceMap/px.png',
-              '../../static/game/texturePlayground/spaceMap/py.png',
-              '../../static/game/texturePlayground/spaceMap/ny.png',
-              '../../static/game/texturePlayground/spaceMap/nz.png',
-              '../../static/game/texturePlayground/spaceMap/pz.png'
-          ]);
+            '../../static/game/texturePlayground/spaceMap/py.png',
+            '../../static/game/texturePlayground/spaceMap/ny.png',
+            '../../static/game/texturePlayground/spaceMap/nz.png',
+            '../../static/game/texturePlayground/spaceMap/pz.png'
+        ]);
+        this.scene.background = this.spaceCubeMapTexture;
 
         this.boostCubeMapTexture = cubeLoader.load([
             '../../static/game/texturePlayground/boostSpaceMap/nx.png',
