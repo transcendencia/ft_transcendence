@@ -3235,18 +3235,20 @@ class Bot {
 }
 
 class UserStats {
-    constructor(isThirdPlayer) {
+    constructor(isThirdPlayer, usernameElement, ppElement) {
         // done and working
         this.isThirdPlayer = isThirdPlayer; // boolean done
         this.isWinner = false; // boolean done
+        this.usernameElement = usernameElement;
+        this.ppElement = ppElement;
         this.pointsScored = 0; // int done
         this.pointsTaken = 0; // int done
         this.nbDashes = 0; // int done
         this.nbPowerUsed = 0; // int done
         this.nbBounces = 0; // int done
         // TODO
-        this.username; //string
-        this.id; // string
+        this.username; //string done
+        this.id; // string done
         this.profilePicture; // string
         this.isBot = false; // boolean
     }
@@ -3265,6 +3267,8 @@ class UserStats {
         this.username = username;
         this.id = id;
         this.profilePicture = profilePicture;
+        this.usernameElement.textContent = username;
+        this.ppElement.src = profilePicture;
     }
 }
 
@@ -3283,11 +3287,20 @@ class Game {
         this.hasToBeInitialized = false;
         this.tournamentGame = false;
         // next variables are all to be inputed in string format
-        this.user1 = new UserStats(false); // User1 is the left paddle
-        this.user2 = new UserStats(false); // User2 is the right paddle
-        this.user3 = new UserStats(true); // User3 is the third player
+        this.user1Username = document.getElementById('username1Text');
+        this.user2Username = document.getElementById('username2Text');
+        this.user3Username = document.getElementById('username3Text');
+        this.user1ProfilePicture = document.getElementById('pp1');
+        this.user2ProfilePicture = document.getElementById('pp2');
+        this.user3ProfilePicture = document.getElementById('pp3');
+
+        this.user1 = new UserStats(false, this.user1Username, this.user1ProfilePicture); // User1 is the left paddle
+        this.user2 = new UserStats(false, this.user2Username, this.user2ProfilePicture); // User2 is the right paddle
+        this.user3 = new UserStats(true, this.user3Username, this.user3ProfilePicture); // User3 is the third player
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
 
+
+        // this.user2Username.textContent = 'caca';
         // OUTPUT
         this.loserPaddle;
         this.winnerPaddle;
