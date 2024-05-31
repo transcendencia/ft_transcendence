@@ -96,8 +96,17 @@ function translateEscapePageTexts() {
     disconnectButton.textContent = getTranslatedText('disconnect');
 }
 
+const RGPDTitle = document.getElementById('RGPDTitle');
+const RGPDTexte = document.getElementById('RGPDTexte');
+
+function translateRGPDTexts() {
+    RGPDTitle.textContent = getTranslatedText('RGPDTitle');
+    RGPDTexte.textContent = getTranslatedText('RGPDTexte');
+}
+
 export function TranslateAllTexts() {
     translateArenaPageTexts();
     translateLoginPageTexts();
     translateEscapePageTexts();
+    translateRGPDTexts();
 }
