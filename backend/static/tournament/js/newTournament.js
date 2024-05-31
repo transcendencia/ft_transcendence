@@ -1,5 +1,6 @@
 import { createGame } from "./gameData.js";
 import { getTranslatedText } from "../../html/js/translatePages.js";
+import { gameState } from "../../game/js/main.js";
 
 //affichage info
 
@@ -181,7 +182,7 @@ export function addEventListenerToTilesTournament() {
           playerNb++;
           const newObj = createUserInfoObject(tile.HTMLelement, i);
           console.log("user add:", tile.user);
-          addUserToTournament(tile.user.id, tile.user.username);
+          addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
           const oldObj = plusButtons[plusClickedTournament - 1];
           oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
           resetGlowTournament();
@@ -216,11 +217,12 @@ export function addEventListenerToTilesTournament() {
 
   const tournamentPlayer = [];
 
-  export function addUserToTournament(playerId, username) {
+  export function addUserToTournament(playerId, username, profile_picture) {
       if (!tournamentPlayer.some(player => player.username === username)) {
           tournamentPlayer.push({
             playerId: playerId,
             username: username,
+            profile_picture: profile_picture,
             order: -1,
             position: 0,
             round: 1,
@@ -248,10 +250,12 @@ export function addEventListenerToTilesTournament() {
   }
 
   let currentMatch = [];
-  let allMatch = [];
+  // let allMatch = [];
   let round = 1;
   let nbMatch;
   let thirdPlayerMode = 1; //must be removed to use the real variable
+  let gameMode;
+  let map;
 
   function makeMatchup() {
     console.log(tournamentPlayer);
@@ -261,11 +265,11 @@ export function addEventListenerToTilesTournament() {
     let j = 0;
     nbMatch = 0;
     //all results are puts in allMatch
-    currentMatch.forEach(function(match){
-      allMatch.push(
-        JSON.parse(JSON.stringify(match))
-      );
-    })
+    // currentMatch.forEach(function(match){
+    //   allMatch.push(
+    //     JSON.parse(JSON.stringify(match))
+    //   );
+    // })
     currentMatch = [];
     //put final position for players who lost
     if (round != 1){
@@ -295,7 +299,9 @@ export function addEventListenerToTilesTournament() {
           "",
           -1,
           -1,
-          ""
+          "",
+          gameMode,
+          map,
         ]);
       }
       else{
@@ -307,6 +313,8 @@ export function addEventListenerToTilesTournament() {
             -1,
             -1,
             { myRef: tournamentPlayer[thirdPlayer]},
+            gameMode,
+            map,
           ]);
         }
         else{
@@ -316,6 +324,8 @@ export function addEventListenerToTilesTournament() {
             -1,
             -1,
             "",
+            gameMode,
+            map,
           ]);
         }
       }
@@ -505,6 +515,41 @@ export function addEventListenerToTilesTournament() {
   //launch the tournament when there is the right amount of players
   //create the matchup / print the bracket structure
 
+  function    initGame(gameState) {
+    // prepare for initialization
+    gameState.loading = true;
+    gameState.inLobby = false;
+    setTimeout(() => {    
+      gameState.arena.game.hasToBeInitialized = true;
+      // choose gameMode
+      if (gamemodeCounter === 0) {
+          gameState.arena.game.powerUpsActivated = true;
+          gameState.arena.game.effectsOnly = false;
+      }
+      if (gamemodeCounter === 1) {
+          gameState.arena.game.powerUpsActivated = false;
+          gameState.arena.game.effectsOnly = false;
+      }
+      if (gamemodeCounter === 2) {
+          gameState.arena.game.powerUpsActivated = true;
+          gameState.arena.game.effectsOnly = true;
+      }
+      // choose map
+      const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
+      gameState.arena.game.map = mapList[mapCounter];
+      // toggle third player
+      if (playerNb === 2)
+          gameState.arena.game.thirdPlayer = true;
+      else
+          gameState.arena.game.thirdPlayer = false;
+    }, 250);
+    // add player
+    let username;
+    let profilePicure;
+    let id;
+    gameState.arena.game.user1.setUser(username, id, profilePicure);
+  }
+
   launchTournamentElement.addEventListener("click", function() {
     if (tournamentPlayer.length < 3){
       const ul = document.getElementById("error_msg");
@@ -547,33 +592,11 @@ export function addEventListenerToTilesTournament() {
   });
 
   launchMatchElement.addEventListener("click", function(){
+    // initGame(gameState);
     findWinner();
   });
   
-  function findWinner(){
-    let winner_name;
-    if (!currentMatch[nbMatch][1]){
-      currentMatch[nbMatch][0].myRef.round ++;
-      currentMatch[nbMatch][2] = 3;
-      currentMatch[nbMatch][3] = 0;
-      winner_name = currentMatch[nbMatch][0].myRef.username;
-    }
-    else{
-      let result = Math.floor(Math.random() * 2);
-      if (result === 0){
-        currentMatch[nbMatch][0].myRef.round ++;
-        currentMatch[nbMatch][2] = 3;
-        currentMatch[nbMatch][3] = Math.floor(Math.random() * 3);
-        winner_name = currentMatch[nbMatch][0].myRef.username;
-      }
-      else{
-        currentMatch[nbMatch][1].myRef.round ++;
-        currentMatch[nbMatch][3] = 3;
-        currentMatch[nbMatch][2] = Math.floor(Math.random() * 3);
-        winner_name = currentMatch[nbMatch][1].myRef.username;
-      }
-      createGame(currentMatch[nbMatch][0].myRef.playerId, currentMatch[nbMatch][1].myRef.playerId, currentMatch[nbMatch][4].myRef.playerId, currentMatch[nbMatch][2], currentMatch[nbMatch][3], "tournament", "test");
-    }
+  function updateBracket(winner_name){ 
     if (round == 2){
       if (nbMatch == 0){
         let ul = document.getElementById("B1_name");
@@ -664,7 +687,9 @@ export function addEventListenerToTilesTournament() {
       ul = document.getElementById("C2_score");
       ul.textContent = currentMatch[nbMatch][3];
     }
-    //print the nextMatch
+  }
+
+  function nextMatch() {
     nbMatch ++;
     let ul = document.getElementById("match");
     ul.innerHTML = "";
@@ -678,5 +703,34 @@ export function addEventListenerToTilesTournament() {
     else if (currentMatch[nbMatch][0])
       li.textContent = currentMatch[nbMatch][0].myRef.username;
     ul.appendChild(li);
+  }
+
+  function findWinner(){
+    let winner_name;
+    if (!currentMatch[nbMatch][1]){
+      currentMatch[nbMatch][0].myRef.round ++;
+      currentMatch[nbMatch][2] = 3;
+      currentMatch[nbMatch][3] = 0;
+      winner_name = currentMatch[nbMatch][0].myRef.username;
+    }
+    else{
+      let result = Math.floor(Math.random() * 2);
+      if (result === 0){
+        currentMatch[nbMatch][0].myRef.round ++;
+        currentMatch[nbMatch][2] = 3;
+        currentMatch[nbMatch][3] = Math.floor(Math.random() * 3);
+        winner_name = currentMatch[nbMatch][0].myRef.username;
+      }
+      else{
+        currentMatch[nbMatch][1].myRef.round ++;
+        currentMatch[nbMatch][3] = 3;
+        currentMatch[nbMatch][2] = Math.floor(Math.random() * 3);
+        winner_name = currentMatch[nbMatch][1].myRef.username;
+      }
+      createGame(currentMatch[nbMatch][0].myRef.playerId, currentMatch[nbMatch][1].myRef.playerId, currentMatch[nbMatch][4].myRef.playerId, currentMatch[nbMatch][2], currentMatch[nbMatch][3], "tournament", "test");
+    }
+    updateBracket(winner_name);
+    //print the nextMatch
+    nextMatch();
   }
 
