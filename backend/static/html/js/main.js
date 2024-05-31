@@ -52,6 +52,24 @@ class LobbyVisuals
         this.afterImagePass = new AfterimagePass();
         this.afterImagePass.uniforms.damp.value = 0;
 
+        this.spaceCubeMapTexture = cubeLoader.load([
+            '../../static/game/texturePlayground/spaceMap/nx.png',
+            '../../static/game/texturePlayground/spaceMap/px.png',
+              '../../static/game/texturePlayground/spaceMap/py.png',
+              '../../static/game/texturePlayground/spaceMap/ny.png',
+              '../../static/game/texturePlayground/spaceMap/nz.png',
+              '../../static/game/texturePlayground/spaceMap/pz.png'
+          ]);
+
+        this.boostCubeMapTexture = cubeLoader.load([
+            '../../static/game/texturePlayground/boostSpaceMap/nx.png',
+            '../../static/game/texturePlayground/boostSpaceMap/px.png',
+              '../../static/game/texturePlayground/boostSpaceMap/py.png',
+              '../../static/game/texturePlayground/boostSpaceMap/ny.png',
+              '../../static/game/texturePlayground/boostSpaceMap/nz.png',
+              '../../static/game/texturePlayground/boostSpaceMap/pz.png'
+          ]);
+
         this.bloomPass.threshold = 0.1;
         this.bloomPass.strength = 0.2;
         this.bloomPass.radius = 0.5;
@@ -105,7 +123,7 @@ class LobbyVisuals
             this.camera.far = 2000;
             this.renderer.setPixelRatio(1);
             this.renderer.shadowMap.enabled = true;
-            this.scene.background = spaceCubeMapTexture;
+            this.scene.background = this.spaceCubeMapTexture;
             this.currentGraphics = 'medium';
         }
         else if (graphics === 'high' && this.currentGraphics != 'high')
@@ -117,7 +135,7 @@ class LobbyVisuals
             this.addStars(1200);
             this.renderer.setPixelRatio(1);
             this.renderer.shadowMap.enabled = true;
-            this.scene.background = spaceCubeMapTexture;
+            this.scene.background = this.spaceCubeMapTexture;
             this.currentGraphics = 'high';
         }
         this.camera.updateProjectionMatrix();
@@ -133,7 +151,10 @@ class LobbyVisuals
         })
         .onComplete(() => {
             if (this.currentGraphics === 'high')
+            {
                 this.afterImagePass.uniforms.damp.value = 0.95;
+                this.scene.background = this.boostCubeMapTexture;
+            }
         })
         .start();
     }
@@ -149,6 +170,7 @@ class LobbyVisuals
         if (this.currentGraphics != 'high')
             return;
         this.afterImagePass.uniforms.damp.value = 0;
+        this.scene.background = this.spaceCubeMapTexture;
     
     }
 }
