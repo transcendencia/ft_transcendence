@@ -100,6 +100,27 @@ languageIcons.forEach(function(icon) {
         }
         addGlow(icon.id, 'glow');
         setlanguageIconsClicked(true);
+        // Send POST request to change user language in the back if user is logged in
+        const token = localStorage.getItem('host_auth_token');
+        if (token && currentLanguage !== icon.id) {
+            fetch('change_language/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ language: icon.id })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la modification de la langue');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur :', error);
+            });
+        }
         setCurrentLanguage(icon.id);
         if (icon.id.length === 3)
             setCurrentLanguage(icon.id.slice(0, 2));
@@ -114,27 +135,6 @@ languageIcons.forEach(function(icon) {
             }
         });
 
-        // Send POST request to change user language in the back if user is logged in
-        const token = localStorage.getItem('host_auth_token');
-        if (token) {
-            fetch('change_language/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ language: currentLanguage })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la modification de la langue');
-                }
-            })
-            .catch(error => {
-                console.error('Erreur :', error);
-            });
-        }
     });
     //init english flag
     if (icon.id === currentLanguage) {
@@ -173,6 +173,7 @@ function handleLogin(event) {
     })
     .then(response => response.json())
     .then(data => {
+        
         if (data.status == "succes") {
             localStorage.setItem("host_auth_token", data.token)
             setCurrentLanguage(data.language);
