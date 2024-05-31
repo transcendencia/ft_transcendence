@@ -185,33 +185,31 @@ export function    initGame(gameState, player1, player2, player3, isTounament) {
     gameState.loading = true;
     gameState.inLobby = false;
     setTimeout(() => {    
-      gameState.arena.game.hasToBeInitialized = true;
-      // choose gameMode
-      if (gamemodeCounter === 0) {
-          gameState.arena.game.powerUpsActivated = true;
-          gameState.arena.game.effectsOnly = false;
-      }
-      if (gamemodeCounter === 1) {
-          gameState.arena.game.powerUpsActivated = false;
-          gameState.arena.game.effectsOnly = false;
-      }
-      if (gamemodeCounter === 2) {
-          gameState.arena.game.powerUpsActivated = true;
-          gameState.arena.game.effectsOnly = true;
-      }
-      // choose map
-      const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
-      gameState.arena.game.map = mapList[mapCounter];
-      // add players
-      console.log("player1: ", player1);
-      console.log("player2: ", player2);
-      gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
-      gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
-      if (player3 !== ""){
-        gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
-        gameState.arena.game.thirdPlayer = true;
-      }
-      gameState.arena.game.tournamentGame = isTounament;
+        gameState.arena.game.hasToBeInitialized = true;
+        // choose gameMode
+        if (gamemodeCounter === 0) {
+            gameState.arena.game.powerUpsActivated = true;
+            gameState.arena.game.effectsOnly = false;
+        }
+        if (gamemodeCounter === 1) {
+            gameState.arena.game.powerUpsActivated = false;
+            gameState.arena.game.effectsOnly = false;
+        }
+        if (gamemodeCounter === 2) {
+            gameState.arena.game.powerUpsActivated = true;
+            gameState.arena.game.effectsOnly = true;
+        }
+        // choose map
+        const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
+        gameState.arena.game.map = mapList[mapCounter];
+        // add players
+        gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
+        gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
+        if (player3 !== ""){
+            gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
+            gameState.arena.game.thirdPlayer = true;
+        }
+        gameState.arena.game.tournamentGame = isTounament;
     }, 250);
   }
 
