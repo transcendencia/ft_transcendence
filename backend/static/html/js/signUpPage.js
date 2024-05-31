@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { camera } from './main.js';
 import { showPage } from './showPages.js';
-import { currentLanguage } from './loginPage.js';
+import { currentLanguage } from './translatePages.js';
 
 export let inCockpit = false;
 

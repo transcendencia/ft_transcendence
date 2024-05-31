@@ -1,3 +1,4 @@
+import { userList } from './loginPage.js';
 const statsButtons = document.querySelectorAll('.statButton');
 const statsScreen = document.querySelector('.statsBlock');
 const colorClicked = '#5d75ff47';
@@ -80,24 +81,13 @@ createMatchBlock('Arena', '02-11-2000', 'Powerless', 'Doggodito', '../../../stat
 
 // Sample user data
 //generate more random users
-const users = [
-    { username: 'Vatiroi', avatar: '../../../static/html/assets/icons/FR_NU.png'},
-    { username: 'Rise' , avatar: '../../../static/html/assets/icons/BR_NU.png'},
-    { username: 'Sylvain', avatar: '../../../static/html/assets/icons/ES_NU.png'},
-    { username: 'Doggodito', avatar: '../../../static/html/assets/icons/FR_NU.png'},
-    { username: 'biboup654432', avatar: '../../../static/html/assets/icons/BR_NU.png'},
-    { username: 'wolff', avatar: '../../../static/html/assets/icons/ES_NU.png'},
-    { username: 'paul968', avatar: '../../../static/html/assets/icons/FR_NU.png'},
-    { username: 'dsal968', avatar: '../../../static/html/assets/icons/BR_NU.png'},
-    { username: 'optyes', avatar: '../../../static/html/assets/icons/ES_NU.png'},
-  ];
-  
+  const userPagesCont= document.querySelector(".userPagesContainer");
   // Function to render user tiles based on search query
-  function renderUsers(query) {
+function RenderUsersSearched(query) {
     const userListBackground = document.getElementById('userlistUserPage');
     userListBackground.innerHTML = ''; // Clear existing user tiles
   
-    const filteredUsers = users.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
+    const filteredUsers = userList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
   
     filteredUsers.forEach(user => {
       const userTile = document.createElement('div');
@@ -105,7 +95,7 @@ const users = [
   
       const imgContainer = document.createElement('div');
       imgContainer.classList.add('imgContainer');
-      imgContainer.innerHTML = `<img src="${user.avatar}">`;
+      imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
   
       const textContainer = document.createElement('div');
       textContainer.classList.add('textContainer');
@@ -114,7 +104,9 @@ const users = [
       const loupeContainer = document.createElement('div');
       loupeContainer.classList.add('loupeImg');
       loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
-  
+        loupeContainer.addEventListener('click', () => {
+            userPagesCont.style.animation = "slideUserPage 1s forwards";    
+        });
       userTile.appendChild(imgContainer);
       userTile.appendChild(textContainer);
       userTile.appendChild(loupeContainer);
@@ -126,5 +118,5 @@ const users = [
   // Function to handle input event on search input
   document.getElementById('searchInput').addEventListener('input', function(event) {
     const searchQuery = this.value.trim();
-    renderUsers(searchQuery);
+    RenderUsersSearched(searchQuery);
   });
