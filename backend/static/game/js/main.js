@@ -256,6 +256,7 @@ class LoadingScreen {
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onStart(() => {
                     document.getElementById('c3').style.display = 'none';
+                    document.getElementById('c1').style.display = 'inline';
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
                 })
@@ -1989,6 +1990,9 @@ class OceanMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(250);
                 this.arena.paddleRight.particles.changeParticleNumber(250);
                 this.arena.ball.particles.changeParticleNumber(1000);
+                this.arena.ball.particles.changeParticleSize(0.1);
+                this.arena.paddleLeft.particles.changeParticleSize(0.1);
+                this.arena.paddleRight.particles.changeParticleSize(0.1);
             }
             else if (this.currentGraphics === 'high')
             {
@@ -1997,6 +2001,9 @@ class OceanMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(500);
                 this.arena.paddleRight.particles.changeParticleNumber(500);
                 this.arena.ball.particles.changeParticleNumber(15000);
+                this.arena.ball.particles.changeParticleSize(0.2);
+                this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                this.arena.paddleRight.particles.changeParticleSize(0.2);
             }
             this.arena.bloomPass.strength = 0.2;
             this.scene.background = this.oceanCubeMapTexture;
@@ -2097,6 +2104,9 @@ class OceanMap {
             this.arena.paddleRight.particleNumber = 250;
             this.arena.paddleLeft.particles.changeParticleNumber(250);
             this.arena.paddleRight.particles.changeParticleNumber(250);
+            this.arena.ball.particles.changeParticleSize(0.1);
+            this.arena.paddleLeft.particles.changeParticleSize(0.1);
+            this.arena.paddleRight.particles.changeParticleSize(0.1);
             this.arena.bloomPass.strength = 0.2;
             this.scene.background = this.oceanCubeMapTexture;
             this.currentGraphics = 'medium';
@@ -2119,6 +2129,9 @@ class OceanMap {
             this.arena.paddleRight.particleNumber = 500;
             this.arena.paddleLeft.particles.changeParticleNumber(500);
             this.arena.paddleRight.particles.changeParticleNumber(500);
+            this.arena.ball.particles.changeParticleSize(0.2);
+            this.arena.paddleLeft.particles.changeParticleSize(0.2);
+            this.arena.paddleRight.particles.changeParticleSize(0.2);
             this.arena.bloomPass.strength = 0.2;
             this.scene.background = this.oceanCubeMapTexture;
             this.currentGraphics = 'high';
@@ -2186,9 +2199,19 @@ class SpaceMap {
         else
         {
             if (this.currentGraphics === 'medium')
+            {
+                this.arena.ball.particles.changeParticleSize(0.1);
+                this.arena.paddleLeft.particles.changeParticleSize(0.1);
+                this.arena.paddleRight.particles.changeParticleSize(0.1);
                 this.arena.ball.particles.changeParticleNumber(1000);
+            }
             else if (this.currentGraphics === 'high')
+            {
+                this.arena.ball.particles.changeParticleSize(0.2);
+                this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                this.arena.paddleRight.particles.changeParticleSize(0.2);
                 this.arena.ball.particles.changeParticleNumber(15000);
+            }
             this.arena.addStars(2000);
             this.arena.material = this.arenaMaterial;
             this.arena.bloomPass.strength = 1.0;
@@ -2255,6 +2278,9 @@ class SpaceMap {
             this.arena.paddleLeft.particles.changeParticleNumber(250);
             this.arena.paddleRight.particles.changeParticleNumber(250);
             this.arena.ball.particles.changeParticleNumber(1000);
+            this.arena.ball.particles.changeParticleSize(0.1);
+            this.arena.paddleLeft.particles.changeParticleSize(0.1);
+            this.arena.paddleRight.particles.changeParticleSize(0.1);
             this.arena.material = this.arenaMaterial;
             this.arena.bloomPass.strength = 1.0;
             this.scene.background = this.spaceCubeMapTexture;
@@ -2269,6 +2295,9 @@ class SpaceMap {
             this.arena.paddleLeft.particles.changeParticleNumber(500);
             this.arena.paddleRight.particles.changeParticleNumber(500);
             this.arena.ball.particles.changeParticleNumber(15000);
+            this.arena.ball.particles.changeParticleSize(0.2);
+            this.arena.paddleLeft.particles.changeParticleSize(0.2);
+            this.arena.paddleRight.particles.changeParticleSize(0.2);
             this.arena.material = this.arenaMaterial;
             this.arena.bloomPass.strength = 1.0;
             this.scene.background = this.spaceCubeMapTexture;
@@ -2368,6 +2397,9 @@ class SkyMap {
                     this.arena.paddleLeft.particles.changeParticleNumber(250);
                     this.arena.paddleRight.particles.changeParticleNumber(250);
                     this.arena.ball.particles.changeParticleNumber(1000);
+                    this.arena.ball.particles.changeParticleSize(0.1);
+                    this.arena.paddleLeft.particles.changeParticleSize(0.1);
+                    this.arena.paddleRight.particles.changeParticleSize(0.1);
                 }
                 else if (this.currentGraphics === 'high')
                 {
@@ -2376,6 +2408,9 @@ class SkyMap {
                     this.arena.paddleLeft.particles.changeParticleNumber(500);
                     this.arena.paddleRight.particles.changeParticleNumber(500);
                     this.arena.ball.particles.changeParticleNumber(15000);
+                    this.arena.ball.particles.changeParticleSize(0.2);
+                    this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                    this.arena.paddleRight.particles.changeParticleSize(0.2);
                 }
                 this.arena.bloomPass.strength = 0.05;
                 this.scene.background = this.skyCubeMapTexture;
@@ -2479,6 +2514,9 @@ class SkyMap {
             this.arena.paddleRight.particleNumber = 250;
             this.arena.paddleLeft.particles.changeParticleNumber(250);
             this.arena.paddleRight.particles.changeParticleNumber(250);
+            this.arena.ball.particles.changeParticleSize(0.1);
+            this.arena.paddleLeft.particles.changeParticleSize(0.1);
+            this.arena.paddleRight.particles.changeParticleSize(0.1);
             this.arena.ball.particles.changeParticleNumber(1000);
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
@@ -2503,6 +2541,9 @@ class SkyMap {
             this.arena.paddleLeft.particles.changeParticleNumber(500);
             this.arena.paddleRight.particles.changeParticleNumber(500);
             this.arena.ball.particles.changeParticleNumber(15000);
+            this.arena.ball.particles.changeParticleSize(0.2);
+            this.arena.paddleLeft.particles.changeParticleSize(0.2);
+            this.arena.paddleRight.particles.changeParticleSize(0.2);
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
             this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial;
@@ -2651,6 +2692,9 @@ class DragonMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(500);
                 this.arena.paddleRight.particles.changeParticleNumber(500);
                 this.arena.ball.particles.changeParticleNumber(15000);
+                this.arena.ball.particles.changeParticleSize(0.2);
+                this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                this.arena.paddleRight.particles.changeParticleSize(0.2);
             }
             else if (this.currentGraphics === 'medium')
             {
@@ -2659,6 +2703,9 @@ class DragonMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(250);
                 this.arena.paddleRight.particles.changeParticleNumber(250);
                 this.arena.ball.particles.changeParticleNumber(1000);
+                this.arena.ball.particles.changeParticleSize(0.1);
+                this.arena.paddleLeft.particles.changeParticleSize(0.1);
+                this.arena.paddleRight.particles.changeParticleSize(0.1);
             }
         }
         else if (this.currentGraphics === 'low')
@@ -2758,6 +2805,9 @@ class DragonMap {
             this.arena.paddleLeft.particles.changeParticleNumber(250);
             this.arena.paddleRight.particles.changeParticleNumber(250);
             this.arena.ball.particles.changeParticleNumber(1000);
+            this.arena.ball.particles.changeParticleSize(0.1);
+            this.arena.paddleLeft.particles.changeParticleSize(0.1);
+            this.arena.paddleRight.particles.changeParticleSize(0.1);
             this.currentGraphics = 'medium';
         }
         else if (graphic === 'high' && this.currentGraphics != 'high')
@@ -2779,6 +2829,9 @@ class DragonMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(500);
                 this.arena.paddleRight.particles.changeParticleNumber(500);
                 this.arena.ball.particles.changeParticleNumber(15000);
+                this.arena.ball.particles.changeParticleSize(0.2);
+                this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                this.arena.paddleRight.particles.changeParticleSize(0.2);
                 this.currentGraphics = 'high';
         }
     }
@@ -3222,7 +3275,7 @@ class Game {
         // INPUT (arenaPage.js)
         this.effectsOnly = false;
         this.powerUpsActivated = true;
-        this.thirdPlayer = true;
+        this.thirdPlayer = false;
         this.hasToBeInitialized = false;
         // next variables are all to be inputed in string format
         this.user1 = new UserStats(false); // User1 is the left paddle
@@ -3244,12 +3297,12 @@ class Game {
     sendDataToBack()
     {
         this.updateGameMode(); // ne pas enlever
-        console.log("game finished, data to send to back:");
-        console.log("user1 = ", this.user1);
-        console.log("user2 = ", this.user2);
-        console.log("user3 = ", this.user3);
-        console.log("map = ", this.map);
-        console.log("game mode = ", this.gameMode);
+        // console.log("game finished, data to send to back:");
+        // console.log("user1 = ", this.user1);
+        // console.log("user2 = ", this.user2);
+        // console.log("user3 = ", this.user3);
+        // console.log("map = ", this.map);
+        // console.log("game mode = ", this.gameMode);
         this.resetUsers();
     }
     resetUsers()
@@ -3356,7 +3409,18 @@ class Particle {
         // Initialize particle velocities
         this.initializeVelocities();
     }
-    
+    changeParticleSize(size)
+    {
+        this.material.size = size;
+        // update particle size
+        this.scene.remove(this.particleSystem);
+        const particleMaterial = new THREE.PointsMaterial({
+            size: size, // Adjust size as needed
+            vertexColors: THREE.VertexColors // Enable vertex colors
+        });
+        this.particleSystem = new THREE.Points(this.geometry, particleMaterial);
+        this.scene.add(this.particleSystem);
+    }
     initializeVelocities() {
         this.velocities = [];
         for (let i = 0; i < this.particleCount; i++) {
