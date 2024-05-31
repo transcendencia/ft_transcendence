@@ -1,14 +1,3 @@
-.userPagesContainer {
-    /* border: 1px solid wheat; */
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100%;
-    width: 78%;
-    overflow: hidden;
-    z-index: 0;
-}
 
 .userPage {
     /* border: 2px solid wheat; */
@@ -18,9 +7,23 @@
     flex-direction: row;
     height: 90%;
     width: 101.5%;
+    overflow: hidden;
+	flex-shrink: 0;
 }
 
-.exploreUserPage {
+.userPagesContainer {
+    /* border: 1px solid wheat; */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 78%;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.searchedUserPage {
     /* border: 2px solid white; */
     display: flex;
     align-items: center;
@@ -31,21 +34,34 @@
 }
 
 @keyframes slideUserPage {
-    from {
-        transform: translateX(0); /* Start position */
-    }
-    to {
-        transform: translateX(-100%); /* Slide to the right */
-    }
+    from {transform: translateX(0);}
+    to {transform: translateX(-100%);}
 }
 
 @keyframes slideHostPage {
-    to {
-        transform: translateX(0); /* Start position */
-    }
-    from {
-        transform: translateX(-100%); /* Slide to the right */
-    }
+    from {transform: translateX(-100%);}
+    to {transform: translateX(0)};
+}
+
+@keyframes slideUserPageUp {
+    0% {transform: translateY(0) translateX(-100%);}
+    99% {transform: translateY(-100%) translateX(-100%);}
+    100% {transform: translateY(100%) translateX(-100%);}
+}
+
+@keyframes slideUserPageUpp {
+    0% {transform: translateY(100%) translateX(-100%);}
+    100% {transform: translateY(0) translateX(-100%);}
+}
+
+@keyframes slideHostPageUp {
+    from {transform: translateY(0);}
+    to {transform: translateY(-100%); }
+}
+
+@keyframes slideHostPageDown {
+    from {transform: translateY(-100%); }
+    to {transform: translateY(0);}
 }
 
 .statsBlock {
@@ -111,6 +127,7 @@
     justify-content: center;
     font-size: 15px;
     font-family: 'Space';
+    cursor: pointer;
 }
 
 .rightBlock {

@@ -56,7 +56,7 @@ graphicsIcons.forEach(function(icon) {
     });
 });
 
-function getCookie(name) {
+ export function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
@@ -219,7 +219,7 @@ function getProfileInfo() {
 		});
 }
 
-function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory) {
+export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
 
     let borderColor = '#ff3737';
     let bgColor = '#ff373777';
@@ -267,12 +267,12 @@ function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc
   
     matchBlock.appendChild(firstLine);
     matchBlock.appendChild(secondLine);
-  
-    // Append match block to history container
-    const historyContainer = document.querySelector('.history');
+    
+    let historyContainer = document.getElementById('hostHistory');
+    if (!isHost)
+        historyContainer = document.getElementById('searchedUserHistory');
     historyContainer.appendChild(matchBlock);
 }
-
 
 function getGameInfo() {
 	const token = localStorage.getItem('host_auth_token');

@@ -299,12 +299,6 @@ button {
   position: relative;
 }
 
-.icon{
-  transform: rotate(180deg);
-  width: 30px;
-  height: 30px;
-}
-
 .bottom {
   align-items: center;
   position: absolute;
