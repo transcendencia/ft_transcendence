@@ -1,6 +1,7 @@
 
 .rgpdPage {
     border: 2px solid white;
+
     width: 99%;
     height: 99%;
     top: 50%;
@@ -26,16 +27,18 @@
     height: 60%;
     width:  50%;
     border-radius: 10px;
-    background-color: rgba(0, 0, 255, 0.333);
-    color: aliceblue;
+    background-color: rgba(0, 0, 255, 0.333);    
+    color: rgb(235, 240, 244);
+    padding: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     font-family: 'space';
-    font-size: 20px;
-    padding: 10px;
+    font-size: 15px;
+    border: 2px solid rgb(8, 20, 255);
+    text-shadow: 0 0 2px black;
 }
 
 .text-content {

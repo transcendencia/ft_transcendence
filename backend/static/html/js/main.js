@@ -307,7 +307,7 @@ document.addEventListener('keydown', (event) => {
         // }
         // localStorage.clear();
     }
-    if (event.key === 'y' && inCockpit)
+    if (event.key === 'y')
     {
         showPage('rgpdPage');
         console.log("ON APPUIE SUR YYYYY");
