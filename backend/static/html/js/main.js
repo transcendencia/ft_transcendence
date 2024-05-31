@@ -19,15 +19,6 @@ import { mixer1, mixer2, mixer3} from './objs.js';
 import { userList } from './loginPage.js';
 
 let cubeLoader = new THREE.CubeTextureLoader();
-let spaceCubeMapTexture = cubeLoader.load([
-    '../../static/game/texturePlayground/spaceMap/nx.png',
-    '../../static/game/texturePlayground/spaceMap/px.png',
-      '../../static/game/texturePlayground/spaceMap/py.png',
-      '../../static/game/texturePlayground/spaceMap/ny.png',
-      '../../static/game/texturePlayground/spaceMap/nz.png',
-      '../../static/game/texturePlayground/spaceMap/pz.png'
-  ]);
-
 export let lobbyStart = false;
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c4')
