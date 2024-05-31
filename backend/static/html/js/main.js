@@ -271,6 +271,26 @@ function toggleEscapeContainerVisibility() {
     }
 }
 
+/*On va chercher la référence entre le html et le fichier js*/
+const rgpdStructure = document.getElementById("rgpdstructure");
+const rgpdBG = document.getElementById("rgpdBG");
+//recuperer ton bouton et apres tu add eventlistener
+//button.addEventListener("click", (event) => {})
+
+let rgpdDisplayed = false;
+
+function toggleRGPDContainerVisibility() {
+    if (!rgpdDisplayed) {
+        rgpdStructure.style.animation = 'headerDown 0.5s ease forwards'
+        rgpdBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
+        rgpdDisplayed = true;
+    }
+    else {
+        rgpdBG.style.animation = 'rollBG 0.2s ease backwards'
+        rgpdStructure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
+        rgpdDisplayed = false;
+    }
+}
 
 let pauseGame = false;
 
@@ -286,6 +306,14 @@ document.addEventListener('keydown', (event) => {
             displayUsersLogged();
         // }
         // localStorage.clear();
+    }
+    if (event.key === 'y' && inCockpit)
+    {
+        showPage('rgpdPage');
+        console.log("ON APPUIE SUR YYYYY");
+        
+        /*ANIMATION
+        toggleRGPDContainerVisibility();*/
     }
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
@@ -305,6 +333,7 @@ document.addEventListener('keydown', (event) => {
             resetOutlineAndText();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
+        console.log("ON APPUIE SUR  ECHAPPE");
     }
     if (event.key === 'l') {
         switchToGame();

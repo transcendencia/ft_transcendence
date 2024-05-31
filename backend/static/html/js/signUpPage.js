@@ -3,6 +3,7 @@ import { camera } from './main.js';
 import { showPage } from './showPages.js';
 import { currentLanguage } from './translatePages.js';
 
+
 export let inCockpit = false;
 
 export function moveCameraToFrontOfCockpit() {
