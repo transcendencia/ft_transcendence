@@ -122,6 +122,35 @@ class LobbyVisuals
         }
         this.camera.updateProjectionMatrix();
     }
+    activateSpeedEffect()
+    {
+        //tween animation to augment camera fov
+        new TWEEN.Tween(this.camera)
+        .to({fov: 75}, 100)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            this.camera.updateProjectionMatrix();
+        })
+        .onComplete(() => {
+            if (this.currentGraphics === 'high')
+                this.afterImagePass.uniforms.damp.value = 0.95;
+        })
+        .start();
+    }
+    deactivateSpeedEffect()
+    {
+        new TWEEN.Tween(this.camera)
+        .to({fov: 60}, 500)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            this.camera.updateProjectionMatrix();
+        })
+        .start();
+        if (this.currentGraphics != 'high')
+            return;
+        this.afterImagePass.uniforms.damp.value = 0;
+    
+    }
 }
 
 export const lobbyVisuals = new LobbyVisuals(scene, camera, renderer);
