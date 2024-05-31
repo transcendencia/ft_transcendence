@@ -23,6 +23,8 @@ class SignupSerializer(serializers.ModelSerializer):
 	def validate_username(self, value):
 		if len(value) > 13:
 			raise serializers.ValidationError("Username must contains 12 characters maximum.")
+		if value == 'bot':
+			raise serializers.ValidationError("Username already exist")
 		return value
 
 	# def validate_password(self, value):

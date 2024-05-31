@@ -189,7 +189,7 @@ function handleLogin(event) {
             currentLanguage = data.language;
             TranslateAllTexts();
             getProfileInfo();
-            get_user_list()
+            get_user_list();
             showPage('none');
             startAnimation();
         } else 
@@ -276,7 +276,7 @@ export function get_user_list(){
     .then(response => response.json())
     .then(data => {
         userList = data;
-        // console.log(userList);
+        console.log(userList);
         // console.log(data);
         return data;
     })
