@@ -1,4 +1,5 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
+import { moveCameraToBackOfCockpit }  from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage} from "./translatePages.js";
@@ -24,12 +25,12 @@ function removeGlow(elementId, glow) {
 let languageIcons = document.querySelectorAll('.languageIcon');
 let graphicsIcons = document.querySelectorAll('.graphicsIcon');
 const signupHereButton = document.querySelector('.actionCont');
-signupHereButton.addEventListener('click', function() {
+
+if (signupHereButton.addEventListener('click', function() {
     moveCameraToFrontOfCockpit();
-});
+}));
 
 showPage('loginPage');
-
 
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {

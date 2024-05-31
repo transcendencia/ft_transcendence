@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{% static '../static/html/css/arenaPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/SignUpPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/userPage.css' %}">
+    <link rel="stylesheet" href="{% static '../static/html/css/rgpdPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/game/style/style.css' %}">
     <script type="importmap">
         {
@@ -27,7 +28,7 @@
 </head>
 <body>
   <!-- LOGIN PAGE -->
-    <div class="loginPage page">
+    <div class="loginPage page invisible">
     <div class="title">
       TRANSCENDENCIIA
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
@@ -79,7 +80,7 @@
   </div>
 
   <!-- SIGN UP PAGE -->
-  <div class="signUpPage page">
+  <div class="signUpPage page invisible">
     <div class="perspective">
         <form id="signupForm" method="post" action="signup/">
           {% csrf_token %}
@@ -394,6 +395,18 @@
     </div>
     </div>
 
+    <!-- RGPD PAGE -->          
+  </div>
+  <div class="rgpdPage page invisible" >
+    <img src="{% static 'game/assets/scoreUI.png' %}" class="image-top" style="transform: rotate(180deg);">
+    <p class="text-content">
+      L'organisation ft_transcendance ne collecte que les donnees necessaires au bon fonctionnement des tournois et ne les communique a aucun autre organisme. La base legale du traitement des donnees et le consentement des utilisateurs. Vous pouvez modifier vos donnees, supprimer votre profile a tout moment dans allant dans la planete profile. Vos donnees sont automatiquement supprimes un an apres votre derniere connexion. Pour toute reclamation vous pouvez aller sur le site de la CNIL. 
+    </p>
+    <img src="{% static 'game/assets/scoreUI.png' %}" class="image-bottom">
+  </div>
+  <!---->
+  <div class>
+  </div>  
     <!-- GAME STUFF -->
   <div class="bluebar glow"></div>
   <div class="gameUI">

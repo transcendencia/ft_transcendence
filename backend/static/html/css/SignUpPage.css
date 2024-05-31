@@ -12,8 +12,11 @@
     width: 80%;
     height: 99%;
     transition: opacity 0.5s 0.75s;
+}
+
+.invisible {
+    visibility: hidden;
     opacity: 0;
-    visibility: hidden; /* Hide the element */
 }
 
 .show {

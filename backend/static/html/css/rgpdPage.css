@@ -1,0 +1,114 @@
+
+.rgpdPage {
+    /*=====  RECTANGLE ====*/
+    /*Taile du rectangle */
+    width: 90%;
+    height: 40%;
+    padding: 20px;
+    max-width: 600px;
+    /*Couleur du rectangle*/
+    background-color: rgba(12, 0, 124, 0.595);
+    /*Position du rectangle*/
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    /*justify-content: space-around;
+    align-items: center;*/
+   /* overflow: hidden;*/ 
+   /*Changer les bords de la forme*/
+    border-radius: 0px;
+    /*couleur du texte*/
+    font-family: 'space';
+    font-size: 15px; /* Taille de la police */
+    color: #f6f7f9; /* Couleur du texte */
+    text-shadow: 
+        0 0 10px #151414, /* Ombre intérieure */
+        0 0 40px rgb(0, 0, 0);
+    text-align: center;
+}
+
+.text-content {
+    margin: 0;
+    padding-top: 20px;
+    flex: 1;
+}
+
+.image-top, .image-bottom {
+    position: absolute;
+    width: 900px;
+    height: 100px;
+}
+
+.image-top {
+    top: -90px;
+    left: -15%;
+    transform: translateX(-50%);
+}
+
+.image-bottom {
+    bottom: -90px; /* Positionnez l'image en-dessous du rectangle */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+/*.rgpdPage {
+    /*============= RECTANGLE =========*/
+    /*Couleur du rectangle
+    background-color: hsla(0, 86%, 46%, 0.122);
+    border: 5px solid #ff3737;
+    border-top:  25px solid rgb(114, 103, 199);
+    /*taille du rectangle
+    width: 60%;
+    padding: 20px;
+    max-width: 600px;
+    height: 40%;
+    /*Position du rectangle
+    left: 50%;
+    position: fixed;
+    /*forme du rectangle
+    border-radius: 0px;
+    /*couleur du texte
+    color: #000000;
+    /*Position du texte
+    transform: translate(-50%, 50%);
+    display: center;
+    padding-top: 50px;
+    text-align: justify;
+    
+}*/
+
+.structure {
+    font-family: "Space";
+    font-size: 50px;
+    color: white;
+    position: fixed;
+    top: -100%;
+    left: 50%;
+    height: 75vh;
+    width: 59vw;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    z-index: 2;
+}
+
+.pauseTitle {
+    position: fixed;
+    top: -10%;
+    height: 10%;
+    width: 200%;
+    display: flex; /* Add display flex */
+    align-items: center; /* Vertically center the items */
+    justify-content: center; /* Vertically center the items */
+    flex-direction: row;
+}
+
+/*titre blanc pq pas un effet néon sur le texte bord rouge 
+
+1/ Bord bleus et titre RGPD
+2/ cadre rouge 
+3/ tester avec le fond 

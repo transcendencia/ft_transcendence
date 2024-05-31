@@ -8,6 +8,8 @@ urlpatterns = [
     path('login_page/', authentication.login_page, name='login_page'),
     path('signup/', authentication.signup, name='signup'),
     
+    path('rgpd/', authentication.rgpd, name='rgpd'),
+
     #updateUserInfo.py
     path('change_language/', updateUserInfo.change_language, name='change_language'),
     path('update_status/', updateUserInfo.update_status, name='update_status'),
