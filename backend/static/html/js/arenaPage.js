@@ -2,6 +2,8 @@ import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { togglePlanet } from "./enterPlanet.js";
 import { afterGameTournament } from "../../tournament/js/newTournament.js";
+import { createGame } from "../../tournament/js/gameData.js";
+import { gamemodeCounterTournament } from "../../tournament/js/newTournament.js";
 
 const userlist = document.querySelector(".userlistBackground");
 const plusButtons = document.querySelectorAll(".plusPlayer");
@@ -145,48 +147,54 @@ export let gameStarted = false;
 
 export function endGame(isTournament) {
     gameStarted = false;
+    let user3 = null;
+
+    if (gameState.arena.game.thirdPlayer)
+        user3 = gameState.arena.game.user3.id
     if (isTournament){
         planetPanel[2].style.visibility = 'visible';
-        console.log("endgame");
+        console.log("before createGame", gameState.arena.game.gameMode);
+        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode);
         afterGameTournament(gameState.arena.game.leftScore, gameState.arena.game.rightScore);
     }
-    else
+    else{
         planetPanel[0].style.visibility = 'visible';
+        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode);
+    }
     rsContainer.style.visibility = 'visible';
     gameUI.style.visibility = 'hidden';
     document.getElementById('c4').style.display = 'block';
     document.getElementById('c3').style.display = 'none';
     document.getElementById('c1').style.display = 'none';
-    console.log("left", gameState.arena.game.leftScore);
-    console.log("right", gameState.arena.game.rightScore);
     gameState.arena.game.resetUsers();
 }
 
 const gameUI = document.querySelector(".gameUI");
 
-export function switchToGame(gameState, player1, player2, player3, isTounament) {
+export function switchToGame(gameState, player1, player2, player3, isTournament) {
     gameStarted = true;
-    // gameState.switchGameToLoading();
     gameUI.style.visibility = 'visible';
-    planetPanel[0].style.visibility = 'hidden';
-    planetPanel[2].style.visibility = 'hidden';
+    if (isTournament)
+        planetPanel[2].style.visibility = 'hidden';
+    else
+        planetPanel[0].style.visibility = 'hidden';
     loginPage.style.visibility = 'hidden';
     rsContainer.style.visibility = 'hidden';
     document.getElementById('c4').style.display = 'none';
-    // document.getElementById('c3').style.display = 'block';
     if (gameState.arena != undefined)
         gameState.arena.loadingScreen.activateLoadingScreen();
-    // document.getElementById('c1').style.display = 'block';
-    initGame(gameState, player1, player2, player3, isTounament);
+    initGame(gameState, player1, player2, player3, isTournament);
 }
 
-export function    initGame(gameState, player1, player2, player3, isTounament) {
+export function    initGame(gameState, player1, player2, player3, isTournament) {
     // prepare for initialization
     gameState.loading = true;
     gameState.inLobby = false;
     setTimeout(() => {    
       gameState.arena.game.hasToBeInitialized = true;
       // choose gameMode
+      if (isTournament)
+        gamemodeCounter = gamemodeCounterTournament;
       if (gamemodeCounter === 0) {
           gameState.arena.game.powerUpsActivated = true;
           gameState.arena.game.effectsOnly = false;
@@ -199,19 +207,20 @@ export function    initGame(gameState, player1, player2, player3, isTounament) {
           gameState.arena.game.powerUpsActivated = true;
           gameState.arena.game.effectsOnly = true;
       }
+      const modeList = ["CLASSIC", "POWERLESS", "SPIN ONLY"];
+      gameState.arena.game.gameMode = modeList[gamemodeCounter];
+      console.log(gameState.arena.game.gameMode);
       // choose map
       const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
       gameState.arena.game.map = mapList[mapCounter];
       // add players
-      console.log("player1: ", player1);
-      console.log("player2: ", player2);
       gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
       gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
       if (player3 !== ""){
         gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
         gameState.arena.game.thirdPlayer = true;
       }
-      gameState.arena.game.tournamentGame = isTounament;
+      gameState.arena.game.tournamentGame = isTournament;
     }, 250);
   }
 

@@ -44,7 +44,7 @@ def get_game_list(request):
 def get_game_user(request):
   if request.method == 'GET':
     user = request.user
-    games = Game.objects.filter(player1=user).union(Game.objects.filter(player2=user))
+    games = Game.objects.filter(player1=user).union(Game.objects.filter(player2=user)).order_by('-date')
     serializers = GameListSerializer(games, many=True)
     response_data = {
         'user_id': user.id,
