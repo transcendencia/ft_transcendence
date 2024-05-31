@@ -1,6 +1,7 @@
 import { createGame } from "./gameData.js";
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { gameState } from "../../game/js/main.js";
+import { switchToGame } from "../../html/js/arenaPage.js";
 
 //affichage info
 
@@ -250,7 +251,6 @@ export function addEventListenerToTilesTournament() {
   }
 
   let currentMatch = [];
-  // let allMatch = [];
   let round = 1;
   let nbMatch;
   let thirdPlayerMode = 1; //must be removed to use the real variable
@@ -264,13 +264,8 @@ export function addEventListenerToTilesTournament() {
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
     let j = 0;
     nbMatch = 0;
-    //all results are puts in allMatch
-    // currentMatch.forEach(function(match){
-    //   allMatch.push(
-    //     JSON.parse(JSON.stringify(match))
-    //   );
-    // })
     currentMatch = [];
+    console.log("reset currentMaych");
     //put final position for players who lost
     if (round != 1){
       tournamentPlayer.forEach(function(player){
@@ -361,6 +356,7 @@ export function addEventListenerToTilesTournament() {
       }
     }
     round ++;
+    console.log("after MakeMatchup", currentMatch);
   }
 
   const launchTournamentElement = document.getElementById("launch");
@@ -515,41 +511,6 @@ export function addEventListenerToTilesTournament() {
   //launch the tournament when there is the right amount of players
   //create the matchup / print the bracket structure
 
-  function    initGame(gameState) {
-    // prepare for initialization
-    gameState.loading = true;
-    gameState.inLobby = false;
-    setTimeout(() => {    
-      gameState.arena.game.hasToBeInitialized = true;
-      // choose gameMode
-      if (gamemodeCounter === 0) {
-          gameState.arena.game.powerUpsActivated = true;
-          gameState.arena.game.effectsOnly = false;
-      }
-      if (gamemodeCounter === 1) {
-          gameState.arena.game.powerUpsActivated = false;
-          gameState.arena.game.effectsOnly = false;
-      }
-      if (gamemodeCounter === 2) {
-          gameState.arena.game.powerUpsActivated = true;
-          gameState.arena.game.effectsOnly = true;
-      }
-      // choose map
-      const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
-      gameState.arena.game.map = mapList[mapCounter];
-      // toggle third player
-      if (playerNb === 2)
-          gameState.arena.game.thirdPlayer = true;
-      else
-          gameState.arena.game.thirdPlayer = false;
-    }, 250);
-    // add player
-    let username;
-    let profilePicure;
-    let id;
-    gameState.arena.game.user1.setUser(username, id, profilePicure);
-  }
-
   launchTournamentElement.addEventListener("click", function() {
     if (tournamentPlayer.length < 3){
       const ul = document.getElementById("error_msg");
@@ -592,7 +553,6 @@ export function addEventListenerToTilesTournament() {
   });
 
   launchMatchElement.addEventListener("click", function(){
-    // initGame(gameState);
     findWinner();
   });
   
@@ -694,6 +654,7 @@ export function addEventListenerToTilesTournament() {
     let ul = document.getElementById("match");
     ul.innerHTML = "";
     let li = document.createElement("p");
+    console.log("makeMatchup cast");
     if (nbMatch >= currentMatch.length){
       makeMatchup();
       return ; 
@@ -705,32 +666,51 @@ export function addEventListenerToTilesTournament() {
     ul.appendChild(li);
   }
 
-  function findWinner(){
+  export function  afterGameTournament(leftScore, rightScore) {
     let winner_name;
-    if (!currentMatch[nbMatch][1]){
-      currentMatch[nbMatch][0].myRef.round ++;
-      currentMatch[nbMatch][2] = 3;
-      currentMatch[nbMatch][3] = 0;
+
+    console.log("curretn Match", currentMatch);
+    console.log("nbMatch", nbMatch);
+    currentMatch[nbMatch][2] = leftScore;
+    currentMatch[nbMatch][3] = rightScore;
+    if (leftScore > rightScore)
       winner_name = currentMatch[nbMatch][0].myRef.username;
+    else
+    winner_name = currentMatch[nbMatch][1].myRef.username;
+    updateBracket(winner_name);
+    nextMatch();
+    gameState.arena.game.resetUsers();
+  }
+
+  function findWinner(){
+    // let winner_name;
+    // if (!currentMatch[nbMatch][1]){
+    //   currentMatch[nbMatch][0].myRef.round ++;
+    //   currentMatch[nbMatch][2] = 3;
+    //   currentMatch[nbMatch][3] = 0;
+    //   winner_name = currentMatch[nbMatch][0].myRef.username;
+    // }
+    // else{
+    //   let result = Math.floor(Math.random() * 2);
+    //   if (result === 0){
+    //     currentMatch[nbMatch][0].myRef.round ++;
+    //     currentMatch[nbMatch][2] = 3;
+    //     currentMatch[nbMatch][3] = Math.floor(Math.random() * 3);
+    //     winner_name = currentMatch[nbMatch][0].myRef.username;
+    //   }
+    //   else{
+    //     currentMatch[nbMatch][1].myRef.round ++;
+    //     currentMatch[nbMatch][3] = 3;
+    //     currentMatch[nbMatch][2] = Math.floor(Math.random() * 3);
+    //     winner_name = currentMatch[nbMatch][1].myRef.username;
+    //   }
+    //   createGame(currentMatch[nbMatch][0].myRef.playerId, currentMatch[nbMatch][1].myRef.playerId, currentMatch[nbMatch][4].myRef.playerId, currentMatch[nbMatch][2], currentMatch[nbMatch][3], "tournament", "test");
+    // }
+    if (currentMatch[nbMatch][1]){
+      switchToGame(gameState, currentMatch[nbMatch][0].myRef, currentMatch[nbMatch][1].myRef, currentMatch[nbMatch][4].myRef, true);
     }
     else{
-      let result = Math.floor(Math.random() * 2);
-      if (result === 0){
-        currentMatch[nbMatch][0].myRef.round ++;
-        currentMatch[nbMatch][2] = 3;
-        currentMatch[nbMatch][3] = Math.floor(Math.random() * 3);
-        winner_name = currentMatch[nbMatch][0].myRef.username;
-      }
-      else{
-        currentMatch[nbMatch][1].myRef.round ++;
-        currentMatch[nbMatch][3] = 3;
-        currentMatch[nbMatch][2] = Math.floor(Math.random() * 3);
-        winner_name = currentMatch[nbMatch][1].myRef.username;
-      }
-      createGame(currentMatch[nbMatch][0].myRef.playerId, currentMatch[nbMatch][1].myRef.playerId, currentMatch[nbMatch][4].myRef.playerId, currentMatch[nbMatch][2], currentMatch[nbMatch][3], "tournament", "test");
+
     }
-    updateBracket(winner_name);
-    //print the nextMatch
-    nextMatch();
   }
 

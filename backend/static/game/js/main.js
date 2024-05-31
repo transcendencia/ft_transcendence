@@ -16,8 +16,9 @@ import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
 import { lobbyVisuals } from '../../html/js/main.js';
+import { gameStarted } from '../../html/js/arenaPage.js';
 // import { gameStarted } from '../../html/js/arenaPage.js';
-// import { endGame } from '../../html/js/arenaPage.js';
+import { endGame } from '../../html/js/arenaPage.js';
 
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
@@ -256,6 +257,7 @@ class LoadingScreen {
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onStart(() => {
                     document.getElementById('c3').style.display = 'none';
+                    document.getElementById('c1').style.display = 'inline';
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
                 })
@@ -1031,10 +1033,7 @@ class Arena extends THREE.Mesh {
             this.isBeingReset = false;
             this.game.isPlaying = false;
             this.game.isOver = false;
-            this.game.leftScore = 0;
-            this.game.rightScore = 0;
             swapToFullScreen();
-            this.gameState.switchGameToLoading();
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
             this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
@@ -1044,7 +1043,12 @@ class Arena extends THREE.Mesh {
             this.idleCameraAnimation();
             this.resetUI();
             this.game.sendDataToBack();
-            // endGame();
+            
+            // display back the panel
+            this.gameState.inGame = false;
+            this.gameState.inLobby = true; 
+            console.log("resetPositions");
+            endGame(this.game.tournamentGame);
         });
         let targetLight = loserPaddle.defaultLight;
         if (this.getCurrentMap() === this.dragonMap)
@@ -3222,8 +3226,9 @@ class Game {
         // INPUT (arenaPage.js)
         this.effectsOnly = false;
         this.powerUpsActivated = true;
-        this.thirdPlayer = true;
+        this.thirdPlayer = false;
         this.hasToBeInitialized = false;
+        this.tournamentGame = false;
         // next variables are all to be inputed in string format
         this.user1 = new UserStats(false); // User1 is the left paddle
         this.user2 = new UserStats(false); // User2 is the right paddle
@@ -3244,19 +3249,21 @@ class Game {
     sendDataToBack()
     {
         this.updateGameMode(); // ne pas enlever
-        console.log("game finished, data to send to back:");
-        console.log("user1 = ", this.user1);
-        console.log("user2 = ", this.user2);
-        console.log("user3 = ", this.user3);
-        console.log("map = ", this.map);
-        console.log("game mode = ", this.gameMode);
-        this.resetUsers();
+        // console.log("game finished, data to send to back:");
+        // console.log("user1 = ", this.user1);
+        // console.log("user2 = ", this.user2);
+        // console.log("user3 = ", this.user3);
+        // console.log("map = ", this.map);
+        // console.log("game mode = ", this.gameMode);
+        // this.resetUsers();
     }
     resetUsers()
     {
         this.user1.reset();
         this.user2.reset();
         this.user3.reset();
+        this.leftScore = 0;
+        this.rightScore = 0;
     }
     updateGameMode()
     {
@@ -3513,6 +3520,7 @@ function animate()
         TWEEN.update();
         if (gameState.inGame)
         {
+            // console.log("inGame");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();
