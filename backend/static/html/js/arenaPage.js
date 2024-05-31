@@ -188,14 +188,8 @@ function    initGame(gameState) {
     }
 
     // choose map
-    if (mapCounter === 0)
-        gameState.arena.game.map = 'spaceMap';
-    if (mapCounter === 1)
-        gameState.arena.game.map = 'oceanMap';
-    if (mapCounter === 2)
-        gameState.arena.game.map = 'skyMap';
-    if (mapCounter === 3)
-        gameState.arena.game.map = 'dragonMap';
+    const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
+    gameState.arena.game.map = mapList[mapCounter];
 
     // toggle third player
     if (playerNb === 2)
@@ -310,9 +304,10 @@ function addEventListenerToTiles() {
             playerNb++;
             const newObj = createUserInfoObject(tile.HTMLelement, i);
             if (plusClicked === 1)
-                addUserToMatch(tile.user.id, tile.user.id, 1);
+                addUserToMatch(tile.user.id, tile.user.id, tile.user.profile_picture, 1);
             else
-                addUserToMatch(tile.user.id, tile.user.id, 0);
+                addUserToMatch(tile.user.id, tile.user.id, tile.user.profile_picture, 0);
+              console.log("user add:", tile.user);
             const oldObj = plusButtons[plusClicked - 1];
             oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
             resetGlow();
@@ -346,11 +341,12 @@ function addEventListenerToTiles() {
 
 const matchPlayer = [];
 
-function addUserToMatch(playerId, username, thirdPlayer) {
+function addUserToMatch(playerId, username, profile_picture, thirdPlayer) {
     if (!matchPlayer.some(player => player.username === username)) {
         matchPlayer.push({
           playerId: playerId,
           username: username,
+          profile_picture: profile_picture,
           thirdPlayer: thirdPlayer,
         });
     }
@@ -454,7 +450,7 @@ export function RenderAllUsersTournament(users) {
     usernameElement.textContent = user.username;
     const pictureElement = document.getElementById('player1MatchPicture');
     pictureElement.src = user.profile_picture;
-    addUserToMatch(user.id, user.username, 0);
+    addUserToMatch(user.id, user.username, user.profile_picture, 0);
   }
 
   import { addUserToTournament } from "../../tournament/js/newTournament.js";
@@ -464,7 +460,7 @@ export function RenderAllUsersTournament(users) {
     usernameElement.textContent = user.username;
     const pictureElement = document.getElementById('player1TournamentPicture');
     pictureElement.src = user.profile_picture;
-    addUserToTournament(user.id, user.username);
+    addUserToTournament(user.id, user.username, user.profile_picture);
   }
 
 const backButtonArenaPage = document.querySelector(".planetBackButton");
