@@ -1047,7 +1047,6 @@ class Arena extends THREE.Mesh {
             // display back the panel
             this.gameState.inGame = false;
             this.gameState.inLobby = true; 
-            console.log("resetPositions");
             endGame(this.game.tournamentGame);
         });
         let targetLight = loserPaddle.defaultLight;
@@ -3248,7 +3247,7 @@ class Game {
     }
     sendDataToBack()
     {
-        this.updateGameMode(); // ne pas enlever
+        // this.updateGameMode(); // ne pas enlever
         // console.log("game finished, data to send to back:");
         // console.log("user1 = ", this.user1);
         // console.log("user2 = ", this.user2);
@@ -3265,15 +3264,7 @@ class Game {
         this.leftScore = 0;
         this.rightScore = 0;
     }
-    updateGameMode()
-    {
-        if (!this.powerUpsActivated)
-            this.gameMode = 'powerless';
-        else if (this.effectsOnly)
-            this.gameMode = 'effectsOnly';
-        else
-            this.gameMode = 'classic';
-    }
+
 }
 
 class GameState {

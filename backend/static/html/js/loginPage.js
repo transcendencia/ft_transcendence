@@ -230,6 +230,24 @@ function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc
         bg2Color = '#00ab00c0';
     }
 
+    // const serverDate = new Date(date);
+    // const userLocale = navigator.language || 'en-US';
+    // console.log(serverDate);
+    // console.log(userLocale);
+    // const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // console.log(userTimeZone);
+    // const options = {
+    //     year: 'numeric',
+    //     month: 'numeric',
+    //     day: 'numeric',
+    //     hour: 'numeric',
+    //     minute: 'numeric',
+    //     timeZone: userTimeZone,
+    // };
+    // const formattedDate = new Intl.DateTimeFormat(userLocale, options).format(serverDate);
+    // console.log(formattedDate);
+
+
     const matchBlock = document.createElement('div');
     matchBlock.classList.add('matchBlock');
     matchBlock.style.borderColor = borderColor;
