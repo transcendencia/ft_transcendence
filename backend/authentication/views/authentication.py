@@ -42,6 +42,7 @@ def login_page(request):
       user.status = 'online'
       user.is_host = True
       user.save()
+
       return  Response({'status': "succes", 'token': token.key, 'language': user.language, 'message': "You are now logged in!\nPress [E] to enter the galaxy"})
     else:
       return  Response({'status': "failure", 'message': "Username and/or password invalid"})
@@ -53,7 +54,6 @@ def login_page(request):
 @api_view(['POST']) 
 @permission_classes([AllowAny])  
 def signup(request):
-  print("je suis dans sign up", request.data) #LOG
   new_language = request.POST.get("language") #on valide ?
 
   serializer = SignupSerializer(data=request.data)
@@ -62,8 +62,6 @@ def signup(request):
     user = User(username=user_data['username'], language=new_language)
     user.set_password(user_data['password'])
     user.save()
-    print(user.username, user.id)
     return Response({'status': "success", "message": "User created You may now log in"}, status=status.HTTP_200_OK)
   first_error = next(iter(serializer.errors.values()))[0]
-  print(first_error)
   return Response({'status': "failure", "message": first_error})
