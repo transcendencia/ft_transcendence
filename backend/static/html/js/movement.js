@@ -90,7 +90,7 @@ function startBoost() {
         boostedMoveSpeed = moveSpeed * 5;
         boostStartTime = Date.now();
         boost = true;
-        lobbyVisuals.afterImagePass.uniforms.damp.value = 0.95;
+        lobbyVisuals.activateSpeedEffect();
         smoothBoost();
     }
 }
@@ -118,8 +118,10 @@ function smoothBoost() {
 
 function endBoost() {
     moveSpeed = originalMoveSpeed;
-    boost = false;
-    lobbyVisuals.afterImagePass.uniforms.damp.value = 0;
+    lobbyVisuals.deactivateSpeedEffect();
+    setTimeout(() => {
+        boost = false;
+    }, 500);
 }
 
 function spaceShipMovement() {
