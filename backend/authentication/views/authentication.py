@@ -62,6 +62,6 @@ def signup(request):
     user = User(username=user_data['username'], language=new_language)
     user.set_password(user_data['password'])
     user.save()
-    return Response({'status': "success", "message": "User created You may now log in"}, status=status.HTTP_200_OK)
+    return Response({'status': "success", "message": "User created You may now log in", "msg_code": "successfulSignup"}, status=status.HTTP_200_OK)
   first_error = next(iter(serializer.errors.values()))[0]
   return Response({'status': "failure", "message": first_error})

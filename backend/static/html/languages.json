@@ -10,6 +10,7 @@
         "createAnAccount": "Create an account",
         "confirmPassword": "Confirm password",
         "backToLogin": "Back to login",
+        "successfulSignup": "User created You may now log in",
 
         "gamemodeNameText1": "Classic",
         "gamemodeNameText2": "Powerless",
@@ -63,6 +64,7 @@
         "createAnAccount": "Crea una cuenta",
         "confirmPassword": "Confirma la contraseña",
         "backToLogin": "Volver",
+        "successfulSignup": "Usario creado puedes conectarse ahora",
 
         "gamemodeNameText1": "Clasico",
         "gamemodeNameText2": "Sin Poderes",
@@ -114,6 +116,7 @@
         "createAnAccount": "Cree un compte",
         "confirmPassword": "confirmer mot de passe",
         "backToLogin": "Retour",
+        "successfulSignup": "Utilisateur cree vous pouvez vous connecter",
 
         "gamemodeNameText1": "Classique",
         "gamemodeNameText2": "Sans Pouvoirs",
