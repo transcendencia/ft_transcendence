@@ -105,6 +105,8 @@
 
 .plusPlayer:hover {
     background-color: rgb(50,50,50);
+    cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+
 }
 
 .movingSpaceShip1 {
@@ -179,6 +181,7 @@
     flex-direction: row;
     height: 20%;
     width: 98%;
+
 }
 
 .optionButton {
@@ -211,6 +214,8 @@
 .buttonTitle img {
     height: 120%;
     width: auto;
+    cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+
 }
 
 .buttonCont {
@@ -259,6 +264,7 @@
 .redButton:hover {
     background-color: rgb(194, 0, 0);
     box-shadow: 0 0 40px #be1c00;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .pongField {

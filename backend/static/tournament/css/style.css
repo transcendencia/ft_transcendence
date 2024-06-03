@@ -124,6 +124,8 @@ body {
 
 .plusPlayerTournament:hover {
   background-color: rgb(50,50,50);
+  cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+
 }
 
 .addPlayer{
@@ -148,7 +150,7 @@ body {
   display: flex; /* Add display flex */
   /* flex-direction: column; */
   align-items: center; /* Vertically center the items */
-  cursor: default;
+  /* cursor: default; */
 }
 .errorMsg{
   height: 3%;
@@ -200,6 +202,7 @@ p{
 .startMatchButton:hover {
   background-color: rgb(194, 0, 0);
   box-shadow: 0 0 40px #be1c00;
+  cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .buttonsContVert {
@@ -240,6 +243,8 @@ p{
 .buttonTitleVert img {
   height: 120%;
   width: auto;
+  cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+
 }
 
 .buttonContVert {

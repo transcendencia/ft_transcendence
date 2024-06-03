@@ -145,7 +145,7 @@
     width: 200px;
     display: flex; /* Add display flex */
     align-items: center; /* Vertically center the items */
-    cursor: default;
+    /* cursor: default; */
 }
 
 .profilePic {
