@@ -127,8 +127,7 @@
     justify-content: center;
     font-size: 15px;
     font-family: 'Space';
-    cursor: pointer;
-}
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;}
 
 .rightBlock {
     border-radius: 10px;
@@ -325,8 +324,7 @@
     background-color: #5d75ff47;
     border: 2px solid #3777ff;
     border-radius: 5px;
-    cursor: pointer;
-}
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;}
 .pencilImg img {
     height: 40px;
     width: 40px;
@@ -346,8 +344,7 @@
     background-color: #5d75ff47;
     border: 2px solid #3777ff;
     border-radius: 5px;
-    cursor: pointer;
-}
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;}
 
 .loupeImg img {
     height: auto;

@@ -264,8 +264,7 @@ button {
   background-color: #080b0e;
   border: none;
   padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
+  cursor: url('../../game/assets/cursor/pointer.cur'), pointer;  border-radius: 5px;
   transition: background-color 0.3s, color 0.3s;
 }
 

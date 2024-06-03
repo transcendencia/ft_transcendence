@@ -105,6 +105,22 @@ const shaderBallMaterial = new THREE.MeshStandardMaterial({
 
 shaderBallMaterial.userData.shader = { uniforms: { uTime: { value: 0 } } };
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Set default cursor for body
+    document.body.style.cursor = "url('../static/game/assets/cursor/default.cur'), auto";
+
+    // Set cursor for all links
+    let links = document.querySelectorAll('backButton');
+    links.forEach(function(link) {
+        link.style.cursor = "url('../static/game/assets/cursor/pointer.cur'), pointer";
+    });
+
+    // Set cursor for all buttons
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach(function(button) {
+        button.style.cursor = "url('../static/game/assets/cursor/pointer.cur'), pointer";
+    });
+});
 // LOADING SCREEN
 class LoadingScreen {
     constructor() {
