@@ -1,17 +1,19 @@
 import { togglePlanet } from './enterPlanet.js';
-import { userList, getCookie} from './loginPage.js';
-import { createMatchBlock } from './loginPage.js';
+import { userList, getCookie, createMatchBlock} from './loginPage.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
 const statsScreen = document.querySelector('.statsBlock');
 const colorClicked = '#5d75ff47';
 
-statsButtons.forEach((button) => {
+statsButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
-        statsButtons.forEach((button) => {
-            button.style.backgroundColor = 'transparent';
-        });
-        button.style.backgroundColor = colorClicked;
+      if (index < 3)
+        for (let i = 0; i < 3; i++)
+            statsButtons[i].style.backgroundColor = 'transparent';
+      else
+        for (let i = 3; i < 6; i++)
+          statsButtons[i].style.backgroundColor = 'transparent';
+      button.style.backgroundColor = colorClicked;
     });
 });
 
@@ -26,7 +28,7 @@ statsButtons.forEach((button) => {
 
   let pageDisplayed = "hostProfile";
 
-  backButtonUserPage.addEventListener('click', () => {
+ export function returnToHost() {
     if (pageDisplayed === "userProfile") {
       searchedUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";    
       hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
@@ -37,7 +39,12 @@ statsButtons.forEach((button) => {
       modifyUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
       pageDisplayed = "hostProfile";
     }
-    else togglePlanet();
+  }
+
+  backButtonUserPage.addEventListener('click', () => {
+    if (pageDisplayed === "hostProfile")
+      togglePlanet();
+    else returnToHost();
   });
 
   modifyInfoButton.addEventListener('click', () => {
@@ -51,12 +58,21 @@ statsButtons.forEach((button) => {
 
   let inputElement = document.getElementById("searchInput");
 
-  function slideAnimations() {
+  function slideAnimations(user) {
       if (pageDisplayed === "hostProfile") {
         searchedUserPage.style.display = 'flex';
         userPagesContainer.style.flexDirection = "row";
         searchedUserPage.style.animation = "slideUserPage 1s forwards ease-in-out";    
         hostUserPage.style.animation = "slideUserPage 1s forwards ease-in-out";
+        pageDisplayed = "userProfile";
+      }
+      else if (pageDisplayed === "modifyPage") {
+        setTimeout(() => {
+          searchedUserPage.style.display = 'flex';
+          userPagesContainer.style.flexDirection = "row";
+        },500)
+        searchedUserPage.style.animation = "slideDiagonally 0.5s forwards ease-in-out";    
+        modifyUserPage.style.animation = "slideDiagonally 0.5s forwards ease-in-out";
         pageDisplayed = "userProfile";
       }
       else {
@@ -65,7 +81,6 @@ statsButtons.forEach((button) => {
           searchedUserPage.style.animation = "slideUserPageUpp 0.25s forwards ease-out";
         }, 250);
       }
-      // else displayOtherUser(){}
   }
 
   const userListBackground = document.getElementById('userlistUserPage');
@@ -96,7 +111,7 @@ statsButtons.forEach((button) => {
     // });
 
     // Assuming user has stats properties: games, wins, losses, goals
-    const statsBlock = document.querySelector('.winLoseTexts2');
+    const statsBlock = document.getElementById('winLoseTexts2');
     statsBlock.innerHTML = `
         <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : ${user.games}</div>
         <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : ${user.wins}</div>
@@ -125,7 +140,6 @@ function getHistoryMatchPlayer2(user) {
     return response.json();
   })
   .then(data => {
-    console.log(data, user.id);
     data.games.forEach(game => {
       let winner = false;
       let player1;
@@ -164,9 +178,6 @@ function getHistoryMatchPlayer2(user) {
   });
 }
 
-const userTilesProfile = [];
-
-// Function to render user tiles based on search query
 function RenderUsersSearched(query) {
     userListBackground.innerHTML = ''; // Clear existing user tiles
 
@@ -191,7 +202,8 @@ function RenderUsersSearched(query) {
       loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
       loupeContainer.addEventListener('click', () => {
         slideAnimations(loupeContainer);
-        fillSearchedUserPage(user);
+        setTimeout(() => {
+        fillSearchedUserPage(user);}, 125)
       });
       
       userTile.appendChild(imgContainer);

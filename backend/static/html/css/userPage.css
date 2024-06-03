@@ -64,6 +64,11 @@
     to {transform: translateY(0);}
 }
 
+@keyframes slideDiagonally {
+    from {transform: translateY(-100%) translateX(0);}
+    to {transform: translateY(0) translateX(-100%);}
+}
+    
 .statsBlock {
     border-radius: 10px;
     background-color: #5d75ff47;
@@ -149,10 +154,11 @@
     align-items: center;
     justify-content: flex-start;
     flex-direction: column;
-    height: 85%;
+    height: 320px;
     width: 100%;
     overflow-y: auto;
-    overflow-x: hidden; 
+    overflow-x: hidden;
+    flex-grow: 0;
 }
 
 .matchBlock {
@@ -162,10 +168,13 @@
     border-radius: 10px;
     width: 97%;
     height: 25%;
+    max-height: 25%;
     display: flex;
     justify-content: space-evenly;
     align-items: flex-end;
     flex-direction: column;
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 .firstLine{
