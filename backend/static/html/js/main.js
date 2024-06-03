@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { showPage } from './showPages.js';
-import {spaceShip, spaceShipInt, allModelsLoaded} from "./objs.js";
+import {spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
@@ -15,8 +15,8 @@ import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
-import { mixer1, mixer2, mixer3} from './objs.js';
 import { userList } from './loginPage.js';
+import { returnToHost } from './userPage.js'
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -403,7 +403,6 @@ function toggleEscapeContainerVisibility() {
     }
 }
 
-
 let pauseGame = false;
 
 document.addEventListener('keydown', (event) => {
@@ -424,6 +423,7 @@ document.addEventListener('keydown', (event) => {
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
             togglePlanet();
+            returnToHost();
             return;
         }
         else if (inCockpit) {
