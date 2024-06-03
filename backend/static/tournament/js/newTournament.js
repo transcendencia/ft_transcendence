@@ -2,6 +2,15 @@ import { createGame } from "./gameData.js";
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { switchToGame } from "../../html/js/arenaPage.js";
+import { userTilesTournament } from "../../html/js/arenaPage.js";
+import { createUserInfoObject } from "../../html/js/arenaPage.js";
+import { displayRemovePlayerVisual } from "../../html/js/arenaPage.js";
+import { resetToPlusButton } from "../../html/js/arenaPage.js";
+import { resetUserInfoVisual } from "../../html/js/arenaPage.js";
+import { blue } from "../../html/js/arenaPage.js";
+import { purple } from "../../html/js/arenaPage.js";
+import { grey } from "../../html/js/arenaPage.js";
+import { lightGrey } from "../../html/js/arenaPage.js";
 
 //affichage info
 
@@ -69,11 +78,6 @@ buttonHeaders.forEach((buttonHeader, index) => {
 });
 
 //ajout des users au tournois
-
-import { blue } from "../../html/js/arenaPage.js";
-import { purple } from "../../html/js/arenaPage.js";
-import { grey } from "../../html/js/arenaPage.js";
-import { lightGrey } from "../../html/js/arenaPage.js";
 
 const userlist = document.querySelector(".userlistBackground");
 
@@ -168,11 +172,6 @@ plusButtons.forEach(function(plusButton, i) {
   });
 });
 
-import { userTilesTournament } from "../../html/js/arenaPage.js";
-import { createUserInfoObject } from "../../html/js/arenaPage.js";
-import { displayRemovePlayerVisual } from "../../html/js/arenaPage.js";
-import { resetToPlusButton } from "../../html/js/arenaPage.js";
-import { resetUserInfoVisual } from "../../html/js/arenaPage.js";
 
 export function addEventListenerToTilesTournament() {
   userTilesTournament.forEach((tile, i) => {
@@ -242,6 +241,20 @@ export function addEventListenerToTilesTournament() {
     }
   }
 
+  const thirdPlayerElement = document.querySelector(".plusThirdPlayer");
+  thirdPlayerElement.addEventListener("click", function() { 
+    if (thirdPlayerMode === false){
+      thirdPlayerElement.style.backgroundColor= "rgb(220, 220, 220)";
+      thirdPlayerElement.style.border= "5px solid rgb(40, 40, 40)";
+      thirdPlayerMode = true;
+    }
+    else {
+      thirdPlayerElement.style.backgroundColor= "rgb(20, 20, 20)";
+      thirdPlayerElement.style.border= "5px solid white";
+      thirdPlayerMode = false;
+    }
+  });
+
   function getRandomNumber(tournamentPlayer, player1, player2) {
     let number;
     do {
@@ -253,7 +266,7 @@ export function addEventListenerToTilesTournament() {
   let currentMatch = [];
   let round = 1;
   let nbMatch;
-  let thirdPlayerMode = 1; //must be removed to use the real variable
+  let thirdPlayerMode = false; //must be removed to use the real variable
   let gameMode;
   let map;
 
@@ -540,12 +553,12 @@ export function addEventListenerToTilesTournament() {
     bracketElement.style.display = "inline";
     nextMatchElement.style.display = "inline";
     matchElement.style.display = "inline";
-    const leftColumnElement = document.getElementById("leftColumn");
-    const midColumnElement = document.getElementById("midColumn");
-    const rightColumnElement = document.getElementById("rightColumn");
-    leftColumnElement.style.width = "0%";
-    midColumnElement.style.width = "30%";
-    rightColumnElement.style.width = "70%";
+    // const leftColumnElement = document.getElementById("leftColumn");
+    // const midColumnElement = document.getElementById("midColumn");
+    // const rightColumnElement = document.getElementById("rightColumn");
+    // leftColumnElement.style.width = "0%";
+    // midColumnElement.style.width = "30%";
+    // rightColumnElement.style.width = "70%";
     printBracket();
   });
 
