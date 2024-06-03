@@ -245,11 +245,13 @@ export function addEventListenerToTilesTournament() {
   thirdPlayerElement.addEventListener("click", function() { 
     if (thirdPlayerMode === false){
       thirdPlayerElement.style.backgroundColor= "rgb(220, 220, 220)";
+      thirdPlayerElement.style.color= "rgb(220, 220, 220)";
       thirdPlayerElement.style.border= "5px solid rgb(40, 40, 40)";
       thirdPlayerMode = true;
     }
     else {
       thirdPlayerElement.style.backgroundColor= "rgb(20, 20, 20)";
+      thirdPlayerElement.style.color= "rgb(20, 20, 20)";
       thirdPlayerElement.style.border= "5px solid white";
       thirdPlayerMode = false;
     }

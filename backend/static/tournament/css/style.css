@@ -246,7 +246,7 @@ p{
 
 .plusThirdPlayer {
   font-family: "computer";
-  font-size: 80px;
+  font-size: 10px;
   color: rgb(20, 20, 20);
   background-color: rgb(20, 20, 20);
   border: 5px solid white;
@@ -261,6 +261,7 @@ p{
 
 .plusThirdPlayer:hover {
   background-color: rgb(50,50,50);
+  color: rgb(50,50,50);
 }
 
 .buttonTitleVert {
