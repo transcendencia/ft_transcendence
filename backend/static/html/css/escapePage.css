@@ -60,6 +60,7 @@
     border: solid 5px white;
     transition: box-shadow 0.5s ease, border-color 0.5s ease;
     overflow: hidden;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .pauseTitle img{
