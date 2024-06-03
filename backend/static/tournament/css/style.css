@@ -145,6 +145,11 @@ body {
 .errorMsg{
   height: 3%;
   width: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  padding-right: 110px;
+  padding-top: 10px;
 }
 
 .matchInfo{
@@ -173,6 +178,28 @@ p{
   color: white;
   font-family: 'Space';
   padding-top: 5px;
+}
+
+.startTournamentButton {
+  text-align: center;
+  font-size: 30px;
+  color: white;
+  font-family: 'Space';
+  border-radius: 5px;
+  padding: 10px 10px;
+  background-color: rgb(161, 0, 0);
+  border: 5px solid rgb(255, 255, 255);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85px;
+  width: 225px;
+}
+
+.startTournamentButton:hover {
+  background-color: rgb(194, 0, 0);
+  box-shadow: 0 0 40px #be1c00;
+  cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .startMatchButton {
@@ -240,8 +267,8 @@ p{
 .rightColumnBottomRight {
   padding-left: 50px;
   display: flex;
-  justify-content: center;
-  align-items: start;
+  justify-content: start;
+  align-items: center;
   flex-direction: row;
   height: 100%;
   width: 40%;
@@ -249,22 +276,21 @@ p{
 
 .plusThirdPlayer {
   font-family: "computer";
-  font-size: 10px;
-  color: rgb(20, 20, 20);
+  font-size: 35px;
+  color: white;
   background-color: rgb(20, 20, 20);
   border: 5px solid white;
   display: flex;
   justify-content: center;
-  align-items: start;
+  align-items: center;
   border-radius: 50%;
-  height: 80px;
-  width: 80px;
+  height: 70px;
+  width: 70px;
   z-index: 90;
 }
 
 .plusThirdPlayer:hover {
-  background-color: rgb(50,50,50);
-  color: rgb(50,50,50);
+  cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .buttonTitleVert {

@@ -194,7 +194,7 @@ function handleLogin(event) {
 import { RenderUserMatch } from "./arenaPage.js";
 import { RenderUserTournament } from "./arenaPage.js";
 
-function getProfileInfo() {
+export function getProfileInfo() {
 	const token = localStorage.getItem('host_auth_token');
 		fetch('get_profile_info/', {
 		    method: 'GET',
@@ -410,6 +410,7 @@ export function get_user_list() {
     .then(data => {
         userList = data;
         RenderAllUsersInList(data);
+        RenderAllUsersTournament(data);
         RenderAllUsersTournament(data);
     })
     .catch(error => console.error('Error:', error));
