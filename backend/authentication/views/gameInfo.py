@@ -7,6 +7,7 @@ from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 from django.http import JsonResponse
 from django.utils import timezone
 from django.template.response import TemplateResponse
+from django.db.models import Q
 
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
@@ -38,6 +39,21 @@ def get_game_list(request):
     serializers = GameListSerializer(games, many=True)
     return Response(serializers.data)
 
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_game_player2(request):
+  if request.method == 'POST':
+    host = request.user
+    data = json.loads(request.body)
+    games = Game.objects.filter(player1=(data.get("id"))).union(Game.objects.filter(player2=(data.get("id")))).order_by('-date')
+    serializers = GameListSerializer(games, many=True)
+    response_data = {
+        'host_id': host.id,
+        'games': serializers.data
+    }
+    return Response(response_data)
+  
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -51,7 +67,6 @@ def get_game_user(request):
         'games': serializers.data
     }
     return Response(response_data)
-
 
 def add_game(request):
   if request.method == 'POST':

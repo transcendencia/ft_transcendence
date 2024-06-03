@@ -104,7 +104,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden; /* Ensure text input doesn't overflow */
-    cursor: default;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .backButton:hover {
