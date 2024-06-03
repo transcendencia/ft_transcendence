@@ -22,6 +22,7 @@ urlpatterns = [
     path('get_profile_info/', updateUserInfo.get_profile_info, name="get_profile_info"),
     path('user_list/', updateUserInfo.user_list, name="user_list"),
     path('get_user_list/', updateUserInfo.get_user_list, name="get_user_list"),
+    path('get_game_player2/', gameInfo.get_game_player2, name="get_game_player2"),
     
     #friendship.py
 

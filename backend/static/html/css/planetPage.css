@@ -39,7 +39,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden; 
-    cursor: pointer;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 /* .planetPanel img:first-child{

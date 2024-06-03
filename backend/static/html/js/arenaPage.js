@@ -240,6 +240,8 @@ const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
     let player2;
     let player3;
+    if (matchPlayer.length < 2)
+        return;
     if (matchPlayer.length === 2){
         player2 = matchPlayer[1];
         player3 = "";

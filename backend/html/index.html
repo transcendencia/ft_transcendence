@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{% static '../static/html/css/arenaPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/SignUpPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/userPage.css' %}">
+    <link rel="stylesheet" href="{% static '../static/html/css/modifyPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/game/style/style.css' %}">
     <link rel="stylesheet" href="{% static '../static/tournament/css/style.css' %}">
     <link rel="stylesheet" href="{% static '../static/tournament/css/bracket.css' %}">
@@ -256,7 +257,7 @@
     <div class="planetPanel">
       <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
       <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
-      <div class="background blueShadowfilter" style="flex-direction: column; ">
+      <div class="background blueShadowfilter" style="flex-direction: column;">
         <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white; margin-top: -15px;"> Profile </div>
         <div class="userPage">
           <div class="userPagesContainer">
@@ -289,32 +290,28 @@
                      <div class="statButton" style="border-radius: 0px;">Stat2</div>
                      <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
                     </div>
-                  </div>
+                  </div>A
                 </div>
                 <div class="rightBlock">
                 <div id="historyText" style="font-size: 20px; font-family: 'space'; color: white; margin-bottom: 4px">History</div>
-                  <div class="history">
+                  <div id="hostHistory" class="history">
                   </div>
                 </div>
               </div>
               <div class="statsBlock"></div>
               </div>
-              <div id="exploreUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0">
+              <div id="searchedUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0">
                 <div class="aboveStatsBlock">
                   <div class="leftBlock">
                     <div class="userInfoBlock">
                       <div class="nameImgBlock" id="profile_info">
-                        <div class="imgFrame"><img id="profile_pic" src="" alt="Photo de profil"></div> <!-- Photo de profil-->
+                        <div class="imgFrame"><img id="profile_pic2"></div> <!-- Photo de profil-->
                         <div class="mail-pseudo-info">
-                          <div id="username" style="color: rgb(255, 255, 255); "></div> <!-- Username -->
-                          <div id="bio" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
-                        </div>
-                        <div class="pencilImg">
-                          <!-- <button class="pencil" onclick="showPage()"></button> -->
-                          <img src="{% static 'html/assets/icons/pencil.png' %}">
+                          <div id="username2" style="color: rgb(255, 255, 255); "></div> <!-- Username -->
+                          <div id="bio2" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
                         </div>
                       </div>
-                      <div class="winLoseTexts">
+                      <div class="winLoseTexts2">
                           <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 13</div> 
                           <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 5</div> 
                           <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 8</div>
@@ -332,50 +329,14 @@
                   </div>
                   <div class="rightBlock">
                   <div id="historyText" style="font-size: 20px; font-family: 'space'; color: white; margin-bottom: 4px">History</div>
-                    <div class="history">
+                    <div id="searchedUserHistory" class="history">
                     </div>
                   </div>
                 </div>
                 <div class="statsBlock"></div>
               </div>
-              <div id="exploreUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0">
-                <div class="aboveStatsBlock">
-                  <div class="leftBlock">
-                    <div class="userInfoBlock">
-                      <div class="nameImgBlock" id="profile_info">
-                        <div class="imgFrame"><img id="profile_pic" src="" alt="Photo de profil"></div> <!-- Photo de profil-->
-                        <div class="mail-pseudo-info">
-                          <div id="username" style="color: rgb(255, 255, 255); "></div> <!-- Username -->
-                          <div id="bio" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
-                        </div>
-                        <div class="pencilImg">
-                          <!-- <button class="pencil" onclick="showPage()"></button> -->
-                          <img src="{% static 'html/assets/icons/pencil.png' %}">
-                        </div>
-                      </div>
-                      <div class="winLoseTexts">
-                          <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 13</div> 
-                          <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 5</div> 
-                          <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 8</div>
-                          <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : 33</div>
-                        </div>
-                      </div>
-                    <div class="statsModesBlock">
-                     <p>statistics</p> 
-                     <div class="statsModes">
-                       <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
-                       <div class="statButton" style="border-radius: 0px;">Stat2</div>
-                       <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="rightBlock">
-                  <div id="historyText" style="font-size: 20px; font-family: 'space'; color: white; margin-bottom: 4px">History</div>
-                    <div class="history">
-                    </div>
-                  </div>
-                </div>
-                <div class="statsBlock"></div>
+              <div class="modifyPage">
+
               </div>
           </div>
           <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between; flex-shrink: 0;">
@@ -390,7 +351,11 @@
       </div>
     </div>
   </div>
-</div>
+
+
+
+
+
 
     <!-- TOURNAMENT PLANET  -->
     <div class="planetPanel">
@@ -713,7 +678,7 @@
       <div class="redButton" id="disconnectButton" style="margin-top: -30px;width: 35%; height: 8%;">Disconnect</div>
     </div>
     </div>
-
+    
     <!-- GAME STUFF -->
   <div class="bluebar glow"></div>
   <div class="gameUI">
@@ -739,9 +704,9 @@
       <div class="elemCont">
         <div class="userInfoCont">
           <div class="profilePic">
-            <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+            <img id= pp1 src="{% static 'html/assets/icons/ES_NU.png' %}">
           </div>
-          AtomiK
+          <div id="username1Text" style="color: rgb(255, 255, 255); ">AtomiK</div>
         </div>
       </div>
     </div>
@@ -749,20 +714,18 @@
     <div class="elemCont">
         <div class="userInfoCont">
           <div class="profilePic">
-            <img src="{% static 'html/assets/icons/BR_NU.png' %}" style="transform: scaleX(-1);">
+            <img id = pp2 src="{% static 'html/assets/icons/BR_NU.png' %}" style="transform: scaleX(-1);">
           </div>
-          <p style="transform: scaleX(-1);">
-            TonDaron
-          </p>
+            <div id="username2Text" style="color: rgb(255, 255, 255); transform: scaleX(-1); ">TonDaron</div>
         </div>
       </div>
     </div>
     <div class="profileCont3" style="transform: translate(-50%, -50%) scale(0.7);">
         <div class="userInfoCont">
           <div class="profilePic">
-            <img src="{% static 'html/assets/icons/FR_NU.png' %}">
+            <img id= pp3 src="{% static 'html/assets/icons/FR_NU.png' %}">
           </div>
-          blipbloup
+          <div id="username3Text" style="color: rgb(255, 255, 255); ">TonDaron</div>
         </div>
     </div>
   </div>
