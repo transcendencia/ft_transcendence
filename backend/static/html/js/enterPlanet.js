@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
 export let landedOnPlanet = false;
-import { resetTournament, tournamentState } from '../../tournament/js/newTournament.js';
+import { resetTournament, tournamentState, addEventListenersToPlusButtons } from '../../tournament/js/newTournament.js';
 import { resetToPlusButton } from './arenaPage.js';
 
 let planetPanel = document.querySelectorAll(".planetPanel");
@@ -46,6 +46,8 @@ export function togglePanelDisplay() {
     if (landedOnPlanet && planetInRange.name == "tournament") {
         if (tournamentState === 2)
             resetTournament();
+        else
+            addEventListenersToPlusButtons();
         anim = setTimeout(function () {triggerInfiniteAnim(imagesTournament[0], imagesTournament[1])}, 2000);
         planetPanel[2].style.animation = "roll 2s forwards";
         imagesTournament[0].style.animation = "moveImageRight 2s forwards";

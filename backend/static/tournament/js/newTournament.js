@@ -78,9 +78,12 @@ buttonHeaders.forEach((buttonHeader, index) => {
     });
 });
 
+let plusButtons = document.querySelectorAll(".plusPlayerTournament");
+
+
 export function resetTournament() {
   document.querySelectorAll('.before-launch').forEach(function(el) {
-    el.style.display = 'inline';
+    el.style.display = 'flex';
   });
   launchMatchElement.style.display = "none";
   bracketElement.style.display = "none";
@@ -100,13 +103,17 @@ export function resetTournament() {
   get_user_list();
   resetPlusButton();
   resetBracket();
+  plusButtons = document.querySelectorAll(".plusPlayerTournament");
+  plusButtons.forEach(function(otherPlusButton) {
+    otherPlusButton.style.pointerEvents = 'auto';
+  });
+  addEventListenersToPlusButtons();
 }
 
 //ajout des users au tournois
 
 const userlist = document.querySelector(".userlistBackground");
 
-const plusButtons = document.querySelectorAll(".plusPlayerTournament");
 let profileAddedToTournament = [];
 let plusClickedTournament = false
 const botID = 0;
@@ -173,30 +180,32 @@ function setAddingModeTournament(plusButton, i) {
   });
 }
 
-plusButtons.forEach(function(plusButton, i) {
-  plusButton.addEventListener('click', function () {
+export function addEventListenersToPlusButtons() {
+  plusButtons.forEach(function(plusButton, i) {
+    plusButton.addEventListener('click', function () {
       if (!plusClickedTournament) {
-          setAddingModeTournament(plusButton, i);
-          GlowTournament();
-          plusButton.style.backgroundColor = lightGrey;
-      }
-      else {
-          resetAddingModeTournament(plusButton);
-          resetGlowTournament();
-          plusButton.style.backgroundColor = grey;
-      }
+            setAddingModeTournament(plusButton, i);
+            GlowTournament();
+            plusButton.style.backgroundColor = lightGrey;
+        }
+        else {
+            resetAddingModeTournament(plusButton);
+            resetGlowTournament();
+            plusButton.style.backgroundColor = grey;
+        }
+    });
+    //Hovering
+    plusButton.addEventListener('mouseenter', function () {
+        if (!plusClickedTournament)
+            plusButton.style.backgroundColor = lightGrey;
+    });
+  
+    plusButton.addEventListener('mouseleave', function () {
+        if (!plusClickedTournament)
+            plusButton.style.backgroundColor = grey;
+    });
   });
-  //Hovering
-  plusButton.addEventListener('mouseenter', function () {
-      if (!plusClickedTournament)
-          plusButton.style.backgroundColor = lightGrey;
-  });
-
-  plusButton.addEventListener('mouseleave', function () {
-      if (!plusClickedTournament)
-          plusButton.style.backgroundColor = grey;
-  });
-});
+}
 
 export function resetPlusButton() {
   let addPlayerElements = document.querySelectorAll('.addPlayer');
@@ -204,11 +213,17 @@ export function resetPlusButton() {
   addPlayerElements.forEach((element, index) => {
     if (index === 0)
       return;
-    let playerNumber = index + 2;
+    let playerNumber = index + 1;
     element.innerHTML = `
-      <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
+      <div class="plusPlayerTournament" style="pointer-events: none;">+</div></div>
       <div id="player${playerNumber}Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player ${playerNumber} </div>
     `;
+    // element.innerHTML = `
+    // <div class="addPlayer">
+    //             <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
+    //             <div id="player2Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 2 </div>
+    //           </div>
+    //           `;
   });
 };
 
@@ -489,12 +504,11 @@ export function addEventListenerToTilesTournament() {
   }
 
   function findWinner(){
-    afterGameTournament(3, 0);
-    // if (currentMatch[nbMatch][1]){
-    //   switchToGame(gameState, currentMatch[nbMatch][0].myRef, currentMatch[nbMatch][1].myRef, currentMatch[nbMatch][4].myRef, true);
-    // }
-    // else{
-    //   afterGameTournament(3, 0);
-    // }
+    if (currentMatch[nbMatch][1]){
+      switchToGame(gameState, currentMatch[nbMatch][0].myRef, currentMatch[nbMatch][1].myRef, currentMatch[nbMatch][4].myRef, true);
+    }
+    else{
+      afterGameTournament(3, 0);
+    }
   }
 
