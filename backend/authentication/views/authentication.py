@@ -63,5 +63,12 @@ def signup(request):
     user.set_password(user_data['password'])
     user.save()
     return Response({'status': "success", "message": "User created You may now log in", "msg_code": "successfulSignup"}, status=status.HTTP_200_OK)
+  # irst_error_field = next(iter(serializer.errors))
+    # first_error_message = serializer.errors[first_error_field][0]
   first_error = next(iter(serializer.errors.values()))[0]
+  # print(serializer.errors.values())
+  first_error_field = next(iter(serializer.errors))  # Récupère le premier champ avec une erreur
+  # first_error_message = serializer.errors[first_error_field][0]  # Récupère le premier message d'erreur
+  first_error_code = first_error.code 
+  print(first_error_code)
   return Response({'status': "failure", "message": first_error})
