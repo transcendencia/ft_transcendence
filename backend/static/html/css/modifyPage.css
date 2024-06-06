@@ -6,9 +6,127 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    flex-direction: row;
+    flex-direction: column;
     height: 95%;
     width: 95%;
     overflow: hidden;
 	flex-shrink: 0;
 }
+
+.deleteAccountButton {
+    border: 4px solid #ff3737;
+    background-color: #ff373771;
+    border-radius: 10px;
+    font-size: 20px;
+    font-family: 'space'; 
+    color: #ff3737;
+    /* height: 8%;
+    width: 40%; */
+    height: 50px; /* Utilisez des pixels pour une hauteur fixe */
+    width: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
+.submitChangeButton {
+    border: 4px solid #3777ff;
+    background-color: #3777ff71;
+    border-radius: 10px;
+    font-size: 20px;
+    font-family: 'space'; 
+    color: #3777ff;
+    /* height: 8%;
+    width: 40%; */
+    height: 50px; /* Utilisez des pixels pour une hauteur fixe */
+    width: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px; /*Espace entre les boutons */
+    margin-top: 50px; /*Marge supérieure pour éloigner les boutons du haut de la page*/
+}
+
+.profilePicButton {
+    position: absolute;
+    opacity: 0;
+    left: 0;
+    top: 0;
+    border: 4px solid #3777ff;
+    background-color: #3777ff71;
+    border-radius: 10px;
+    font-size: 20px;
+    font-family: 'space'; 
+    color: #3777ff;
+    /* height: 8%;
+    width: 40%; */
+    height: 50px; /* Utilisez des pixels pour une hauteur fixe */
+    width: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
+.profilePicContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px; /*Espace entre les boutons */
+    margin-top: 50px; 
+}
+
+.text-input3 {
+    position: absolute;
+    width: 50%; /* Match the width of the container */
+    height: 30%; /* Automatically adjust height based on content */
+    background: none;
+    border: none;
+    color: white; /* Set text color to white */
+    font-size: 30px; /* Adjust font size as needed */
+    font-family: "Space";
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center; /* Center text horizontally */
+    outline: none; /* Remove default focus outline */
+    resize: none; /* Remove resize handle */
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.changeInfoBar {
+    border: 4px solid #3777ff;
+    background-color: #000f61b2;
+    border-radius: 10px;
+    height: 8%;
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Ensure text input doesn't overflow */
+}
+
+.changeProfilePicture {
+    /* margin: 30px 30px 30px 30px; */
+    color: white; /* Set text color to white */
+    font-size: 20px; /* Adjust font size as needed */
+    font-family: "Space";
+    text-align: center;
+    /* text-shadow: 
+        -2px -2px 0 black,  
+         2px -2px 0 black,
+        -2px  2px 0 black,
+         2px  2px 0 black; */
+}
+
