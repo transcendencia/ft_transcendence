@@ -40,12 +40,12 @@ class SignupSerializer(serializers.ModelSerializer):
 			raise PasswordValidationError(detail="Password not identical")
 		return value
 
-	def validate_password(self, value):
-		try:
-			validate_password(value)
-		except ValidationError as e:
-			raise PasswordValidationError(detail=e.error_list[0])
-		return value
+	# def validate_password(self, value):
+	# 	try:
+	# 		validate_password(value)
+	# 	except ValidationError as e:
+	# 		raise PasswordValidationError(detail=e.error_list[0])
+	# 	return value
 
 class UpdateInfoSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True, required=False)

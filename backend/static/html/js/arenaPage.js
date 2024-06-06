@@ -3,7 +3,7 @@ import { gameState } from "../../game/js/main.js";
 import { togglePlanet } from "./enterPlanet.js";
 import { afterGameTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
-import { gamemodeCounterTournament } from "../../tournament/js/newTournament.js";
+import { gamemodeCounterTournament, mapCounterTournament } from "../../tournament/js/newTournament.js";
 
 const userlist = document.querySelector(".userlistBackground");
 const plusButtons = document.querySelectorAll(".plusPlayer");
@@ -153,7 +153,6 @@ export function endGame(isTournament) {
         user3 = gameState.arena.game.user3.id
     if (isTournament){
         planetPanel[2].style.visibility = 'visible';
-        console.log("before createGame", gameState.arena.game.gameMode);
         createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode);
         afterGameTournament(gameState.arena.game.leftScore, gameState.arena.game.rightScore);
     }
@@ -193,8 +192,10 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
     setTimeout(() => {    
       gameState.arena.game.hasToBeInitialized = true;
       // choose gameMode
-      if (isTournament)
+      if (isTournament){
         gamemodeCounter = gamemodeCounterTournament;
+        mapCounter = mapCounterTournament;  
+      }
       if (gamemodeCounter === 0) {
           gameState.arena.game.powerUpsActivated = true;
           gameState.arena.game.effectsOnly = false;
@@ -209,14 +210,13 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
       }
       const modeList = ["CLASSIC", "POWERLESS", "SPIN ONLY"];
       gameState.arena.game.gameMode = modeList[gamemodeCounter];
-      console.log(gameState.arena.game.gameMode);
       // choose map
       const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
       gameState.arena.game.map = mapList[mapCounter];
       // add players
       gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
       gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
-      if (player3 !== ""){
+      if (typeof player3 !== "undefined"){
         gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
         gameState.arena.game.thirdPlayer = true;
       }
@@ -455,12 +455,13 @@ export function RenderAllUsersTournament(users) {
     let userListBackground = document.getElementById('userlistTournamentPage');
 
     // clean the list before addinmg all the lines
-    // userListBackground.innerHTML = '';
+    userListBackground.innerHTML = '';
 
-    userTilesTournament.push({
-        user: null,
-        HTMLelement : document.getElementById("botUserTournamentTile"),
-    });
+    //adding the bot to the userTiles
+    // userTilesTournament.push({
+    //     user: null,
+    //     HTMLelement : document.getElementById("botUserTournamentTile"),
+    // });
 
     users.forEach(user => {
         if (user.is_host)

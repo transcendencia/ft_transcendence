@@ -3,7 +3,7 @@ import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { RenderAllUsersInList } from "./arenaPage.js";
+import { RenderAllUsersInList, RenderAllUsersTournament } from "./arenaPage.js";
 
 
 import { startAnimation } from "./main.js";
@@ -195,7 +195,7 @@ function handleLogin(event) {
 import { RenderUserMatch } from "./arenaPage.js";
 import { RenderUserTournament } from "./arenaPage.js";
 
-function getProfileInfo() {
+export function getProfileInfo() {
 	const token = localStorage.getItem('host_auth_token');
 		fetch('get_profile_info/', {
 		    method: 'GET',
@@ -420,6 +420,7 @@ export function get_user_list() {
     .then(data => {
         userList = data;
         RenderAllUsersInList(data);
+        RenderAllUsersTournament(data);
     })
     .catch(error => {
         console.error('Error:', error);
