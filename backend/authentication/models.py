@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.conf import settings
+from django.utils import timezone
 
 class User(AbstractUser):
   language_choices = [
@@ -25,7 +26,7 @@ class User(AbstractUser):
   friends = models.ManyToManyField("self", through="FriendRequest", symmetrical=False, related_name='related_friends', blank=True)
 
   def get_profile_info(self):
-    return {'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url}
+    return {'id': self.id, 'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url}
 
 
 class FriendRequest(models.Model):
@@ -54,6 +55,8 @@ class Game(models.Model):
   scorePlayer1 = models.IntegerField(default=-1)
   scorePlayer2 = models.IntegerField(default=-1)
   gameplayMode = models.CharField(max_length=255)
+  modeGame = models.CharField(max_length=255, default="test")
+  date = models.DateTimeField(default=timezone.now)
 
   def __str__(self):
     return f"{self.gameplayMode}"

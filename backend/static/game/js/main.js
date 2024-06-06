@@ -5,7 +5,6 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
@@ -13,12 +12,13 @@ import { DotScreenShader } from 'three/addons/shaders/DotScreenShader.js';
 import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import { Water } from 'three/addons/objects/Water.js';
-import { Sky } from 'three/addons/objects/Sky.js';
 import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
+import { lobbyVisuals } from '../../html/js/main.js';
+import { gameStarted } from '../../html/js/arenaPage.js';
 // import { gameStarted } from '../../html/js/arenaPage.js';
-// import { endGame } from '../../html/js/arenaPage.js';
+import { endGame } from '../../html/js/arenaPage.js';
 
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
@@ -68,31 +68,7 @@ renderer2.setPixelRatio(window.devicePixelRatio);
 renderer2.setSize(window.innerWidth / 2, window.innerHeight); // Set width to half of window width
 renderer2.render(scene, cameraLeft);
 
-// TORUS THINGY (VERY IOMPORTNATNT)
-// const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
-// const material = new THREE.MeshStandardMaterial({color:0xFFFFFF, wireframe:true});
-// const torus = new THREE.Mesh(geometry, material);
-// scene.add(torus);
-
 let cubeLoader = new THREE.CubeTextureLoader();
-let cubeMapTexture = cubeLoader.load([
-  '../../static/game/texturePlayground/skyMap/nx.jpg',
-  '../../static/game/texturePlayground/skyMap/px.jpg',
-    '../../static/game/texturePlayground/skyMap/py.jpg',
-    '../../static/game/texturePlayground/skyMap/ny.jpg',
-    '../../static/game/texturePlayground/skyMap/nz.jpg',
-    '../../static/game/texturePlayground/skyMap/pz.jpg'
-]);
-
-// scene.background = cubeMapTexture;
-
-let water;
-
-// const waterGeometry = new THREE.PlaneGeometry( 3000, 3000 );
-
-
-
-// scene.add( water );
 
 const shaderBallMaterial = new THREE.MeshStandardMaterial({
     onBeforeCompile: (shader) => {
@@ -129,6 +105,22 @@ const shaderBallMaterial = new THREE.MeshStandardMaterial({
 
 shaderBallMaterial.userData.shader = { uniforms: { uTime: { value: 0 } } };
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Set default cursor for body
+    document.body.style.cursor = "url('../static/game/assets/cursor/default.cur'), auto";
+
+    // Set cursor for all links
+    let links = document.querySelectorAll('backButton');
+    links.forEach(function(link) {
+        link.style.cursor = "url('../static/game/assets/cursor/pointer.cur'), pointer";
+    });
+
+    // Set cursor for all buttons
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach(function(button) {
+        button.style.cursor = "url('../static/game/assets/cursor/pointer.cur'), pointer";
+    });
+});
 // LOADING SCREEN
 class LoadingScreen {
     constructor() {
@@ -155,6 +147,7 @@ class LoadingScreen {
         this.cameraCloseZ = 4;
         this.cameraFarZ = 45;
         this.camera.position.z = this.cameraInitialZ;
+        this.currentGraphics = 'medium';
 
         const loader = new GLTFLoader();
         loader.load('../../static/game/models/spaceShip/scene.gltf', (gltf) => {
@@ -171,6 +164,9 @@ class LoadingScreen {
         this.spaceShipGoingDown = false;
         this.isAnimatingSpaceship = false;
         this.ico2 = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 20), shaderBallMaterial);
+        this.lowGraphicsGeometry = new THREE.IcosahedronGeometry(0.6, 1);
+        this.highGraphicsGeometry = new THREE.IcosahedronGeometry(0.6, 20);
+        this.mediumGraphicsGeometry = new THREE.IcosahedronGeometry(0.6, 20);
         this.ico2.position.set(0, 0, 0);
         this.xSpeedInitial = 0.005;
         this.ySpeedInitial = 0.015;
@@ -263,7 +259,8 @@ class LoadingScreen {
                 .to({ z: this.cameraFarZ }, duration / 2)
                 .easing(TWEEN.Easing.Linear.None)
                 .onStart(() => {
-                    this.composer.addPass(this.afterimagePass);
+                    if (this.currentGraphics === 'high')
+                        this.composer.addPass(this.afterimagePass);
                     this.starSpeed = 1;
                 })
                 .onComplete(() => {
@@ -276,6 +273,8 @@ class LoadingScreen {
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onStart(() => {
                     document.getElementById('c3').style.display = 'none';
+                    document.getElementById('c1').style.display = 'inline';
+                    document.getElementById('c1').style.display = 'inline';
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
                 })
@@ -336,7 +335,8 @@ class LoadingScreen {
     activateLoadingScreen()
     {
         this.isAnimatingCamera = true;
-        this.composer.removePass(this.afterimagePass);
+        if (this.currentGraphics === 'high')
+            this.composer.removePass(this.afterimagePass);
         document.getElementById('c3').style.display = 'inline';
         this.cameraInitialZ = 4;
         this.camera.position.z = this.cameraInitialZ;
@@ -350,6 +350,27 @@ class LoadingScreen {
         this.spaceShip.position.set(0, -1, 2); // Set the position of the spaceship
         this.isAnimatingSpaceship = false;
         this.loadingCompleted = false;
+    }
+    changeGraphics(graphics)
+    {
+        if (graphics === 'low' && this.currentGraphics != 'low')
+        {
+            this.bloomPass.strength = 0.0;
+            this.ico2.geometry = this.lowGraphicsGeometry;
+            this.currentGraphics = 'low';
+        }
+        if (graphics === 'medium' && this.currentGraphics != 'medium')
+        {
+            this.bloomPass.strength = 1.0;
+            this.ico2.geometry = this.mediumGraphicsGeometry;
+            this.currentGraphics = 'medium';
+        }
+        if (graphics === 'high' && this.currentGraphics != 'high')
+            {
+                this.bloomPass.strength = 1.0;
+                this.ico2.geometry = this.highGraphicsGeometry;
+                this.currentGraphics = 'high';
+            }
     }
 }
 
@@ -661,6 +682,8 @@ class Arena extends THREE.Mesh {
             scorePoints.item(this.game.leftScore).style.borderColor = "rgb(171, 31, 0)";
             scorePoints.item(this.game.leftScore).style.backgroundColor = "#ab1f0051";
             this.game.leftScore++;
+            this.game.user1.pointsScored++;
+            this.game.user2.pointsTaken++;
             this.game.winnerPaddle = this.paddleRight;
             this.game.loserPaddle = this.paddleLeft;
         }
@@ -668,6 +691,8 @@ class Arena extends THREE.Mesh {
             scorePoints.item(this.game.rightScore + 3).style.borderColor = "rgb(171, 31, 0)";
             scorePoints.item(this.game.rightScore + 3).style.backgroundColor = "#ab1f0051";
             this.game.rightScore++;
+            this.game.user2.pointsScored++;
+            this.game.user1.pointsTaken++;
             this.game.winnerPaddle = this.paddleLeft;
             this.game.loserPaddle = this.paddleRight;
         }
@@ -824,11 +849,13 @@ class Arena extends THREE.Mesh {
         if (this.game.rightScore >= this.game.maxScore && !this.isBeingReset)
         {
             this.isBeingReset = true;
+            this.game.user2.isWinner = true;
             this.resetPositions(this.paddleLeft, this.paddleRight, false, this.glitchLeft);
         }
         else if (this.game.leftScore >= this.game.maxScore && !this.isBeingReset)
         {
             this.isBeingReset = true;
+            this.game.user1.isWinner = true;
             this.resetPositions(this.paddleRight, this.paddleLeft, true, this.glitchRight);
         }
     }
@@ -1023,10 +1050,7 @@ class Arena extends THREE.Mesh {
             this.isBeingReset = false;
             this.game.isPlaying = false;
             this.game.isOver = false;
-            this.game.leftScore = 0;
-            this.game.rightScore = 0;
             swapToFullScreen();
-            this.gameState.switchGameToLoading();
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
             this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
@@ -1035,7 +1059,11 @@ class Arena extends THREE.Mesh {
             this.ball.particles.isActive = false;
             this.idleCameraAnimation();
             this.resetUI();
-            // endGame();
+            
+            // display back the panel
+            this.gameState.inGame = false;
+            this.gameState.inLobby = true; 
+            endGame(this.game.tournamentGame);
         });
         let targetLight = loserPaddle.defaultLight;
         if (this.getCurrentMap() === this.dragonMap)
@@ -1348,6 +1376,10 @@ class Paddle extends THREE.Group {
         let targetX;
         if (!this.arena.game.powerUpsActivated)
             return ;
+        if (this.left)
+            this.arena.game.user1.nbDashes++;
+        else
+            this.arena.game.user2.nbDashes++;
         this.paddleMesh.material.color.set(this.arena.getCurrentMap().paddleDashingColor);
         targetX = this.position.x + range * this.moveSpeed;
         if (!isLeft) {
@@ -1570,6 +1602,7 @@ class Ball extends THREE.Mesh {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingLeft && Math.abs(this.speedZ) > 0)
         {
             paddle.particles.explodeParticles(paddle.position, paddle.particlesColor);
+            this.arena.game.user1.nbBounces++;
             this.justCollisioned = true;
             this.isgoingLeft = !this.isgoingLeft;
             this.isgoingRight = !this.isgoingRight;
@@ -1596,6 +1629,7 @@ class Ball extends THREE.Mesh {
     {
         if (this.checkCollisionBoxSphere(paddle, this) && this.isgoingRight && this.speedZ > 0)
         {
+            this.arena.game.user2.nbBounces++;
             paddle.particles.explodeParticles(paddle.position, paddle.particlesColor);
             this.justCollisioned = true;
             this.isgoingRight = !this.isgoingRight;
@@ -1681,6 +1715,7 @@ class Ball extends THREE.Mesh {
                         else
                             paddle.model.rotation.z = 0;
                     }
+                    this.arena.game.user2.nbPowerUsed++;
                 })
                 .start();
                 paddle.isPowered = false;
@@ -1750,6 +1785,7 @@ class Ball extends THREE.Mesh {
                         else
                             paddle.model.rotation.z = 0;
                     }
+                    this.arena.game.user1.nbPowerUsed++;
                 })
                 .start();
                 paddle.isPowered = false;
@@ -1972,6 +2008,9 @@ class OceanMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(250);
                 this.arena.paddleRight.particles.changeParticleNumber(250);
                 this.arena.ball.particles.changeParticleNumber(1000);
+                this.arena.ball.particles.changeParticleSize(0.1);
+                this.arena.paddleLeft.particles.changeParticleSize(0.1);
+                this.arena.paddleRight.particles.changeParticleSize(0.1);
             }
             else if (this.currentGraphics === 'high')
             {
@@ -1980,6 +2019,9 @@ class OceanMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(500);
                 this.arena.paddleRight.particles.changeParticleNumber(500);
                 this.arena.ball.particles.changeParticleNumber(15000);
+                this.arena.ball.particles.changeParticleSize(0.2);
+                this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                this.arena.paddleRight.particles.changeParticleSize(0.2);
             }
             this.arena.bloomPass.strength = 0.2;
             this.scene.background = this.oceanCubeMapTexture;
@@ -2080,6 +2122,9 @@ class OceanMap {
             this.arena.paddleRight.particleNumber = 250;
             this.arena.paddleLeft.particles.changeParticleNumber(250);
             this.arena.paddleRight.particles.changeParticleNumber(250);
+            this.arena.ball.particles.changeParticleSize(0.1);
+            this.arena.paddleLeft.particles.changeParticleSize(0.1);
+            this.arena.paddleRight.particles.changeParticleSize(0.1);
             this.arena.bloomPass.strength = 0.2;
             this.scene.background = this.oceanCubeMapTexture;
             this.currentGraphics = 'medium';
@@ -2102,6 +2147,9 @@ class OceanMap {
             this.arena.paddleRight.particleNumber = 500;
             this.arena.paddleLeft.particles.changeParticleNumber(500);
             this.arena.paddleRight.particles.changeParticleNumber(500);
+            this.arena.ball.particles.changeParticleSize(0.2);
+            this.arena.paddleLeft.particles.changeParticleSize(0.2);
+            this.arena.paddleRight.particles.changeParticleSize(0.2);
             this.arena.bloomPass.strength = 0.2;
             this.scene.background = this.oceanCubeMapTexture;
             this.currentGraphics = 'high';
@@ -2169,9 +2217,19 @@ class SpaceMap {
         else
         {
             if (this.currentGraphics === 'medium')
+            {
+                this.arena.ball.particles.changeParticleSize(0.1);
+                this.arena.paddleLeft.particles.changeParticleSize(0.1);
+                this.arena.paddleRight.particles.changeParticleSize(0.1);
                 this.arena.ball.particles.changeParticleNumber(1000);
+            }
             else if (this.currentGraphics === 'high')
+            {
+                this.arena.ball.particles.changeParticleSize(0.2);
+                this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                this.arena.paddleRight.particles.changeParticleSize(0.2);
                 this.arena.ball.particles.changeParticleNumber(15000);
+            }
             this.arena.addStars(2000);
             this.arena.material = this.arenaMaterial;
             this.arena.bloomPass.strength = 1.0;
@@ -2238,6 +2296,9 @@ class SpaceMap {
             this.arena.paddleLeft.particles.changeParticleNumber(250);
             this.arena.paddleRight.particles.changeParticleNumber(250);
             this.arena.ball.particles.changeParticleNumber(1000);
+            this.arena.ball.particles.changeParticleSize(0.1);
+            this.arena.paddleLeft.particles.changeParticleSize(0.1);
+            this.arena.paddleRight.particles.changeParticleSize(0.1);
             this.arena.material = this.arenaMaterial;
             this.arena.bloomPass.strength = 1.0;
             this.scene.background = this.spaceCubeMapTexture;
@@ -2252,6 +2313,9 @@ class SpaceMap {
             this.arena.paddleLeft.particles.changeParticleNumber(500);
             this.arena.paddleRight.particles.changeParticleNumber(500);
             this.arena.ball.particles.changeParticleNumber(15000);
+            this.arena.ball.particles.changeParticleSize(0.2);
+            this.arena.paddleLeft.particles.changeParticleSize(0.2);
+            this.arena.paddleRight.particles.changeParticleSize(0.2);
             this.arena.material = this.arenaMaterial;
             this.arena.bloomPass.strength = 1.0;
             this.scene.background = this.spaceCubeMapTexture;
@@ -2351,6 +2415,9 @@ class SkyMap {
                     this.arena.paddleLeft.particles.changeParticleNumber(250);
                     this.arena.paddleRight.particles.changeParticleNumber(250);
                     this.arena.ball.particles.changeParticleNumber(1000);
+                    this.arena.ball.particles.changeParticleSize(0.1);
+                    this.arena.paddleLeft.particles.changeParticleSize(0.1);
+                    this.arena.paddleRight.particles.changeParticleSize(0.1);
                 }
                 else if (this.currentGraphics === 'high')
                 {
@@ -2359,6 +2426,9 @@ class SkyMap {
                     this.arena.paddleLeft.particles.changeParticleNumber(500);
                     this.arena.paddleRight.particles.changeParticleNumber(500);
                     this.arena.ball.particles.changeParticleNumber(15000);
+                    this.arena.ball.particles.changeParticleSize(0.2);
+                    this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                    this.arena.paddleRight.particles.changeParticleSize(0.2);
                 }
                 this.arena.bloomPass.strength = 0.05;
                 this.scene.background = this.skyCubeMapTexture;
@@ -2462,6 +2532,9 @@ class SkyMap {
             this.arena.paddleRight.particleNumber = 250;
             this.arena.paddleLeft.particles.changeParticleNumber(250);
             this.arena.paddleRight.particles.changeParticleNumber(250);
+            this.arena.ball.particles.changeParticleSize(0.1);
+            this.arena.paddleLeft.particles.changeParticleSize(0.1);
+            this.arena.paddleRight.particles.changeParticleSize(0.1);
             this.arena.ball.particles.changeParticleNumber(1000);
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
@@ -2486,6 +2559,9 @@ class SkyMap {
             this.arena.paddleLeft.particles.changeParticleNumber(500);
             this.arena.paddleRight.particles.changeParticleNumber(500);
             this.arena.ball.particles.changeParticleNumber(15000);
+            this.arena.ball.particles.changeParticleSize(0.2);
+            this.arena.paddleLeft.particles.changeParticleSize(0.2);
+            this.arena.paddleRight.particles.changeParticleSize(0.2);
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
             this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial;
@@ -2634,6 +2710,9 @@ class DragonMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(500);
                 this.arena.paddleRight.particles.changeParticleNumber(500);
                 this.arena.ball.particles.changeParticleNumber(15000);
+                this.arena.ball.particles.changeParticleSize(0.2);
+                this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                this.arena.paddleRight.particles.changeParticleSize(0.2);
             }
             else if (this.currentGraphics === 'medium')
             {
@@ -2642,6 +2721,9 @@ class DragonMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(250);
                 this.arena.paddleRight.particles.changeParticleNumber(250);
                 this.arena.ball.particles.changeParticleNumber(1000);
+                this.arena.ball.particles.changeParticleSize(0.1);
+                this.arena.paddleLeft.particles.changeParticleSize(0.1);
+                this.arena.paddleRight.particles.changeParticleSize(0.1);
             }
         }
         else if (this.currentGraphics === 'low')
@@ -2741,6 +2823,9 @@ class DragonMap {
             this.arena.paddleLeft.particles.changeParticleNumber(250);
             this.arena.paddleRight.particles.changeParticleNumber(250);
             this.arena.ball.particles.changeParticleNumber(1000);
+            this.arena.ball.particles.changeParticleSize(0.1);
+            this.arena.paddleLeft.particles.changeParticleSize(0.1);
+            this.arena.paddleRight.particles.changeParticleSize(0.1);
             this.currentGraphics = 'medium';
         }
         else if (graphic === 'high' && this.currentGraphics != 'high')
@@ -2762,6 +2847,9 @@ class DragonMap {
                 this.arena.paddleLeft.particles.changeParticleNumber(500);
                 this.arena.paddleRight.particles.changeParticleNumber(500);
                 this.arena.ball.particles.changeParticleNumber(15000);
+                this.arena.ball.particles.changeParticleSize(0.2);
+                this.arena.paddleLeft.particles.changeParticleSize(0.2);
+                this.arena.paddleRight.particles.changeParticleSize(0.2);
                 this.currentGraphics = 'high';
         }
     }
@@ -3160,6 +3248,44 @@ class Bot {
     }
 }
 
+class UserStats {
+    constructor(isThirdPlayer, usernameElement, ppElement) {
+        // done and working
+        this.isThirdPlayer = isThirdPlayer; // boolean done
+        this.isWinner = false; // boolean done
+        this.usernameElement = usernameElement;
+        this.ppElement = ppElement;
+        this.pointsScored = 0; // int done
+        this.pointsTaken = 0; // int done
+        this.nbDashes = 0; // int done
+        this.nbPowerUsed = 0; // int done
+        this.nbBounces = 0; // int done
+        // TODO
+        this.username; //string done
+        this.id; // string done
+        this.profilePicture; // string
+        this.isBot = false; // boolean
+    }
+    reset()
+    {
+        this.isBot = false; // boolean
+        this.isWinner = false; // boolean
+        this.pointsScored = 0; // int
+        this.pointsTaken = 0; // int
+        this.nbDashes = 0; // int
+        this.nbPowerUsed = 0; // int
+        this.nbBounces = 0; // int
+    }
+    setUser(username, id, profilePicture)
+    {
+        this.username = username;
+        this.id = id;
+        this.profilePicture = profilePicture;
+        this.usernameElement.textContent = username;
+        this.ppElement.src = profilePicture;
+    }
+}
+
 class Game {
     constructor() {
 
@@ -3171,20 +3297,45 @@ class Game {
         // INPUT (arenaPage.js)
         this.effectsOnly = false;
         this.powerUpsActivated = true;
-        this.thirdPlayer = true;
+        this.thirdPlayer = false;
         this.hasToBeInitialized = false;
+        this.tournamentGame = false;
         // next variables are all to be inputed in string format
-        this.user1; // User1 is the left paddle
-        this.user2; // User2 is the right paddle
-        this.user3; // User3 is the third player
+        this.user1Username = document.getElementById('username1Text');
+        this.user2Username = document.getElementById('username2Text');
+        this.user3Username = document.getElementById('username3Text');
+        this.user1ProfilePicture = document.getElementById('pp1');
+        this.user2ProfilePicture = document.getElementById('pp2');
+        this.user3ProfilePicture = document.getElementById('pp3');
+
+        this.user1 = new UserStats(false, this.user1Username, this.user1ProfilePicture); // User1 is the left paddle
+        this.user2 = new UserStats(false, this.user2Username, this.user2ProfilePicture); // User2 is the right paddle
+        this.user3 = new UserStats(true, this.user3Username, this.user3ProfilePicture); // User3 is the third player
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
 
+
+        // this.user2Username.textContent = 'caca';
         // OUTPUT
         this.loserPaddle;
         this.winnerPaddle;
+        this.gameMode = 'classic';
+        // for each paddle
+        this.paddleBounces;
+        this.nbPowerUsed;
+        this.nbDash;
         this.leftScore = 0;
         this.rightScore = 0;
     }
+
+    resetUsers()
+    {
+        this.user1.reset();
+        this.user2.reset();
+        this.user3.reset();
+        this.leftScore = 0;
+        this.rightScore = 0;
+    }
+
 }
 
 class GameState {
@@ -3194,7 +3345,7 @@ class GameState {
         this.arenaCreated = false;
         this.inGame = false;
         this.inLobby = true;
-        this.graphicsNeedToChange = false;
+        this.graphicsNeedToChange = false; 
         this.graphics = 'medium'; // (options = 'low', 'medium', 'high') (loginPage.js)
 
     }
@@ -3215,10 +3366,12 @@ class GameState {
             this.arena = new Arena(centerPosition, 28, 1.7, 34, loadingScreen, this);
         }
         if (this.graphicsNeedToChange)
-            this.changeGraphics();
+            this.changeGraphics(this.graphics);
     }
     changeGraphics() {
         this.graphicsNeedToChange = false;
+        loadingScreen.changeGraphics(this.graphics);
+        lobbyVisuals.changeGraphics(this.graphics);
         if (this.arenaCreated)
         {
             this.arena.getCurrentMap().changeGraphics(this.graphics);
@@ -3272,7 +3425,18 @@ class Particle {
         // Initialize particle velocities
         this.initializeVelocities();
     }
-    
+    changeParticleSize(size)
+    {
+        this.material.size = size;
+        // update particle size
+        this.scene.remove(this.particleSystem);
+        const particleMaterial = new THREE.PointsMaterial({
+            size: size, // Adjust size as needed
+            vertexColors: THREE.VertexColors // Enable vertex colors
+        });
+        this.particleSystem = new THREE.Points(this.geometry, particleMaterial);
+        this.scene.add(this.particleSystem);
+    }
     initializeVelocities() {
         this.velocities = [];
         for (let i = 0; i < this.particleCount; i++) {
@@ -3429,6 +3593,7 @@ function animate()
         TWEEN.update();
         if (gameState.inGame)
         {
+            // console.log("inGame");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();

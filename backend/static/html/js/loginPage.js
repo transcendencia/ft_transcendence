@@ -56,7 +56,7 @@ graphicsIcons.forEach(function(icon) {
     });
 });
 
-function getCookie(name) {
+ export function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
@@ -180,6 +180,7 @@ function handleLogin(event) {
             TranslateAllTexts();
             get_user_list();
             getProfileInfo();
+            getGameInfo();
             showPage('none');
             startAnimation();
         } else 
@@ -190,7 +191,9 @@ function handleLogin(event) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', get_user_list());
+
+import { RenderUserMatch } from "./arenaPage.js";
+import { RenderUserTournament } from "./arenaPage.js";
 
 function getProfileInfo() {
 	const token = localStorage.getItem('host_auth_token');
@@ -209,6 +212,132 @@ function getProfileInfo() {
 			document.getElementById('username').textContent = data.profile_info.username;
 			document.getElementById('bio').textContent = data.profile_info.bio;
 			document.getElementById('profile_pic').src = data.profile_info.profile_picture;
+            RenderUserMatch(data.profile_info);
+            RenderUserTournament(data.profile_info);
+		})
+		.catch(error => {
+			console.error('Erreur :', error);
+		});
+}
+
+export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
+
+    let borderColor = '#ff3737';
+    let bgColor = '#ff373777';
+    let bg2Color = '#a3000087';
+    if (victory) {
+        borderColor = '#43ff43';
+        bgColor = '#43ff4377';
+        bg2Color = '#00ab00c0';
+    }
+
+    // const serverDate = new Date(date);
+    // const userLocale = navigator.language || 'en-US';
+    // console.log(serverDate);
+    // console.log(userLocale);
+    // const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // console.log(userTimeZone);
+    // const options = {
+    //     year: 'numeric',
+    //     month: 'numeric',
+    //     day: 'numeric',
+    //     hour: 'numeric',
+    //     minute: 'numeric',
+    //     timeZone: userTimeZone,
+    // };
+    // const formattedDate = new Intl.DateTimeFormat(userLocale, options).format(serverDate);
+    // console.log(formattedDate);
+
+
+    const matchBlock = document.createElement('div');
+    matchBlock.classList.add('matchBlock');
+    matchBlock.style.borderColor = borderColor;
+    matchBlock.style.backgroundColor = bgColor;
+  
+    const firstLine = document.createElement('div');
+    firstLine.classList.add('firstLine');
+    firstLine.style.color = borderColor;
+    firstLine.innerHTML = `<div id="type" style="width: 30%;">${tournament}</div><div class="date" id="date" style="border-color: ${borderColor}; background-color: ${bg2Color}">${date}</div><div id="mode" style="width: 30%;">${modeGame}</div>`;
+  
+    const secondLine = document.createElement('div');
+    secondLine.classList.add('secondLine');
+  
+    const userHI1 = document.createElement('div');
+    userHI1.classList.add('userHI');
+    if (player1Name.length > 8)
+        userHI1.setAttribute('text-length-mode', 'long');
+    userHI1.innerHTML = `<div class="imgFrame" style="height: 40px; width: 50px; margin-right: 5px; border-color: ${borderColor};"><img src="${player1ImgSrc}"></div>${player1Name}`;
+ 
+    const scoreAndThirdPlayer = document.createElement('div');
+    scoreAndThirdPlayer.classList.add('scoreAndThirdPlayer');
+    scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">Third Player : ${thirdPlayer}</div>`;
+  
+    const userHI2 = document.createElement('div');
+    userHI2.classList.add('userHI');
+    if (player2Name.length > 8)
+        userHI2.setAttribute('text-length-mode', 'long');
+    userHI2.style.justifyContent = 'flex-end';
+    userHI2.innerHTML = `${player2Name}<div class="imgFrame" style="height: 40px; width: 50px; margin-left: 5px; border-color: ${borderColor};"><img src="${player2ImgSrc}"></div>`;
+  
+    // Append elements
+    secondLine.appendChild(userHI1);
+    secondLine.appendChild(scoreAndThirdPlayer);
+    secondLine.appendChild(userHI2);
+  
+    matchBlock.appendChild(firstLine);
+    matchBlock.appendChild(secondLine);
+    
+    let historyContainer = document.getElementById('hostHistory');
+    if (!isHost)
+        historyContainer = document.getElementById('searchedUserHistory');
+    historyContainer.appendChild(matchBlock);
+}
+
+function getGameInfo() {
+	const token = localStorage.getItem('host_auth_token');
+		fetch('get_game_user/', {
+		    method: 'GET',
+			headers: {
+				'Authorization': `Token ${token}`,
+			}
+		})
+		.then(response => {
+			if (!response.ok)
+				throw new Error('Error lors de la recuperation des donnees');
+				return response.json();
+		})
+		.then(data=> {
+			data.games.forEach(game => {
+                let winner = false;
+                let player1;
+                let player1Score;
+                let player1Picture;
+                let player2;
+                let player2Score;
+                let player2Picture;
+
+                if (data.user_id === game.player1){
+                    player1 = game.player1_username;
+                    player1Score = game.scorePlayer1;
+                    player1Picture = game.player1_profilePicture;
+                    player2 = game.player2_username;
+                    player2Score = game.scorePlayer2;
+                    player2Picture = game.player2_profilePicture;
+                    if (game.scorePlayer1 > game.scorePlayer2)
+                        winner = true
+                }
+                else{
+                    player1 = game.player2_username;
+                    player1Score = game.scorePlayer2;
+                    player1Picture = game.player2_profilePicture;
+                    player2 = game.player1_username;
+                    player2Score = game.scorePlayer1;
+                    player2Picture = game.player1_profilePicture;
+                    if (game.scorePlayer2 > game.scorePlayer1)
+                        winner = true
+                }
+                createMatchBlock(game.gameplayMode, game.Date, game.modeGame, player1, player1Picture, player1Score, player2Score, player2, player2Picture, game.player3_username, winner);
+            })
 		})
 		.catch(error => {
 			console.error('Erreur :', error);
@@ -277,23 +406,7 @@ function getUserStatus() {
 
 export let userList;
 
-// export function get_user_list() {
-//     const token = localStorage.getItem('host_auth_token');
-//     fetch('get_user_list/', {
-//         method: 'GET',
-//         headers: {
-//             'Authorization': `Token ${token}`,
-//         }
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         userList = data;
-//         RenderAllUsersInList(data);
-//     })
-//     .catch(error => console.error('Error:', error));
-// };
-
-export function get_user_list(){
+export function get_user_list() {
     const token = localStorage.getItem('host_auth_token');
     // console.log(token);
     fetch('get_user_list/', {
@@ -307,8 +420,6 @@ export function get_user_list(){
     .then(data => {
         userList = data;
         RenderAllUsersInList(data);
-        console.log(userList);
-        // console.log(data);
     })
     .catch(error => {
         console.error('Error:', error);
