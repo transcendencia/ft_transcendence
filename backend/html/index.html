@@ -365,25 +365,29 @@
         <div class="titleTournament">
           <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div>
         </div>
-        <div class="secondLine">
+        <div class="secondLineTournament">
           <div id="leftColumn" class="leftColumn">
             <div id="userlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
             <div id="userlistTournamentPage" class="userlistBackground before-launch">
-              <div id="botUserTournamentTile" class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
+              <!-- <div id="botUserTournamentTile" class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
                 <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
                 <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
-              </div>
+              </div> -->
             </div>
+            <!-- when the tournament is launch -->
+            <h2 id="next-match" class="matchInfo" style="display:none;">Next match to be played:</h2>
+            <p id="match" class="matchInfo" style="display:none;"></p>
+            <div id="launchMatch" class="startTournamentButton" style="display:none;">Start match</div>
           </div>
-        <div id="midColumn" class="rightColumn" style="width: 60%;">
+        <div id="midColumn" class="rightColumn">
           <div class="addPlayerToTournament before-launch">
             <div class="elemContTournament">
               <div class="addPlayer">
-              <div class="userInfoContTournament">
-                <div class="profilePic"><img id="player1TournamentPicture"></div>
-                <div id="player1TournamentUsername"></div>
-              </div>
-              <div id="player1Text" style="font-size: 15px; font-family: 'space'; color: white;"> Player 1 </div>
+                <div class="userInfoContTournament">
+                  <div class="profilePic"><img id="player1TournamentPicture"></div>
+                  <div id="player1TournamentUsername"></div>
+                </div>
+                <div id="player1Text" style="font-size: 15px; font-family: 'space'; color: white;"> Player 1 </div>
               </div>
               <div class="addPlayer">
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
@@ -416,15 +420,7 @@
                 <div id="player8Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 8 </div>
               </div>
             </div>
-          </div> 
-          <div id="launch" class="startMatchButton before-launch">Start</div>
-          <div id="error_msg" class="errorMsg before-launch"></div>
-          <!-- when the tournament is launch -->
-          <h2 id="next-match" class="matchInfo" style="display:none;">Next match to be played:</h2>
-          <p id="match" class="matchInfo" style="display:none;"></p>
-          <div id="launchMatch" class="startMatchButton" style="display:none;">Start match</div>
-        </div>
-        <div id="rightColumn" class="rightColumnTournament">
+          </div>
           <div class="buttonsContVert before-launch">
             <div class="optionButtonVert">
               <div class="buttonTitleVert">
@@ -455,7 +451,18 @@
               <div class="buttonContVert"></div>
             </div>
           </div>
-          <div id="bracket" class="theme theme-dark before-launch" style="display:none;">
+          <div class="rightColumnBottom before-launch">
+            <div class="rightColumnBottomLeft">
+              <div id="launch" class="startMatchButton">Start</div>
+              <div id="error_msg" class="errorMsg"></div>
+            </div>
+            <div class="rightColumnBottomRight before-launch">
+              <div class="plusThirdPlayer">OFF</div>
+              <p style="padding-left: 10px;">   Third Player</p>
+            </div>
+          </div>
+          <!-- when the tournament is launch -->
+          <div id="bracket" class="theme theme-dark" style="display:none;">
             <div class="bracket">
               <div class="column one">
                 <div id="A1-A2-match" class="match">
