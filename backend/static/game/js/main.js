@@ -791,7 +791,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
-            this.bot.isPlaying = true;
+            // this.bot.isPlaying = true;
             this.game.isPlaying = true;
             if (!this.game.thirdPlayer)
             {
@@ -3206,17 +3206,18 @@ class Bot {
         this.ownPaddle = ownPaddle;
         this.enemyPaddle = enemyPaddle;
         this.isPlaying = false;
-        this.targetX;
+        this.targetX = 0;
         this.lastTargetUpdate;
         this.zValue = this.ownPaddle.position.z; // rightpaddle : x positive to the right, z positive
         this.enemyZValue = this.enemyPaddle.position.z;
+        this.intervalSet = false;
     }
     play()
     {
-        if (this.targetX === undefined || performance.now() - this.lastTargetUpdate > 1000) //time since last target > 1000)
+        if (!this.intervalSet)
         {
-            this.lastTargetUpdate = performance.now();
-            this.targetX = this.calculateBallLandingPosition();
+            this.intervalSet = true;
+            setInterval(() => this.updateTarget(), 1000);
         }
         this.moveToTarget(this.targetX)
     }
@@ -3230,13 +3231,15 @@ class Bot {
     calculateBallLandingPosition() {
         if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
             return;
+        const ballAcceleration = this.arena.ball.acceleration;
         let ballPositionX = this.arena.ball.position.x;
         let ballPositionZ = this.arena.ball.position.z;
         let ballSpeedX = this.arena.ball.speedX;
-        const ballSpeedZ = this.arena.ball.speedZ;    
+        const ballSpeedZ = this.arena.ball.speedZ;
         if (ballSpeedZ > 0) {
             while (ballPositionZ < this.zValue) {
-                    ballPositionX += ballSpeedX;
+                ballSpeedX += ballAcceleration;
+                ballPositionX += ballSpeedX;
                 ballPositionZ += ballSpeedZ;
                 if ((ballPositionX + ballSpeedX <= (this.arena.position.x - this.arena.length / 2)) || (ballPositionX + ballSpeedX >= this.arena.position.x +this.arena.length / 2)) // detect collision with border
                     ballSpeedX *= -1;
@@ -3244,35 +3247,39 @@ class Bot {
         }
         return ballPositionX;
     }
+    updateTarget()
+    {
+        this.targetX = this.calculateBallLandingPosition();
+    }
 }
 
 class UserStats {
     constructor(isThirdPlayer, usernameElement, ppElement) {
-        // done and working
-        this.isThirdPlayer = isThirdPlayer; // boolean done
-        this.isWinner = false; // boolean done
+    
+        this.isThirdPlayer = isThirdPlayer;
+        this.isWinner = false;
         this.usernameElement = usernameElement;
         this.ppElement = ppElement;
-        this.pointsScored = 0; // int done
-        this.pointsTaken = 0; // int done
-        this.nbDashes = 0; // int done
-        this.nbPowerUsed = 0; // int done
-        this.nbBounces = 0; // int done
-        // TODO
-        this.username; //string done
-        this.id; // string done
-        this.profilePicture; // string
-        this.isBot = false; // boolean
+        this.pointsScored = 0;
+        this.pointsTaken = 0;
+        this.nbDashes = 0;
+        this.nbPowerUsed = 0;
+        this.nbBounces = 0;
+    
+        this.username;
+        this.id;
+        this.profilePicture;
+        this.isBot = false;
     }
     reset()
     {
-        this.isBot = false; // boolean
-        this.isWinner = false; // boolean
-        this.pointsScored = 0; // int
-        this.pointsTaken = 0; // int
-        this.nbDashes = 0; // int
-        this.nbPowerUsed = 0; // int
-        this.nbBounces = 0; // int
+        this.isBot = false;
+        this.isWinner = false;
+        this.pointsScored = 0;
+        this.pointsTaken = 0;
+        this.nbDashes = 0;
+        this.nbPowerUsed = 0;
+        this.nbBounces = 0;
     }
     setUser(username, id, profilePicture)
     {
