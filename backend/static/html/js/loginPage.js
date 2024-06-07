@@ -7,7 +7,8 @@ import { RenderAllUsersInList, RenderAllUsersTournament } from "./arenaPage.js";
 
 
 import { startAnimation } from "./main.js";
-// import { changeGraphics } from "./arenaPage.js";
+import { changeGraphics } from "./arenaPage.js";
+import { updateUserLanguage, updateUserStatus } from "./userManagement.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -99,27 +100,11 @@ languageIcons.forEach(function(icon) {
             alien3.visible = true;
         }
         addGlow(icon.id, 'glow');
-        setlanguageIconsClicked(true);
         // Send POST request to change user language in the back if user is logged in
+        setlanguageIconsClicked(true);
         const token = localStorage.getItem('host_auth_token');
         if (token && currentLanguage !== icon.id) {
-            fetch('change_language/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ language: icon.id })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la modification de la langue');
-                }
-            })
-            .catch(error => {
-                console.error('Erreur :', error);
-            });
+            updateUserLanguage(incon.id);
         }
         setCurrentLanguage(icon.id);
         if (icon.id.length === 3)
@@ -175,13 +160,16 @@ function handleLogin(event) {
     .then(data => {
         
         if (data.status == "succes") {
-            localStorage.setItem("host_auth_token", data.token)
+            localStorage.setItem("host_auth_token", data.token);
+            localStorage.setItem("host_id", data.id);
+            console.log(data.language)
             setCurrentLanguage(data.language);
             TranslateAllTexts();
             get_friends_list();
             get_user_list();
             getProfileInfo();
             getGameInfo();
+            changeGraphics(data.graphic_mode);
             showPage('none');
             startAnimation();
         } else 
@@ -359,49 +347,6 @@ function handleLogout() {
     })
     .catch(error => {
         console.error('Erreur :', error);
-    });
-};
-
-function updateUserStatus(status) {
-    const token = localStorage.getItem('host_auth_token');
-    return fetch('update_status/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ status: status })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erreur lors du logout');
-        }
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
-    });
-};
-
-function getUserStatus() {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_status/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
     });
 };
 

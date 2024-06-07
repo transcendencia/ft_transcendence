@@ -35,15 +35,17 @@ def login_page(request):
 
     user = authenticate(username=username, password=password)
     if user is not None:
-      token, created = Token.objects.get_or_create(user=user)
-      if languageClicked and new_language != user.language:
-          user.language = new_language
-      user.last_login_date = timezone.now()
-      user.status = 'online'
-      user.is_host = True
-      user.save()
-
-      return  Response({'status': "succes", 'token': token.key, 'language': user.language, 'message': "You are now logged in!\nPress [E] to enter the galaxy"})
+      # if user.status != 'online':
+        token, created = Token.objects.get_or_create(user=user)
+        if languageClicked and new_language != user.language:
+            user.language = new_language
+        user.last_login_date = timezone.now()
+        user.status = 'online'
+        user.is_host = True
+        user.save()
+        return  Response({'status': "succes", 'token': token.key, 'language': user.language, 'id': user.id, 'graphic_mode': user.graphic_mode, 'message': "You are now logged in!\nPress [E] to enter the galaxy"})
+      # else:
+        # return Response({'status': "failure", 'message': "User already logged in"})
     else:
       return  Response({'status': "failure", 'message': "Username and/or password invalid"})
   except Exception as e:
