@@ -734,8 +734,8 @@ class Arena extends THREE.Mesh {
             this.ball.rotation.y += 0.1;
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
-        if (!this.bot.isPlaying)
-            this.paddleRight.animatePaddle(this);
+        // if (!this.bot.isPlaying)
+        this.paddleRight.animatePaddle(this);
         if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling)
         {
             this.ball.speedX = 0;
@@ -791,7 +791,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
-            // this.bot.isPlaying = true;
+            this.bot.isPlaying = true;
             this.game.isPlaying = true;
             if (!this.game.thirdPlayer)
             {
@@ -3223,10 +3223,21 @@ class Bot {
     }
     moveToTarget(targetX)
     {
-        if (this.ownPaddle.position.x < targetX)
-            this.ownPaddle.position.x += this.ownPaddle.moveSpeed * this.arena.length;
-        if (this.ownPaddle.position.x > targetX)
-            this.ownPaddle.position.x -= this.ownPaddle.moveSpeed * this.arena.length;
+        if (this.ownPaddle.position.x + this.ownPaddle.width / 2 >= targetX && this.ownPaddle.position.x - this.ownPaddle.width / 2 <= targetX)
+        {
+            keyDown['ArrowLeft'] = false;
+            keyDown['ArrowRight'] = false;
+        }
+        else if (this.ownPaddle.position.x < targetX)
+        {
+            keyDown['ArrowRight'] = true;
+            keyDown['ArrowLeft'] = false;
+        }
+        else if (this.ownPaddle.position.x > targetX)
+        {
+            keyDown['ArrowLeft'] = true;
+            keyDown['ArrowRight'] = false;
+        }
     }
     calculateBallLandingPosition() {
         if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
@@ -3589,9 +3600,9 @@ function animate()
     requestAnimationFrame( animate );
     updateFpsCounter();
     let now = performance.now();
-    let elapsed = now - lastUpdateTime;
-    if (elapsed < fpsInterval) return; // Skip if too big FPS
-    else
+    // let elapsed = now - lastUpdateTime;
+    // if (elapsed < fpsInterval) return; // Skip if too big FPS
+    // else
     {
         gameState.monitorGameState();
         if (gameState.inLobby)
@@ -3617,9 +3628,9 @@ function animate()
         }
     }
 
-    stats.update();
-    lastUpdateTime = now - (elapsed % fpsInterval);
-    stats.time = performance.now();
+    // stats.update();
+    // lastUpdateTime = now - (elapsed % fpsInterval);
+    // stats.time = performance.now();
 }
 animate();
 
