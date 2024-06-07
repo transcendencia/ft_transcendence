@@ -1,7 +1,6 @@
 
 .rgpdPage {
     border: 2px solid white;
-
     width: 99%;
     height: 99%;
     top: 50%;
@@ -24,9 +23,9 @@
 }
 
 .backgroundRGPDText {
-    height: 60%;
-    width:  50%;
-    border-radius: 10px;
+    height: 45%;
+    width:  30%;
+    border-radius: 12px;
     background-color: rgba(0, 0, 255, 0.333);    
     color: rgb(235, 240, 244);
     padding: 10px;
@@ -37,46 +36,29 @@
     text-align: center;
     font-family: 'space';
     font-size: 15px;
+    margin-top: 10px;
+    padding-top: 10px;
     border: 2px solid rgb(8, 20, 255);
     text-shadow: 0 0 2px black;
 }
 
 .text-content {
-    margin: 0;
-    padding-top: 20px;
+    margin-top: 10px;
+    padding-top: 60px;
     flex: 1;
 }
 
 .rgpdFrame img {
-    width: 900px;
-    height: 100px;
+    width: 800px;
+    height: 80px;
+    padding-top : -10px;
 }
 
-/*.rgpdPage {
-    /*============= RECTANGLE =========*/
-    /*Couleur du rectangle
-    background-color: hsla(0, 86%, 46%, 0.122);
-    border: 5px solid #ff3737;
-    border-top:  25px solid rgb(114, 103, 199);
-    /*taille du rectangle
-    width: 60%;
-    padding: 20px;
-    max-width: 600px;
-    height: 40%;
-    /*Position du rectangle
-    left: 50%;
-    position: fixed;
-    /*forme du rectangle
-    border-radius: 0px;
-    /*couleur du texte
-    color: #000000;
-    /*Position du texte
-    transform: translate(-50%, 50%);
-    display: center;
-    padding-top: 50px;
-    text-align: justify;
-    
-}*/
+#RGPDTitle {
+    height: 10%;
+    width: 100%;
+    padding-top : 8px;
+}
 
 .structure {
     font-family: "Space";
@@ -98,14 +80,8 @@
     top: -10%;
     height: 10%;
     width: 200%;
-    display: flex; /* Add display flex */
-    align-items: center; /* Vertically center the items */
-    justify-content: center; /* Vertically center the items */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-direction: row;
 }
-
-/*titre blanc pq pas un effet néon sur le texte bord rouge 
-
-1/ Bord bleus et titre RGPD
-2/ cadre rouge 
-3/ tester avec le fond 
