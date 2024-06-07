@@ -68,7 +68,6 @@ def send_friend_request(request):
         response = None
     
     return Response({'message': response})
-#verifier que j'essaie pas de m'envoyer une friend request a moi mm
 #verifier qu'une friend request n'existe pas deja entre ces 2 user 
 
 @api_view(['POST'])
@@ -76,7 +75,8 @@ def send_friend_request(request):
 @permission_classes([IsAuthenticated])
 def	accept_friend_request(request):
 	friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
-	# if friend_request.receiver == request.user :
+	if friend_request.sender == request.user:
+		return Response('You cannot accept the invite if you are the sender')
 	print(friend_request.sender.username, friend_request.receiver.username)
 	friend_request.status = "accepted"
 	friend_request.save()
@@ -92,7 +92,8 @@ def reject_friend_request(request):
     print(request.data.get("request_id"))
     friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
     friend_request.delete()
-    return Response('friend request rejected')
+    return redirect('friend request rejected')
+    # return redirect(return_friends_list)
 #verifier que la requete que j'accepte c'est pas moi qui l'est envoyer
 
 def render_request(request):
@@ -114,7 +115,6 @@ def return_request(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def return_friends_list(request):
-    print(request.user.username)
     friends_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
     pending_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.receiver == request.user]
     friends = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user)]

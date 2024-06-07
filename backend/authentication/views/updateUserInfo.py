@@ -59,7 +59,7 @@ def get_status(request):
   user = request.user
   return Response({'status': user.status}, status=status.HTTP_200_OK)
 
-def render_change_profile_info(request):
+def change_profile(request):
   print("j'affiche le html pour changer les info du user")
   return render(request, 'change_profile_info.html')
 
@@ -84,11 +84,11 @@ def change_profile_info(request):
     if request.method == 'POST':
         print(request.data)
         serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
-        if 'profile_picture' in request.FILES:
+        if 'profile-pic' in request.FILES:
             # if request.user.profile_picture.url != 'media/default.png':
             #       print("coucou")
             #       request.user.profile_picture.delete()
-            uploaded_file = request.FILES['profile_picture']
+            uploaded_file = request.FILES['profile-pic']
             request.user.profile_picture = uploaded_file
             request.user.save()
             print("picture changed") #LOG
@@ -110,5 +110,16 @@ def get_user_list(request):
     users = User.objects.all()
     serializers = UserListSerializer(users, many=True)
     return Response(serializers.data)
+  else:
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def change_graphic_mode(request):
+  if request.method == 'POST':
+    request.user.graphic_mode = request.data.get('graphicMode')
+    request.user.save()
+    return Response({'user_id': request.user.id}, status=status.HTTP_200_OK)
   else:
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
