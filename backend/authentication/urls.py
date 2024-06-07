@@ -26,7 +26,8 @@ urlpatterns = [
     path('send_friendrequest/', friendship.send_friendrequest, name="send_friendrequest"),
     path('render_request/', friendship.render_request, name="render_request"),
     path('render_request/return_request/', friendship.return_request, name="return_request"),
-
+    path('return_friends_list/', friendship.return_friends_list, name="return_friends_list"),
+    
     #tounament.py
     path('tournament/', tournament.result, name='result'),
     path('addPlayer/', tournament.add_member, name='add_member'),

@@ -178,6 +178,7 @@ function handleLogin(event) {
             localStorage.setItem("host_auth_token", data.token)
             setCurrentLanguage(data.language);
             TranslateAllTexts();
+            get_friends_list();
             get_user_list();
             getProfileInfo();
             getGameInfo();
@@ -427,3 +428,29 @@ export function get_user_list() {
         throw error;
     });
 };
+
+
+let host_pending_request;
+let host_friends_list;
+let host_waiting_list;
+function get_friends_list() {
+    const token = localStorage.getItem('host_auth_token');
+    // console.log(token);
+    fetch('return_friends_list/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        host_pending_request = data.pending_request;
+        host_friends_list = data.friends;
+        host_waiting_list = data.waiting_request;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        throw error;
+    });
+}
