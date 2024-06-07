@@ -110,5 +110,13 @@ def return_request(request):
     return Response({'list': list_request})
     # return Response({"message": "je suis dans return message"})
 
-
-#faire une view pour supprimer la demande d'amis qui a pas encore ete accepter
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def return_friends_list(request):
+    print(request.user.username)
+    friends_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
+    pending_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.receiver == request.user]
+    friends = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user)]
+    waiting_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.sender == request.user]
+    return Response({'pending_request': pending_request_list, 'friends': friends, 'waiting_request': waiting_request_list})
