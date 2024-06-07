@@ -215,7 +215,7 @@ class LoadingScreen {
             this.isAnimatingCamera = false;
             this.iterations = 0;
             this.loadingCompleted = true;
-            const duration = 2500;
+            const duration = 500;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -791,7 +791,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
-            // this.bot.isPlaying = true;
+            this.bot.isPlaying = true;
             this.game.isPlaying = true;
             if (!this.game.thirdPlayer)
             {
@@ -1519,6 +1519,7 @@ class Ball extends THREE.Mesh {
         this.light = new THREE.PointLight(0xffffff);
         scene.add(this.light);
         this.startingPower = 20;
+        this.size = size;
         this.light.power = this.startingPower;
         this.light.castShadow = true;
         // ATRIBUTES
@@ -3205,46 +3206,43 @@ class Bot {
         this.ownPaddle = ownPaddle;
         this.enemyPaddle = enemyPaddle;
         this.isPlaying = false;
-        this.zValue = this.ownPaddle.paddleMesh.position.z; // rightpaddle : x positive to the right, z positive
-        this.enemyZValue = this.enemyPaddle.paddleMesh.position.z;
+        this.targetX;
+        this.lastTargetUpdate;
+        this.zValue = this.ownPaddle.position.z; // rightpaddle : x positive to the right, z positive
+        this.enemyZValue = this.enemyPaddle.position.z;
     }
     play()
     {
-        let paddleBorderRight = this.ownPaddle.position.x + this.ownPaddle.width / 2;
-        let paddleBorderLeft = this.ownPaddle.position.x - this.ownPaddle.width / 2;
-        let distanceFromBorderRight = this.arena.ball.position.x - paddleBorderRight;
-        let distanceFromBorderLeft = this.arena.ball.position.x - paddleBorderLeft;
-        let targetX;
-        if (distanceFromBorderRight < distanceFromBorderLeft)
-            targetX = this.arena.ball.position.x + this.ownPaddle.width / 2;
-        else
-            targetX = this.arena.ball.position.x - this.ownPaddle.width / 2;
-        if (this.ownPaddle.position.x < targetX)
-            this.ownPaddle.position.x += 0.016 * this.arena.length;
-        if (this.ownPaddle.position.x > targetX)
-            this.ownPaddle.position.x -= 0.016 * this.arena.length;
-    }
-    calculateBallLandingPosition()
-    {
-        if (this.arena.ball.speedZ * this.ownPaddle.position.z < 0)
-            return;
-        let ballPosition = this.arena.ball.position.clone();
-        let ballSpeedX = this.arena.ball.speedX;
-        let loops = 0;
-        const ballSpeedZ = this.arena.ball.speedZ;
-        while (ballPosition.z <= this.zValue)
+        if (this.targetX === undefined || performance.now() - this.lastTargetUpdate > 1000) //time since last target > 1000)
         {
-            ballPosition.x += ballSpeedX;
-            ballPosition.z += ballSpeedZ;
-            if (ballPosition.x < -this.arena.width / 2 || ballPosition.x > this.arena.width / 2)
-            {
-                console.log("found wall collision");
-                ballSpeedX = -ballSpeedX;
-            }
-            loops++;
+            this.lastTargetUpdate = performance.now();
+            this.targetX = this.calculateBallLandingPosition();
         }
-        console.log("loops: ", loops);
-        this.ownPaddle.position.x = ballPosition.x;
+        this.moveToTarget(this.targetX)
+    }
+    moveToTarget(targetX)
+    {
+        if (this.ownPaddle.position.x < targetX)
+            this.ownPaddle.position.x += this.ownPaddle.moveSpeed * this.arena.length;
+        if (this.ownPaddle.position.x > targetX)
+            this.ownPaddle.position.x -= this.ownPaddle.moveSpeed * this.arena.length;
+    }
+    calculateBallLandingPosition() {
+        if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
+            return;
+        let ballPositionX = this.arena.ball.position.x;
+        let ballPositionZ = this.arena.ball.position.z;
+        let ballSpeedX = this.arena.ball.speedX;
+        const ballSpeedZ = this.arena.ball.speedZ;    
+        if (ballSpeedZ > 0) {
+            while (ballPositionZ < this.zValue) {
+                    ballPositionX += ballSpeedX;
+                ballPositionZ += ballSpeedZ;
+                if ((ballPositionX + ballSpeedX <= (this.arena.position.x - this.arena.length / 2)) || (ballPositionX + ballSpeedX >= this.arena.position.x +this.arena.length / 2)) // detect collision with border
+                    ballSpeedX *= -1;
+            }
+        }
+        return ballPositionX;
     }
 }
 
@@ -3379,6 +3377,7 @@ class GameState {
         }
     }
 }
+
 class Particle {
     constructor(scene, particleCount, left, paddle, isBall) {
         this.scene = scene;
