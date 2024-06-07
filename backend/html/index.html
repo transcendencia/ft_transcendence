@@ -336,6 +336,7 @@
                 <div class="statsBlock"></div>
               </div>
               <div class="modifyPage"> <!--Je modifie les info ici-->
+                <div class="imgFrame"><img id="profile_pic" src="" alt="Photo de profil"></div> <!-- Photo de profil-->
                 <div id="changeInfo" style="font-size: 13px; font-family: 'space'; color: white">Only fill in information you want to change</div>
                 <div class="changeInfoBar">
                   <input id="changeUsername" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Username" maxlength="13"></input>
@@ -350,8 +351,10 @@
                   <input id="changeConfirmPassword" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password"></input>
                 </div>
                 <div class="profilePicContainer">
-                  <label class= "changeProfilePicture" for="profile-pic">Photo de profil :</label>
-                  <input type="file" id="image-input" accept="image/*"></input>
+                  <div id="changeInfo" class= "changeProfilePicture">Photo de profil:</div>
+                  <!-- <label class= "changeProfilePicture" for="profile-pic">Photo de profil :</label> -->
+                  <input type="file" style="display: none;" id="image-input" accept="image/*"></input>
+                  <label for="image-input"  class="profilePicButton">Choose file</label>
                 </div>
                 <div class="buttonContainer">
                   <div class="deleteAccountButton">Delete Account</div>
