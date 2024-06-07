@@ -221,3 +221,13 @@
     resize: none; /* Remove resize handle */
     overflow: hidden; /* Prevent scrolling */
 }
+
+.privacyPlocy {
+    width: 97%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 12px;
+    flex : row;
+}
