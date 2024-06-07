@@ -2702,7 +2702,7 @@ class DragonMap {
             this.arena.ball.material = this.ballMaterial;
             this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
             this.arena.paddleLeft.paddleMesh.material = this.paddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.paddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.paddleMaterial.clone();
             if (this.currentGraphics === 'high')
             {
                 this.arena.paddleLeft.particleNumber = 500;
@@ -2735,7 +2735,7 @@ class DragonMap {
             this.arena.ball.material = this.lowGraphicBallMaterial;
             this.arena.ball.trailParticles.changeMaterial(this.lowGraphicTrailMaterial);
             this.arena.paddleLeft.paddleMesh.material = this.lowGraphicPaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial.clone();
             this.scene.add(this.ambientLight);
             this.arena.paddleLeft.particleNumber = 0;
             this.arena.paddleRight.particleNumber = 0;
