@@ -4,7 +4,7 @@ import { alien1, alien2, alien3} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { RenderAllUsersInList, RenderAllUsersTournament } from "./arenaPage.js";
-
+import { getTranslatedText } from './translatePages.js';
 
 import { startAnimation } from "./main.js";
 import { changeGraphics } from "./arenaPage.js";
@@ -100,12 +100,7 @@ languageIcons.forEach(function(icon) {
             alien3.visible = true;
         }
         addGlow(icon.id, 'glow');
-        // Send POST request to change user language in the back if user is logged in
         setlanguageIconsClicked(true);
-        const token = localStorage.getItem('host_auth_token');
-        if (token && currentLanguage !== icon.id) {
-            updateUserLanguage(incon.id);
-        }
         setCurrentLanguage(icon.id);
         if (icon.id.length === 3)
             setCurrentLanguage(icon.id.slice(0, 2));
@@ -120,6 +115,11 @@ languageIcons.forEach(function(icon) {
             }
         });
 
+        // Send POST request to change user language in the back if user is logged in
+        const token = localStorage.getItem('host_auth_token');
+        if (token && currentLanguage !== icon.id) {
+            updateUserLanguage(incon.id);
+        }
     });
     //init english flag
     if (icon.id === currentLanguage) {
@@ -173,7 +173,7 @@ function handleLogin(event) {
             showPage('none');
             startAnimation();
         } else 
-            document.getElementById('messageContainer').innerText = data.message;
+            document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
     })
     .catch(error => {
         console.error('Erreur :', error);

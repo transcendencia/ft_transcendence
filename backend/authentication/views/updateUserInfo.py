@@ -1,24 +1,12 @@
 from django.shortcuts import render
-from django.contrib.auth import login, authenticate
-from django.http import HttpResponse
-from django.template import loader
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 from django.http import JsonResponse
-from django.utils import timezone
-from django.template.response import TemplateResponse
 
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
 from ..models import User
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
-
-from django.shortcuts import redirect
 
 #--------------------LANGUAGE--------------------
 @api_view(['POST'])
@@ -32,11 +20,11 @@ def change_language(request):
     if new_language != user.language:
       user.language = new_language
       user.save()
-      return Response({'user_id': user.id, 'languages': user.language}, status=status.HTTP_200_OK)
+      return JsonResponse({'user_id': user.id, 'languages': user.language}, status=200)
     else:
-      return Response(status=status.HTTP_400_BAD_REQUEST)
+      return JsonResponse(status=400)
   else:
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return JsonResponse(status=405)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -48,16 +36,16 @@ def update_status(request):
     request.user.status = request.data.get('status')
     request.user.save()
     print(request.user.username, request.user.status) #LOG
-    return Response({'user_id': request.user.id, 'status': request.user.status}, status=status.HTTP_200_OK)
+    return JsonResponse({'user_id': request.user.id, 'status': request.user.status}, status=200)
   else:
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return JsonResponse(status=405)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_status(request):
   user = request.user
-  return Response({'status': user.status}, status=status.HTTP_200_OK)
+  return JsonResponse({'status': user.status}, status=200)
 
 def change_profile(request):
   print("j'affiche le html pour changer les info du user")
@@ -71,11 +59,11 @@ def get_profile_info(request):
     user = request.user
     if user:
       profile_info = user.get_profile_info()
-      return Response({'profile_info': profile_info})
+      return JsonResponse({'profile_info': profile_info})
     else:
-      return Response(status=status.HTTP_400_BAD_REQUEST)
+      return JsonResponse(status=400)
   else:
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return JsonResponse(status=405)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -94,10 +82,10 @@ def change_profile_info(request):
             print("picture changed") #LOG
         if serializer.is_valid():
             serializer.save()
-            return Response({'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=status.HTTP_200_OK)
+            return JsonResponse({'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=200)
         first_error = next(iter(serializer.errors.values()))[0]
         print(first_error)
-        return Response({"message": first_error}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"message": first_error}, status=400)
 
 def user_list(request):
   return render(request, 'user_list.html')
@@ -109,9 +97,9 @@ def get_user_list(request):
   if request.method == 'GET':
     users = User.objects.all()
     serializers = UserListSerializer(users, many=True)
-    return Response(serializers.data)
+    return JsonResponse(serializers.data)
   else:
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return JsonResponse(status=405)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -120,6 +108,6 @@ def change_graphic_mode(request):
   if request.method == 'POST':
     request.user.graphic_mode = request.data.get('graphicMode')
     request.user.save()
-    return Response({'user_id': request.user.id}, status=status.HTTP_200_OK)
+    return JsonResponse({'user_id': request.user.id}, status=200)
   else:
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return JsonResponse(status=405)
