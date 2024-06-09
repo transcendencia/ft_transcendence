@@ -5,6 +5,9 @@
         "loginLanguage": "Choose a language",
         "newToTheGame": "New to the game?",
         "signUpHere": "Sign up here",
+        "loginSuccessful": "You are now logged in!\nPress [E] to enter the galaxy",
+        "loginFailed": "Username and/or password invalid",
+        "userAlreadyLoggedIn": "User already logged in",
 
         "signUpTitle": "Sign up",
         "createAnAccount": "Create an account",
@@ -71,6 +74,9 @@
         "newToTheGame": "Nuevo al juego?",
         "signUpHere": "Registrate aquí",
         "enterPlanetText": "Presiona [E] para seleccionar",
+        "loginSuccessful": "¡Ya has iniciado sesion!\nPresiona [E] para ingresar a la galaxia",
+        "loginFailed": "Nombre de usuario y/o contraseña no validos",
+        "userAlreadyLoggedIn": "El usuario ya esta conectado",
 
         "signUpTitle": "Registrate",
         "createAnAccount": "Crea una cuenta",
@@ -135,6 +141,9 @@
         "loginLanguage": "Choisis une langue",
         "newToTheGame": "Nouveau au jeu?",
         "signUpHere": "Inscris-toi ici",
+        "loginSuccessful": "Vous êtes maintenant connecte !\nAppuyez sur [E] pour entrer dans la galaxie",
+        "loginFailed": "Nom d'utilisateur et/ou mot de passe invalide",
+        "userAlreadyLoggedIn": "Utilisateur déjà connecte",
 
         "signUpTitle": "s'Inscrire",
         "createAnAccount": "Cree un compte",
