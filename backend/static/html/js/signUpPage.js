@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { camera } from './main.js';
 import { showPage } from './showPages.js';
-import { currentLanguage } from './translatePages.js';
+import { currentLanguage, getTranslatedText } from './translatePages.js';
 
 export let inCockpit = false;
 
@@ -67,8 +67,8 @@ function handleSignup(event) {
             signupMessageCont.classList.remove("success");
             signupMessageCont.classList.add("failure");
         }
-        console.log(data.message);
-        document.getElementById('messageContainerSignup').innerText = data.message;
+        console.log(data.msg_code);
+        document.getElementById('messageContainerSignup').innerText = getTranslatedText(data.msg_code);
     })
     .catch(error => {
         console.error('There was a problem with the sign-up:', error);
