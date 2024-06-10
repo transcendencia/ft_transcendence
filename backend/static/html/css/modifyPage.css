@@ -144,3 +144,35 @@
          2px  2px 0 black; */
 }
 
+.validateDelete {
+    display: none;
+    background-color: #000f61b2;
+    border: 4px solid #3777ff;
+	border-radius: 5px;
+    /* display: flex; */
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    height: 30%;
+    width: 60%;
+    overflow: hidden;
+	flex-shrink: 0;
+    position: absolute;
+    z-index: 9999;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center;
+}
+
+.validateDeleteText {
+    font-size: 18px;
+    font-family: 'space';
+    color: white;
+    text-align: center;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.showRectangle {
+    display: flex;
+}
