@@ -1,5 +1,5 @@
 import { togglePlanet } from './enterPlanet.js';
-import { userList, getCookie, createMatchBlock} from './loginPage.js';
+import { userList, getCookie, createMatchBlock, getProfileInfo } from './loginPage.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
 const statsScreen = document.querySelector('.statsBlock');
@@ -235,4 +235,49 @@ function deleteAccount() {
     // delete account dans la db
     console.log("delete button clicked");
     document.querySelector(".validateDelete").classList.toggle("showRectangle");
+
+    document.getElementById("deleteAccountCancel").addEventListener("click", function() {
+      document.querySelector(".validateDelete").classList.toggle("showRectangle");
+    })
+
+    document.getElementById("deleteAccountConfirmation").addEventListener("click", function() {
+      console.log("Delete account");
+    })
+}
+
+var submitChangeButton = document.querySelector(".submitChangeButton");
+submitChangeButton.addEventListener("click", handleChangeInfoForm);
+
+function handleChangeInfoForm(event) {
+  event.preventDefault();
+
+  var form = document.getElementById("userInfoForm");
+  var formData = new FormData(form);
+  // console.log(form);
+  console.log([...formData.entries()]);
+  const token = localStorage.getItem('host_auth_token');
+  console.log(token);
+  fetch('change_profile_info/', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Token ${token}`,
+      'X-CRSFToken': getCookie('crsftoken')
+    },
+    body: formData,
+  })
+  .then(response => {
+    return response.json();
+  })
+  .then(data => {
+    var changeInfoMessage = document.querySelector('.changeInfoMessage');
+    if (data.status === "succes")
+      getProfileInfo();
+    else 
+      changeInfoMessage.classList.toggle("errorMessage");
+    document.getElementById('changeInfoMessage').innerText = data.message;
+    // document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
+  })
+  .catch(error => {
+    console.error('There was a problem with the change_profile_info:', error);
+  });
 }

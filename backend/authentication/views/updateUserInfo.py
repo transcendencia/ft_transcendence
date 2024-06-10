@@ -48,10 +48,6 @@ def get_status(request):
   user = request.user
   return Response({'status': user.status}, status=200)
 
-def change_profile(request):
-  print("j'affiche le html pour changer les info du user")
-  return render(request, 'change_profile_info.html')
-
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -83,10 +79,10 @@ def change_profile_info(request):
             print("picture changed") #LOG
         if serializer.is_valid():
             serializer.save()
-            return Response({'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=200)
+            return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=200)
         first_error = next(iter(serializer.errors.values()))[0]
         print(first_error)
-        return Response({"message": first_error}, status=400)
+        return Response({'status': "failure", "message": first_error}, status=400)
 
 def user_list(request):
   return render(request, 'user_list.html')
