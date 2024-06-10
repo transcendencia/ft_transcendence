@@ -175,7 +175,7 @@
               <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
             </div>
           </div>
-        <div class="planetBackButton">Back</div>
+        <div id="arenaBackButton" class="planetBackButton">Back</div>
         </div>
         <div class="rightColumn">
           <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Arena </div>
@@ -258,7 +258,7 @@
       <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
       <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
       <div class="background blueShadowfilter" style="flex-direction: column;">
-        <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white; margin-top: -15px;"> Profile </div>
+        <div id="profileTitleText" style="font-size: 50px; font-family: 'space'; color: white; margin-top: -15px;"> Profile </div>
         <div class="userPage">
           <div class="userPagesContainer">
             <div id="hostUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0;">
@@ -277,14 +277,14 @@
                       </div>
                     </div>
                     <div id="winLoseTexts1" class="winLoseTexts">
-                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 13</div> 
-                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 5</div> 
-                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 8</div>
-                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : 33</div>
+                        <div class="basicStats"> Parties : 13</div> 
+                        <div class="basicStats"> Victoires : 5</div> 
+                        <div class="basicStats"> Defaites : 8</div>
+                        <div class="basicStats"> Buts : 33</div>
                       </div>
                     </div>
                   <div class="statsModesBlock">
-                   <p>statistics</p> 
+                   <p id="statisticsText">statistics</p> 
                    <div class="statsModes">
                      <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
                      <div class="statButton" style="border-radius: 0px;">Stat2</div>
@@ -313,10 +313,10 @@
                       </div>
                       <div class="userInfoBottomBlock">
                         <div id="winLoseTexts2" class="winLoseTexts">
-                          <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 13</div> 
-                          <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 5</div> 
-                          <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 8</div>
-                          <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : 33</div>
+                          <div class="basicStats"> Parties : 13</div> 
+                          <div class="basicStats"> Victoires : 5</div> 
+                          <div class="basicStats"> Defaites : 8</div>
+                          <div class="basicStats"> Buts : 33</div>
                         </div>
                         <div class="friendActionCont">
                           <img src="{% static 'html/assets/icons/checkMark.png' %}">
@@ -327,7 +327,7 @@
                       </div>
                     </div>
                     <div class="statsModesBlock">
-                     <p>statistics</p> 
+                     <p id="statisticsText2">statistics</p> 
                      <div class="statsModes">
                        <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
                        <div class="statButton" style="border-radius: 0px;">Stat2</div>
@@ -336,7 +336,7 @@
                     </div>
                   </div>
                   <div class="rightBlock">
-                  <div id="historyText" style="font-size: 20px; font-family: 'space'; color: white; margin-bottom: 4px">History</div>
+                  <div id="historyText2" style="font-size: 20px; font-family: 'space'; color: white; margin-bottom: 4px">History</div>
                     <div id="searchedUserHistory" class="history">
                     </div>
                   </div>
@@ -348,18 +348,17 @@
               </div>
           </div>
           <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between; flex-shrink: 0;">
-            <div id="FriendListText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
+            <div id="friendListText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
             <div class="friendSearchBar">
               <input id="searchInput" class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . ."></input>
             </div>
             <div id="userlistUserPage" class="userlistBackground" style="height:85%; width: 100%; border-radius: 10px;">
             </div>
-            <div class="planetBackButton">Back</div>
+            <div id="userBackButton" class="planetBackButton">Back</div>
           </div>
       </div>
     </div>
   </div>
-
 
 
 
@@ -371,17 +370,18 @@
       <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
       <div class="background blueShadowfilter" style="flex-direction: column;">
         <div class="titleTournament">
-          <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div>
+          <div id="trnmtTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div>
         </div>
         <div class="secondLine">
           <div id="leftColumn" class="leftColumn">
-            <div id="userlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
+            <div id="trnmtUserlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
             <div id="userlistTournamentPage" class="userlistBackground before-launch">
               <div id="botUserTournamentTile" class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
                 <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
                 <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
               </div>
             </div>
+            <div id="trnmtBackButton" class="planetBackButton">Back</div>
           </div>
         <div id="midColumn" class="rightColumn" style="width: 60%;">
           <div class="addPlayerToTournament before-launch">
@@ -391,37 +391,37 @@
                 <div class="profilePic"><img id="player1TournamentPicture"></div>
                 <div id="player1TournamentUsername"></div>
               </div>
-              <div id="player1Text" style="font-size: 15px; font-family: 'space'; color: white;"> Player 1 </div>
+              <div class="playerText"> Player 1 </div>
               </div>
               <div class="addPlayer">
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
-                <div id="player2Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 2 </div>
+                <div class="playerText"> Player 2 </div>
               </div>
               <div class="addPlayer">
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
-                <div id="player3Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 3 </div>
+                <div class="playerText"> Player 3 </div>
               </div>
               <div class="addPlayer">
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
-                <div id="player4Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 4 </div>
+                <div class="playerText"> Player 4 </div>
               </div>
             </div>
             <div class="elemContTournament">
               <div class="addPlayer">
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
-                <div id="player5Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 5 </div>
+                <div class="playerText"> Player 5 </div>
               </div>
               <div class="addPlayer">
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
-                <div id="player6Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 6 </div>
+                <div class="playerText"> Player 6 </div>
               </div>
               <div class="addPlayer">
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
-                <div id="player7Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 7 </div>
+                <div class="playerText"> Player 7 </div>
               </div>
               <div class="addPlayer">
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
-                <div id="player8Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 8 </div>
+                <div class="playerText"> Player 8 </div>
               </div>
             </div>
           </div> 
@@ -437,17 +437,17 @@
             <div class="optionButtonVert">
               <div class="buttonTitleVert">
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
-                <div id="gamemodeText">
+                <div id="trnmtGamemodeText">
                   gamemode
                 </div>
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
               </div>
-            <div id="gamemodeNameText" class="buttonContVert" style="font-size: 20px;">Classic</div>
+            <div id="gamemodeNameText2" class="buttonContVert" style="font-size: 20px;">Classic</div>
             </div>
             <div class="optionButtonVert">
               <div class="buttonTitleVert">
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
-                <div id="mapsText">
+                <div id="trnmtMapsText">
                   Maps
                 </div>
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
@@ -657,7 +657,7 @@
                 <div class="icon" style="background-image: url('../static/html/assets/icons/frenchAlienWhite.png');" ></div>
                 <div class="flag" style="background-image: url('../static/html/assets/icons/FR_NU.png');"></div>
               </div>
-              <div class="languageIcon glow" id="en1">
+              <div class="languageIcon" id="en1">
                 <div class="icon" style="background-image: url('../static/html/assets/icons/englishAlienWhite.png');" ></div>
                 <div class="flag" style="background-image: url('../static/html/assets/icons/BR_NU.png');"></div>
               </div>
