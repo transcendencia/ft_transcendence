@@ -124,6 +124,8 @@
 
 
 
+
+
   <!-- CANVAS -->
   <div id="a">
       <canvas id="c4"></canvas>
@@ -156,8 +158,6 @@
         Players Connected
       </div>
     </div>
-
-
 
 
 
@@ -303,7 +303,7 @@
               <div id="searchedUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0">
                 <div class="aboveStatsBlock">
                   <div class="leftBlock">
-                    <div class="userInfoBlock">
+                    <div id="searchedUserInfoBlock" class="userInfoBlock">
                       <div class="nameImgBlock" id="profile_info">
                         <div class="imgFrame"><img id="profile_pic2"></div> <!-- Photo de profil-->
                         <div class="mail-pseudo-info">
@@ -311,13 +311,21 @@
                           <div id="bio2" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
                         </div>
                       </div>
-                      <div id="winLoseTexts2" class="winLoseTexts">
+                      <div class="userInfoBottomBlock">
+                        <div id="winLoseTexts2" class="winLoseTexts">
                           <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 13</div> 
                           <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 5</div> 
                           <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 8</div>
                           <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : 33</div>
                         </div>
+                        <div class="friendActionCont">
+                          <img src="{% static 'html/assets/icons/checkMark.png' %}">
+                          <img src="{% static 'html/assets/icons/redCross.svg' %}">
+                          <img src="{% static 'html/assets/icons/plus.png' %}">
+                          <p>Request Sent</p>
+                        </div>
                       </div>
+                    </div>
                     <div class="statsModesBlock">
                      <p>statistics</p> 
                      <div class="statsModes">
