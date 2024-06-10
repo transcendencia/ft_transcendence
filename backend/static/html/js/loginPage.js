@@ -140,6 +140,9 @@ languageIcons.forEach(function(icon) {
     });
 });
 
+// if (localStorage.getItem("hostLoggedIn") === null) {
+    //     localStorage.setItem('hostLoggedIn', 'false');
+    // }
 // Add event listener to the loginForm
 const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', handleLogin);
@@ -151,6 +154,7 @@ function handleLogin(event) {
     const formData = new FormData(this);
     formData.append('language', currentLanguage);
     formData.append('languageClicked', languageIconsClicked);
+    formData.append('hostLoggedIn', localStorage.getItem("hostLoggedIn"));
     setlanguageIconsClicked(false);
     fetch('login_page/', {
         method: 'POST',
@@ -160,18 +164,21 @@ function handleLogin(event) {
     .then(data => {
         
         if (data.status == "succes") {
-            localStorage.setItem("host_auth_token", data.token);
-            localStorage.setItem("host_id", data.id);
-            console.log(data.language)
-            setCurrentLanguage(data.language);
-            TranslateAllTexts();
-            get_friends_list();
-            get_user_list();
-            getProfileInfo();
-            getGameInfo();
-            changeGraphics(data.graphic_mode);
-            showPage('none');
-            startAnimation();
+            // if (localStorage.getItem("hostLoggedIn") === "false") {
+                localStorage.setItem('hostLoggedIn', 'true');
+                localStorage.setItem("host_auth_token", data.token);
+                localStorage.setItem("host_id", data.id);
+                setCurrentLanguage(data.language);
+                get_friends_list();
+                get_user_list();
+                getProfileInfo();
+                TranslateAllTexts();
+                getGameInfo();
+                changeGraphics(data.graphic_mode);
+                showPage('none');
+                startAnimation();
+            // }
+            console.log(data.language);
         } else 
             document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
     })
@@ -348,6 +355,7 @@ function handleLogout() {
     .catch(error => {
         console.error('Erreur :', error);
     });
+    // localStorage.setItem('hostLoggedIn', 'false');
 };
 
 export let userList;

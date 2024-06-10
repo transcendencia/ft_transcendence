@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
 
 from ..models import User, FriendRequest
 from ..serializers import UserSerializer, SignupSerializer
@@ -46,7 +47,7 @@ def send_friend_request(request):
     else:
         response = None
     
-    return JsonResponse({'message': response})
+    return Response({'message': response})
 #verifier qu'une friend request n'existe pas deja entre ces 2 user 
 
 @api_view(['POST'])
@@ -55,10 +56,10 @@ def send_friend_request(request):
 def	accept_friend_request(request):
 	friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
 	if friend_request.sender == request.user:
-		return JsonResponse('You cannot accept the invite if you are the sender')
+		return Response('You cannot accept the invite if you are the sender')
 	friend_request.status = "accepted"
 	friend_request.save()
-	return JsonResponse('friend request accepted')
+	return Response('friend request accepted')
 
 
 @api_view(['POST'])
@@ -81,7 +82,7 @@ def return_request(request):
     friend_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
     list_request = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friend_requests]
 
-    return JsonResponse({'list': list_request})
+    return Response({'list': list_request})
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -93,4 +94,4 @@ def return_friends_list(request):
     friends = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user)]
     waiting_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.sender == request.user]
     
-    return JsonResponse({'pending_request': pending_request_list, 'friends': friends, 'waiting_request': waiting_request_list})
+    return Response({'pending_request': pending_request_list, 'friends': friends, 'waiting_request': waiting_request_list})
