@@ -68,3 +68,7 @@ body {
    left: 50%;
    transform: translate(-50%, -50%);
 }
+
+.playerText {
+    z-index:99; font-size: 15px; font-family: 'space'; color: white;
+}

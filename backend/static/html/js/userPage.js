@@ -1,5 +1,6 @@
 import { togglePlanet } from './enterPlanet.js';
 import { userList, getCookie, createMatchBlock} from './loginPage.js';
+import { getTranslatedText } from './translatePages.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
 const statsScreen = document.querySelector('.statsBlock');
@@ -19,10 +20,15 @@ statsButtons.forEach((button, index) => {
 
 export function initUserPlanet() {
   renderFriendList();
+  const basicStats = document.getElementById('winLoseTexts1');
+  basicStats.innerHTML = `
+      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
+      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
+      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
+      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
+  `;
+  
 }
-
-const greenCheck = document.getElementById('greenCheck');
-const redCross = document.getElementById('redCross');
 
 // Sample user data
 //generate more random users
@@ -179,10 +185,10 @@ const redCross = document.getElementById('redCross');
 
     const statsBlock = document.getElementById('winLoseTexts2');
     statsBlock.innerHTML = `
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 1</div>
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 1</div>
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 1</div>
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : 1</div>
+        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
+        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
+        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
+        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
     `;
 }
 
@@ -322,4 +328,5 @@ export function renderFriendList() {
 
   sortedRequests.forEach(user => createUserTile(user, 'request'));
   sortedFriends.forEach(user => createUserTile(user, 'friend'));
-}
+}        
+

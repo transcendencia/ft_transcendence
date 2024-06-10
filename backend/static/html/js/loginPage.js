@@ -1,7 +1,7 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
-import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage} from "./translatePages.js";
+import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { RenderAllUsersInList } from "./arenaPage.js";
 
@@ -12,7 +12,7 @@ import { startAnimation } from "./main.js";
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-    element.classList.add(glow);
+        element.classList.add(glow);
 }
 
 function removeGlow(elementId, glow) {
@@ -87,7 +87,6 @@ languageIcons.forEach(function(icon) {
             alien2.visible = true;
             alien3.visible = false;
         }
-        
         if (icon.id === 'en'|| icon.id == 'en1') {
             alien1.visible = true;
             alien2.visible = false;
@@ -100,9 +99,7 @@ languageIcons.forEach(function(icon) {
         }
         addGlow(icon.id, 'glow');
         setlanguageIconsClicked(true);
-        setCurrentLanguage(icon.id);
-        if (icon.id.length === 3)
-            setCurrentLanguage(icon.id.slice(0, 2));
+        setCurrentLanguage(icon.id.slice(0, 2));
         icon.querySelector('.flag').style.opacity = 1;
         icon.querySelector('.icon').style.opacity = 0;
         TranslateAllTexts();
@@ -113,7 +110,7 @@ languageIcons.forEach(function(icon) {
                 otherIcon.querySelector('.icon').style.opacity = 1;
             }
         });
-
+        
         // Send POST request to change user language in the back if user is logged in
         const token = localStorage.getItem('host_auth_token');
         if (token) {
@@ -148,12 +145,19 @@ languageIcons.forEach(function(icon) {
     });
 
     icon.addEventListener('mouseleave', function () {
-        if (icon.id !== currentLanguage) {
+        if (icon.id.slice(0, 2) !== currentLanguage) {
             icon.querySelector('.flag').style.opacity = 0;
             icon.querySelector('.icon').style.opacity = 1;
         }
     });
 });
+
+function setEscapeLanguageVisual() {
+    addGlow(currentLanguage + '1', 'glow');
+    const icon = document.getElementById(currentLanguage + '1');
+    icon.querySelector('.flag').style.opacity = 1;
+    icon.querySelector('.icon').style.opacity = 0;
+}
 
 // Add event listener to the loginForm
 const loginForm = document.getElementById('loginForm');
@@ -176,6 +180,7 @@ function handleLogin(event) {
         if (data.status == "succes") {
             localStorage.setItem("host_auth_token", data.token)
             setCurrentLanguage(data.language);
+            setEscapeLanguageVisual();
             TranslateAllTexts();
             get_user_list();
             getProfileInfo();
@@ -190,9 +195,7 @@ function handleLogin(event) {
     });
 }
 
-
-import { RenderUserMatch } from "./arenaPage.js";
-import { RenderUserTournament } from "./arenaPage.js";
+import { RenderUserMatch, RenderUserTournament} from "./arenaPage.js";
 
 function getProfileInfo() {
 	const token = localStorage.getItem('host_auth_token');
@@ -211,6 +214,13 @@ function getProfileInfo() {
 			document.getElementById('username').textContent = data.profile_info.username;
 			document.getElementById('bio').textContent = data.profile_info.bio;
 			document.getElementById('profile_pic').src = data.profile_info.profile_picture;
+            const basicStats = document.getElementById('winLoseTexts1');
+            basicStats.innerHTML = `
+                <div class="basicStats"> ${getTranslatedText('winLoseText1')} : 1</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText2')} : 1</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText3')} : 1</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText4')} : 1</div>
+            `;
             RenderUserMatch(data.profile_info);
             RenderUserTournament(data.profile_info);
 		})
@@ -229,24 +239,6 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
         bgColor = '#43ff4377';
         bg2Color = '#00ab00c0';
     }
-
-    // const serverDate = new Date(date);
-    // const userLocale = navigator.language || 'en-US';
-    // console.log(serverDate);
-    // console.log(userLocale);
-    // const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    // console.log(userTimeZone);
-    // const options = {
-    //     year: 'numeric',
-    //     month: 'numeric',
-    //     day: 'numeric',
-    //     hour: 'numeric',
-    //     minute: 'numeric',
-    //     timeZone: userTimeZone,
-    // };
-    // const formattedDate = new Intl.DateTimeFormat(userLocale, options).format(serverDate);
-    // console.log(formattedDate);
-
 
     const matchBlock = document.createElement('div');
     matchBlock.classList.add('matchBlock');
