@@ -225,3 +225,14 @@ inputElement.addEventListener('click', function(event) {
     const searchQuery = this.value.trim();
     RenderUsersSearched(searchQuery);
 });
+
+var deleteAccountButton = document.querySelector(".deleteAccountButton");
+deleteAccountButton.addEventListener("click", deleteAccount);
+
+function deleteAccount() {
+    // rediriger vers la page d'acceuil
+    // deconnecter tout les guest
+    // delete account dans la db
+    console.log("delete button clicked");
+    document.querySelector(".validateDelete").classList.toggle("showRectangle");
+}
