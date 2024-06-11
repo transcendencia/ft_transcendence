@@ -82,7 +82,7 @@ export async function get_friends_list() {
         }
 
         const data = await response.json();
-        console.log("get_frinds_list", data);
+        console.log("get_friends_list", data);
         return data;
     } catch (error) {
         console.error('Error:', error);
@@ -162,6 +162,49 @@ export function send_request(username) {
         if (!response.ok) {
             throw new Error('Erreur lors de la friendrequest');
         }
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+}
+
+export function accept_friend_request(id) {
+    const token = localStorage.getItem('host_auth_token');
+    console.log("id", id);
+    fetch('accept_friend_request/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({request_id:  id})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la modification de la langue');
+         }
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+  }
+
+export  function reject_friend_request(id) {
+    const token = localStorage.getItem('host_auth_token');
+    fetch('reject_friend_request/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({request_id:  id})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la modification de la langue');
+         }
     })
     .catch(error => {
         console.error('Erreur :', error);
