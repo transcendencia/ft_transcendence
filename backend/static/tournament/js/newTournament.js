@@ -218,12 +218,6 @@ export function resetPlusButton() {
       <div class="plusPlayerTournament" style="pointer-events: none;">+</div></div>
       <div id="player${playerNumber}Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player ${playerNumber} </div>
     `;
-    // element.innerHTML = `
-    // <div class="addPlayer">
-    //             <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
-    //             <div id="player2Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 2 </div>
-    //           </div>
-    //           `;
   });
 };
 
@@ -235,7 +229,8 @@ export function addEventListenerToTilesTournament() {
           profileAddedToTournament[i] = true;
           playerNb++;
           const newObj = createUserInfoObject(tile.HTMLelement, i);
-          console.log("user add:", tile.user);
+          console.log("ask for alias");
+          console.log("user add:", tile.user);          
           addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
           const oldObj = plusButtons[plusClickedTournament - 1];
           oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
