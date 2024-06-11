@@ -22,8 +22,8 @@ urlpatterns = [
 
     #friendship.py
     path('send_friend_request/', friendship.send_friend_request, name="send_friend_request"),
-    path('render_request/accept_friend_request/', friendship.accept_friend_request, name="accept_friend_request"),
-    path('render_request/reject_friend_request/', friendship.reject_friend_request, name="reject_friend_request"),
+    path('accept_friend_request/', friendship.accept_friend_request, name="accept_friend_request"),
+    path('reject_friend_request/', friendship.reject_friend_request, name="reject_friend_request"),
     path('send_friendrequest/', friendship.send_friendrequest, name="send_friendrequest"),
     path('render_request/', friendship.render_request, name="render_request"),
     path('render_request/return_request/', friendship.return_request, name="return_request"),

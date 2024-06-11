@@ -66,10 +66,11 @@ def	accept_friend_request(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def reject_friend_request(request):
+    console.log(request.data.get("request_id"))
     friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
     friend_request.delete()
 
-    return redirect('friend request rejected')
+    return Response({'status' : "success"})
 #verifier que la requete que j'accepte c'est pas moi qui l'est envoyer
 
 def render_request(request):
@@ -90,13 +91,24 @@ def return_request(request):
 def return_friends_list(request):
     friends_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
 
-    received_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.receiver == request.user]
-    # received_request_list_serializer = UserListSerializer(received_request_list, many=True)
-    # print(received_request_list_serializer)
-    friends = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user)]
-    # friends_serializer = UserListSerializer(friends, many=True)
-    # print(friends_serializer)
-    sent_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.sender == request.user]
-    # sent_request_list_serializer = UserListSerializer(sent_request_list, many=True)
-    # print(sent_request_list_serializer)
+    received_request_list = []
+    friends = []
+    sent_request_list = []
+    for req in friends_requests:
+        if req.status == 'pending' and req.receiver == request.user:
+            user_pair = { 
+                'user' : UserListSerializer(req.sender, many=False).data,
+                'request_id' : req.id,
+            }
+            received_request_list.append(user_pair)
+        
+        if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user):
+            if request.user == req.receiver:
+                friends.append(UserListSerializer(req.sender, many=False).data)
+            if request.user == req.sender:
+                friends.append(UserListSerializer(req.receiver, many=False).data)
+        
+        if req.status == 'pending' and req.sender == request.user:
+            sent_request_list.append(UserListSerializer(req.receiver, many=False).data)
+    
     return Response({'received_request_list': received_request_list, 'friends': friends, 'sent_request_list': sent_request_list})

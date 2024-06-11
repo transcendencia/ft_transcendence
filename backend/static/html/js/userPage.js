@@ -1,6 +1,6 @@
 import { togglePlanet } from './enterPlanet.js';
 import {  getCookie, createMatchBlock} from './loginPage.js';
-import { get_friends_list, userList, send_request } from './userManagement.js';
+import { get_friends_list, userList, send_request, accept_friend_request, reject_friend_request } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
@@ -106,12 +106,14 @@ export function initUserPlanet() {
   const redCrossImg = friendActionCont.querySelectorAll('img')[1];
   const bluePlusImg = friendActionCont.querySelectorAll('img')[2];
   const requestSentElem = friendActionCont.querySelector('p');
-
+  
+  let requestId;
   let displayedUserOnSearchPage;
 
   redCrossImg.addEventListener('click', () => {
     resetProfile();
     //Remove from friends or deny request
+    reject_friend_request(requestId);
     //Actualize userList
   });
 
@@ -119,6 +121,8 @@ export function initUserPlanet() {
     resetProfile();
     displayFriendProfile();
     //Add to friends
+    console.log("requestId", requestId);
+    accept_friend_request(requestId);
     //Actualize userList
   });
 
@@ -254,10 +258,11 @@ function getHistoryMatchPlayer2(user) {
   });
 }
 
-function createUserTile(user, type) {
+function createUserTile(user, type, reqId) {
   if (user.isHost || user.username === 'bot')
     return;
-  const userTile = document.createElement('div');
+console.log("inCreateUserTile", reqId);
+    const userTile = document.createElement('div');
   userTile.classList.add('userTile');
   
   const imgContainer = document.createElement('div');
@@ -274,6 +279,8 @@ function createUserTile(user, type) {
   loupeContainer.addEventListener('click', () => {
     slideAnimations(loupeContainer);
     setTimeout(() => {
+      if (reqId !== undefined)
+        requestId = reqId;
       fillSearchedUserPage(user, type);
     }, 125);
   });
@@ -301,30 +308,19 @@ async function RenderUsersSearched(query) {
     requestList = data.received_request_list.sort((a, b) => a.username.localeCompare(b.username));
   if (data.friends.length > 0)
     friendList = data.friends.sort((a, b) => a.username.localeCompare(b.username));
-  const filteredUsers = userList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
-
-  console.log(filteredUsers);
-  // Separate users into requests, friends, and others
-  const requests = [];
-  const friends = [];
-  const others = [];
-
-  filteredUsers.forEach(user => {
-    if (requestList.length > 0 && requestList.includes(user))
-      requests.push(user);
-    else if (friendList.length > 0 && friendList.includes(user))
-      friends.push(user);
-    else others.push(user);
-  });
+  
+  const filteredRequestList = requestList.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()));
+  const filteredFriendList = friendList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
+  const filteredOthers = userList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
 
   // Sort each group alphabetically by username
-  const sortedRequests = requests.sort((a, b) => a.username.localeCompare(b.username));
-  const sortedFriends = friends.sort((a, b) => a.username.localeCompare(b.username));
-  const sortedOthers = others.sort((a, b) => a.username.localeCompare(b.username));
+  const sortedRequests = filteredRequestList.sort((a, b) => a.username.localeCompare(b.username));
+  const sortedFriends = filteredFriendList.sort((a, b) => a.username.localeCompare(b.username));
+  const sortedOthers = filteredOthers.sort((a, b) => a.username.localeCompare(b.username));
 
-  sortedRequests.forEach(user => createUserTile(user, 'request'));
+  sortedRequests.forEach(obj => createUserTile(obj.user, 'request'));
   sortedFriends.forEach(user => createUserTile(user, 'friend'));
-  sortedOthers.forEach(user => createUserTile(user, ''));
+  sortedOthers.forEach(user => createUserTile(user, ''))
 }
   
 inputElement.addEventListener('input', function(event) {
@@ -342,10 +338,9 @@ export async function renderFriendList() {
       const sortedRequests = data.received_request_list.sort((a, b) => a.username.localeCompare(b.username));
       const sortedFriends = data.friends.sort((a, b) => a.username.localeCompare(b.username));
 
-      sortedRequests.forEach(user => createUserTile(user, 'request'));
+      sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'request', userSendingRq.request_id));
       sortedFriends.forEach(user => createUserTile(user, 'friend'));
   } catch (error) {
       console.error('Error in rendering friend list:', error);
   }
 } 
-
