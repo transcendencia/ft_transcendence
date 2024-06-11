@@ -11,8 +11,7 @@ import { purple } from "../../html/js/arenaPage.js";
 import { grey } from "../../html/js/arenaPage.js";
 import { lightGrey } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
-import { get_user_list } from "../../html/js/loginPage.js";
-import { getProfileInfo } from "../../html/js/loginPage.js";
+import { getProfileInfo, get_user_list } from "../../html/js/userManagement.js";
 
 //affichage info
 

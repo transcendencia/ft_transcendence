@@ -21,7 +21,7 @@ urlpatterns = [
     path('delete_account/', updateUserInfo.delete_account, name="delete_account"),
 
     #friendship.py
-    path('send_friendrequest/send_friend_request/', friendship.send_friend_request, name="send_friend_request"),
+    path('send_friend_request/', friendship.send_friend_request, name="send_friend_request"),
     path('render_request/accept_friend_request/', friendship.accept_friend_request, name="accept_friend_request"),
     path('render_request/reject_friend_request/', friendship.reject_friend_request, name="reject_friend_request"),
     path('send_friendrequest/', friendship.send_friendrequest, name="send_friendrequest"),

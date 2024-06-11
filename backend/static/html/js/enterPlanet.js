@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
+import { initUserPlanet } from './userPage.js';
 export let landedOnPlanet = false;
 import { resetTournament, tournamentState, addEventListenersToPlusButtons } from '../../tournament/js/newTournament.js';
 import { resetToPlusButton } from './arenaPage.js';
@@ -36,6 +37,7 @@ export function togglePanelDisplay() {
         imagesUser[0].style.animation = "moveImageRight 2s forwards";
         imagesUser[1].style.animation = "moveImageLeft 2s forwards";
         background[1].style.animation = "expandBG 2s forwards";
+        initUserPlanet();
     } else {
         imagesUser[0].style.animation = "moveImageRightreverse 1s forwards";
         imagesUser[1].style.animation = "moveImageLeftreverse 1s forwards";
