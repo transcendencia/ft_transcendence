@@ -109,8 +109,10 @@ def change_graphic_mode(request):
   else:
     return Response(status=405)
 
-# @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-# def delete_account(request):
-  
+#SECURISER
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+  request.user.delete()
+  return Response({'status' : "success"})
