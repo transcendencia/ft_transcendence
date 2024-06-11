@@ -17,6 +17,7 @@ import { getProfileInfo, get_user_list } from "../../html/js/userManagement.js";
 
 export let gamemodeCounterTournament = 0;
 export let mapCounterTournament = 0;
+export let botDifficultyTournament = 1;
 
 function toggleGamemodeTournament(buttonHeader, imgIndex) {
   if (imgIndex === 0){
@@ -31,9 +32,9 @@ function toggleGamemodeTournament(buttonHeader, imgIndex) {
       } 
   if (gamemodeCounterTournament === 0)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('gamemodeNameText1');
-  if (gamemodeCounterTournament === 1)
+  else if (gamemodeCounterTournament === 1)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('gamemodeNameText2');
-  if (gamemodeCounterTournament === 2)
+  else if (gamemodeCounterTournament === 2)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('gamemodeNameText3');
 }
 
@@ -42,20 +43,39 @@ function handleMapsTournament(buttonHeader, imgIndex) {
       mapCounterTournament--;
       if (mapCounterTournament === -1)
           mapCounterTournament = 3;
-      }
+  }
   else {
       mapCounterTournament++;    
       if (mapCounterTournament === 4)
           mapCounterTournament = 0;
-      } 
+  } 
   if (mapCounterTournament === 0)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = 'Space';
-  if (mapCounterTournament === 1)
+  else if (mapCounterTournament === 1)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = 'Ocean';
-  if (mapCounterTournament === 2)
+  else if (mapCounterTournament === 2)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = 'Sky';
-  if (mapCounterTournament === 3)
+  else if (mapCounterTournament === 3)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = 'Dragon Pit';
+}
+
+function handleBotDifficulty(buttonHeader, imgIndex) {
+  if (imgIndex === 0){
+      botDifficultyTournament--;
+      if (botDifficultyTournament === -1)
+          botDifficultyTournament = 3;
+  }
+  else {
+      botDifficultyTournament++;    
+      if (botDifficultyTournament === 3)
+          botDifficultyTournament = 0;
+  }
+  if (botDifficultyTournament === 0)
+      buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyEasy');
+  else if (botDifficultyTournament === 1)
+      buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyMedium');
+  else if (botDifficultyTournament === 2)
+      buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyHard');
 }
 
 const buttonHeaders = document.querySelectorAll('.buttonTitleVert');
@@ -73,12 +93,13 @@ buttonHeaders.forEach((buttonHeader, index) => {
                 toggleGamemodeTournament(buttonHeader, imgIndex);
             if (index === 1)
                 handleMapsTournament(buttonHeader, imgIndex);
+            if (index === 2)
+                handleBotDifficulty(buttonHeader, imgIndex);
         });
     });
 });
 
 let plusButtons = document.querySelectorAll(".plusPlayerTournament");
-
 
 export function resetTournament() {
   document.querySelectorAll('.before-launch').forEach(function(el) {
@@ -94,6 +115,7 @@ export function resetTournament() {
   tournamentPlayer.length = 0;
   gamemodeCounterTournament = 0;
   mapCounterTournament = 0;
+  botDifficultyTournament = 1;
   round = 1;
   thirdPlayerMode = false;
   plusClickedTournament = false;
@@ -109,7 +131,7 @@ export function resetTournament() {
   addEventListenersToPlusButtons();
 }
 
-//ajout des users au tournois
+//add user to tournaments
 
 const userlist = document.querySelector(".userlistBackground");
 

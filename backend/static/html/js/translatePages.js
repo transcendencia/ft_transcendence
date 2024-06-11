@@ -22,8 +22,9 @@ fetch('../../static/html/languages.json')
 export function getTranslatedText(key) {
     if (languageFile) {
         if (languageFile[currentLanguage])
-        return languageFile[currentLanguage][key];
-    else console.error('Current language ' + currentLanguage + 'not found in language file');
+            return languageFile[currentLanguage][key];
+        else 
+            console.error('Current language ' + currentLanguage + 'not found in language file');
     }
 }
 
@@ -31,6 +32,7 @@ const userlistText = document.getElementById('userlistText');
 const arenaTitleText = document.getElementById('arenaTitleText');
 const powerupsText = document.getElementById('gamemodeText');
 const mapsText = document.getElementById('mapsText');
+const botDifficultyText = document.getElementById('botDifficultyText');
 const enabledText = document.getElementById('gamemodeNameText');
 const startText = document.getElementById('startText');
 const player1Text = document.getElementById('player1Text');
@@ -47,6 +49,7 @@ function translateArenaPageTexts() {
     player3Text.textContent = getTranslatedText('player') + ' 3';
     powerupsText.textContent = getTranslatedText('gamemode');
     mapsText.textContent = getTranslatedText('maps');
+    botDifficultyText.textContent = getTranslatedText('botDifficulty');
     enabledText.textContent = getTranslatedText('gamemodeNameText1');
     startText.textContent = getTranslatedText('start');
     arenaBackButton.textContent = getTranslatedText('backButton');
@@ -57,6 +60,7 @@ const trnmtUserlistText = document.getElementById('trnmtUserlistText');
 const trnmtTitleText = document.getElementById('trnmtTitleText');
 const trnmtPowerupsText = document.getElementById('trnmtGamemodeText');
 const trnmtMapsText = document.getElementById('trnmtMapsText');
+const trnmtBotDifficultyText = document.getElementById('trnmtBotDifficultyText');
 const trnmtEnabledText = document.getElementById('gamemodeNameText2');
 const trnmtStartText = document.getElementById('launch');
 const trnmtBackButton = document.getElementById('trnmtBackButton');
@@ -69,6 +73,7 @@ function translateTournamentPageTexts() {
     trnmtTitleText.textContent = getTranslatedText('tournamentTitle');
     trnmtPowerupsText.textContent = getTranslatedText('gamemode');
     trnmtMapsText.textContent = getTranslatedText('maps');
+    trnmtBotDifficultyText.textContent = getTranslatedText('botDifficulty');
     trnmtEnabledText.textContent = getTranslatedText('gamemodeNameText1');
     trnmtStartText.textContent = getTranslatedText('start');
     trnmtBackButton.textContent = getTranslatedText('backButton');
