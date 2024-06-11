@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { showPage } from './showPages.js';
-import {spaceShip, spaceShipInt, allModelsLoaded} from "./objs.js";
+import {spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
@@ -15,13 +15,15 @@ import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
-import { mixer1, mixer2, mixer3} from './objs.js';
-import { userList } from './loginPage.js';
+import { userList } from './userManagement.js';
+import { returnToHost } from './userPage.js'
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
 const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#c4')
+    canvas: document.querySelector('#c4'),
+    antialias: true,
+    toneMapping: THREE.ReinhardToneMapping
 });
 const scene = new THREE.Scene();
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
@@ -39,8 +41,6 @@ class LobbyVisuals
         this.currentGraphics = 'medium';
         this.composer;
         this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-        this.afterImagePass = new AfterimagePass();
-        this.afterImagePass.uniforms.damp.value = 0;
         
         this.spaceCubeMapTexture = cubeLoader.load([
             '../../static/game/texturePlayground/spaceMap/nx.png',
@@ -62,8 +62,8 @@ class LobbyVisuals
           ]);
 
         this.bloomPass.threshold = 0.1;
-        this.bloomPass.strength = 0.2;
-        this.bloomPass.radius = 0.5;
+        this.bloomPass.strength = 0.3;
+        this.bloomPass.radius = 0.2;
         this.stars = [];
         this.addStars(1000);
     }
@@ -90,10 +90,7 @@ class LobbyVisuals
         if (graphics === 'low' && this.currentGraphics != 'low')
         {
             if (this.currentGraphics === 'high')
-            {
                 this.composer.removePass(this.bloomPass);
-                this.composer.removePass(this.afterImagePass);
-            }
             this.removeStars();
             this.addStars(500);
             this.camera.far = 1500;
@@ -105,10 +102,7 @@ class LobbyVisuals
         else if (graphics === 'medium' && this.currentGraphics != 'medium')
         {
             if (this.currentGraphics === 'high')
-            {
                 this.composer.removePass(this.bloomPass);
-                this.composer.removePass(this.afterImagePass);
-            }
             this.removeStars();
             this.addStars(1000);
             this.camera.far = 2000;
@@ -120,7 +114,6 @@ class LobbyVisuals
         else if (graphics === 'high' && this.currentGraphics != 'high')
         {
             this.composer.addPass(this.bloomPass);
-            this.composer.addPass(this.afterImagePass);
             this.camera.far = 3000;
             this.removeStars();
             this.addStars(1200);
@@ -142,10 +135,7 @@ class LobbyVisuals
         })
         .onComplete(() => {
             if (this.currentGraphics === 'high')
-            {
-                this.afterImagePass.uniforms.damp.value = 0.95;
                 this.scene.background = this.boostCubeMapTexture;
-            }
         })
         .start();
     }
@@ -160,7 +150,6 @@ class LobbyVisuals
         .start();
         if (this.currentGraphics != 'high')
             return;
-        this.afterImagePass.uniforms.damp.value = 0;
         this.scene.background = this.spaceCubeMapTexture;
     
     }
@@ -200,7 +189,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
     minimapBG.position.set(-200, -600, 0); 
     minimapBG.lookAt(minimapCamera.position); // Make the plane face the camera
-    // scene.add(minimapBG);
+    scene.add(minimapBG);
 
     minimapBG.layers.set(1);
     minimapCamera.layers.enable(1);
@@ -295,8 +284,18 @@ export function toggleRSContainerVisibility() {
 }
 
 
-const composer = new EffectComposer(renderer);
+// Initialize EffectComposer with custom render target
+const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
+    minFilter: THREE.LinearFilter,
+    magFilter: THREE.LinearFilter,
+    format: THREE.RGBAFormat,
+    stencilBuffer: false,
+    depthBuffer: true
+  });
+
+const composer = new EffectComposer(renderer, renderTarget);
 composer.setSize(window.innerWidth, window.innerHeight);
+composer.setPixelRatio(window.devicePixelRatio);
 const renderPass = new RenderPass( scene, camera );
 
 export const outlinePass = new OutlinePass(
@@ -403,7 +402,6 @@ function toggleEscapeContainerVisibility() {
     }
 }
 
-
 let pauseGame = false;
 
 document.addEventListener('keydown', (event) => {
@@ -424,6 +422,7 @@ document.addEventListener('keydown', (event) => {
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
             togglePlanet();
+            returnToHost();
             return;
         }
         else if (inCockpit) {
@@ -503,6 +502,7 @@ function animate()
     if (!landedOnPlanet)
         renderMinimap();
     update();
+    // renderer.render(scene, camera);
     composer.render();
     mixer1.update(0.025);
     mixer2.update(0.025);

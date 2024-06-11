@@ -1,18 +1,16 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
-import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage} from "./translatePages.js";
+import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { RenderAllUsersInList } from "./arenaPage.js";
-
-
+import { changeGraphics } from "./arenaPage.js";
 import { startAnimation } from "./main.js";
-// import { changeGraphics } from "./arenaPage.js";
+import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-    element.classList.add(glow);
+        element.classList.add(glow);
 }
 
 function removeGlow(elementId, glow) {
@@ -87,7 +85,6 @@ languageIcons.forEach(function(icon) {
             alien2.visible = true;
             alien3.visible = false;
         }
-        
         if (icon.id === 'en'|| icon.id == 'en1') {
             alien1.visible = true;
             alien2.visible = false;
@@ -100,9 +97,7 @@ languageIcons.forEach(function(icon) {
         }
         addGlow(icon.id, 'glow');
         setlanguageIconsClicked(true);
-        setCurrentLanguage(icon.id);
-        if (icon.id.length === 3)
-            setCurrentLanguage(icon.id.slice(0, 2));
+        setCurrentLanguage(icon.id.slice(0, 2));
         icon.querySelector('.flag').style.opacity = 1;
         icon.querySelector('.icon').style.opacity = 0;
         TranslateAllTexts();
@@ -113,27 +108,11 @@ languageIcons.forEach(function(icon) {
                 otherIcon.querySelector('.icon').style.opacity = 1;
             }
         });
-
+        
         // Send POST request to change user language in the back if user is logged in
         const token = localStorage.getItem('host_auth_token');
-        if (token) {
-            fetch('change_language/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ language: currentLanguage })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la modification de la langue');
-                }
-            })
-            .catch(error => {
-                console.error('Erreur :', error);
-            });
+        if (token && currentLanguage !== icon.id) {
+            updateUserLanguage(incon.id);
         }
     });
     //init english flag
@@ -148,13 +127,23 @@ languageIcons.forEach(function(icon) {
     });
 
     icon.addEventListener('mouseleave', function () {
-        if (icon.id !== currentLanguage) {
+        if (icon.id.slice(0, 2) !== currentLanguage) {
             icon.querySelector('.flag').style.opacity = 0;
             icon.querySelector('.icon').style.opacity = 1;
         }
     });
 });
 
+function setEscapeLanguageVisual() {
+    addGlow(currentLanguage + '1', 'glow');
+    const icon = document.getElementById(currentLanguage + '1');
+    icon.querySelector('.flag').style.opacity = 1;
+    icon.querySelector('.icon').style.opacity = 0;
+}
+
+// if (localStorage.getItem("hostLoggedIn") === null) {
+    //     localStorage.setItem('hostLoggedIn', 'false');
+    // }
 // Add event listener to the loginForm
 const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', handleLogin);
@@ -166,6 +155,7 @@ function handleLogin(event) {
     const formData = new FormData(this);
     formData.append('language', currentLanguage);
     formData.append('languageClicked', languageIconsClicked);
+    formData.append('hostLoggedIn', localStorage.getItem("hostLoggedIn"));
     setlanguageIconsClicked(false);
     fetch('login_page/', {
         method: 'POST',
@@ -173,50 +163,29 @@ function handleLogin(event) {
     })
     .then(response => response.json())
     .then(data => {
+        
         if (data.status == "succes") {
-            localStorage.setItem("host_auth_token", data.token)
-            setCurrentLanguage(data.language);
-            TranslateAllTexts();
-            get_user_list();
-            getProfileInfo();
-            getGameInfo();
-            showPage('none');
-            startAnimation();
+            // if (localStorage.getItem("hostLoggedIn") === "false") {
+                localStorage.setItem('hostLoggedIn', 'true');
+                localStorage.setItem("host_auth_token", data.token);
+                localStorage.setItem("host_id", data.id);
+                setCurrentLanguage(data.language);
+                setEscapeLanguageVisual();
+                get_friends_list();
+                get_user_list();
+                getProfileInfo();
+                TranslateAllTexts();
+                getGameInfo();
+                changeGraphics(data.graphic_mode);
+                showPage('none');
+                startAnimation();
+            // }
         } else 
-            document.getElementById('messageContainer').innerText = data.message;
+            document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
-}
-
-
-import { RenderUserMatch } from "./arenaPage.js";
-import { RenderUserTournament } from "./arenaPage.js";
-
-export function getProfileInfo() {
-	const token = localStorage.getItem('host_auth_token');
-		fetch('get_profile_info/', {
-		    method: 'GET',
-			headers: {
-				'Authorization': `Token ${token}`,
-			}
-		})
-		.then(response => {
-			if (!response.ok)
-				throw new Error('Error lors de la recuperation des donne');
-				return response.json();
-		})
-		.then(data=> {
-			document.getElementById('username').textContent = data.profile_info.username;
-			document.getElementById('bio').textContent = data.profile_info.bio;
-			document.getElementById('profile_pic').src = data.profile_info.profile_picture;
-            RenderUserMatch(data.profile_info);
-            RenderUserTournament(data.profile_info);
-		})
-		.catch(error => {
-			console.error('Erreur :', error);
-		});
 }
 
 export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
@@ -229,24 +198,6 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
         bgColor = '#43ff4377';
         bg2Color = '#00ab00c0';
     }
-
-    // const serverDate = new Date(date);
-    // const userLocale = navigator.language || 'en-US';
-    // console.log(serverDate);
-    // console.log(userLocale);
-    // const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    // console.log(userTimeZone);
-    // const options = {
-    //     year: 'numeric',
-    //     month: 'numeric',
-    //     day: 'numeric',
-    //     hour: 'numeric',
-    //     minute: 'numeric',
-    //     timeZone: userTimeZone,
-    // };
-    // const formattedDate = new Intl.DateTimeFormat(userLocale, options).format(serverDate);
-    // console.log(formattedDate);
-
 
     const matchBlock = document.createElement('div');
     matchBlock.classList.add('matchBlock');
@@ -348,70 +299,15 @@ var disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", handleLogout);
 
 function handleLogout() {
-    updateUserStatus('offline');
-    localStorage.clear();
-};
-
-function updateUserStatus(status) {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('update_status/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ status: status })
+    updateUserStatus('offline')
+    .then(() => {
+        return get_user_list();
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erreur lors du logout');
-        }
+    .then(() => {
+        localStorage.clear();
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
-};
-
-function getUserStatus() {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_status/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
-};
-
-export let userList;
-import { RenderAllUsersTournament } from "./arenaPage.js";
-
-export function get_user_list() {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_user_list/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        userList = data;
-        RenderAllUsersInList(data);
-        RenderAllUsersTournament(data);
-        RenderAllUsersTournament(data);
-    })
-    .catch(error => console.error('Error:', error));
+    // localStorage.setItem('hostLoggedIn', 'false');
 };

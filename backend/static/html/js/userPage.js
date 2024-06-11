@@ -1,19 +1,35 @@
 import { togglePlanet } from './enterPlanet.js';
-import { userList, getCookie} from './loginPage.js';
-import { createMatchBlock } from './loginPage.js';
+import {  getCookie, createMatchBlock} from './loginPage.js';
+import { get_friends_list, userList, send_request } from './userManagement.js';
+import { getTranslatedText } from './translatePages.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
 const statsScreen = document.querySelector('.statsBlock');
 const colorClicked = '#5d75ff47';
 
-statsButtons.forEach((button) => {
+statsButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
-        statsButtons.forEach((button) => {
-            button.style.backgroundColor = 'transparent';
-        });
-        button.style.backgroundColor = colorClicked;
+      if (index < 3)
+        for (let i = 0; i < 3; i++)
+            statsButtons[i].style.backgroundColor = 'transparent';
+      else
+        for (let i = 3; i < 6; i++)
+          statsButtons[i].style.backgroundColor = 'transparent';
+      button.style.backgroundColor = colorClicked;
     });
 });
+
+export function initUserPlanet() {
+  renderFriendList();
+  const basicStats = document.getElementById('winLoseTexts1');
+  basicStats.innerHTML = `
+      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
+      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
+      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
+      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
+  `;
+  
+}
 
 // Sample user data
 //generate more random users
@@ -26,7 +42,7 @@ statsButtons.forEach((button) => {
 
   let pageDisplayed = "hostProfile";
 
-  backButtonUserPage.addEventListener('click', () => {
+ export function returnToHost() {
     if (pageDisplayed === "userProfile") {
       searchedUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";    
       hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
@@ -37,7 +53,12 @@ statsButtons.forEach((button) => {
       modifyUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
       pageDisplayed = "hostProfile";
     }
-    else togglePlanet();
+  }
+
+  backButtonUserPage.addEventListener('click', () => {
+    if (pageDisplayed === "hostProfile")
+      togglePlanet();
+    else returnToHost();
   });
 
   modifyInfoButton.addEventListener('click', () => {
@@ -51,12 +72,21 @@ statsButtons.forEach((button) => {
 
   let inputElement = document.getElementById("searchInput");
 
-  function slideAnimations() {
+  function slideAnimations(user) {
       if (pageDisplayed === "hostProfile") {
         searchedUserPage.style.display = 'flex';
         userPagesContainer.style.flexDirection = "row";
         searchedUserPage.style.animation = "slideUserPage 1s forwards ease-in-out";    
         hostUserPage.style.animation = "slideUserPage 1s forwards ease-in-out";
+        pageDisplayed = "userProfile";
+      }
+      else if (pageDisplayed === "modifyPage") {
+        setTimeout(() => {
+          searchedUserPage.style.display = 'flex';
+          userPagesContainer.style.flexDirection = "row";
+        },500)
+        searchedUserPage.style.animation = "slideDiagonally 0.5s forwards ease-in-out";    
+        modifyUserPage.style.animation = "slideDiagonally 0.5s forwards ease-in-out";
         pageDisplayed = "userProfile";
       }
       else {
@@ -65,19 +95,88 @@ statsButtons.forEach((button) => {
           searchedUserPage.style.animation = "slideUserPageUpp 0.25s forwards ease-out";
         }, 250);
       }
-      // else displayOtherUser(){}
+  }
+  
+  const userListBackground = document.getElementById('userlistUserPage');
+  const profilePic = document.getElementById('profile_pic2');
+  const username = document.getElementById('username2');
+  const bio = document.getElementById('bio2');
+  const friendActionCont = document.querySelector('.friendActionCont');
+  const checkMarkImg = friendActionCont.querySelectorAll('img')[0];
+  const redCrossImg = friendActionCont.querySelectorAll('img')[1];
+  const bluePlusImg = friendActionCont.querySelectorAll('img')[2];
+  const requestSentElem = friendActionCont.querySelector('p');
+
+  let displayedUserOnSearchPage;
+
+  redCrossImg.addEventListener('click', () => {
+    resetProfile();
+    //Remove from friends or deny request
+    //Actualize userList
+  });
+
+  checkMarkImg.addEventListener('click', () => {
+    resetProfile();
+    displayFriendProfile();
+    //Add to friends
+    //Actualize userList
+  });
+
+  bluePlusImg.addEventListener('click', () => {
+    resetProfile();
+    displayRequestSent();
+    //Send friend request
+    send_request(displayedUserOnSearchPage.username);
+    //Actualize userList
+  });
+
+
+  function displayRequestSent() {
+    checkMarkImg.style.display = "none";
+    redCrossImg.style.display = "none";
+    bluePlusImg.style.display = 'none';
+    requestSentElem.style.display = 'block';
   }
 
-  const userListBackground = document.getElementById('userlistUserPage');
+  function resetProfile() {
+    friendActionCont.classList.remove("friendTile");
+    friendActionCont.classList.remove("requestTile");
+    profilePic.parentNode.classList.remove("friendTile");
+    profilePic.parentNode.classList.remove("requestTile");
+    friendActionCont.style.justifyContent = 'center';
+    checkMarkImg.style.display = "none";
+    redCrossImg.style.display = "none";
+    requestSentElem.style.display = 'none';
+    bluePlusImg.style.display = "block";
+  }
 
-  function fillSearchedUserPage(user) {
-    // Get the DOM elements
-    const profilePic = document.getElementById('profile_pic2');
-    const username = document.getElementById('username2');
-    const bio = document.getElementById('bio2');
-    
-    // // Assuming these elements exist in the rightBlock for user stats
-    // const history = document.querySelector('.history');
+  function displayFriendProfile() {
+    bluePlusImg.style.display = "none";
+    checkMarkImg.style.display = "none";
+    requestSentElem.style.display = 'none';
+    redCrossImg.style.display = "block";
+    friendActionCont.style.justifyContent = 'center';
+    friendActionCont.classList.add("friendTile");
+    profilePic.parentNode.classList.add("friendTile");
+  }
+
+  function displayFriendRequestProfile() {
+    bluePlusImg.style.display = "none";
+    requestSentElem.style.display = 'none';
+    checkMarkImg.style.display = "block";
+    redCrossImg.style.display = "block";
+    friendActionCont.style.justifyContent = 'space-evenly';
+    friendActionCont.classList.add("requestTile");
+    profilePic.parentNode.classList.add("requestTile");
+  }
+
+  function fillSearchedUserPage(user, type) {
+    displayedUserOnSearchPage = user;
+    resetProfile();
+    if (type === 'request')
+      displayFriendRequestProfile();
+    else if (type === 'friend')
+      displayFriendProfile();
 
     // Update the DOM elements with user information
     profilePic.src = user.profile_picture;
@@ -88,20 +187,12 @@ statsButtons.forEach((button) => {
     
     getHistoryMatchPlayer2(user);
 
-    // // Assuming user.history is an array of history entries
-    // user.history.forEach(entry => {
-    //     const entryElement = document.createElement('div');
-    //     entryElement.textContent = entry; // Adjust based on the structure of entry
-    //     history.appendChild(entryElement);
-    // });
-
-    // Assuming user has stats properties: games, wins, losses, goals
-    const statsBlock = document.querySelector('.winLoseTexts2');
+    const statsBlock = document.getElementById('winLoseTexts2');
     statsBlock.innerHTML = `
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : ${user.games}</div>
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : ${user.wins}</div>
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : ${user.losses}</div>
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : ${user.goals}</div>
+        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
+        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
+        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
+        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
     `;
 }
 
@@ -125,7 +216,6 @@ function getHistoryMatchPlayer2(user) {
     return response.json();
   })
   .then(data => {
-    console.log(data, user.id);
     data.games.forEach(game => {
       let winner = false;
       let player1;
@@ -164,52 +254,98 @@ function getHistoryMatchPlayer2(user) {
   });
 }
 
-const userTilesProfile = [];
+function createUserTile(user, type) {
+  if (user.isHost || user.username === 'bot')
+    return;
+  const userTile = document.createElement('div');
+  userTile.classList.add('userTile');
+  
+  const imgContainer = document.createElement('div');
+  imgContainer.classList.add('imgContainer');
+  imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
+  
+  const textContainer = document.createElement('div');
+  textContainer.classList.add('textContainer');
+  textContainer.textContent = user.username;
 
-// Function to render user tiles based on search query
-function RenderUsersSearched(query) {
-    userListBackground.innerHTML = ''; // Clear existing user tiles
+  const loupeContainer = document.createElement('div');
+  loupeContainer.classList.add('loupeImg');
+  loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
+  loupeContainer.addEventListener('click', () => {
+    slideAnimations(loupeContainer);
+    setTimeout(() => {
+      fillSearchedUserPage(user, type);
+    }, 125);
+  });
 
-    const filteredUsers = userList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
-  
-    filteredUsers.forEach(user => {
-      if (user.is_host)
-        return;
-      const userTile = document.createElement('div');
-      userTile.classList.add('userTile');
-  
-      const imgContainer = document.createElement('div');
-      imgContainer.classList.add('imgContainer');
-      imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
-  
-      const textContainer = document.createElement('div');
-      textContainer.classList.add('textContainer');
-      textContainer.textContent = user.username;
+  imgContainer.classList.add(`${type}Tile`);
+  textContainer.classList.add(`${type}Tile`);
+  loupeContainer.classList.add(`loupe${type.charAt(0).toUpperCase() + type.slice(1)}Tile`);
 
-      const loupeContainer = document.createElement('div');
-      loupeContainer.classList.add('loupeImg');
-      loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
-      loupeContainer.addEventListener('click', () => {
-        slideAnimations(loupeContainer);
-        fillSearchedUserPage(user);
-      });
-      
-      userTile.appendChild(imgContainer);
-      userTile.appendChild(textContainer);
-      userTile.appendChild(loupeContainer);
+  userTile.appendChild(imgContainer);
+  userTile.appendChild(textContainer);
+  userTile.appendChild(loupeContainer);
   
-      userListBackground.appendChild(userTile);
-    });
+  userListBackground.appendChild(userTile);
 }
 
-// Function to handle input event on search input
+async function RenderUsersSearched(query) {
+  userListBackground.innerHTML = ''; // Clear existing user tiles
+
+  const data = await get_friends_list();
+  if (!data)
+    return ;
+  let requestList = [];
+  let friendList = [];
+  if (data.received_request_list.length > 0)  
+    requestList = data.received_request_list.sort((a, b) => a.username.localeCompare(b.username));
+  if (data.friends.length > 0)
+    friendList = data.friends.sort((a, b) => a.username.localeCompare(b.username));
+  const filteredUsers = userList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
+
+  console.log(filteredUsers);
+  // Separate users into requests, friends, and others
+  const requests = [];
+  const friends = [];
+  const others = [];
+
+  filteredUsers.forEach(user => {
+    if (requestList.length > 0 && requestList.includes(user))
+      requests.push(user);
+    else if (friendList.length > 0 && friendList.includes(user))
+      friends.push(user);
+    else others.push(user);
+  });
+
+  // Sort each group alphabetically by username
+  const sortedRequests = requests.sort((a, b) => a.username.localeCompare(b.username));
+  const sortedFriends = friends.sort((a, b) => a.username.localeCompare(b.username));
+  const sortedOthers = others.sort((a, b) => a.username.localeCompare(b.username));
+
+  sortedRequests.forEach(user => createUserTile(user, 'request'));
+  sortedFriends.forEach(user => createUserTile(user, 'friend'));
+  sortedOthers.forEach(user => createUserTile(user, ''));
+}
+  
 inputElement.addEventListener('input', function(event) {
-    const searchQuery = this.value.trim();
+  const searchQuery = this.value.trim();
     RenderUsersSearched(searchQuery);
 });
 
-// Event listener to show user list when input element is clicked
-inputElement.addEventListener('click', function(event) {
-    const searchQuery = this.value.trim();
-    RenderUsersSearched(searchQuery);
-});
+export async function renderFriendList() {
+  userListBackground.innerHTML = ''; // Clear existing user tiles
+
+  try {
+      const data = await get_friends_list();
+      console.log(data);
+
+      const sortedRequests = data.received_request_list.sort((a, b) => a.username.localeCompare(b.username));
+      const sortedFriends = data.friends.sort((a, b) => a.username.localeCompare(b.username));
+
+      sortedRequests.forEach(user => createUserTile(user, 'request'));
+      sortedFriends.forEach(user => createUserTile(user, 'friend'));
+  } catch (error) {
+      console.error('Error in rendering friend list:', error);
+  }
+} 
+

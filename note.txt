@@ -16,4 +16,9 @@ python manage.py createsuperuser
 -> stat
 -> date du dernier login
 
-----CREATE USER----
+---- REQUETE REGULIERE AU BACK----
+var intervalID = setInterval(updateInfo, 5000); -> a rajouter dans le fecth pour que la liste d'amis soit mise ajour de maniere regulier quand le use est sur sa page de profil
+-> Une fois l'intervalle lancer elle ne s'arrete plus sauf si je fais ca :
+    clearInterval(intervalID);
+
+-> Je fait faire une fonction startIntervalle et une fonction stopIntervalle qui vont etre appeler dans des event listener

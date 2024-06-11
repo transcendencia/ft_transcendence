@@ -19,7 +19,7 @@ import { lobbyVisuals } from '../../html/js/main.js';
 import { gameStarted } from '../../html/js/arenaPage.js';
 // import { gameStarted } from '../../html/js/arenaPage.js';
 import { endGame } from '../../html/js/arenaPage.js';
-
+import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
 
@@ -215,7 +215,7 @@ class LoadingScreen {
             this.isAnimatingCamera = false;
             this.iterations = 0;
             this.loadingCompleted = true;
-            const duration = 2500;
+            const duration = 500;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -734,8 +734,8 @@ class Arena extends THREE.Mesh {
             this.ball.rotation.y += 0.1;
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
-        if (!this.bot.isPlaying)
-            this.paddleRight.animatePaddle(this);
+        // if (!this.bot.isPlaying)
+        this.paddleRight.animatePaddle(this);
         if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling)
         {
             this.ball.speedX = 0;
@@ -791,7 +791,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
-            // this.bot.isPlaying = true;
+            this.bot.isPlaying = true;
             this.game.isPlaying = true;
             if (!this.game.thirdPlayer)
             {
@@ -1519,6 +1519,7 @@ class Ball extends THREE.Mesh {
         this.light = new THREE.PointLight(0xffffff);
         scene.add(this.light);
         this.startingPower = 20;
+        this.size = size;
         this.light.power = this.startingPower;
         this.light.castShadow = true;
         // ATRIBUTES
@@ -2702,7 +2703,7 @@ class DragonMap {
             this.arena.ball.material = this.ballMaterial;
             this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
             this.arena.paddleLeft.paddleMesh.material = this.paddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.paddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.paddleMaterial.clone();
             if (this.currentGraphics === 'high')
             {
                 this.arena.paddleLeft.particleNumber = 500;
@@ -2735,7 +2736,7 @@ class DragonMap {
             this.arena.ball.material = this.lowGraphicBallMaterial;
             this.arena.ball.trailParticles.changeMaterial(this.lowGraphicTrailMaterial);
             this.arena.paddleLeft.paddleMesh.material = this.lowGraphicPaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial.clone();
             this.scene.add(this.ambientLight);
             this.arena.paddleLeft.particleNumber = 0;
             this.arena.paddleRight.particleNumber = 0;
@@ -3205,76 +3206,91 @@ class Bot {
         this.ownPaddle = ownPaddle;
         this.enemyPaddle = enemyPaddle;
         this.isPlaying = false;
-        this.zValue = this.ownPaddle.paddleMesh.position.z; // rightpaddle : x positive to the right, z positive
-        this.enemyZValue = this.enemyPaddle.paddleMesh.position.z;
+        this.targetX = 0;
+        this.lastTargetUpdate;
+        this.zValue = this.ownPaddle.position.z; // rightpaddle : x positive to the right, z positive
+        this.enemyZValue = this.enemyPaddle.position.z;
+        this.intervalSet = false;
     }
     play()
     {
-        let paddleBorderRight = this.ownPaddle.position.x + this.ownPaddle.width / 2;
-        let paddleBorderLeft = this.ownPaddle.position.x - this.ownPaddle.width / 2;
-        let distanceFromBorderRight = this.arena.ball.position.x - paddleBorderRight;
-        let distanceFromBorderLeft = this.arena.ball.position.x - paddleBorderLeft;
-        let targetX;
-        if (distanceFromBorderRight < distanceFromBorderLeft)
-            targetX = this.arena.ball.position.x + this.ownPaddle.width / 2;
-        else
-            targetX = this.arena.ball.position.x - this.ownPaddle.width / 2;
-        if (this.ownPaddle.position.x < targetX)
-            this.ownPaddle.position.x += 0.016 * this.arena.length;
-        if (this.ownPaddle.position.x > targetX)
-            this.ownPaddle.position.x -= 0.016 * this.arena.length;
-    }
-    calculateBallLandingPosition()
-    {
-        if (this.arena.ball.speedZ * this.ownPaddle.position.z < 0)
-            return;
-        let ballPosition = this.arena.ball.position.clone();
-        let ballSpeedX = this.arena.ball.speedX;
-        let loops = 0;
-        const ballSpeedZ = this.arena.ball.speedZ;
-        while (ballPosition.z <= this.zValue)
+        if (!this.intervalSet)
         {
-            ballPosition.x += ballSpeedX;
-            ballPosition.z += ballSpeedZ;
-            if (ballPosition.x < -this.arena.width / 2 || ballPosition.x > this.arena.width / 2)
-            {
-                console.log("found wall collision");
-                ballSpeedX = -ballSpeedX;
-            }
-            loops++;
+            this.intervalSet = true;
+            setInterval(() => this.updateTarget(), 1000);
         }
-        console.log("loops: ", loops);
-        this.ownPaddle.position.x = ballPosition.x;
+        this.moveToTarget(this.targetX)
+    }
+    moveToTarget(targetX)
+    {
+        if (this.ownPaddle.position.x + this.ownPaddle.width / 2 >= targetX && this.ownPaddle.position.x - this.ownPaddle.width / 2 <= targetX)
+        {
+            keyDown['ArrowLeft'] = false;
+            keyDown['ArrowRight'] = false;
+        }
+        else if (this.ownPaddle.position.x < targetX)
+        {
+            keyDown['ArrowRight'] = true;
+            keyDown['ArrowLeft'] = false;
+        }
+        else if (this.ownPaddle.position.x > targetX)
+        {
+            keyDown['ArrowLeft'] = true;
+            keyDown['ArrowRight'] = false;
+        }
+    }
+    calculateBallLandingPosition() {
+        if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
+            return;
+        const ballAcceleration = this.arena.ball.acceleration;
+        let ballPositionX = this.arena.ball.position.x;
+        let ballPositionZ = this.arena.ball.position.z;
+        let ballSpeedX = this.arena.ball.speedX;
+        const ballSpeedZ = this.arena.ball.speedZ;
+        if (ballSpeedZ > 0) {
+            while (ballPositionZ < this.zValue) {
+                ballSpeedX += ballAcceleration;
+                ballPositionX += ballSpeedX;
+                ballPositionZ += ballSpeedZ;
+                if ((ballPositionX + ballSpeedX <= (this.arena.position.x - this.arena.length / 2)) || (ballPositionX + ballSpeedX >= this.arena.position.x +this.arena.length / 2)) // detect collision with border
+                    ballSpeedX *= -1;
+            }
+        }
+        return ballPositionX;
+    }
+    updateTarget()
+    {
+        this.targetX = this.calculateBallLandingPosition();
     }
 }
 
 class UserStats {
     constructor(isThirdPlayer, usernameElement, ppElement) {
-        // done and working
-        this.isThirdPlayer = isThirdPlayer; // boolean done
-        this.isWinner = false; // boolean done
+    
+        this.isThirdPlayer = isThirdPlayer;
+        this.isWinner = false;
         this.usernameElement = usernameElement;
         this.ppElement = ppElement;
-        this.pointsScored = 0; // int done
-        this.pointsTaken = 0; // int done
-        this.nbDashes = 0; // int done
-        this.nbPowerUsed = 0; // int done
-        this.nbBounces = 0; // int done
-        // TODO
-        this.username; //string done
-        this.id; // string done
-        this.profilePicture; // string
-        this.isBot = false; // boolean
+        this.pointsScored = 0;
+        this.pointsTaken = 0;
+        this.nbDashes = 0;
+        this.nbPowerUsed = 0;
+        this.nbBounces = 0;
+    
+        this.username;
+        this.id;
+        this.profilePicture;
+        this.isBot = false;
     }
     reset()
     {
-        this.isBot = false; // boolean
-        this.isWinner = false; // boolean
-        this.pointsScored = 0; // int
-        this.pointsTaken = 0; // int
-        this.nbDashes = 0; // int
-        this.nbPowerUsed = 0; // int
-        this.nbBounces = 0; // int
+        this.isBot = false;
+        this.isWinner = false;
+        this.pointsScored = 0;
+        this.pointsTaken = 0;
+        this.nbDashes = 0;
+        this.nbPowerUsed = 0;
+        this.nbBounces = 0;
     }
     setUser(username, id, profilePicture)
     {
@@ -3377,8 +3393,10 @@ class GameState {
             this.arena.getCurrentMap().changeGraphics(this.graphics);
             this.arena.graphics = this.graphics;   
         }
+        updateUserGraphicMode(this.graphics);
     }
 }
+
 class Particle {
     constructor(scene, particleCount, left, paddle, isBall) {
         this.scene = scene;
@@ -3583,9 +3601,9 @@ function animate()
     requestAnimationFrame( animate );
     updateFpsCounter();
     let now = performance.now();
-    let elapsed = now - lastUpdateTime;
-    if (elapsed < fpsInterval) return; // Skip if too big FPS
-    else
+    // let elapsed = now - lastUpdateTime;
+    // if (elapsed < fpsInterval) return; // Skip if too big FPS
+    // else
     {
         gameState.monitorGameState();
         if (gameState.inLobby)
@@ -3611,9 +3629,9 @@ function animate()
         }
     }
 
-    stats.update();
-    lastUpdateTime = now - (elapsed % fpsInterval);
-    stats.time = performance.now();
+    // stats.update();
+    // lastUpdateTime = now - (elapsed % fpsInterval);
+    // stats.time = performance.now();
 }
 animate();
 

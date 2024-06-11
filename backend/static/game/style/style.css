@@ -13,6 +13,7 @@ body {
 #c1, #c2 {
     width: 100%; /* Each canvas takes up 50% of the window width */
     height: 100%; /* Each canvas fills the entire window height */
+    cursor: none; /* Hide the cursor */
 }
 
 #c1 {
@@ -117,6 +118,7 @@ body {
     visibility: hidden;
     opacity: 0;
     transition: opacity 2s ease;
+    cursor: url('../assets/cursor/gun.cur'), auto;
 }
 
 .scoreUI {

@@ -13,7 +13,7 @@ class CustomPasswordCharacterValidator:
             min_length_upper=min_length_upper,
             special_characters=special_characters,
         )
-        self.common_error_message = _("The password must contain at least one uppercase letter, one lowercase letter, one number and one special character from the following: ~!@#$%^&*()_+{}\":;'[].")
+        self.common_error_message = _("The password must contain at least: • one uppercase letter, •one lowercase letter, •one number and one special character from the following: ~!@#$%^&*()_+{}\":;'[].")
 
     def validate(self, password, user=None):
         try:
