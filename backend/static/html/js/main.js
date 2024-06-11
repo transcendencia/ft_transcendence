@@ -15,7 +15,7 @@ import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
-import { userList } from './loginPage.js';
+import { userList } from './userManagement.js';
 import { returnToHost } from './userPage.js'
 
 let cubeLoader = new THREE.CubeTextureLoader();

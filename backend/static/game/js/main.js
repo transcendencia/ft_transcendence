@@ -19,7 +19,7 @@ import { lobbyVisuals } from '../../html/js/main.js';
 import { gameStarted } from '../../html/js/arenaPage.js';
 // import { gameStarted } from '../../html/js/arenaPage.js';
 import { endGame } from '../../html/js/arenaPage.js';
-
+import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
 
@@ -3440,6 +3440,7 @@ class GameState {
             this.arena.getCurrentMap().changeGraphics(this.graphics);
             this.arena.graphics = this.graphics;   
         }
+        updateUserGraphicMode(this.graphics);
     }
 }
 
