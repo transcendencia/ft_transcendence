@@ -31,6 +31,10 @@
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
+.deleteAccountButton:hover {
+    background-color: #ff373735;
+}
+
 .blockingPanel {
     border: 5px solid white;
     z-index: 3;
@@ -57,6 +61,10 @@
     justify-content: center;
     overflow: hidden; 
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
+.submitChangeButton:hover {
+    background-color: #000f61b2;
 }
 
 .buttonContainer {
@@ -113,7 +121,7 @@
 
 .text-input3 {
     position: relative;
-    width: 50%; /* Match the width of the container */
+    width: 90%; /* Match the width of the container */
     height: 30%; /* Automatically adjust height based on content */
     background: none;
     border: none;
