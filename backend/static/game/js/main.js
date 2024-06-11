@@ -3211,33 +3211,54 @@ class Bot {
         this.zValue = this.ownPaddle.position.z; // rightpaddle : x positive to the right, z positive
         this.enemyZValue = this.enemyPaddle.position.z;
         this.intervalSet = false;
+        this.dashRange = this.arena.width * 20 * this.ownPaddle.moveSpeed;
+        this.timeToUpdate = 1000;
+        this.ballTimeToLand = -1;
+        this.paddleTimeToReach = -1;
     }
     play()
     {
         if (!this.intervalSet)
         {
             this.intervalSet = true;
-            setInterval(() => this.updateTarget(), 1000);
+            setInterval(() => this.scanGameInfo(), this.timeToUpdate);
         }
         this.moveToTarget(this.targetX)
+        this.ballTimeToLand--;
     }
     moveToTarget(targetX)
     {
-        if (this.ownPaddle.position.x + this.ownPaddle.width / 2 >= targetX && this.ownPaddle.position.x - this.ownPaddle.width / 2 <= targetX)
+        if (this.positionReached(this.ownPaddle.position.x, targetX))
         {
             keyDown['ArrowLeft'] = false;
             keyDown['ArrowRight'] = false;
+            doubleKeyPress['ArrowLeft'] = false;
+            doubleKeyPress['ArrowRight'] = false;
         }
         else if (this.ownPaddle.position.x < targetX)
         {
+            // if (this.ownPaddle.position.x + this.dashRange < targetX)
+            //     doubleKeyPress['ArrowRight'] = true;
+            if (this.ownPaddle.position.x + this.dashRange < targetX && this.ballTimeToLand < this.paddleTimeToReach * 2)
+                doubleKeyPress['ArrowRight'] = true;
             keyDown['ArrowRight'] = true;
             keyDown['ArrowLeft'] = false;
+            doubleKeyPress['ArrowLeft'] = false;
         }
         else if (this.ownPaddle.position.x > targetX)
         {
+            // if (this.ownPaddle.position.x - this.dashRange > targetX)
+            //     doubleKeyPress['ArrowLeft'] = true;
+            if (this.ownPaddle.position.x - this.dashRange > targetX && this.ballTimeToLand < this.paddleTimeToReach * 2)
+                doubleKeyPress['ArrowLeft'] = true;
             keyDown['ArrowLeft'] = true;
             keyDown['ArrowRight'] = false;
+            doubleKeyPress['ArrowRight'] = false;
         }
+    }
+    positionReached(paddleX, targetX)
+    {
+        return paddleX + this.ownPaddle.width / 2 >= targetX && paddleX - this.ownPaddle.width / 2 <= targetX;
     }
     calculateBallLandingPosition() {
         if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
@@ -3258,9 +3279,35 @@ class Bot {
         }
         return ballPositionX;
     }
-    updateTarget()
+    calculateBallTimeToLand()
+    {
+        if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
+        {
+            this.ballTimeToLand = -1;
+            return;
+        }
+        let ballPositionZ = this.arena.ball.position.z;
+        let ballSpeedZ = this.arena.ball.speedZ;
+        let framesToLand = 0;
+        while (ballPositionZ < this.zValue) {
+            ballPositionZ += ballSpeedZ;
+            framesToLand++;
+        }
+        return framesToLand;
+    }
+    calculateTimeToReachTarget(paddleX, targetX)
+    {
+        if (targetX === paddleX)
+            return 0;
+        const distance = Math.abs(this.ownPaddle.position.x - targetX);
+        return distance / (this.ownPaddle.moveSpeed * this.arena.length);
+    }
+    scanGameInfo()
     {
         this.targetX = this.calculateBallLandingPosition();
+        this.ballTimeToLand = this.calculateBallTimeToLand();
+        this.paddleTimeToReach = this.calculateTimeToReachTarget(this.ownPaddle.position.x, this.targetX);
+        // console.log("ballTimeToLand : " + this.ballTimeToLand, "paddleTimeToReach : " + this.paddleTimeToReach);
     }
 }
 
