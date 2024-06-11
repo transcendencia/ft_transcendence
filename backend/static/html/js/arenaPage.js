@@ -1,7 +1,7 @@
 import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { togglePlanet } from "./enterPlanet.js";
-import { afterGameTournament } from "../../tournament/js/newTournament.js";
+import { afterGameTournament, botDifficultyTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament } from "../../tournament/js/newTournament.js";
 
@@ -40,6 +40,7 @@ function Glow() {
 
 let gamemodeCounter = 0;
 let mapCounter = 0;
+let botDifficulty = 0;
 
 function toggleGamemode(buttonHeader, imgIndex) {
     if (imgIndex === 0){
@@ -54,11 +55,10 @@ function toggleGamemode(buttonHeader, imgIndex) {
         } 
     if (gamemodeCounter === 0)
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('gamemodeNameText1');
-    if (gamemodeCounter === 1)
+    else if (gamemodeCounter === 1)
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('gamemodeNameText2');
-    if (gamemodeCounter === 2)
+    else if (gamemodeCounter === 2)
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('gamemodeNameText3');
-
 }
 
 function handleMaps(buttonHeader, imgIndex) {
@@ -74,12 +74,31 @@ function handleMaps(buttonHeader, imgIndex) {
         } 
     if (mapCounter === 0)
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Space';
-    if (mapCounter === 1)
+    else if (mapCounter === 1)
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Ocean';
-    if (mapCounter === 2)
+    else if (mapCounter === 2)
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Sky';
-    if (mapCounter === 3)
+    else if (mapCounter === 3)
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Dragon Pit';
+}
+
+function handleBotDifficulty(buttonHeader, imgIndex) {
+    if (imgIndex === 0){
+        botDifficulty--;
+        if (botDifficulty === -1)
+            botDifficulty = 3;
+    }
+    else {
+        botDifficulty++;    
+        if (botDifficulty === 3)
+            botDifficulty = 0;
+    }
+    if (botDifficulty === 0)
+        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyEasy');
+    else if (botDifficulty === 1)
+        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyMedium');
+    else if (botDifficulty === 2)
+        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyHard');
 }
 
 const buttonHeaders = document.querySelectorAll('.buttonTitle');
@@ -98,6 +117,8 @@ buttonHeaders.forEach((buttonHeader, index) => {
                 toggleGamemode(buttonHeader, imgIndex);
             if (index === 1)
                 handleMaps(buttonHeader, imgIndex);
+            if (index === 2)
+                handleBotDifficulty(buttonHeader, imgIndex);
         });
     });
 });
@@ -195,6 +216,7 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
       if (isTournament){
         gamemodeCounter = gamemodeCounterTournament;
         mapCounter = mapCounterTournament;  
+        botDifficulty = botDifficultyTournament;
       }
       if (gamemodeCounter === 0) {
           gameState.arena.game.powerUpsActivated = true;
@@ -213,7 +235,12 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
       // choose map
       const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
       gameState.arena.game.map = mapList[mapCounter];
+      // choose bot difficulty
+      const difficultyList = ["easy", "medium", "hard"];
+      // gameState.arena.game.botDifficulty = difficultyList[botDifficulty];
+
       // add players
+      // const 
       gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
       gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
       if (typeof player3 !== "undefined"){
@@ -413,13 +440,7 @@ export function RenderAllUsersInList(users) {
     const userListBackground = document.getElementById('userlistArenaPage');
     
     // clean the list before addinmg all the lines
-    // userListBackground.innerHTML = '';
-    
-    userTiles.push({
-        user: null,
-        HTMLelement : document.getElementById("botUserTile"),
-    });
-    
+    userListBackground.innerHTML = '';
     users.forEach(user => {
         if (user.is_host)
             return;
@@ -433,6 +454,12 @@ export function RenderAllUsersInList(users) {
         const textContainer = document.createElement('div');
         textContainer.classList.add('textContainer');
         textContainer.textContent = user.username;
+        if (user.username === 'bot'){
+            userTile.style.backgroundColor = 'rgba(132, 0, 255, 0.5)';
+            imgContainer.style.borderColor = 'rgb(164, 67, 255)';
+            textContainer.style.color = 'rgb(164, 67, 255)';
+            textContainer.style.borderColor = 'rgb(164, 67, 255)'; 
+        }
 
         userTile.appendChild(imgContainer);
         userTile.appendChild(textContainer);
@@ -456,27 +483,25 @@ export function RenderAllUsersTournament(users) {
 
     // clean the list before addinmg all the lines
     userListBackground.innerHTML = '';
-
-    //adding the bot to the userTiles
-    // userTilesTournament.push({
-    //     user: null,
-    //     HTMLelement : document.getElementById("botUserTournamentTile"),
-    // });
-
     users.forEach(user => {
         if (user.is_host)
             return;
         const userTile = document.createElement('div');
         userTile.classList.add('userTile');
-
+        
         const imgContainer = document.createElement('div');
         imgContainer.classList.add('imgContainer');
         imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
-
+        
         const textContainer = document.createElement('div');
         textContainer.classList.add('textContainer');
         textContainer.textContent = user.username;
-
+        if (user.username === 'bot'){
+            userTile.style.backgroundColor = 'rgba(132, 0, 255, 0.5)';
+            imgContainer.style.borderColor = 'rgb(164, 67, 255)';
+            textContainer.style.color = 'rgb(164, 67, 255)';
+            textContainer.style.borderColor = 'rgb(164, 67, 255)'; 
+        }
         userTile.appendChild(imgContainer);
         userTile.appendChild(textContainer);
 
@@ -508,7 +533,12 @@ export function RenderAllUsersTournament(users) {
     addUserToTournament(user.id, user.username, user.profile_picture);
   }
 
-const backButtonArenaPage = document.querySelector(".planetBackButton");
-backButtonArenaPage.addEventListener('click', () => {
-    togglePlanet();
-  });
+const backButtonArenaPage = document.querySelectorAll(".planetBackButton");
+
+backButtonArenaPage.forEach((button, index) => {
+    if (index !== 1) {
+        button.addEventListener('click', () => {
+            togglePlanet();
+        });
+    }
+});
