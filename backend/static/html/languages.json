@@ -57,7 +57,7 @@
         "userlist": "User list",
         "chooseProfile": "Choose a profile",
         "arenaTitle": "Arena",
-        "tournamenTitle": "Tournament",
+        "tournamentTitle": "Tournament",
         "player": "player",
         
         "gamemode": "gamemode",
@@ -135,7 +135,7 @@
         "userlist": "Lista de usuarios",
         "chooseProfile": "Elige un perfil",
         "arenaTitle": "Arena",
-        "tournamenTitle": "Torneo",
+        "tournamentTitle": "Torneo",
         "player": "Jugador",
         
         "gamemode": "modo",
@@ -210,7 +210,7 @@
         "userlist": "Liste des utilisateurs",
         "chooseProfile": "Choisis un profile",
         "arenaTitle": "Arene",
-        "tournamenTitle": "Tournoi",
+        "tournamentTitle": "Tournoi",
         "player": "Joueur",
 
         "gamemode": "Mode",
