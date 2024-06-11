@@ -1,4 +1,4 @@
-export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, scorePlayer2, gameplayMode) {
+export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, scorePlayer2, gameplayMode, modeGame) {
     const csrfToken = getCookie('csrftoken');
 
     const payload = {
@@ -7,7 +7,8 @@ export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, 
         player3: player3Id,
         scorePlayer1: scorePlayer1,
         scorePlayer2: scorePlayer2,
-        gameplayMode: gameplayMode
+        gameplayMode: gameplayMode,
+        modeGame: modeGame
     };
     try {
         const response = await fetch('/add_game/', {
@@ -44,3 +45,5 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+
