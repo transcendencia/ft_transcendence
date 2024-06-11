@@ -1,5 +1,5 @@
-import { getCookie, getProfileInfo } from './loginPage.js';
-
+import { getCookie } from './loginPage.js';
+import { getProfileInfo } from './userManagement.js';
 var submitChangeButton = document.querySelector(".submitChangeButton");
 submitChangeButton.addEventListener("click", handleChangeInfoForm);
 
@@ -35,17 +35,19 @@ function handleChangeInfoForm(event) {
   });
 }
 
-var deleteAccountButton = document.querySelector(".deleteAccountButton");
+const deleteAccountButton = document.querySelector(".deleteAccountButton");
 deleteAccountButton.addEventListener("click", deleteAccount);
+const blockingPanel = document.getElementById('blockingPanel');
 
 function deleteAccount() {
     // rediriger vers la page d'acceuil
     // deconnecter tout les guest
     // delete account dans la db
     document.querySelector(".validateDelete").classList.toggle("showRectangle");
-
+	blockingPanel.style.visibility = 'visible';
     document.getElementById("deleteAccountCancel").addEventListener("click", function() {
-      document.querySelector(".validateDelete").classList.toggle("showRectangle");
+		document.querySelector(".validateDelete").classList.toggle("showRectangle");
+		blockingPanel.style.visibility = 'hidden';
     })
 
     document.getElementById("deleteAccountConfirmation").addEventListener("click", function() {
@@ -58,6 +60,7 @@ function deleteAccount() {
 		  },
 		})
 		.then(response => {
+		  blockingPanel.style.visibility = 'hidden';
 		  return response.json();
 		})
 		.catch(error => {

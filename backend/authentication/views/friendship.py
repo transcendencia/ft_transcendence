@@ -14,7 +14,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from ..models import User, FriendRequest
-from ..serializers import UserSerializer, SignupSerializer
+from ..serializers import UserSerializer, SignupSerializer, UserListSerializer
 
 def	send_friendrequest(request):
 	return render(request, 'send_friendrequest.html')
@@ -90,8 +90,13 @@ def return_request(request):
 def return_friends_list(request):
     friends_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
 
-    pending_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.receiver == request.user]
+    received_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.receiver == request.user]
+    # received_request_list_serializer = UserListSerializer(received_request_list, many=True)
+    # print(received_request_list_serializer)
     friends = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user)]
-    waiting_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.sender == request.user]
-    
-    return Response({'pending_request': pending_request_list, 'friends': friends, 'waiting_request': waiting_request_list})
+    # friends_serializer = UserListSerializer(friends, many=True)
+    # print(friends_serializer)
+    sent_request_list = [{'id': req.id, 'status': req.status, 'sender': req.sender.username, 'receiver': req.receiver.username} for req in friends_requests if req.status == 'pending' and req.sender == request.user]
+    # sent_request_list_serializer = UserListSerializer(sent_request_list, many=True)
+    # print(sent_request_list_serializer)
+    return Response({'received_request_list': received_request_list, 'friends': friends, 'sent_request_list': sent_request_list})

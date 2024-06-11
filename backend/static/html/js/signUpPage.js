@@ -43,7 +43,6 @@ signupForm.addEventListener('submit', handleSignup);
 function handleSignup(event) {
     event.preventDefault();
     
-    console.log(signupForm);
     const formData = new FormData(event.target);
     formData.append('language', currentLanguage);
     fetch('signup/', {
@@ -52,13 +51,11 @@ function handleSignup(event) {
     })
     .then(response => {
         if (!response.ok) {
-            console.log(response)
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
-        console.log(data);
         var signupMessageCont = document.querySelector('.signupMessageCont');
         if (data.status == "success") {
             signupMessageCont.classList.remove("failure");
@@ -67,7 +64,6 @@ function handleSignup(event) {
             signupMessageCont.classList.remove("success");
             signupMessageCont.classList.add("failure");
         }
-        console.log(data.msg_code);
         document.getElementById('messageContainerSignup').innerText = getTranslatedText(data.msg_code);
     })
     .catch(error => {

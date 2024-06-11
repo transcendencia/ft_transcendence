@@ -1,19 +1,16 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
-import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage} from "./translatePages.js";
+import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { RenderAllUsersInList, RenderAllUsersTournament } from "./arenaPage.js";
-import { getTranslatedText } from './translatePages.js';
-
-import { startAnimation } from "./main.js";
 import { changeGraphics } from "./arenaPage.js";
-import { updateUserLanguage, updateUserStatus } from "./userManagement.js";
+import { startAnimation } from "./main.js";
+import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-    element.classList.add(glow);
+        element.classList.add(glow);
 }
 
 function removeGlow(elementId, glow) {
@@ -88,7 +85,6 @@ languageIcons.forEach(function(icon) {
             alien2.visible = true;
             alien3.visible = false;
         }
-        
         if (icon.id === 'en'|| icon.id == 'en1') {
             alien1.visible = true;
             alien2.visible = false;
@@ -101,9 +97,7 @@ languageIcons.forEach(function(icon) {
         }
         addGlow(icon.id, 'glow');
         setlanguageIconsClicked(true);
-        setCurrentLanguage(icon.id);
-        if (icon.id.length === 3)
-            setCurrentLanguage(icon.id.slice(0, 2));
+        setCurrentLanguage(icon.id.slice(0, 2));
         icon.querySelector('.flag').style.opacity = 1;
         icon.querySelector('.icon').style.opacity = 0;
         TranslateAllTexts();
@@ -114,7 +108,7 @@ languageIcons.forEach(function(icon) {
                 otherIcon.querySelector('.icon').style.opacity = 1;
             }
         });
-
+        
         // Send POST request to change user language in the back if user is logged in
         const token = localStorage.getItem('host_auth_token');
         if (token && currentLanguage !== icon.id) {
@@ -133,12 +127,19 @@ languageIcons.forEach(function(icon) {
     });
 
     icon.addEventListener('mouseleave', function () {
-        if (icon.id !== currentLanguage) {
+        if (icon.id.slice(0, 2) !== currentLanguage) {
             icon.querySelector('.flag').style.opacity = 0;
             icon.querySelector('.icon').style.opacity = 1;
         }
     });
 });
+
+function setEscapeLanguageVisual() {
+    addGlow(currentLanguage + '1', 'glow');
+    const icon = document.getElementById(currentLanguage + '1');
+    icon.querySelector('.flag').style.opacity = 1;
+    icon.querySelector('.icon').style.opacity = 0;
+}
 
 // if (localStorage.getItem("hostLoggedIn") === null) {
     //     localStorage.setItem('hostLoggedIn', 'false');
@@ -169,6 +170,7 @@ function handleLogin(event) {
                 localStorage.setItem("host_auth_token", data.token);
                 localStorage.setItem("host_id", data.id);
                 setCurrentLanguage(data.language);
+                setEscapeLanguageVisual();
                 get_friends_list();
                 get_user_list();
                 getProfileInfo();
@@ -178,42 +180,12 @@ function handleLogin(event) {
                 showPage('none');
                 startAnimation();
             // }
-            console.log(data.language);
         } else 
             document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
-}
-
-
-import { RenderUserMatch } from "./arenaPage.js";
-import { RenderUserTournament } from "./arenaPage.js";
-
-export function getProfileInfo() {
-	const token = localStorage.getItem('host_auth_token');
-		fetch('get_profile_info/', {
-		    method: 'GET',
-			headers: {
-				'Authorization': `Token ${token}`,
-			}
-		})
-		.then(response => {
-			if (!response.ok)
-				throw new Error('Error lors de la recuperation des donne');
-				return response.json();
-		})
-		.then(data=> {
-			document.getElementById('username').textContent = data.profile_info.username;
-			document.getElementById('bio').textContent = data.profile_info.bio;
-			document.getElementById('profile_pic').src = data.profile_info.profile_picture;
-            RenderUserMatch(data.profile_info);
-            RenderUserTournament(data.profile_info);
-		})
-		.catch(error => {
-			console.error('Erreur :', error);
-		});
 }
 
 export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
@@ -226,24 +198,6 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
         bgColor = '#43ff4377';
         bg2Color = '#00ab00c0';
     }
-
-    // const serverDate = new Date(date);
-    // const userLocale = navigator.language || 'en-US';
-    // console.log(serverDate);
-    // console.log(userLocale);
-    // const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    // console.log(userTimeZone);
-    // const options = {
-    //     year: 'numeric',
-    //     month: 'numeric',
-    //     day: 'numeric',
-    //     hour: 'numeric',
-    //     minute: 'numeric',
-    //     timeZone: userTimeZone,
-    // };
-    // const formattedDate = new Intl.DateTimeFormat(userLocale, options).format(serverDate);
-    // console.log(formattedDate);
-
 
     const matchBlock = document.createElement('div');
     matchBlock.classList.add('matchBlock');
@@ -357,53 +311,3 @@ function handleLogout() {
     });
     // localStorage.setItem('hostLoggedIn', 'false');
 };
-
-export let userList;
-
-export function get_user_list() {
-    const token = localStorage.getItem('host_auth_token');
-    // console.log(token);
-    fetch('get_user_list/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        userList = data;
-        RenderAllUsersInList(data);
-        RenderAllUsersTournament(data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        throw error;
-    });
-};
-
-
-let host_pending_request;
-let host_friends_list;
-let host_waiting_list;
-function get_friends_list() {
-    const token = localStorage.getItem('host_auth_token');
-    // console.log(token);
-    fetch('return_friends_list/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        host_pending_request = data.pending_request;
-        host_friends_list = data.friends;
-        host_waiting_list = data.waiting_request;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        throw error;
-    });
-}
