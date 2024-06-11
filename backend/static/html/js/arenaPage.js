@@ -1,5 +1,6 @@
 import { getTranslatedText } from "./loginPage.js";
 import { showPage } from "./showPages.js";
+import { gameState } from "../../game/js/main.js";
 
 const userlist = document.querySelector(".userlistBackground");
 const userTiles = userlist.querySelectorAll(":scope > *");
@@ -11,6 +12,8 @@ userlistTitle.textContent = getTranslatedText('userlist');
 
 let plusClicked = false;
 const botID = 0;
+let playerNb = 0;
+
 
 const blue = '#3777ff';
 const purple = 'rgb(164, 67, 255)'
@@ -44,7 +47,7 @@ function toggleGamemode(buttonHeader, imgIndex) {
         }
     else {
         gamemodeCounter++;    
-        if (gamemodeCounter === 3)
+        if (gamemodeCounter === 3) // 0 = classic 1 = powerless 2= spin only 
             gamemodeCounter = 0;
         } 
     if (gamemodeCounter === 0)
@@ -74,7 +77,7 @@ function handleMaps(buttonHeader, imgIndex) {
     if (mapCounter === 2)
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Sky';
     if (mapCounter === 3)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Road';
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Dragon Pit';
 }
 
 const buttonHeaders = document.querySelectorAll('.buttonTitle');
@@ -161,8 +164,56 @@ export function switchToGame() {
     rsContainer.style.display = 'none';
     document.getElementById('c4').style.display = 'none';
     document.getElementById('c1').style.display = 'block';
+    initGame(gameState);
 }
-    
+
+function    initGame(gameState) {
+    // prepare for initialization
+    gameState.loading = true;
+    gameState.inLobby = false;
+    setTimeout(() => {
+        
+        gameState.arena.game.hasToBeInitialized = true;
+    // choose gameMode
+    if (gamemodeCounter === 0) {
+        gameState.arena.game.powerUpsActivated = true;
+        gameState.arena.game.effectsOnly = false;
+    }
+
+    if (gamemodeCounter === 1) {
+        gameState.arena.game.powerUpsActivated = false;
+        gameState.arena.game.effectsOnly = false;
+    }
+    if (gamemodeCounter === 2) {
+        gameState.arena.game.powerUpsActivated = true;
+        gameState.arena.game.effectsOnly = true;
+    }
+
+    // choose map
+    if (mapCounter === 0)
+        gameState.arena.game.map = 'spaceMap';
+    if (mapCounter === 1)
+        gameState.arena.game.map = 'oceanMap';
+    if (mapCounter === 2)
+        gameState.arena.game.map = 'skyMap';
+    if (mapCounter === 3)
+        gameState.arena.game.map = 'dragonMap';
+
+    // toggle third player
+    if (playerNb === 2)
+        gameState.arena.game.thirdPlayer = true;
+    else
+        gameState.arena.game.thirdPlayer = false;
+}, 250);
+}
+
+export function changeGraphics(mode) {
+    if (gameState.graphics === mode)
+        return;
+    gameState.graphics = mode;
+    gameState.graphicsNeedToChange = true;
+}
+
 
 const rsContainer = document.querySelector('.rightSideContainer');
 const loginPage = document.querySelector('.loginPage');
@@ -257,6 +308,7 @@ userTiles.forEach((tile, i) => {
     tile.addEventListener('click', function(){
         if (plusClicked && !profileAdded[i]) {
             profileAdded[i] = true;
+            playerNb++;
             const newObj = createUserInfoObject(tile, i);
             const oldObj = plusButtons[plusClicked - 1];
             oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
@@ -272,6 +324,7 @@ userTiles.forEach((tile, i) => {
                 resetToPlusButton(newObj.userInfoCont, oldObj, textCont);
                 profileAdded[i] = false;
                 profileAdded[botID] = false;
+                playerNb--;
             });
         }
     });

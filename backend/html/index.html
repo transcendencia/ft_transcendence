@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="{%static 'game/assets/favicon.ico' %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sample Website</title>
+    <title>Transcendencia</title>
     <link rel="stylesheet" href="{% static '../static/html/css/style.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/loginPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/rsContainer.css' %}">
@@ -29,7 +29,7 @@
   <!-- LOGIN PAGE -->
     <div class="loginPage page">
     <div class="title">
-      TRANSCENDENCIA
+      TRANSCENDENCIIA
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
     </div>
     <div class="inputContainer">
@@ -168,7 +168,7 @@
         <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
       <div class="background blueShadowfilter">
         <div class="leftColumn">
-    <div id= "userlistText" style="font-size: 20px; font-family: 'space'; color: white;"> User list </div>
+    <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white;"> User list </div>
       <div class="userlistBackground">
         <div class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
           <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
@@ -257,7 +257,7 @@
                 <div class="buttonTitle">
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1); z-index: 5;">
                 <div id="gamemodeText">
-                  game mode
+                  gamemode
                 </div>
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
                 </div>
@@ -297,55 +297,47 @@
             <div class="rightColumn" style="width: 75%;">
               <div class="aboveStatsBlock">
                 <div class="leftBlock">
-                  <div class="nameImgBlock">
-                    <div class="imgFrame"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
-                    <div class="mail-pseudo-info">
-                      <div style="color: rgb(255, 255, 255);">PSEUDO</div> 
-                      <div style="font-size: 10px; color: rgb(189, 209, 255);">hemorroides@herpes.com</div> 
+                  <div class="userInfoBlock">
+                    <div class="nameImgBlock">
+                      <div class="imgFrame"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
+                      <div class="mail-pseudo-info">
+                        <div style="color: rgb(255, 255, 255); ">Doggoditototo</div> 
+                        <div style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;">hello kitty world domination</div> 
+                      </div>
+                      <div class="pencilImg">
+                        <img src="{% static 'html/assets/icons/pencil.png' %}">
+                      </div>
                     </div>
-                    <div class="pencilImg">
-                      <img src="{% static 'html/assets/icons/pencil.png' %}">
+                      <div class="winLoseTexts">
+                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 13</div> 
+                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 5</div> 
+                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 8</div>
+                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : 33</div>
                     </div>
                   </div>
-                  <div class="winLoseTexts">
-                    <div style="font-family: 'Space'; font-size: 20px; margin-left: 10px; color: white"> Victoires : 5</div> 
-                    <div style="font-family: 'Space'; font-size: 20px; margin-left: 10px; color: white"> Defaites : 8</div>
-                    <div style="font-family: 'Space'; font-size: 15px; margin-left: 10px; color: white"> Buts : 33</div>
-                  </div>
-                  <div class="statsModes">
-    
-    <div class="statMode" style="background-color: #000f61b2; border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Stat1</div>
-                  <div class="statMode" style="border-radius: 0px;">Stat2</div>
-                  <div class="statMode" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
+                  <div class="statsModesBlock">
+                   <p>statistics</p> 
+                    <div class="statsModes">
+                      <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
+                      <div class="statButton" style="border-radius: 0px;">Stat2</div>
+                      <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
+                    </div>
                   </div>
                 </div>
                 <div class="rightBlock">
-                <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white;  margin-bottom: 4px">History</div>
-                  <div class="history"></div>
+                <div id="historyText" style="font-size: 20px; font-family: 'space'; color: white; margin-bottom: 4px">History</div>
+                  <div class="history">
+                  </div>
                 </div>
               </div>
               <div class="statsBlock"></div>
             </div>
       <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between;">
         <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
-        <div class="friendSearchBar"></div>
-        <div class="userlistBackground" style="height:85%; width: 100%; border-radius: 10px;">
-          <div class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
-            <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
-            <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
-          </div>
-          <div class="userTile">
-            <div class="imgContainer"><img src="{% static 'html/assets/icons/FR_NU.png' %}"></div>
-            <div class="textContainer">Vatiroi</div>
-          </div>
-          <div class="userTile"> 
-            <div class="imgContainer"><img src="{% static 'html/assets/icons/BR_NU.png' %}"></div>
-            <div class="textContainer">Rise</div>
-          </div>
-          <div class="userTile"> 
-            <div class="imgContainer"><img src="{% static 'html/assets/icons/BR_NU.png' %}"></div>
-            <div class="textContainer">Sylvain</div>
-          </div>
+        <div class="friendSearchBar">
+          <input id="searchInput" class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . ."></input>
+        </div>
+        <div id="userlistUserPage" class="userlistBackground" style="height:85%; width: 100%; border-radius: 10px;">
         </div>
       </div>
     </div>
@@ -464,6 +456,8 @@
     <script type="module" src="{% static 'html/js/arenaPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/loginPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/translatePages.js' %}"></script>
+    <script type="module" src="{% static 'html/js/userPage.js' %}"></script>
     <script type="module" src="{% static 'game/js/main.js' %}"></script>
+
 </body>
 </html>

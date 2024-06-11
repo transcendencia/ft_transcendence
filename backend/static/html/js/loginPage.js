@@ -2,37 +2,38 @@ import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3} from "./objs.js";
 import { TranslateAllTexts } from "./translatePages.js";
+import { gameState } from "../../game/js/main.js";
 
 export let currentLanguage = 'en';
 let languageFile;
 
 fetch('../../static/html/languages.json')
-    .then(response => response.json())
-    .then(data => {
-        languageFile = data;
-    })
-    .catch(error => {
-        console.error('Error fetching language data:', error);
-    });
+.then(response => response.json())
+.then(data => {
+    languageFile = data;
+})
+.catch(error => {
+    console.error('Error fetching language data:', error);
+});
 
 export function getTranslatedText(key) {
     if (languageFile) {
         if (languageFile[currentLanguage])
-            return languageFile[currentLanguage][key];
-        else console.error('Current language ' + currentLanguage + 'not found in language file');
-    }
+        return languageFile[currentLanguage][key];
+    else console.error('Current language ' + currentLanguage + 'not found in language file');
+}
 }
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-        element.classList.add(glow);
+    element.classList.add(glow);
 }
 
 function removeGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-        element.classList.remove(glow);
+    element.classList.remove(glow);
 }
 
 let languageIcons = document.querySelectorAll('.languageIcon');
@@ -44,8 +45,24 @@ signupHereButton.addEventListener('click', function() {
 
 showPage('loginPage');
 
+
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
+        if (icon.id === 'graphicsIcon1' && gameState.graphics != 'low')
+        {
+            gameState.graphicsNeedToChange = true;
+            gameState.graphics = 'low';
+        }
+        if (icon.id === 'graphicsIcon2' && gameState.graphics != 'medium')
+        {
+            gameState.graphicsNeedToChange = true;
+            gameState.graphics = 'medium';
+        }
+        if (icon.id === 'graphicsIcon3' && gameState.graphics != 'high')
+        {
+            gameState.graphicsNeedToChange = true;
+            gameState.graphics = 'high';
+        }
         addGlow(icon.id, 'redGlow');
         graphicsIcons.forEach(function(otherIcon) {
         if (otherIcon != icon)
@@ -104,3 +121,29 @@ languageIcons.forEach(function(icon) {
         }
     });
 });
+
+// Add event listener to the loginForm
+// const loginForm = document.getElementById('loginForm');
+// loginForm.addEventListener('submit', handleLogin);
+
+// Handle form submission
+function handleLogin(event) {
+    event.preventDefault();
+
+    console.log(currentLanguage);
+
+    const formData = new FormData(this);
+    fetch('login_page/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status == "succes")
+            localStorage.setItem("auth_token", data.token)
+        document.getElementById('messageContainer').innerText = data.message;
+    })
+    .catch(error => {
+        console.error('Une erreur s\'est produite:', error);
+    })
+}

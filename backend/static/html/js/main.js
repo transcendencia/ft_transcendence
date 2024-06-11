@@ -230,11 +230,15 @@ function toggleEscapeContainerVisibility() {
 let pauseGame = false;
 
 document.addEventListener('keydown', (event) => { 
-    if (event.key === 'e' && !lobbyStart) {
-        showPage('none');
-        startAnimation();
+    if (event.key === 'e' && !lobbyStart && event.target.tagName !== 'INPUT') {
+        // const token = localStorage.getItem('auth_token');
+        // console.log(token);
+        // if (token) {
+            showPage('none');
+            startAnimation();
+        // }
     }
-    if (event.key === 'e' && inRange && !gameStarted)
+    if (event.key === 'e' && inRange && !gameStarted && event.target.tagName !== 'INPUT')
         togglePlanet();
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
