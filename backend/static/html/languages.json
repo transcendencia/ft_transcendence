@@ -58,6 +58,10 @@
         "gamemodeNameText2": "Powerless",
         "gamemodeNameText3": "Spin Only",
         "maps": "Maps",
+        "botDifficulty": "Bot difficulty",
+        "botDifficultyEasy": "Easy",
+        "botDifficultyMedium": "Medium",
+        "botDifficultyHard": "Hard",
         "start": "Start",
         "removePlayer": "Remove player",
 
@@ -130,6 +134,10 @@
         "gamemodeNameText2": "Sin Poderes",
         "gamemodeNameText3": "Curvatura",
         "maps": "Mapas",
+        "botDifficulty": "Dificultad del robot",
+        "botDifficultyEasy": "Facil",
+        "botDifficultyMedium": "Medio",
+        "botDifficultyHard": "Dura",
         "start": "Comenzar",
         "removePlayer": "Eliminar",
         
@@ -200,6 +208,10 @@
         "gamemodeNameText2": "Sans Pouvoirs",
         "gamemodeNameText3": "Balles Courbes",
         "maps": "Cartes",
+        "botDifficulty": "Difficulte du robot",
+        "botDifficultyEasy": "Facile",
+        "botDifficultyMedium": "Moyen",
+        "botDifficultyHard": "Difficile",
         "start": "Commencer",
         "removePlayer": "Supprimer",
 
