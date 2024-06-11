@@ -3,6 +3,8 @@ import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } fro
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
 import { initUserPlanet } from './userPage.js';
 export let landedOnPlanet = false;
+import { resetTournament, tournamentState, addEventListenersToPlusButtons } from '../../tournament/js/newTournament.js';
+import { resetToPlusButton } from './arenaPage.js';
 
 let planetPanel = document.querySelectorAll(".planetPanel");
 let background = document.querySelectorAll(".background");
@@ -10,6 +12,7 @@ let imagesArena = planetPanel[0].querySelectorAll("img");
 let imagesUser = planetPanel[1].querySelectorAll("img");
 let imagesTournament = planetPanel[2].querySelectorAll("img");
 let anim;
+
 
 export function togglePanelDisplay() {
     if (anim)
@@ -43,6 +46,10 @@ export function togglePanelDisplay() {
     }
 
     if (landedOnPlanet && planetInRange.name == "tournament") {
+        if (tournamentState === 2)
+            resetTournament();
+        else
+            addEventListenersToPlusButtons();
         anim = setTimeout(function () {triggerInfiniteAnim(imagesTournament[0], imagesTournament[1])}, 2000);
         planetPanel[2].style.animation = "roll 2s forwards";
         imagesTournament[0].style.animation = "moveImageRight 2s forwards";
