@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { camera } from './main.js';
 import { showPage } from './showPages.js';
-import { currentLanguage } from './translatePages.js';
+import { currentLanguage, getTranslatedText } from './translatePages.js';
 
 export let inCockpit = false;
 
@@ -43,7 +43,6 @@ signupForm.addEventListener('submit', handleSignup);
 function handleSignup(event) {
     event.preventDefault();
     
-    console.log(signupForm);
     const formData = new FormData(event.target);
     formData.append('language', currentLanguage);
     fetch('signup/', {
@@ -52,13 +51,11 @@ function handleSignup(event) {
     })
     .then(response => {
         if (!response.ok) {
-            console.log(response)
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
-        console.log(data);
         var signupMessageCont = document.querySelector('.signupMessageCont');
         if (data.status == "success") {
             signupMessageCont.classList.remove("failure");
@@ -67,8 +64,7 @@ function handleSignup(event) {
             signupMessageCont.classList.remove("success");
             signupMessageCont.classList.add("failure");
         }
-        console.log(data.message);
-        document.getElementById('messageContainerSignup').innerText = data.message;
+        document.getElementById('messageContainerSignup').innerText = getTranslatedText(data.msg_code);
     })
     .catch(error => {
         console.error('There was a problem with the sign-up:', error);

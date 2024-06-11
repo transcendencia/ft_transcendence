@@ -6,27 +6,39 @@ from django.conf import settings
 from django.utils import timezone
 
 class User(AbstractUser):
-  LANGUAGE_CHOICE = [
+  language_choices = [
     ('en', 'english'),
     ('fr', 'french'),
     ('es', 'espagnol'),
   ]
-  language = models.CharField(max_length = 10, choices=LANGUAGE_CHOICE, default='en')
-
+  language = models.CharField(max_length=10, choices=language_choices, default='en')
   last_login_date = models.DateField(null=True, blank=True)
 
-  STATUS_CHOICE = [
+  status_choices = [
     ('online', 'online'),
     ('offline', 'offline'),
     ('in_game', 'in_game'),
   ]
-  status = models.CharField(max_length = 10, choices=STATUS_CHOICE, default='offline')
+  status = models.CharField(max_length=10, choices=status_choices, default='offline')
   profile_picture = models.ImageField(default='default.png')
-  bio = models.CharField(max_length = 28, null=True, blank=True)
+  bio = models.TextField(max_length=28, null=True, blank=True)
   is_host = models.BooleanField(default=False)
-
+  friends = models.ManyToManyField("self", through="FriendRequest", symmetrical=False, related_name='related_friends', blank=True)
+  graphic_mode = models.CharField(max_length=10)
+  
   def get_profile_info(self):
-    return({'id': self.id, 'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url})
+    return {'id': self.id, 'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url}
+
+
+class FriendRequest(models.Model):
+  sender = models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
+  receiver = models.ForeignKey(User, related_name="receiver", on_delete=models.CASCADE)
+  status_choices = [
+    ('accepted', 'accepted'),
+    ('pending', 'pending'),
+    ('declined', 'declined'),
+  ]
+  status = models.CharField(max_length=10, choices=status_choices, default='pending')
 
 #histiorque des partie du jouer (adversaire : pseudo + image, score, mode de jeux)
 

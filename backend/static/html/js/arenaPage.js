@@ -510,6 +510,5 @@ export function RenderAllUsersTournament(users) {
 
 const backButtonArenaPage = document.querySelector(".planetBackButton");
 backButtonArenaPage.addEventListener('click', () => {
-    console.log(".")
     togglePlanet();
   });
