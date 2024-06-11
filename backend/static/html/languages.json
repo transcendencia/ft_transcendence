@@ -24,7 +24,8 @@
 
         "RGPDTitle" : "Privacy Policy",
         "RGPDTexte": "The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. Your data is automatically deleted one year after your last connection. For any reclamation you can go to the CNIL website.",
-
+        "RGPDCreate": "By creating an account, you accept",
+        "RGPDPolicy" : "the privacy policy",
         "gamemodeNameText1": "Classic",
         "gamemodeNameText2": "Powerless",
         "gamemodeNameText3": "Spin Only",
@@ -104,7 +105,8 @@
 
         "RGPDTitle" : "Politica de privacidad",
         "RGPDTexte" : "La organizacion ft_transcendance solo recoge los datos necesarios para el buen funcionamiento de los torneos y no los comunica a ningún otro organismo. La base legal del tratamiento de datos y el consentimiento de los usuarios. Puede editar sus datos, eliminar su perfil en cualquier momento en el camino en el planeta perfil. Sus datos se eliminan automaticamente un ano despues de su ultima conexion. Para cualquier consulta puede visitar el sitio web de la CNIL.",
-
+        "RGPDCreate": "Al crear una cuenta usted acepta",
+        "RGPDPolicy" : "la política de confidencialidad",
         "gamemodeNameText1": "Clasico",
         "gamemodeNameText2": "Sin Poderes",
         "gamemodeNameText3": "Curvatura",
@@ -173,6 +175,8 @@
         "backToLogin": "Retour",
         "RGPDTitle" : "Politique de confidentialite",
         "RGPDTexte" : "L'organisation ft_transcendance ne collecte que les donnees necessaires au bon fonctionnement des tournois et ne les communique a aucun autre organisme. La base legale du traitement des donnees et le consentement des utilisateurs. Vous pouvez modifier vos donnees, supprimer votre profile a tout moment dans allant dans la planete profile. Vos donnees sont automatiquement supprimes un an apres votre derniere connexion. Pour toute reclamation vous pouvez aller sur le site de la CNIL.",
+        "RGPDCreate": "En vous creant un compte, vous acceptez",
+        "RGPDPolicy": "la politique de confidentialite",
 
         "gamemodeNameText1": "Classique",
         "gamemodeNameText2": "Sans Pouvoirs",

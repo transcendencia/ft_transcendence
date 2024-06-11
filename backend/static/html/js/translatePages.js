@@ -124,10 +124,15 @@ function translateEscapePageTexts() {
 
 const RGPDTitle = document.getElementById('RGPDTitle');
 const RGPDTexte = document.getElementById('RGPDTexte');
+const RGPDCreate = document.getElementById('RGPDCreate');
+const RGPDPolicy = document.getElementById('RGPDPolicy');
 
 function translateRGPDTexts() {
     RGPDTitle.textContent = getTranslatedText('RGPDTitle');
     RGPDTexte.textContent = getTranslatedText('RGPDTexte');
+    RGPDCreate.textContent = getTranslatedText('RGPDCreate');
+    RGPDPolicy.textContent = getTranslatedText('RGPDPolicy');
+}
 const friendlistText = document.getElementById('friendListText');
 const historyText = document.getElementById('historyText');
 const historyText2 = document.getElementById('historyText2');
@@ -136,7 +141,7 @@ const profileTitleText = document.getElementById('profileTitleText');
 const statisticsText = document.getElementById('statisticsText');
 const statisticsText2 = document.getElementById('statisticsText2');
 const backButton = document.getElementById('userBackButton');
-}
+
 function translateUserPageTexts() {
     friendlistText.textContent = getTranslatedText('friendlist');
     historyText.textContent = getTranslatedText('history');
