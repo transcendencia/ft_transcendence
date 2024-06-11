@@ -72,6 +72,7 @@
     overflow: hidden; /* Ensure text input doesn't overflow */
 }
 
+
 .perspective3 {
     background-color: rgb(0, 255, 255);
     top: 60%;
@@ -107,7 +108,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden; /* Ensure text input doesn't overflow */
-    cursor: default;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .backButton:hover {

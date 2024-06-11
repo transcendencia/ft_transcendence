@@ -29,24 +29,49 @@ export function getTranslatedText(key) {
 
 const userlistText = document.getElementById('userlistText');
 const arenaTitleText = document.getElementById('arenaTitleText');
-const player3Text = document.getElementById('player3Text');
-const player2Text = document.getElementById('player2Text');
-const player1Text = document.getElementById('player1Text');
 const powerupsText = document.getElementById('gamemodeText');
 const mapsText = document.getElementById('mapsText');
 const enabledText = document.getElementById('gamemodeNameText');
 const startText = document.getElementById('startText');
+const player1Text = document.getElementById('player1Text');
+const player2Text = document.getElementById('player2Text');
+const player3Text = document.getElementById('player3Text');
+const arenaBackButton = document.getElementById('arenaBackButton');
+
 
 function translateArenaPageTexts() {
     userlistText.textContent = getTranslatedText('userlist');
     arenaTitleText.textContent = getTranslatedText('arenaTitle');
-    player3Text.textContent = getTranslatedText('player3');
-    player2Text.textContent = getTranslatedText('player2');
-    player1Text.textContent = getTranslatedText('player1');
+    player1Text.textContent = getTranslatedText('player') + ' 1';
+    player2Text.textContent = getTranslatedText('player') + ' 2';
+    player3Text.textContent = getTranslatedText('player') + ' 3';
     powerupsText.textContent = getTranslatedText('gamemode');
     mapsText.textContent = getTranslatedText('maps');
     enabledText.textContent = getTranslatedText('gamemodeNameText1');
     startText.textContent = getTranslatedText('start');
+    arenaBackButton.textContent = getTranslatedText('backButton');
+}
+
+const trnmtPlayerTexts = document.getElementsByClassName('playerText');
+const trnmtUserlistText = document.getElementById('trnmtUserlistText');
+const trnmtTitleText = document.getElementById('trnmtTitleText');
+const trnmtPowerupsText = document.getElementById('trnmtGamemodeText');
+const trnmtMapsText = document.getElementById('trnmtMapsText');
+const trnmtEnabledText = document.getElementById('gamemodeNameText2');
+const trnmtStartText = document.getElementById('launch');
+const trnmtBackButton = document.getElementById('trnmtBackButton');
+
+function translateTournamentPageTexts() {
+    for (let i = 0; i < trnmtPlayerTexts.length; i++)
+        trnmtPlayerTexts[i].textContent = getTranslatedText('player') + ' ' + (i + 1);
+
+    trnmtUserlistText.textContent = getTranslatedText('userlist');
+    trnmtTitleText.textContent = getTranslatedText('tournamentTitle');
+    trnmtPowerupsText.textContent = getTranslatedText('gamemode');
+    trnmtMapsText.textContent = getTranslatedText('maps');
+    trnmtEnabledText.textContent = getTranslatedText('gamemodeNameText1');
+    trnmtStartText.textContent = getTranslatedText('start');
+    trnmtBackButton.textContent = getTranslatedText('backButton');
 }
 
 const loginText = document.getElementById('loginText');
@@ -56,7 +81,8 @@ const enterPassword = document.getElementById('enterPassword');
 const loginLanguageText = document.getElementById('loginLanguageText');
 const newToTheGame = document.querySelector('.newToTheGame');
 const confirmPassword = document.getElementById('confirmPassword');
-const SignUpTitle = document.querySelector('.perspective');
+const signUpTitle = document.getElementById('signUpTitle');
+const createAccountText = document.getElementById('createAccountText');
 const SignUpButton = document.querySelectorAll('.actionCont')[1];
 const backToLoginButton = document.querySelector('.backButton');
 const signupHereButton = document.querySelector('.actionCont');
@@ -67,8 +93,8 @@ function translateLoginPageTexts() {
     loginLanguageText.childNodes[4].textContent = '- ' + getTranslatedText('loginLanguage') + ' -';
     newToTheGame.childNodes[0].textContent = getTranslatedText('newToTheGame');
     signupHereButton.textContent = getTranslatedText('signUpHere');
-    SignUpTitle.childNodes[0].textContent = getTranslatedText('signUpTitle');
-    SignUpTitle.childNodes[1].textContent = getTranslatedText('createAnAccount');
+    signUpTitle.textContent = getTranslatedText('signUpTitle');
+    createAccountText.textContent = getTranslatedText('createAnAccount');
     enterLogin.childNodes[0].textContent = getTranslatedText('login');
     enterPassword.childNodes[0].textContent = getTranslatedText('password');
     confirmPassword.childNodes[0].textContent = getTranslatedText('confirmPassword');
@@ -102,11 +128,31 @@ const RGPDTexte = document.getElementById('RGPDTexte');
 function translateRGPDTexts() {
     RGPDTitle.textContent = getTranslatedText('RGPDTitle');
     RGPDTexte.textContent = getTranslatedText('RGPDTexte');
+const friendlistText = document.getElementById('friendListText');
+const historyText = document.getElementById('historyText');
+const historyText2 = document.getElementById('historyText2');
+const searchBarText = document.getElementById('searchInput');
+const profileTitleText = document.getElementById('profileTitleText');
+const statisticsText = document.getElementById('statisticsText');
+const statisticsText2 = document.getElementById('statisticsText2');
+const backButton = document.getElementById('userBackButton');
+}
+function translateUserPageTexts() {
+    friendlistText.textContent = getTranslatedText('friendlist');
+    historyText.textContent = getTranslatedText('history');
+    historyText2.textContent = getTranslatedText('history');
+    searchBarText.placeholder = getTranslatedText('searchInput');
+    profileTitleText.textContent = getTranslatedText('profileTitle');
+    statisticsText.textContent = getTranslatedText('statisticsText');
+    statisticsText2.textContent = getTranslatedText('statisticsText');
+    backButton.textContent = getTranslatedText('backButton');   
 }
 
 export function TranslateAllTexts() {
     translateArenaPageTexts();
+    translateTournamentPageTexts();
     translateLoginPageTexts();
     translateEscapePageTexts();
     translateRGPDTexts();
+    translateUserPageTexts();
 }

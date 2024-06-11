@@ -60,6 +60,7 @@
     border: solid 5px white;
     transition: box-shadow 0.5s ease, border-color 0.5s ease;
     overflow: hidden;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .pauseTitle img{
@@ -144,7 +145,7 @@
     width: 200px;
     display: flex; /* Add display flex */
     align-items: center; /* Vertically center the items */
-    cursor: default;
+    /* cursor: default; */
 }
 
 .profilePic {
