@@ -190,7 +190,7 @@ export function accept_friend_request(id) {
     });
   }
 
-export  function reject_friend_request(id) {
+export  function delete_friend_request(id) {
     const token = localStorage.getItem('host_auth_token');
     fetch('reject_friend_request/', {
         method: 'POST',

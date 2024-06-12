@@ -1,6 +1,6 @@
 import { togglePlanet } from './enterPlanet.js';
 import {  getCookie, createMatchBlock} from './loginPage.js';
-import { get_friends_list, userList, send_request, accept_friend_request, reject_friend_request } from './userManagement.js';
+import { get_friends_list, userList, send_request, accept_friend_request, delete_friend_request } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
@@ -113,7 +113,7 @@ export function initUserPlanet() {
   redCrossImg.addEventListener('click', () => {
     resetProfile();
     //Remove from friends or deny request
-    reject_friend_request(requestId);
+    delete_friend_request(requestId);
     //Actualize userList
   });
 
@@ -305,17 +305,17 @@ async function RenderUsersSearched(query) {
   let requestList = [];
   let friendList = [];
   if (data.received_request_list.length > 0)  
-    requestList = data.received_request_list.sort((a, b) => a.username.localeCompare(b.username));
+    requestList = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.username));
   if (data.friends.length > 0)
-    friendList = data.friends.sort((a, b) => a.username.localeCompare(b.username));
+    friendList = data.friends.sort((a, b) => a.user.username.localeCompare(b.username));
   
   const filteredRequestList = requestList.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()));
   const filteredFriendList = friendList.filter(user => user.user.username.toLowerCase().includes(query.toLowerCase()));
   const filteredOthers = userList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
 
   // Sort each group alphabetically by username
-  const sortedRequests = filteredRequestList.sort((a, b) => a.username.localeCompare(b.username));
-  const sortedFriends = filteredFriendList.sort((a, b) => a.username.localeCompare(b.username));
+  const sortedRequests = filteredRequestList.sort((a, b) => a.user.username.localeCompare(b.username));
+  const sortedFriends = filteredFriendList.sort((a, b) => a.user.username.localeCompare(b.username));
   const sortedOthers = filteredOthers.sort((a, b) => a.username.localeCompare(b.username));
 
   sortedRequests.forEach(obj => createUserTile(obj.user, 'request', obj.request_id));
