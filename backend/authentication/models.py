@@ -24,7 +24,7 @@ class User(AbstractUser):
   bio = models.TextField(max_length=28, null=True, blank=True)
   is_host = models.BooleanField(default=False)
   friends = models.ManyToManyField("self", through="FriendRequest", symmetrical=False, related_name='related_friends', blank=True)
-  graphic_mode = models.CharField(max_length=10)
+  graphic_mode = models.CharField(default="medium", max_length=10)
   
   def get_profile_info(self):
     return {'id': self.id, 'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url}
