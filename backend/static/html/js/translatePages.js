@@ -126,12 +126,14 @@ const RGPDTitle = document.getElementById('RGPDTitle');
 const RGPDTexte = document.getElementById('RGPDTexte');
 const RGPDCreate = document.getElementById('RGPDCreate');
 const RGPDPolicy = document.getElementById('RGPDPolicy');
+const RGPDBack = document.getElementById('RGPDBack');
 
 function translateRGPDTexts() {
     RGPDTitle.textContent = getTranslatedText('RGPDTitle');
     RGPDTexte.textContent = getTranslatedText('RGPDTexte');
     RGPDCreate.textContent = getTranslatedText('RGPDCreate');
     RGPDPolicy.textContent = getTranslatedText('RGPDPolicy');
+    RGPDBack.textContent = getTranslatedText('RGPDBack');
 }
 const friendlistText = document.getElementById('friendListText');
 const historyText = document.getElementById('historyText');

@@ -439,14 +439,14 @@ document.addEventListener('keydown', (event) => {
         // }
         // localStorage.clear();
     }
-    if (event.key === 'y')
+    /*if (event.key === 'y')
     {
         showPage('rgpdPage');
         console.log("ON APPUIE SUR YYYYY");
         
         /*ANIMATION
-        toggleRGPDContainerVisibility();*/
-    }
+        toggleRGPDContainerVisibility();
+    }*/
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
     if (event.key == 'Escape') {
