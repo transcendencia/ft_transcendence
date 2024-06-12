@@ -3215,15 +3215,39 @@ class Bot {
         this.timeToUpdate = 1000;
         this.ballTimeToLand = -1;
         this.paddleTimeToReach = -1;
+        this.dashEnabled = true;
+        this.hasToPredict = false;
+        this.intervalId = null; // Store interval ID
+
+        this.initGUI();
     }
-    play()
-    {
-        if (!this.intervalSet)
-        {
-            this.intervalSet = true;
-            setInterval(() => this.scanGameInfo(), this.timeToUpdate);
+    initGUI() {
+        const gui = new dat.GUI();
+        gui.add(this, 'timeToUpdate', 100, 5000).name('Time To Update').onChange((value) => {
+            this.updateInterval(value); // Update the interval when timeToUpdate changes
+        });
+        gui.add(this, 'dashRange', 5, 20).name('Dash Range').onChange((value) => {
+            this.dashRange = value;
+        });
+        //toggle this.dashEnabled
+        gui.add(this, 'dashEnabled', true, false).name('Dash Enabled').onChange((value) => {
+            this.dashEnabled = value
+        });
+    }
+    updateInterval(newInterval) {
+        this.timeToUpdate = newInterval;
+        if (this.intervalSet) {
+            clearInterval(this.intervalId);
+            this.intervalId = setInterval(() => this.scanGameInfo(), this.timeToUpdate);
         }
-        this.moveToTarget(this.targetX)
+    }
+
+    play() {
+        if (!this.intervalSet) {
+            this.intervalSet = true;
+            this.intervalId = setInterval(() => this.scanGameInfo(), this.timeToUpdate);
+        }
+        this.moveToTarget(this.targetX);
         this.ballTimeToLand--;
     }
     moveToTarget(targetX)
@@ -3239,7 +3263,7 @@ class Bot {
         {
             // if (this.ownPaddle.position.x + this.dashRange < targetX)
             //     doubleKeyPress['ArrowRight'] = true;
-            if (this.ownPaddle.position.x + this.dashRange < targetX && this.ballTimeToLand < this.paddleTimeToReach * 2)
+            if (this.dashEnabled && this.ownPaddle.position.x + this.dashRange < targetX && this.ballTimeToLand < this.paddleTimeToReach * 3)
                 doubleKeyPress['ArrowRight'] = true;
             keyDown['ArrowRight'] = true;
             keyDown['ArrowLeft'] = false;
@@ -3249,7 +3273,7 @@ class Bot {
         {
             // if (this.ownPaddle.position.x - this.dashRange > targetX)
             //     doubleKeyPress['ArrowLeft'] = true;
-            if (this.ownPaddle.position.x - this.dashRange > targetX && this.ballTimeToLand < this.paddleTimeToReach * 2)
+            if (this.dashEnabled && this.ownPaddle.position.x - this.dashRange > targetX && this.ballTimeToLand < this.paddleTimeToReach * 3)
                 doubleKeyPress['ArrowLeft'] = true;
             keyDown['ArrowLeft'] = true;
             keyDown['ArrowRight'] = false;
@@ -3261,20 +3285,36 @@ class Bot {
         return paddleX + this.ownPaddle.width / 2 >= targetX && paddleX - this.ownPaddle.width / 2 <= targetX;
     }
     calculateBallLandingPosition() {
-        if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
-            return;
         const ballAcceleration = this.arena.ball.acceleration;
         let ballPositionX = this.arena.ball.position.x;
         let ballPositionZ = this.arena.ball.position.z;
         let ballSpeedX = this.arena.ball.speedX;
         const ballSpeedZ = this.arena.ball.speedZ;
-        if (ballSpeedZ > 0) {
-            while (ballPositionZ < this.zValue) {
-                ballSpeedX += ballAcceleration;
-                ballPositionX += ballSpeedX;
-                ballPositionZ += ballSpeedZ;
-                if ((ballPositionX + ballSpeedX <= (this.arena.position.x - this.arena.length / 2)) || (ballPositionX + ballSpeedX >= this.arena.position.x +this.arena.length / 2)) // detect collision with border
-                    ballSpeedX *= -1;
+
+        // if ball is going towards the enemy
+        if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
+        {
+            if (ballSpeedZ < 0) {
+                while (ballPositionZ > this.enemyZValue) {
+                    ballSpeedX += ballAcceleration;
+                    ballPositionX += ballSpeedX;
+                    ballPositionZ += ballSpeedZ;
+                    if ((ballPositionX + ballSpeedX <= (this.arena.position.x - this.arena.length / 2)) || (ballPositionX + ballSpeedX >= this.arena.position.x +this.arena.length / 2)) // detect collision with border
+                        ballSpeedX *= -1;
+                }
+            }    
+        }
+        // if ball is going towards the bot
+        else
+        {
+            if (ballSpeedZ > 0) {
+                while (ballPositionZ < this.zValue) {
+                    ballSpeedX += ballAcceleration;
+                    ballPositionX += ballSpeedX;
+                    ballPositionZ += ballSpeedZ;
+                    if ((ballPositionX + ballSpeedX <= (this.arena.position.x - this.arena.length / 2)) || (ballPositionX + ballSpeedX >= this.arena.position.x +this.arena.length / 2)) // detect collision with border
+                        ballSpeedX *= -1;
+                }
             }
         }
         return ballPositionX;
@@ -3377,7 +3417,6 @@ class Game {
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
 
 
-        // this.user2Username.textContent = 'caca';
         // OUTPUT
         this.loserPaddle;
         this.winnerPaddle;
