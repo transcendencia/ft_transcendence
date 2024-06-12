@@ -110,15 +110,12 @@ def return_friends_list(request):
                     'user' : UserListSerializer(req.sender, many=False).data,
                     'request_id' : req.id,
                 }
-                # friends.append(UserListSerializer(req.sender, many=False).data)
                 user_in_list.append(req.sender.id)
             if request.user == req.sender:
-                # UserListSerializer(req.receiver, many=False).data,
                 user_pair = { 
                     'user' : UserListSerializer(req.receiver, many=False).data,
                     'request_id' : req.id,
                 }
-                # friends.append(UserListSerializer(req.receiver, many=False).data)
                 user_in_list.append(req.receiver.id)
             friends.append(user_pair)
 

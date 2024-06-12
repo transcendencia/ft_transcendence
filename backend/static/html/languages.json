@@ -70,7 +70,20 @@
         "winLoseText3": "Losses",
         "winLoseText4": "Goals",
         "statisticsText": "Statistics",
-        "backButton": "Back"
+        "backButton": "Back",
+
+        "changeInfoText": "Only fill in information you want to change",
+        "changeUsernameInput": "Username",
+        "changeBioInput": "Bio",
+        "changePasswordInput": "Password",
+        "changeConfirmPasswordInput": "",
+        "changeProfilePicture": "",
+        "chooseProfilePic": "",
+        "deleteAccountButton": "",
+        "submitInfoButton": "",
+        "validateDeleteAccountText": "",
+        "buttonValidateDelete": "",
+        "buttonCancelDelete": ""
     },
     "es": {
         "login": "Usuario",
@@ -142,7 +155,20 @@
         "winLoseText3": "Derrotas",
         "winLoseText4": "Goles",
         "statisticsText": "Estadisticas",
-        "backButton": "volver"
+        "backButton": "volver",
+
+        "changeInfoText": "Complete solo la información que desea cambiar",
+        "changeUsernameInput": "Nombre de usuario",
+        "changeBioInput": "Bio",
+        "changePasswordInput": "Contraseña",
+        "changeConfirmPasswordInput": "",
+        "changeProfilePicture": "",
+        "chooseProfilePic": "",
+        "deleteAccountButton": "",
+        "submitInfoButton": "",
+        "validateDeleteAccountText": "",
+        "buttonValidateDelete": "",
+        "buttonCancelDelete": ""
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -212,6 +238,19 @@
         "winLoseText3": "Defaites",
         "winLoseText4": "Buts",
         "statisticsText": "Statistiques",
-        "backButton": "Retour"
+        "backButton": "Retour",
+
+        "changeInfoText": "Remplissez uniquement les informations que vous souhaitez modifier",
+        "changeUsernameInput": "Nom d'utilisateur",
+        "changeBioInput": "Bio",
+        "changePasswordInput": "",
+        "changeConfirmPasswordInput": "",
+        "changeProfilePicture": "",
+        "chooseProfilePic": "",
+        "deleteAccountButton": "",
+        "submitInfoButton": "",
+        "validateDeleteAccountText": "",
+        "buttonValidateDelete": "",
+        "buttonCancelDelete": ""
     }
 }
