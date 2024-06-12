@@ -66,7 +66,6 @@ def	accept_friend_request(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def reject_friend_request(request):
-    console.log(request.data.get("request_id"))
     friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
     friend_request.delete()
 
@@ -94,6 +93,8 @@ def return_friends_list(request):
     received_request_list = []
     friends = []
     sent_request_list = []
+    user_in_list = []
+
     for req in friends_requests:
         if req.status == 'pending' and req.receiver == request.user:
             user_pair = { 
@@ -101,14 +102,30 @@ def return_friends_list(request):
                 'request_id' : req.id,
             }
             received_request_list.append(user_pair)
+            user_in_list.append(req.sender.id)
         
         if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user):
             if request.user == req.receiver:
-                friends.append(UserListSerializer(req.sender, many=False).data)
+                user_pair = { 
+                    'user' : UserListSerializer(req.sender, many=False).data,
+                    'request_id' : req.id,
+                }
+                # friends.append(UserListSerializer(req.sender, many=False).data)
+                user_in_list.append(req.sender.id)
             if request.user == req.sender:
-                friends.append(UserListSerializer(req.receiver, many=False).data)
-        
+                # UserListSerializer(req.receiver, many=False).data,
+                user_pair = { 
+                    'user' : UserListSerializer(req.receiver, many=False).data,
+                    'request_id' : req.id,
+                }
+                # friends.append(UserListSerializer(req.receiver, many=False).data)
+                user_in_list.append(req.receiver.id)
+            friends.append(user_pair)
+
         if req.status == 'pending' and req.sender == request.user:
             sent_request_list.append(UserListSerializer(req.receiver, many=False).data)
     
-    return Response({'received_request_list': received_request_list, 'friends': friends, 'sent_request_list': sent_request_list})
+    all_users = User.objects.exclude(id__in=user_in_list).exclude(id=request.user.id).exclude(username="bot")
+    other_user_list = UserListSerializer(all_users, many=True).data
+    print(other_user_list)
+    return Response({'received_request_list': received_request_list, 'friends': friends, 'sent_request_list': sent_request_list, 'other_user_list': other_user_list})

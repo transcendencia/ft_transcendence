@@ -310,7 +310,7 @@ async function RenderUsersSearched(query) {
     friendList = data.friends.sort((a, b) => a.username.localeCompare(b.username));
   
   const filteredRequestList = requestList.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()));
-  const filteredFriendList = friendList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
+  const filteredFriendList = friendList.filter(user => user.user.username.toLowerCase().includes(query.toLowerCase()));
   const filteredOthers = userList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
 
   // Sort each group alphabetically by username
@@ -318,8 +318,8 @@ async function RenderUsersSearched(query) {
   const sortedFriends = filteredFriendList.sort((a, b) => a.username.localeCompare(b.username));
   const sortedOthers = filteredOthers.sort((a, b) => a.username.localeCompare(b.username));
 
-  sortedRequests.forEach(obj => createUserTile(obj.user, 'request'));
-  sortedFriends.forEach(user => createUserTile(user, 'friend'));
+  sortedRequests.forEach(obj => createUserTile(obj.user, 'request', obj.request_id));
+  sortedFriends.forEach(user => createUserTile(user.user, 'friend', user.request_id));
   sortedOthers.forEach(user => createUserTile(user, ''))
 }
   
@@ -335,11 +335,11 @@ export async function renderFriendList() {
       const data = await get_friends_list();
       console.log(data);
 
-      const sortedRequests = data.received_request_list.sort((a, b) => a.username.localeCompare(b.username));
-      const sortedFriends = data.friends.sort((a, b) => a.username.localeCompare(b.username));
+      const sortedRequests = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
+      const sortedFriends = data.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
 
       sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'request', userSendingRq.request_id));
-      sortedFriends.forEach(user => createUserTile(user, 'friend'));
+      sortedFriends.forEach(user => createUserTile(user.user, 'friend', user.request_id));
   } catch (error) {
       console.error('Error in rendering friend list:', error);
   }
