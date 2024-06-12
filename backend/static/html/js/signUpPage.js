@@ -40,6 +40,18 @@ backToLoginButton.addEventListener('click', function() {
 const signupForm = document.getElementById('signupForm');
 signupForm.addEventListener('submit', handleSignup);
 
+//Add event listner to display RGPG page
+const RGPDPolicy = document.getElementById('RGPDPolicy');
+RGPDPolicy.addEventListener('click', function() {
+    showPage('rgpdPage');
+});
+
+//Add event listner to display sign-up page
+const RGPDBack = document.getElementById('RGPDBack');
+RGPDBack.addEventListener('click', function() {
+    showPage('signUpPage');
+});
+
 // Handle form submission
 function handleSignup(event) {
     event.preventDefault();

@@ -87,7 +87,7 @@
     <div class="perspective">
         <form id="signupForm" method="post" action="signup/">
           {% csrf_token %}
-        <div id="signUpTitle">Sign Up</div>
+        <div id="signUpTitle"style="font-size: 56px;">Sign Up </div>
         <p id="createAccountText" style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
         <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
           Login
@@ -110,14 +110,16 @@
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
-      <div class="littleMsgCont">
+      <!-- <div class="littleMsgCont">
+      </div> -->
+      <div>
         <div id="RGPDCreate" class="newToTheGame" >
-          By creating an account you accept
-        </div>
-        </div>
+          By making you accept the
+        </div> 
         <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter">
-          our privacy policy 
-        </div>
+          privacy policy 
+        </div> 
+      </div>
       </div>
       <div class="perspective3">
         <div id="messageContainerSignup" class="signupMessageCont"></div>
@@ -127,7 +129,7 @@
       </div>
     </form>
     <div class="backButton tinyWhiteShadowfilter">
-      Back to login
+      Back
     </div>
 </div>
 
@@ -137,7 +139,13 @@ política de confidencialidad
 Fr : En vous iscrivant vous accepter la
 politique de confidentialite
 En : By making you accept the
-confidentiality policy
+confidentiality policy       
+ <div id="RGPDCreate" class="newToTheGame" >
+          By creating an account you accept
+ </div> 
+ <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter">
+          our privacy policy 
+  </div>  
 -->
 
 
@@ -726,7 +734,6 @@ confidentiality policy
     </div>
     <!-- RGPD PAGE -->          
   </div>
-
   <div class="rgpdPage page invisible" >
     <div id="RGPDTitle" class="title" style="font-size : 70px;">
       PRIVACY POLICY
@@ -736,6 +743,9 @@ confidentiality policy
       <div class="backgroundRGPDText">
        <div id="RGPDTexte" class="text-content">
         The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. Your data is automatically deleted one year after your last connection. For any reclamation you can go to the CNIL website. 
+        </div>
+        <div id="RGPDBack" class="actionCont tinyBlueShadowfilter">
+          Back
         </div>
       </div>
       <img src="{% static 'game/assets/scoreUI.png' %}">
