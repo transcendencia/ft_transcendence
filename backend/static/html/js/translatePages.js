@@ -144,7 +144,6 @@ function translateUserPageTexts() {
 
 const changeInfoText = document.getElementById('changeInfo');
 const changeUsernameInput = document.getElementById('changeUsernameInput');
-const changeBioInput = document.getElementById('changeBioInput');
 const changePasswordInput = document.getElementById('changePasswordInput');
 const changeConfirmPasswordInput = document.getElementById('changeConfirmPasswordInput');
 const changeProfilePicture = document.getElementById('changeProfilePicture');
@@ -158,9 +157,8 @@ const buttonCancelDelete = document.getElementById('buttonCancelDelete');
 function translateModifyPageTexts(){
     changeInfoText.textContent = getTranslatedText('changeInfoText');
     changeUsernameInput.textContent = getTranslatedText('changeUsernameInput');
-    changeBioInput.textContent = getTranslatedText('changeBioInput');
-    changePasswordInput.textContent = getTranslatedText('changePasswordInput');
-    changeConfirmPasswordInput.textContent = getTranslatedText('changeConfirmPasswordInput');
+    changePasswordInput.textContent = getTranslatedText('password');
+    changeConfirmPasswordInput.textContent = getTranslatedText('confimPassword');
     changeProfilePicture.textContent = getTranslatedText('changeProfilePicture');
     chooseProfilePic.textContent = getTranslatedText('chooseProfilePic');
     deleteAccountButton.textContent = getTranslatedText('deleteAccountButton');
