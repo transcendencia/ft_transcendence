@@ -778,8 +778,6 @@ class Arena extends THREE.Mesh {
             this.paddleRight.light.power += 0.1;
             this.bot.isPlaying = !this.bot.isPlaying;
         }
-        if (keyDown['i'])
-            this.bot.calculateBallLandingPosition();
         if (keyDown['e'])
         {
             // cameraLeft.position.copy(this.position);
@@ -791,7 +789,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
-            this.bot.isPlaying = true;
+            this.bot.activateBot();
             this.game.isPlaying = true;
             if (!this.game.thirdPlayer)
             {
@@ -1062,7 +1060,8 @@ class Arena extends THREE.Mesh {
             
             // display back the panel
             this.gameState.inGame = false;
-            this.gameState.inLobby = true; 
+            this.gameState.inLobby = true;
+            this.bot.deactivateBot();
             endGame(this.game.tournamentGame);
         });
         let targetLight = loserPaddle.defaultLight;
@@ -1085,22 +1084,6 @@ class Arena extends THREE.Mesh {
         this.ball.isRolling = false;
         this.ball.speedZ = 0;
         this.ball.speedX = 0;
-    }
-    changeTheme(theme)
-    {
-        this.material.color.set(theme.arenaColor);
-        this.paddleLeft.material.color.set(theme.paddleColor);
-        this.paddleRight.material.color.set(theme.paddleColor);
-        this.paddleLeft.superChargingColor = theme.paddleSuperchargingColor;
-        this.paddleRight.superChargingColor = theme.paddleSuperchargingColor;
-        this.paddleLeft.dashingColor = theme.paddleDashingColor;
-        this.paddleRight.dashingColor = theme.paddleDashingColor;
-        this.paddleLeft.defaultColor = theme.paddleColor;
-        this.paddleRight.defaultColor = theme.paddleColor;
-        this.ball.material.color.set(theme.ballInitialColor);
-        this.ball.finalColor = theme.ballFinalColor;
-        this.ball.initialColor = theme.ballInitialColor;
-        scene.background = new THREE.Color(theme.backgroundColor);
     }
 }
 
@@ -3213,26 +3196,50 @@ class Bot {
         this.intervalSet = false;
         this.dashRange = this.arena.width * 20 * this.ownPaddle.moveSpeed;
         this.timeToUpdate = 1000;
+        this.dashLikeness = 3;
         this.ballTimeToLand = -1;
         this.paddleTimeToReach = -1;
+        this.isHoldingBall = false;
+        this.powerUpLikeness = 1;
+        this.powerUp = false;
+        this.powerUpEnabled = true;
+        this.updatesToPowerUp = 0;
         this.dashEnabled = true;
-        this.hasToPredict = false;
         this.intervalId = null; // Store interval ID
-
-        this.initGUI();
+        this.gui;
+    }
+    activateBot() {
+        if (!this.isPlaying)
+            this.initGUI();
+        this.isPlaying = true;
+        if (this.powerUpLikeness)
+            this.updatesToPowerUp = (Math.floor(Math.random() * 30) + 1) / this.powerUpLikeness;
+    }
+    deactivateBot() {
+        this.isPlaying = false;
+        this.deactivateGui();
     }
     initGUI() {
-        const gui = new dat.GUI();
-        gui.add(this, 'timeToUpdate', 100, 5000).name('Time To Update').onChange((value) => {
-            this.updateInterval(value); // Update the interval when timeToUpdate changes
+        this.gui = new dat.GUI();
+        this.gui.add(this, 'timeToUpdate', 100, 5000).name('Time To Update').onChange((value) => {
+            this.updateInterval(value);
         });
-        gui.add(this, 'dashRange', 5, 20).name('Dash Range').onChange((value) => {
-            this.dashRange = value;
+        this.gui.add(this, 'dashLikeness', 1, 5).name('Dash Likeness').onChange((value) => {
+            this.dashLikeness = value;
         });
-        //toggle this.dashEnabled
-        gui.add(this, 'dashEnabled', true, false).name('Dash Enabled').onChange((value) => {
+        this.gui.add(this, 'powerUpLikeness', 0, 5).name('Power Up Likeness').onChange((value) => {
+            this.powerUpLikeness = value;
+            this.updatesToPowerUp = (Math.floor(Math.random() * 30) + 1) / this.powerUpLikeness;
+        });
+        this.gui.add(this, 'dashEnabled', true, false).name('Dash Enabled').onChange((value) => {
             this.dashEnabled = value
         });
+        this.gui.add(this, 'powerUpEnabled', true, false).name('Power Up Enabled').onChange((value) => {
+            this.powerUpEnabled = value;
+        });
+    }
+    deactivateGui() {
+        this.gui.destroy();
     }
     updateInterval(newInterval) {
         this.timeToUpdate = newInterval;
@@ -3241,12 +3248,20 @@ class Bot {
             this.intervalId = setInterval(() => this.scanGameInfo(), this.timeToUpdate);
         }
     }
-
     play() {
         if (!this.intervalSet) {
             this.intervalSet = true;
             this.intervalId = setInterval(() => this.scanGameInfo(), this.timeToUpdate);
         }
+        if (this.positionReached(this.ownPaddle.position.x, this.targetX) && this.isHoldingBall)
+            this.targetX = this.generateRandomTarget();
+        if (this.updatesToPowerUp <= 0)
+        {
+            this.powerUp = true;
+            this.updatesToPowerUp = (Math.floor(Math.random() * 30) + 1) / this.powerUpLikeness;
+        }
+        else
+            this.powerUp = false;
         this.moveToTarget(this.targetX);
         this.ballTimeToLand--;
     }
@@ -3254,31 +3269,34 @@ class Bot {
     {
         if (this.positionReached(this.ownPaddle.position.x, targetX))
         {
-            keyDown['ArrowLeft'] = false;
-            keyDown['ArrowRight'] = false;
-            doubleKeyPress['ArrowLeft'] = false;
-            doubleKeyPress['ArrowRight'] = false;
+            keyDown[this.ownPaddle.leftKey] = false;
+            keyDown[this.ownPaddle.rightKey] = false;
+            doubleKeyPress[this.ownPaddle.leftKey] = false;
+            doubleKeyPress[this.ownPaddle.rightKey] = false;
         }
         else if (this.ownPaddle.position.x < targetX)
         {
-            // if (this.ownPaddle.position.x + this.dashRange < targetX)
-            //     doubleKeyPress['ArrowRight'] = true;
-            if (this.dashEnabled && this.ownPaddle.position.x + this.dashRange < targetX && this.ballTimeToLand < this.paddleTimeToReach * 3)
-                doubleKeyPress['ArrowRight'] = true;
-            keyDown['ArrowRight'] = true;
-            keyDown['ArrowLeft'] = false;
-            doubleKeyPress['ArrowLeft'] = false;
+            if (this.dashEnabled && this.ownPaddle.position.x + this.dashRange < targetX && this.ballTimeToLand < this.paddleTimeToReach * this.dashLikeness)
+                doubleKeyPress[this.ownPaddle.rightKey] = true;
+            keyDown[this.ownPaddle.rightKey] = true;
+            keyDown[this.ownPaddle.leftKey] = false;
+            doubleKeyPress[this.ownPaddle.leftKey] = false;
         }
         else if (this.ownPaddle.position.x > targetX)
         {
-            // if (this.ownPaddle.position.x - this.dashRange > targetX)
-            //     doubleKeyPress['ArrowLeft'] = true;
-            if (this.dashEnabled && this.ownPaddle.position.x - this.dashRange > targetX && this.ballTimeToLand < this.paddleTimeToReach * 3)
-                doubleKeyPress['ArrowLeft'] = true;
-            keyDown['ArrowLeft'] = true;
-            keyDown['ArrowRight'] = false;
-            doubleKeyPress['ArrowRight'] = false;
+            if (this.dashEnabled && this.ownPaddle.position.x - this.dashRange > targetX && this.ballTimeToLand < this.paddleTimeToReach * this.dashLikeness)
+                doubleKeyPress[this.ownPaddle.leftKey] = true;
+            keyDown[this.ownPaddle.leftKey] = true;
+            keyDown[this.ownPaddle.rightKey] = false;
+            doubleKeyPress[this.ownPaddle.rightKey] = false;
         }
+        if (this.powerUp)
+        {
+            keyDown[this.ownPaddle.chargeKey] = true;
+            this.powerUp = false;
+        }
+        else
+            keyDown[this.ownPaddle.chargeKey] = false;
     }
     positionReached(paddleX, targetX)
     {
@@ -3347,7 +3365,17 @@ class Bot {
         this.targetX = this.calculateBallLandingPosition();
         this.ballTimeToLand = this.calculateBallTimeToLand();
         this.paddleTimeToReach = this.calculateTimeToReachTarget(this.ownPaddle.position.x, this.targetX);
-        // console.log("ballTimeToLand : " + this.ballTimeToLand, "paddleTimeToReach : " + this.paddleTimeToReach);
+        this.isHoldingBall = this.detectSupercharge();
+        if (this.powerUpEnabled)
+            this.updatesToPowerUp--;
+    }
+    detectSupercharge()
+    {
+        return (this.arena.ball.isSupercharging && this.arena.ball.position.z * this.ownPaddle.position.z > 0)
+    }
+    generateRandomTarget()
+    {
+        return Math.random() * (this.arena.width - 2) - this.arena.width / 2 + 1;
     }
 }
 
