@@ -3190,6 +3190,7 @@ class Bot {
         this.enemyPaddle = enemyPaddle;
         this.isPlaying = false;
         this.targetX = 0;
+        this.difficulty = "medium";
         this.lastTargetUpdate;
         this.zValue = this.ownPaddle.position.z; // rightpaddle : x positive to the right, z positive
         this.enemyZValue = this.enemyPaddle.position.z;
@@ -3209,6 +3210,29 @@ class Bot {
         this.gui;
     }
     activateBot() {
+        if (this.difficulty === "easy")
+        {
+            console.log("easy");
+            this.powerUpEnabled = false;
+            this.dashEnabled = false;
+            this.timeToUpdate = 1500;
+        }
+        else if (this.difficulty === "medium")
+        {
+            console.log("medium");
+            this.powerUpEnabled = false;
+            this.dashEnabled = true;
+            this.dashLikeness = 1;
+            this.timeToUpdate = 1000;
+        }
+        else if (this.difficulty === "hard")
+        {
+            console.log("hard");
+            this.powerUpEnabled = true;
+            this.dashEnabled = true;
+            this.dashLikeness = 5;
+            this.timeToUpdate = 1000;
+        }
         if (!this.isPlaying)
             this.initGUI();
         this.isPlaying = true;
@@ -3297,6 +3321,21 @@ class Bot {
         }
         else
             keyDown[this.ownPaddle.chargeKey] = false;
+        if (this.dashEnabled && this.isHoldingBall && this.difficulty === "hard")
+        {
+            // dash left if paddle is on the right side of the board
+            if (this.ownPaddle.position.x > 0)
+            {
+                doubleKeyPress[this.ownPaddle.leftKey] = true;
+                doubleKeyPress[this.ownPaddle.rightKey] = false;
+            }
+            // dash right if paddle is on the left side of the board
+            else
+            {
+                doubleKeyPress[this.ownPaddle.rightKey] = true;
+                doubleKeyPress[this.ownPaddle.leftKey] = false;
+            }
+        }
     }
     positionReached(paddleX, targetX)
     {

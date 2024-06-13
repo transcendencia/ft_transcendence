@@ -40,7 +40,7 @@ function Glow() {
 
 let gamemodeCounter = 0;
 let mapCounter = 0;
-let botDifficulty = 0;
+let botDifficulty = 1;
 
 function toggleGamemode(buttonHeader, imgIndex) {
     if (imgIndex === 0){
@@ -86,7 +86,7 @@ function handleBotDifficulty(buttonHeader, imgIndex) {
     if (imgIndex === 0){
         botDifficulty--;
         if (botDifficulty === -1)
-            botDifficulty = 3;
+            botDifficulty = 2;
     }
     else {
         botDifficulty++;    
@@ -237,7 +237,7 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
       gameState.arena.game.map = mapList[mapCounter];
       // choose bot difficulty
       const difficultyList = ["easy", "medium", "hard"];
-      // gameState.arena.game.botDifficulty = difficultyList[botDifficulty];
+      gameState.arena.bot.difficulty = difficultyList[botDifficulty];
 
       // add players
       // const 
