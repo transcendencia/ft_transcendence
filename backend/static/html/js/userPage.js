@@ -291,7 +291,7 @@ function getHistoryMatchPlayer2(user) {
 }
 
 function createUserTile(user, type, reqId) {
-  if (user.isHost || user.username === 'bot')
+  if (user.isHost)
     return;
     const userTile = document.createElement('div');
   userTile.classList.add('userTile');

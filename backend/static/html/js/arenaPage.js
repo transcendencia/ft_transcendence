@@ -20,7 +20,8 @@ let playerNb = 0;
 export const blue = '#3777ff';
 export const purple = 'rgb(164, 67, 255)'
 export const grey = '#141414';
-export const lightGrey = '#323232';
+export const lightGrey = '#505050';
+export const green = 'rgb(14, 255, 26)';
 
 function Glow() {
     userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
@@ -111,12 +112,12 @@ function resetGlow() {
         children.forEach(element => {
             element.style.borderColor = blue;
             element.style.animation = '';
-        });
-        if (isBot(i)) {
-            children.forEach(element => {
+            if (isBot(i))
                 element.style.borderColor = purple;
-            });
-        }
+            else if (child.type === 'Friend')
+                element.style.borderColor = green;
+        });
+        
     });
 } 
 
@@ -127,6 +128,7 @@ function resetAddingMode() {
         otherPlusButton.style.pointerEvents = 'auto';
     });
     profileAdded[botID] = false;
+    userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'none';});
 }
 
 function setAddingMode(plusButton, i) {
@@ -134,12 +136,17 @@ function setAddingMode(plusButton, i) {
     if (i === 0) {
         plusClicked = 1;
         profileAdded[botID] = true;
+        userTiles.forEach((tile, index) => {if(!isBot(index)) tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'auto';});
     }
-    else plusClicked = 2;
+    else {
+        plusClicked = 2;
+        userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'auto';});
+    }
     plusButtons.forEach(function(otherPlusButton) {
         if (otherPlusButton !== plusButton) {
             otherPlusButton.style.pointerEvents = 'none';
         }
+        
     });
 }
 
@@ -312,26 +319,33 @@ export function resetUserInfoVisual(userInfoCont, clonedImg, profilePic, tileTex
     clonedImg.src = tile.HTMLelement.querySelector('.imgContainer').querySelector('img').src;
     userInfoCont.childNodes[1].textContent = tileText;
     userInfoCont.style.fontFamily = 'space';
-    userInfoCont.style.fontSize = '15px';
+    userInfoCont.style.fontSize = '12px';
 }
 
-export function resetToPlusButton(userInfoCont, oldObj, textCont) {
+export function resetToPlusButton(userInfoCont, oldObj, textCont, type) {
     userInfoCont.parentNode.replaceChild(oldObj, userInfoCont)
-    textCont.style.backgroundColor = '#00000031';
+    console.log(type);
+    if (type === 'Friend')
+        textCont.style.backgroundColor = "rgba(14, 255, 26, 0.322)";
+    else if (type === 'Bot')
+        textCont.style.backgroundColor = "rgba(164, 67, 255, 0.257)";
+    else textCont.style.backgroundColor = '#00000031';
+    textCont.classList.add('hoverable');
     oldObj.style.backgroundColor = grey;
 }
 
 export function createUserInfoObject(tile, i) {
     const userInfoCont = document.createElement('div');
     const profilePic = document.createElement('div');
-    const clonedImg = tile.querySelector('.imgContainer').querySelector('img').cloneNode(true);
-    const tileText = tile.querySelector('.textContainer').textContent;
+    const clonedImg = tile.HTMLelement.querySelector('.imgContainer').querySelector('img').cloneNode(true);
+    const tileText = tile.HTMLelement.querySelector('.textContainer').textContent;
     const textNode = document.createTextNode(tileText);
     userInfoCont.classList.add('userInfoCont');
     profilePic.classList.add('profilePic');
     profilePic.appendChild(clonedImg);
     userInfoCont.appendChild(profilePic);
     userInfoCont.appendChild(textNode);
+    console.log(tile.type);
     if (isBot(i)) {
         userInfoCont.style.borderColor = purple;
         profilePic.style.borderColor = purple;
@@ -340,18 +354,17 @@ export function createUserInfoObject(tile, i) {
 }
 
 function addEventListenerToTiles() {
-    console.log(userTiles);
     userTiles.forEach((tile, i) => {
+        const textCont = tile.HTMLelement.querySelector(".textContainer");
         profileAdded[i] = false;
         tile.HTMLelement.addEventListener('click', function(){
         if (plusClicked && !profileAdded[i]) {
             profileAdded[i] = true;
             playerNb++;
-            const newObj = createUserInfoObject(tile.HTMLelement, i);
+            const newObj = createUserInfoObject(tile, i);
             if (plusClicked === 1)
                 addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, 1);
-            else
-                addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, 0);
+            else addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, 0);
             console.log("user add:", tile.user);
             const oldObj = plusButtons[plusClicked - 1];
             oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
@@ -364,22 +377,18 @@ function addEventListenerToTiles() {
                 resetUserInfoVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic, newObj.tileText, i, tile);
             });
             newObj.userInfoCont.addEventListener('click', function() {
-                resetToPlusButton(newObj.userInfoCont, oldObj, textCont);
+                resetToPlusButton(newObj.userInfoCont, oldObj, textCont, tile.type);
                 profileAdded[i] = false;
                 profileAdded[botID] = false;
                 playerNb--;
                 removeUserFromMatch(tile.user.id);
             });
+            if (tile.type === 'Friend')
+                textCont.style.backgroundColor = 'rgba(14, 255, 26, 0.500)';
+            else if (tile.type === 'Bot')
+                textCont.style.backgroundColor = 'rgba(164, 67, 255, 0.500)';
+            else textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.500)';
         }
-    });
-    const textCont = tile.HTMLelement.querySelector(".textContainer");
-    textCont.addEventListener('mouseenter', function () {
-        if (plusClicked && !profileAdded[i])
-        textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.219)';
-    });
-    textCont.addEventListener('mouseleave', function () {
-        if (plusClicked && !profileAdded[i])
-        textCont.style.backgroundColor = '#00000031';
     });
     });
 }
@@ -408,65 +417,44 @@ function removeUserFromMatch(playerId) {
   }
 }
 
+const userListBackground = document.getElementById('userlistArenaPage');
+
 export const userTiles = [];  // Array to store the user tiles
 
+function createUserTile(user, type) {
+    const userTile = document.createElement('div');
+    userTile.classList.add('userTile');
+
+    const imgContainer = document.createElement('div');
+    imgContainer.classList.add('imgContainer');
+    imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
+
+    const textContainer = document.createElement('div');
+    textContainer.classList.add('textContainer');
+    textContainer.textContent = user.username;
+
+    imgContainer.classList.add(`arena${type}Tile`);
+    textContainer.classList.add(`arena${type}Tile`);
+    userTile.appendChild(imgContainer);
+    userTile.appendChild(textContainer);
+
+    userListBackground.appendChild(userTile);
+    
+    userTiles.push({
+        user: user,
+        HTMLelement: userTile,
+        type: type
+    });
+}
+
 export async function RenderAllUsersInList() {
-    const userListBackground = document.getElementById('userlistArenaPage');
     
     userListBackground.innerHTML = '';
     const users = await get_friends_list();
-    console.log(users.user_not_friend);
-    console.log(users.bot);
 
-    users.friends.forEach(user => {
-        // if (user.is_host)
-        //     return;
-        const userTile = document.createElement('div');
-        userTile.classList.add('userTile');
-
-        const imgContainer = document.createElement('div');
-        imgContainer.classList.add('imgContainer');
-        imgContainer.innerHTML = `<img src="${user.user.profile_picture}">`;
-
-        const textContainer = document.createElement('div');
-        textContainer.classList.add('textContainer');
-        textContainer.textContent = user.user.username;
-
-        userTile.appendChild(imgContainer);
-        userTile.appendChild(textContainer);
-
-        userListBackground.appendChild(userTile);
-        
-        userTiles.push({
-            user: user.user,
-            HTMLelement: userTile,
-        });
-    });
-
-    users.user_not_friend.forEach(user => {
-        // if (user.is_host)
-        //     return;
-        const userTile = document.createElement('div');
-        userTile.classList.add('userTile');
-
-        const imgContainer = document.createElement('div');
-        imgContainer.classList.add('imgContainer');
-        imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
-
-        const textContainer = document.createElement('div');
-        textContainer.classList.add('textContainer');
-        textContainer.textContent = user.username;
-
-        userTile.appendChild(imgContainer);
-        userTile.appendChild(textContainer);
-
-        userListBackground.appendChild(userTile);
-        
-        userTiles.push({
-            user: user,
-            HTMLelement: userTile,
-        });
-    });
+    createUserTile(users.bot, 'Bot');
+    users.friends.forEach(obj => {createUserTile(obj.user, 'Friend')});
+    users.user_not_friend.forEach(user => {createUserTile(user, '')});
     addEventListenerToTiles();
 }
 
@@ -487,8 +475,6 @@ export function RenderAllUsersTournament(users) {
     // });
 
     users.forEach(user => {
-        if (user.is_host)
-            return;
         const userTile = document.createElement('div');
         userTile.classList.add('userTile');
 
@@ -513,11 +499,11 @@ export function RenderAllUsersTournament(users) {
     addEventListenerToTilesTournament();
   }
 
-  export function RenderUserMatch(user) {
+  export function RenderHostMatch(user) {
     const usernameElement = document.getElementById('player1MatchUsername');
     usernameElement.textContent = user.username;
     const pictureElement = document.getElementById('player1MatchPicture');
-    pictureElement.src = user.profile_picture;
+    pictureElement.src = user.profile_picture; 
     addUserToMatch(user.id, user.username, user.profile_picture, 0);
   }
 

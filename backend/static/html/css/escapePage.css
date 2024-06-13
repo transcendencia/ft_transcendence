@@ -136,7 +136,7 @@
 .userInfoCont {
     font-family: "space";
     color: red;
-    font-size: 15px;
+    font-size: 12px;
     padding: 1vh;
     border-radius: 100px;
     background-color: rgb(20, 20, 20);
@@ -164,6 +164,6 @@
 }
 
 .profilePic img {
-    width: auto; /* Make the image fill the container */
-    height: 100%; /* Make the image fill the container */
+    height: 100%;
+    width: auto; 
 }
