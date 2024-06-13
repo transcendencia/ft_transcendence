@@ -311,45 +311,28 @@ function handleLogout() {
     .catch(error => {
         console.error('Erreur :', error);
     });
-    if (gameState.inLobby)
-    {
-        togglePause();
-        spaceShip.position.set(0, 0, -1293.5);
-        spaceShip.rotation.set(0, 0, 0);
-        setTimeout(() => {
-            toggleBlurDisplay(true);
-            toggleEscapeContainerVisibility();
-            resetOutline();
-            spaceShipInt.visible = true;
-            showPage('loginPage');
-            toggleLobbyStart();
-        }, 50);
-        setTimeout(() => {
-        }, 250);
-    }
     if (gameState.inGame)
     {
-        gameState.inGame = false;
+        // gameState.inGame = false;
         gameState.inLobby = true;
         toggleGameStarted();
         document.querySelector(".gameUI").style.visibility = 'hidden';
+        document.getElementsByClassName("bluebar")[0].style.opacity = 0;
         document.querySelector('.loginPage').style.visibility = 'visible';
         document.getElementById('c4').style.display = 'block';
         document.getElementById('c3').style.display = 'none';
         document.getElementById('c1').style.display = 'none';
-        togglePause();
-        spaceShip.position.set(0, 0, -1293.5);
-        spaceShip.rotation.set(0, 0, 0);
-        setTimeout(() => {
-            toggleBlurDisplay(true);
-            toggleEscapeContainerVisibility();
-            resetOutline();
-            spaceShipInt.visible = true;
-            showPage('loginPage');
-            toggleLobbyStart();
-        }, 50);
-        setTimeout(() => {
-        }, 250);
     }
+    togglePause();
+    spaceShip.position.set(0, 0, -1293.5);
+    spaceShip.rotation.set(0, 0, 0);
+    setTimeout(() => {
+        toggleBlurDisplay(true);
+        toggleEscapeContainerVisibility();
+        resetOutline();
+        spaceShipInt.visible = true;
+        showPage('loginPage');
+        toggleLobbyStart();
+    }, 50);
     // localStorage.setItem('hostLoggedIn', 'false');
 };
