@@ -31,6 +31,10 @@ const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
+function toggleLobbyStart() {
+    lobbyStart = !lobbyStart;
+}
+
 class LobbyVisuals
 {
     constructor(scene, camera, renderer)
@@ -391,7 +395,7 @@ export function startAnimation() {
         anim1.start();
     }
 
-function toggleEscapeContainerVisibility() {
+export function toggleEscapeContainerVisibility() {
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
@@ -403,6 +407,10 @@ function toggleEscapeContainerVisibility() {
 }
 
 let pauseGame = false;
+
+export function togglePause() {
+    pauseGame ? pauseGame = false : pauseGame = true;
+}
 
 document.addEventListener('keydown', (event) => {
     if (event.target.tagName === 'INPUT')
