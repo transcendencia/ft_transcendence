@@ -65,6 +65,7 @@ export function updateUserStatus(status) {
     });
 };
 
+
 export async function get_friends_list() {
     const token = localStorage.getItem('host_auth_token');
     
@@ -76,21 +77,17 @@ export async function get_friends_list() {
                 'X-CSRFToken': getCookie('csrftoken')
             }
         });
-
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
 
         const data = await response.json();
-        console.log("get_friends_list", data);
         return data;
     } catch (error) {
         console.error('Error:', error);
         throw error;
     }
 }
-
-export let userList;
 
 export function get_user_list() {
     const token = localStorage.getItem('host_auth_token');
@@ -104,8 +101,6 @@ export function get_user_list() {
     })
     .then(response => response.json())
     .then(data => {
-        userList = data;
-        RenderAllUsersInList(data);
         RenderAllUsersTournament(data);
     })
     .catch(error => {
@@ -168,10 +163,10 @@ export function send_request(username) {
     });
 }
 
-export function accept_friend_request(id) {
+export async function accept_friend_request(id) {
     const token = localStorage.getItem('host_auth_token');
     console.log("id", id);
-    fetch('accept_friend_request/', {
+    await fetch('accept_friend_request/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -190,9 +185,9 @@ export function accept_friend_request(id) {
     });
   }
 
-export  function delete_friend_request(id) {
+export async function delete_friend_request(id) {
     const token = localStorage.getItem('host_auth_token');
-    fetch('reject_friend_request/', {
+    await fetch('reject_friend_request/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

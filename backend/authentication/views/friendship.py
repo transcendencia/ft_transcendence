@@ -68,7 +68,7 @@ def	accept_friend_request(request):
 def reject_friend_request(request):
     friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
     friend_request.delete()
-
+    
     return Response({'status' : "success"})
 #verifier que la requete que j'accepte c'est pas moi qui l'est envoyer
 
@@ -89,11 +89,12 @@ def return_request(request):
 @permission_classes([IsAuthenticated])
 def return_friends_list(request):
     friends_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
-
+    print("je suis dans return friend list")
     received_request_list = []
     friends = []
     sent_request_list = []
     user_in_list = []
+    user_not_friend = []
 
     for req in friends_requests:
         if req.status == 'pending' and req.receiver == request.user:
@@ -125,4 +126,9 @@ def return_friends_list(request):
     all_users = User.objects.exclude(id__in=user_in_list).exclude(id=request.user.id).exclude(username="bot")
     other_user_list = UserListSerializer(all_users, many=True).data
     print(other_user_list)
-    return Response({'received_request_list': received_request_list, 'friends': friends, 'sent_request_list': sent_request_list, 'other_user_list': other_user_list})
+    # user_not_friend = other_user_list + received_request_list + User.object.get(username="bot")
+    # additional_user = User.objects.get(username="extra_user")
+
+    user_not_friend = other_user_list + received_request_list
+    bot = UserSerializer(User.objects.get(username="bot")).data
+    return Response({'received_request_list': received_request_list, 'friends': friends, 'sent_request_list': sent_request_list, 'other_user_list': other_user_list, 'user_not_friend': user_not_friend, 'bot': bot})
