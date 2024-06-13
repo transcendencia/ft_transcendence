@@ -166,6 +166,10 @@ function setAddingMode(plusButton, i) {
 
 export let gameStarted = false;
 
+export function toggleGameStarted() {
+    gameStarted = !gameStarted;
+}
+
 export function endGame(isTournament) {
     gameStarted = false;
     let user3 = null;

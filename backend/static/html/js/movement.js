@@ -24,17 +24,11 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'w')
         wKeyPressed = true;
     if (event.key === 'a')
-        {
-            // lobbyVisuals.removeAfterPass();
             aKeyPressed = true;
-        }
     if (event.key === 's')
         sKeyPressed = true;    
     if (event.key === 'd')
-        {
-            // lobbyVisuals.removeAfterPass();
             dKeyPressed = true;
-        }
     aKeyIsPressed = true;
 });
 
@@ -187,7 +181,7 @@ function camMovement() {
         camera.rotation.y = spaceShip.rotation.y - Math.PI;
     }
     else {
-        if (!planetInRange)
+        if (!planetInRange || spaceShip.position.z < -1293)
             return;
         const offset = 500 * (planetInRange.scale / 100);
         const SSoffset = offset - distance;   

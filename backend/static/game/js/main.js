@@ -1038,7 +1038,6 @@ class Arena extends THREE.Mesh {
         .to({y: this.ball.startingPoint.y}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
-            this.resetUI();
             loserPaddle.light.power = loserPaddle.defaultLight;
             winnerPaddle.light.power = winnerPaddle.defaultLight;
             this.ball.isgoingRight = true;

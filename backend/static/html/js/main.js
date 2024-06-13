@@ -3,7 +3,7 @@ import { showPage } from './showPages.js';
 import {spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
-import {landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
+import {cancelLanding, landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
@@ -31,7 +31,7 @@ const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
-function toggleLobbyStart() {
+export function toggleLobbyStart() {
     lobbyStart = !lobbyStart;
 }
 
@@ -156,6 +156,13 @@ class LobbyVisuals
             return;
         this.scene.background = this.spaceCubeMapTexture;
     
+    }
+    render()
+    {
+        if (this.currentGraphics === 'high')
+            this.composer.render();
+        else
+            this.renderer.render(this.scene, this.camera);
     }
 }
 
@@ -362,6 +369,7 @@ function planetMovement() {
 export function startAnimation() {
     let target = -1298;
     let duration = 500;
+    spaceShip.rotation.set(0, 0, 0);
     let anim1 = new TWEEN.Tween(spaceShip.position)
     .to({z: target}, duration)
     .easing(TWEEN.Easing.Linear.None)
@@ -389,6 +397,7 @@ export function startAnimation() {
         .onComplete(() => {
             spaceShipInt.visible = false;
             lobbyStart = true;
+            cancelLanding();
             toggleRSContainerVisibility();
         });
         anim1.chain(anim2, anim3);

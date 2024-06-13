@@ -3,11 +3,11 @@ import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { changeGraphics } from "./arenaPage.js";
-import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleRSContainerVisibility, toggleEscapeContainerVisibility, togglePause, lobbyStart } from "./main.js";
+import { changeGraphics, toggleGameStarted } from "./arenaPage.js";
+import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleRSContainerVisibility, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
-import { togglePlanet } from "./enterPlanet.js";
-import { resetOutlineAndText } from "./planetIntersection.js";
+import { landedOnPlanet, togglePlanet, cancelLanding } from "./enterPlanet.js";
+import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -313,27 +313,43 @@ function handleLogout() {
     });
     if (gameState.inLobby)
     {
-        toggleRSContainerVisibility();
-        toggleBlurDisplay(true);
-        toggleEscapeContainerVisibility();
-        resetOutlineAndText();
         togglePause();
-        new TWEEN.Tween(spaceShip.position)
-        .to({x: 0, y: 1, z: -1293.5}, 1500)
-        .easing(TWEEN.Easing.Linear.None)
-        .onUpdate(() => {
-            // lobbyVisuals.camera.lookAt(spaceShip.position);
-        })
-        .onComplete(() => {
+        spaceShip.position.set(0, 0, -1293.5);
+        spaceShip.rotation.set(0, 0, 0);
+        setTimeout(() => {
+            toggleBlurDisplay(true);
+            toggleEscapeContainerVisibility();
+            resetOutline();
             spaceShipInt.visible = true;
             showPage('loginPage');
-            lobbyStart = false;
-        })
-        .start();
-        new TWEEN.Tween(spaceShip.rotation)
-        .to({x: 0, y: 0, z: 0}, 1500)
-        .easing(TWEEN.Easing.Linear.None)
-        .start();
+            toggleLobbyStart();
+        }, 50);
+        setTimeout(() => {
+        }, 250);
+    }
+    if (gameState.inGame)
+    {
+        gameState.inGame = false;
+        gameState.inLobby = true;
+        toggleGameStarted();
+        document.querySelector(".gameUI").style.visibility = 'hidden';
+        document.querySelector('.loginPage').style.visibility = 'visible';
+        document.getElementById('c4').style.display = 'block';
+        document.getElementById('c3').style.display = 'none';
+        document.getElementById('c1').style.display = 'none';
+        togglePause();
+        spaceShip.position.set(0, 0, -1293.5);
+        spaceShip.rotation.set(0, 0, 0);
+        setTimeout(() => {
+            toggleBlurDisplay(true);
+            toggleEscapeContainerVisibility();
+            resetOutline();
+            spaceShipInt.visible = true;
+            showPage('loginPage');
+            toggleLobbyStart();
+        }, 50);
+        setTimeout(() => {
+        }, 250);
     }
     // localStorage.setItem('hostLoggedIn', 'false');
 };
