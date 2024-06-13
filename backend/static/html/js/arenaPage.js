@@ -340,9 +340,10 @@ export function createUserInfoObject(tile, i) {
 }
 
 function addEventListenerToTiles() {
+    console.log(userTiles);
     userTiles.forEach((tile, i) => {
         profileAdded[i] = false;
-      tile.HTMLelement.addEventListener('click', function(){
+        tile.HTMLelement.addEventListener('click', function(){
         if (plusClicked && !profileAdded[i]) {
             profileAdded[i] = true;
             playerNb++;
@@ -409,20 +410,42 @@ function removeUserFromMatch(playerId) {
 
 export const userTiles = [];  // Array to store the user tiles
 
-export function RenderAllUsersInList(users) {
+export async function RenderAllUsersInList() {
     const userListBackground = document.getElementById('userlistArenaPage');
     
-    // clean the list before addinmg all the lines
-    // userListBackground.innerHTML = '';
-    
-    userTiles.push({
-        user: null,
-        HTMLelement : document.getElementById("botUserTile"),
+    userListBackground.innerHTML = '';
+    const users = await get_friends_list();
+    console.log(users.user_not_friend);
+    console.log(users.bot);
+
+    users.friends.forEach(user => {
+        // if (user.is_host)
+        //     return;
+        const userTile = document.createElement('div');
+        userTile.classList.add('userTile');
+
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('imgContainer');
+        imgContainer.innerHTML = `<img src="${user.user.profile_picture}">`;
+
+        const textContainer = document.createElement('div');
+        textContainer.classList.add('textContainer');
+        textContainer.textContent = user.user.username;
+
+        userTile.appendChild(imgContainer);
+        userTile.appendChild(textContainer);
+
+        userListBackground.appendChild(userTile);
+        
+        userTiles.push({
+            user: user.user,
+            HTMLelement: userTile,
+        });
     });
-    
-    users.forEach(user => {
-        if (user.is_host)
-            return;
+
+    users.user_not_friend.forEach(user => {
+        // if (user.is_host)
+        //     return;
         const userTile = document.createElement('div');
         userTile.classList.add('userTile');
 
@@ -499,6 +522,7 @@ export function RenderAllUsersTournament(users) {
   }
 
   import { addUserToTournament } from "../../tournament/js/newTournament.js";
+import { get_friends_list } from "./userManagement.js";
 
   export function RenderUserTournament(user) {
     const usernameElement = document.getElementById('player1TournamentUsername');
@@ -512,3 +536,7 @@ const backButtonArenaPage = document.querySelector(".planetBackButton");
 backButtonArenaPage.addEventListener('click', () => {
     togglePlanet();
   });
+
+  export function initArenaPlanet() {
+    RenderAllUsersInList();
+  }

@@ -7,7 +7,7 @@ import logging
 class UserSerializer(serializers.ModelSerializer):
 	class Meta():
 		model = User
-		fields = ['username', 'password']
+		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'bio', 'is_host']
 
 error_codes = {
     "length_exceeded": "Username must contain 12 characters maximum.",
