@@ -1,6 +1,6 @@
 import { getCookie } from './loginPage.js';
 import { getTranslatedText} from "./translatePages.js";
-import { RenderUserMatch, RenderUserTournament, RenderAllUsersInList, RenderAllUsersTournament} from "./arenaPage.js";
+import { RenderHostMatch, RenderUserTournament, RenderAllUsersInList, RenderAllUsersTournament} from "./arenaPage.js";
 
 export function updateUserGraphicMode(graphicMode) {
 	const token = localStorage.getItem('host_auth_token');
@@ -133,7 +133,7 @@ export function getProfileInfo() {
                 <div class="basicStats"> ${getTranslatedText('winLoseText3')} : 1</div>
                 <div class="basicStats"> ${getTranslatedText('winLoseText4')} : 1</div>
             `;
-            RenderUserMatch(data.profile_info);
+            RenderHostMatch(data.profile_info);
             RenderUserTournament(data.profile_info);
 		})
 		.catch(error => {
