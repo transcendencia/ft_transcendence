@@ -15,7 +15,6 @@ import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
-import { userList } from './userManagement.js';
 import { returnToHost } from './userPage.js'
 
 let cubeLoader = new THREE.CubeTextureLoader();
@@ -225,8 +224,7 @@ function disconnectLoggedGuest(userInfoCont) {
 }
 
 function displayUsersLogged() {
-    if (!userList)
-        return;
+
     userList.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
@@ -435,7 +433,7 @@ document.addEventListener('keydown', (event) => {
         // if (token) {
             showPage('none');
             startAnimation();
-            displayUsersLogged();
+            // displayUsersLogged();
         // }
         // localStorage.clear();
     }

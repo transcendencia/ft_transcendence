@@ -1,6 +1,6 @@
 import { getCookie } from './loginPage.js';
 import { getTranslatedText} from "./translatePages.js";
-import { RenderUserMatch, RenderUserTournament, RenderAllUsersInList, RenderAllUsersTournament} from "./arenaPage.js";
+import { RenderHostMatch, RenderUserTournament, RenderAllUsersInList, RenderAllUsersTournament} from "./arenaPage.js";
 
 export function updateUserGraphicMode(graphicMode) {
 	const token = localStorage.getItem('host_auth_token');
@@ -65,6 +65,15 @@ export function updateUserStatus(status) {
     });
 };
 
+// export  function getUserStatus(userId) {
+//     return fetch('get_status/${userId}', {
+//         method: 'GET',
+//         headers: {
+//             'Content-Type':
+//         }
+//     })
+// }
+
 export async function get_friends_list() {
     const token = localStorage.getItem('host_auth_token');
     
@@ -76,21 +85,17 @@ export async function get_friends_list() {
                 'X-CSRFToken': getCookie('csrftoken')
             }
         });
-
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
 
         const data = await response.json();
-        console.log("get_frinds_list", data);
         return data;
     } catch (error) {
         console.error('Error:', error);
         throw error;
     }
 }
-
-export let userList;
 
 export function get_user_list() {
     const token = localStorage.getItem('host_auth_token');
@@ -104,8 +109,6 @@ export function get_user_list() {
     })
     .then(response => response.json())
     .then(data => {
-        userList = data;
-        RenderAllUsersInList(data);
         RenderAllUsersTournament(data);
     })
     .catch(error => {
@@ -138,7 +141,7 @@ export function getProfileInfo() {
                 <div class="basicStats"> ${getTranslatedText('winLoseText3')} : 1</div>
                 <div class="basicStats"> ${getTranslatedText('winLoseText4')} : 1</div>
             `;
-            RenderUserMatch(data.profile_info);
+            RenderHostMatch(data.profile_info);
             RenderUserTournament(data.profile_info);
 		})
 		.catch(error => {
@@ -162,6 +165,49 @@ export function send_request(username) {
         if (!response.ok) {
             throw new Error('Erreur lors de la friendrequest');
         }
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+}
+
+export async function accept_friend_request(id) {
+    const token = localStorage.getItem('host_auth_token');
+    console.log("id", id);
+    await fetch('accept_friend_request/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({request_id:  id})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la modification de la langue');
+         }
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+  }
+
+export async function delete_friend_request(id) {
+    const token = localStorage.getItem('host_auth_token');
+    await fetch('reject_friend_request/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({request_id:  id})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la modification de la langue');
+         }
     })
     .catch(error => {
         console.error('Erreur :', error);

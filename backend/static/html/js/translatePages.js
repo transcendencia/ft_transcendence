@@ -155,6 +155,32 @@ function translateUserPageTexts() {
     backButton.textContent = getTranslatedText('backButton');   
 }
 
+const changeInfoText = document.getElementById('changeInfo');
+const changeUsernameInput = document.getElementById('changeUsernameInput');
+const changePasswordInput = document.getElementById('changePasswordInput');
+const changeConfirmPasswordInput = document.getElementById('changeConfirmPasswordInput');
+const changeProfilePicture = document.getElementById('changeProfilePicture');
+const chooseProfilePic = document.getElementById('chooseProfilePic');
+const deleteAccountButton = document.getElementById('deleteAccountButton');
+const submitInfoButton = document.getElementById('submitInfoButton');
+const validateDeleteAccountText = document.getElementById('validateDeleteAccountText');
+const buttonValidateDelete = document.getElementById('buttonValidateDelete');
+const buttonCancelDelete = document.getElementById('buttonCancelDelete');
+
+function translateModifyPageTexts(){
+    changeInfoText.textContent = getTranslatedText('changeInfoText');
+    changeUsernameInput.textContent = getTranslatedText('changeUsernameInput');
+    changePasswordInput.textContent = getTranslatedText('password');
+    changeConfirmPasswordInput.textContent = getTranslatedText('confimPassword');
+    changeProfilePicture.textContent = getTranslatedText('changeProfilePicture');
+    chooseProfilePic.textContent = getTranslatedText('chooseProfilePic');
+    deleteAccountButton.textContent = getTranslatedText('deleteAccountButton');
+    submitInfoButton.textContent = getTranslatedText('submitInfoButton');
+    validateDeleteAccountText.textContent = getTranslatedText('validateDeleteAccountText');
+    buttonValidateDelete.textContent = getTranslatedText('buttonValidateDelete');
+    buttonCancelDelete.textContent = getTranslatedText('buttonCancelDelete');
+}
+
 export function TranslateAllTexts() {
     translateArenaPageTexts();
     translateTournamentPageTexts();
@@ -162,4 +188,5 @@ export function TranslateAllTexts() {
     translateEscapePageTexts();
     translateRGPDTexts();
     translateUserPageTexts();
+    translateModifyPageTexts()
 }
