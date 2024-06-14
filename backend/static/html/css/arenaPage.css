@@ -58,10 +58,10 @@
 .textContainer {
     margin-left: -5px;
     border-radius: 5px;
-    border: 4px solid rgba(55, 118, 255, 0.39);
+    border: 4px solid rgba(55, 118, 255, 0.30);
     border-left: none;
     background-color: #00000031;
-    font-size: 15px;
+    font-size: 12px;
     font-family: "space";
     text-align: center;
     color: #3777ff;
@@ -70,6 +70,15 @@
     align-items: center;
     height: 95%;
     width: 80%;
+    pointer-events: none;
+}
+
+.hoverable {
+    pointer-events: auto !important;
+}
+
+.textContainer:hover {
+    background-color: rgba(90, 142, 255, 0.500);
 }
 
 .imgContainer {
@@ -82,11 +91,13 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    z-index: 2;
 }
 
 .imgContainer img{
     height: 100%;
     width: auto;
+    object-fit: cover;
 }
 
 .plusPlayer {
@@ -187,9 +198,9 @@
 
 .optionButton {
     border-radius: 5px;
-    margin: 25px;
-    height: 90%;
-    width: 30%;
+    margin: 5px 0px;
+    height: 85%;
+    width: 33%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -206,7 +217,7 @@
     align-items: center;
     font-family: 'Space';
     height: 20%;
-    width: 75%;
+    width: 85%;
     font-size: 18px;
     color: white;
     z-index: 99;
@@ -217,6 +228,16 @@
     width: auto;
     cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
 
+}
+
+.arenaBotTile {
+    color: rgb(164, 67, 255);
+    border-color: rgb(164, 67, 255);
+    background-color: rgba(164, 67, 255, 0.257);
+}
+
+.arenaBotTile:hover {
+    background-color: rgba(164, 67, 255, 0.500);
 }
 
 .buttonCont {
@@ -233,7 +254,7 @@
     align-items: center;
     text-align: center;
     height: 80%;
-    width: 65%;
+    width: 70%;
 }
 
 .choosePlayerCont {
