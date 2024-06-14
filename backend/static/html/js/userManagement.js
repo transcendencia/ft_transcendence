@@ -65,6 +65,14 @@ export function updateUserStatus(status) {
     });
 };
 
+// export  function getUserStatus(userId) {
+//     return fetch('get_status/${userId}', {
+//         method: 'GET',
+//         headers: {
+//             'Content-Type':
+//         }
+//     })
+// }
 
 export async function get_friends_list() {
     const token = localStorage.getItem('host_auth_token');
