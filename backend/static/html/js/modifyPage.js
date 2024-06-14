@@ -1,5 +1,8 @@
 import { getCookie } from './loginPage.js';
 import { getProfileInfo } from './userManagement.js';
+
+let anonymousStatus;
+
 var submitChangeButton = document.querySelector(".submitChangeButton");
 submitChangeButton.addEventListener("click", handleChangeInfoForm);
 
@@ -8,7 +11,8 @@ function handleChangeInfoForm(event) {
 
   var form = document.getElementById("userInfoForm");
   var formData = new FormData(form);
-
+  formData.append('anonymousStatus', anonymousStatus)
+  
   const token = localStorage.getItem('host_auth_token');
   fetch('change_profile_info/', {
     method: 'POST',
@@ -75,9 +79,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
   toggleSwitch.addEventListener('click', function() {
       this.classList.toggle('active');
       if (this.classList.contains('active')) {
-          console.log('Switch is ON');
+        anonymousStatus = true;
+        console.log(anonymousStatus);
       } else {
-          console.log('Switch is OFF');
+          anonymousStatus = false;
+          console.log(anonymousStatus);
       }
   });
 });

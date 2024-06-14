@@ -89,7 +89,7 @@ def return_request(request):
 @permission_classes([IsAuthenticated])
 def return_friends_list(request):
     friends_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
-    print("je suis dans return friend list")
+    # print("je suis dans return friend list")
     received_request_list = []
     friends = []
     sent_request_list = []
@@ -125,7 +125,7 @@ def return_friends_list(request):
     
     all_users = User.objects.exclude(id__in=user_in_list).exclude(id=request.user.id).exclude(username="bot")
     other_user_list = UserListSerializer(all_users, many=True).data
-    print(other_user_list)
+    # print(other_user_list)
     # user_not_friend = other_user_list + received_request_list + User.object.get(username="bot")
     # additional_user = User.objects.get(username="extra_user")
 
