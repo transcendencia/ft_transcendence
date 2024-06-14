@@ -9,6 +9,9 @@ from rest_framework.response import Response
 from ..models import User
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
 
+from .words import colors, items
+
+import random
 #--------------------LANGUAGE--------------------
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -69,11 +72,21 @@ def get_profile_info(request):
 @permission_classes([IsAuthenticated])
 def change_profile_info(request):
     if request.method == 'POST':
-        print(request.data)
         # copier data dans un nouveau truc pour pouvoir changer  les valeurs (bien changer les endroit ou est appeler request.data par le nom de la nouvele variables)
         # checker request.data.get('anonymousStatus') == 'true'
 
-        serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
+
+        print(request.data)
+        data = request.data.copy()
+        #HERE GENERATE A RANDOM WORD
+        #PRINT IT 
+        #if User.objects.filter(username=value).exists():
+        random_color = random.choice(colors)
+        print(random_color)
+        #delete that because we can Have error 500
+        data.pop('anonymousStatus')
+
+        serializer = UpdateInfoSerializer(instance=request.user, data=data)
         if 'profile-pic' in request.FILES:
             # if request.user.profile_picture.url != 'media/default.png':
             #       print("coucou")

@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
       this.classList.toggle('active');
       if (this.classList.contains('active')) {
         anonymousStatus = true;
+        console.log("IN MODIFY PAGE .JS")
         console.log(anonymousStatus);
       } else {
           anonymousStatus = false;

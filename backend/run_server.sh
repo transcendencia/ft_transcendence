@@ -11,9 +11,9 @@ then
     echo "PostgreSQL started"
 fi
 
-openssl genpkey -algorithm RSA -out privkey.pem -aes256
-openssl req -new -key privkey.pem -out cert.csr
-openssl x509 -req -days 365 -in cert.csr -signkey privkey.pem -out fullchain.pem
+#openssl genpkey -algorithm RSA -out privkey.pem -aes256
+#openssl req -new -key privkey.pem -out cert.csr
+#openssl x509 -req -days 365 -in cert.csr -signkey privkey.pem -out fullchain.pem
 
 
 # python manage.py makemigrations
