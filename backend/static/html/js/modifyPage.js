@@ -68,3 +68,16 @@ function deleteAccount() {
 		});
     })
 }
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  const toggleSwitch = document.getElementById('toggleSwitch');
+
+  toggleSwitch.addEventListener('click', function() {
+      this.classList.toggle('active');
+      if (this.classList.contains('active')) {
+          console.log('Switch is ON');
+      } else {
+          console.log('Switch is OFF');
+      }
+  });
+});

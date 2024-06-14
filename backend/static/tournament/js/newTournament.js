@@ -1,7 +1,6 @@
 import { createGame } from "./gameData.js";
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { userTilesTournament } from "../../html/js/arenaPage.js";
 import { createUserInfoObject } from "../../html/js/arenaPage.js";
 import { displayRemovePlayerVisual } from "../../html/js/arenaPage.js";
 import { resetToPlusButton } from "../../html/js/arenaPage.js";
@@ -11,7 +10,10 @@ import { purple } from "../../html/js/arenaPage.js";
 import { grey } from "../../html/js/arenaPage.js";
 import { lightGrey } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
-import { getProfileInfo, get_user_list } from "../../html/js/userManagement.js";
+import { getProfileInfo } from "../../html/js/userManagement.js";
+import { createUserTile } from "../../html/js/arenaPage.js";
+import { get_friends_list } from "../../html/js/userManagement.js";
+import { switchToGame } from "../../html/js/arenaPage.js";
 
 //affichage info
 
@@ -99,7 +101,29 @@ buttonHeaders.forEach((buttonHeader, index) => {
     });
 });
 
+export function RenderUserTournament(user) {
+    const usernameElement = document.getElementById('player1TournamentUsername');
+    usernameElement.textContent = user.username;
+    const pictureElement = document.getElementById('player1TournamentPicture');
+    pictureElement.src = user.profile_picture;
+    addUserToTournament(user.id, user.username, user.profile_picture);
+  }
+
 let plusButtons = document.querySelectorAll(".plusPlayerTournament");
+const userTilesTournament = [];  // Array to store the user tiles
+
+export async function RenderAllUsersTournament() {
+    const userListBackground = document.getElementById('userlistTournamentPage');
+    
+    userListBackground.innerHTML = '';
+    userTilesTournament.length = 0;
+    const users = await get_friends_list();
+
+    createUserTile(users.bot, 'Bot', userListBackground, userTilesTournament);
+    users.friends.forEach(obj => {createUserTile(obj.user, 'Friend', userListBackground, userTilesTournament)});
+    users.user_not_friend.forEach(user => {createUserTile(user, '', userListBackground, userTilesTournament)});
+    addEventListenerToTilesTournament();
+}
 
 export function resetTournament() {
   document.querySelectorAll('.before-launch').forEach(function(el) {
@@ -120,15 +144,12 @@ export function resetTournament() {
   thirdPlayerMode = false;
   plusClickedTournament = false;
   getProfileInfo();
-  userTilesTournament.length = 0;
-  get_user_list();
   resetPlusButton();
   resetBracket();
   plusButtons = document.querySelectorAll(".plusPlayerTournament");
   plusButtons.forEach(function(otherPlusButton) {
     otherPlusButton.style.pointerEvents = 'auto';
   });
-  addEventListenersToPlusButtons();
 }
 
 //add user to tournaments
@@ -189,11 +210,7 @@ function resetAddingModeTournament() {
 
 function setAddingModeTournament(plusButton, i) {
   userlistTitle.textContent = getTranslatedText('chooseProfile');
-  if (i === 0) {
-      plusClickedTournament = 1;
-      profileAddedToTournament[botID] = true;
-  }
-  else plusClickedTournament = i + 1;
+  plusClickedTournament = i + 1;
   plusButtons.forEach(function(otherPlusButton) {
       if (otherPlusButton !== plusButton) {
           otherPlusButton.style.pointerEvents = 'none';
@@ -228,6 +245,11 @@ export function addEventListenersToPlusButtons() {
   });
 }
 
+export function initTournamentPlanet(){
+  RenderAllUsersTournament();
+  addEventListenersToPlusButtons();
+}
+
 export function resetPlusButton() {
   let addPlayerElements = document.querySelectorAll('.addPlayer');
 
@@ -249,7 +271,7 @@ export function addEventListenerToTilesTournament() {
         if (plusClickedTournament && !profileAddedToTournament[i]) {
           profileAddedToTournament[i] = true;
           playerNb++;
-          const newObj = createUserInfoObject(tile.HTMLelement, i);
+          const newObj = createUserInfoObject(tile, i);
           console.log("ask for alias");
           console.log("user add:", tile.user);          
           addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
@@ -331,9 +353,11 @@ export function addEventListenerToTilesTournament() {
 
   function getRandomNumber(tournamentPlayer, player1, player2) {
     let number;
+    let username;
     do {
         number = Math.floor(Math.random() * tournamentPlayer.length);
-    } while (tournamentPlayer[number].username === player1 || tournamentPlayer[number].username === player2);
+        username = tournamentPlayer[number].username;
+    } while (username === player1 || username === player2 || username === "bot");
     return number;
   }
 
@@ -382,6 +406,12 @@ export function addEventListenerToTilesTournament() {
         ]);
       }
       else{
+        if (playersInTournament[i].username === "bot"){
+          console.log("bot first");
+          const tmp = playersInTournament[i];
+          playersInTournament[i] = playersInTournament[i + 1];
+          playersInTournament[i + 1] = tmp;
+        }
         if (thirdPlayerMode){
           let thirdPlayer = getRandomNumber(tournamentPlayer, playersInTournament[i].username, playersInTournament[i + 1].username);
           currentMatch.push([
@@ -445,13 +475,26 @@ export function addEventListenerToTilesTournament() {
   //launch the tournament when there is the right amount of players
   //create the matchup / print the bracket structure
 
+  function botInTournament(tournamentPlayer){
+    for (let player of tournamentPlayer) {
+      if (player.username === "bot")
+          return 1;
+    }
+    return 0;
+  }
+
   launchTournamentElement.addEventListener("click", function() {
     if (tournamentPlayer.length < 3){
       const ul = document.getElementById("error_msg");
       ul.textContent = "Not enough players";
       return ;
     }
-    if (tournamentPlayer.length > 8){
+    else if (tournamentPlayer.length < 4 && botInTournament(tournamentPlayer)){
+      const ul = document.getElementById("error_msg");
+      ul.textContent = "4 players minimum to play with a bot";
+      return ;
+    }
+    else if (tournamentPlayer.length > 8){
       const ul = document.getElementById("error_msg");
       ul.textContent = "Too many players";
       return ;
