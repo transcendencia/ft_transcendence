@@ -151,8 +151,8 @@ const chooseProfilePic = document.getElementById('chooseProfilePic');
 const deleteAccountButton = document.getElementById('deleteAccountButton');
 const submitInfoButton = document.getElementById('submitInfoButton');
 const validateDeleteAccountText = document.getElementById('validateDeleteAccountText');
-const buttonValidateDelete = document.getElementById('buttonValidateDelete');
-const buttonCancelDelete = document.getElementById('buttonCancelDelete');
+const deleteAccountConfirmation = document.getElementById('deleteAccountConfirmation');
+const deleteAccountCancel = document.getElementById('deleteAccountCancel');
 
 function translateModifyPageTexts(){
     changeInfoText.textContent = getTranslatedText('changeInfoText');
@@ -164,8 +164,8 @@ function translateModifyPageTexts(){
     deleteAccountButton.textContent = getTranslatedText('deleteAccountButton');
     submitInfoButton.textContent = getTranslatedText('submitInfoButton');
     validateDeleteAccountText.textContent = getTranslatedText('validateDeleteAccountText');
-    buttonValidateDelete.textContent = getTranslatedText('buttonValidateDelete');
-    buttonCancelDelete.textContent = getTranslatedText('buttonCancelDelete');
+    deleteAccountConfirmation.textContent = getTranslatedText('deleteAccountConfirmation');
+    deleteAccountCancel.textContent = getTranslatedText('deleteAccountCancel');
 }
 
 export function TranslateAllTexts() {

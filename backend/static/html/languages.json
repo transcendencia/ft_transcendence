@@ -79,8 +79,8 @@
         "deleteAccountButton": "Delete Account",
         "submitInfoButton": "Submit",
         "validateDeleteAccountText": "All data will be permanently lost. Are you sure you want to delete your account?",
-        "buttonValidateDelete": "Yes",
-        "buttonCancelDelete": "No"
+        "deleteAccountConfirmation": "Yes",
+        "deleteAccountCancel": "No"
     },
     "es": {
         "login": "Usuario",
@@ -161,8 +161,8 @@
         "deleteAccountButton": "Borrar cuenta",
         "submitInfoButton": "Entregar",
         "validateDeleteAccountText": "Todos los datos se perderán permanentemente. ¿Estás seguro de que quieres eliminar tu cuenta?",
-        "buttonValidateDelete": "Si",
-        "buttonCancelDelete": "No"
+        "deleteAccountConfirmation": "Si",
+        "deleteAccountCancel": "No"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -241,7 +241,7 @@
         "deleteAccountButton": "Supprimer le compte",
         "submitInfoButton": "Soumettre",
         "validateDeleteAccountText": "Toutes les données seront définitivement perdues. Êtes-vous sûr de vouloir supprimer votre compte ?",
-        "buttonValidateDelete": "Oui",
-        "buttonCancelDelete": "Non"
+        "deleteAccountConfirmation": "Oui",
+        "deleteAccountCancel": "Non"
     }
 }

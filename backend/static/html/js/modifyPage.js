@@ -12,7 +12,7 @@ function handleChangeInfoForm(event) {
   var form = document.getElementById("userInfoForm");
   var formData = new FormData(form);
   formData.append('anonymousStatus', anonymousStatus)
-  
+
   const token = localStorage.getItem('host_auth_token');
   fetch('change_profile_info/', {
     method: 'POST',
@@ -48,27 +48,28 @@ function deleteAccount() {
     // deconnecter tout les guest
     // delete account dans la db
     document.querySelector(".validateDelete").classList.toggle("showRectangle");
-	blockingPanel.style.visibility = 'visible';
-    document.getElementById("deleteAccountCancel").addEventListener("click", function() {
-		document.querySelector(".validateDelete").classList.toggle("showRectangle");
-		blockingPanel.style.visibility = 'hidden';
+    blockingPanel.style.visibility = 'visible';
+
+    document.getElementById('deleteAccountCancel').addEventListener("click", function() {
+		  document.querySelector(".validateDelete").classList.toggle("showRectangle");
+		  blockingPanel.style.visibility = 'hidden';
     })
 
-    document.getElementById("deleteAccountConfirmation").addEventListener("click", function() {
-		const token = localStorage.getItem('host_auth_token');
-		fetch('delete_account/', {
-		  method: 'POST',
-		  headers: {
-			'Authorization': `Token ${token}`,
-			'X-CRSFToken': getCookie('crsftoken')
-		  },
-		})
-		.then(response => {
-		  blockingPanel.style.visibility = 'hidden';
-		  return response.json();
-		})
-		.catch(error => {
-		  console.error('There was a problem with the delete_account:', error);
+    document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
+		  const token = localStorage.getItem('host_auth_token');
+		  fetch('delete_account/', {
+		    method: 'POST',
+		    headers: {
+			  'Authorization': `Token ${token}`,
+			  'X-CRSFToken': getCookie('crsftoken')
+		    },
+		  })
+		  .then(response => {
+		    blockingPanel.style.visibility = 'hidden';
+		    return response.json();
+		  })
+		  .catch(error => {
+		    console.error('There was a problem with the delete_account:', error);
 		});
     })
 }
