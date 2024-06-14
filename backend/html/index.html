@@ -194,10 +194,6 @@ confidentiality policy
         <div class="leftColumn">
           <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
           <div id="userlistArenaPage" class="userlistBackground">
-            <div id="botUserTile" class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
-              <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
-              <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
-            </div>
           </div>
         <div id="arenaBackButton" class="planetBackButton">Back</div>
         </div>
@@ -362,35 +358,38 @@ confidentiality policy
 
               <form id="userInfoForm" class="modifyPage"> <!--Je modifie les info ici-->
                 <div id="changeInfo" style="font-size: 13px; font-family: 'space'; color: white">Only fill in information you want to change</div>
+                <div class="switch" id="toggleSwitch">
+                  <div class="slider"></div>
+                </div>  
                   <div class="changeInfoBar">
-                      <input name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
+                      <input id="changeUsernameInput" name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
                     </div>
                     <div class="changeInfoBar">
-                      <input name="bio" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Bio" maxlength="28"></input>
+                      <input id="changeBioInput" name="bio" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Bio" maxlength="28"></input>
                     </div>
                     <div class="changeInfoBar">
-                      <input name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Password"></input>
+                      <input id="changePasswordInput"name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Password"></input>
                     </div>
                     <div class="changeInfoBar">
-                      <input name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password"></input>
+                      <input id="changeConfirmPasswordInput" name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password"></input>
                     </div>
                    <div class="profilePicContainer">
-                      <div id="changeInfo" class= "changeProfilePicture">Photo de profil:</div>
+                      <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
-                      <label for="profile-pic"  class="profilePicButton">Choose file</label>
+                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
                     </div>
                     <div id= "changeInfoMessage" class="changeInfoMessage"></div>
                     <div class="buttonContainer">
-                      <div class="deleteAccountButton">Delete Account</div>
-                      <div class="submitChangeButton">Submit</div>
+                      <div id="deleteAccountButton"class="deleteAccountButton">Delete Account</div>
+                      <div id="submitInfoButton" class="submitChangeButton">Submit</div>
                     </div>
                 </form>
             </div>
             <div class="validateDelete">
-              <div class="validateDeleteText">All data will be permanently lost. Are you sure you want to delete your account?</div>
+              <div id="validateDeleteAccountText" class="validateDeleteText">All data will be permanently lost. Are you sure you want to delete your account?</div>
               <div class="buttonContainer">
-                <div class="validateDeleteButton" id="deleteAccountConfirmation">Yes</div>
-                <div class="validateDeleteButton" id="deleteAccountCancel">No</div>
+                <div id="buttonValidateDelete" class="validateDeleteButton" id="deleteAccountConfirmation">Yes</div>
+                <div id="buttonCancelDelete" class="validateDeleteButton" id="deleteAccountCancel">No</div>
               </div>
             </div>
           <div id="blockingPanel" class="blockingPanel"></div>

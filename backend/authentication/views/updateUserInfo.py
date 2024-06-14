@@ -44,9 +44,11 @@ def update_status(request):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_status(request):
+def get_status_host(request):
   user = request.user
   return Response({'status': user.status}, status=200)
+
+# def get_status()
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -68,6 +70,9 @@ def get_profile_info(request):
 def change_profile_info(request):
     if request.method == 'POST':
         print(request.data)
+        # copier data dans un nouveau truc pour pouvoir changer  les valeurs (bien changer les endroit ou est appeler request.data par le nom de la nouvele variables)
+        # checker request.data.get('anonymousStatus') == 'true'
+
         serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
         if 'profile-pic' in request.FILES:
             # if request.user.profile_picture.url != 'media/default.png':

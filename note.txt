@@ -36,3 +36,11 @@ var intervalID = setInterval(updateInfo, 5000); -> a rajouter dans le fecth pour
     clearInterval(intervalID);
 
 -> Je fait faire une fonction startIntervalle et une fonction stopIntervalle qui vont etre appeler dans des event listener
+<<<<<<< HEAD
+=======
+
+1- changer le faite que l'on passe direct par data pour les liste et les mettre dans de variable
+2 - mettre la liste other_user
+3 - enlever la frind request
+Est ce que la liste des user marche dans l'arena??
+>>>>>>> origin/friendlist
