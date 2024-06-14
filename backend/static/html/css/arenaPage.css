@@ -213,6 +213,7 @@
     border: 5px solid #3777ff;
     background-color: #000f61b2;
     display: flex;
+    text-align: center;
     justify-content: space-between;
     align-items: center;
     font-family: 'Space';

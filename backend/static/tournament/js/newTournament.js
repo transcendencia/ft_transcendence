@@ -1,21 +1,10 @@
-import { createGame } from "./gameData.js";
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { createUserInfoObject } from "../../html/js/arenaPage.js";
-import { displayRemovePlayerVisual } from "../../html/js/arenaPage.js";
-import { resetToPlusButton } from "../../html/js/arenaPage.js";
-import { resetUserInfoVisual } from "../../html/js/arenaPage.js";
-import { blue } from "../../html/js/arenaPage.js";
-import { purple } from "../../html/js/arenaPage.js";
-import { grey } from "../../html/js/arenaPage.js";
-import { lightGrey } from "../../html/js/arenaPage.js";
+import { createUserInfoObject, displayRemovePlayerVisual, resetToPlusButton, resetUserInfoVisual, createUserTile, switchToGame } from "../../html/js/arenaPage.js";
+import { blue, purple, grey, lightGrey } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
-import { getProfileInfo } from "../../html/js/userManagement.js";
-import { createUserTile } from "../../html/js/arenaPage.js";
-import { get_friends_list } from "../../html/js/userManagement.js";
-import { switchToGame } from "../../html/js/arenaPage.js";
+import { getProfileInfo, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
 
-//affichage info
 
 export let gamemodeCounterTournament = 0;
 export let mapCounterTournament = 0;
@@ -486,17 +475,20 @@ export function addEventListenerToTilesTournament() {
   launchTournamentElement.addEventListener("click", function() {
     if (tournamentPlayer.length < 3){
       const ul = document.getElementById("error_msg");
-      ul.textContent = "Not enough players";
+      // ul.textContent = "Not enough players";
+      ul.textContent = getTranslatedText('ErrorMinus3');
       return ;
     }
     else if (tournamentPlayer.length < 4 && botInTournament(tournamentPlayer)){
       const ul = document.getElementById("error_msg");
-      ul.textContent = "4 players minimum to play with a bot";
+      // ul.textContent = "4 players minimum to play with a bot";
+      ul.textContent = getTranslatedText('ErrorMinus4');
       return ;
     }
     else if (tournamentPlayer.length > 8){
       const ul = document.getElementById("error_msg");
-      ul.textContent = "Too many players";
+      // ul.textContent = "Too many players";
+      ul.textContent = getTranslatedText('ErrorTooMany');
       return ;
     }
     tournamentState = 1;
@@ -517,10 +509,10 @@ export function addEventListenerToTilesTournament() {
     document.querySelectorAll('.before-launch').forEach(function(el) {
       el.style.display = 'none';
    });
-    launchMatchElement.style.display = "inline";
+    launchMatchElement.style.display = "flex";
     bracketElement.style.display = "inline";
-    nextMatchElement.style.display = "inline";
-    matchElement.style.display = "inline";
+    nextMatchElement.style.display = "flex";
+    matchElement.style.display = "flex";
     printBracket(tournamentPlayer, currentMatch, thirdPlayerMode);
   });
 
@@ -559,11 +551,22 @@ export function addEventListenerToTilesTournament() {
     }
     updateBracket(winner_name, currentMatch, nbMatch, round);
     nextMatch();
-    gameState.arena.game.resetUsers();
+    if (gameState.arenaCreated) //if the game has never been launch
+      gameState.arena.game.resetUsers();
   }
 
   function findWinner(){
-    if (currentMatch[nbMatch][1]){
+    const player1Status = getUserStatus(currentMatch[nbMatch][0].myRef.playerId);
+    const player2Status = getUserStatus(currentMatch[nbMatch][1].myRef.playerId);
+    if (player1Status === undefined){ //if (player1Status === undefined || player1Status === "offline"){
+      console.log("player1Status", player1Status);
+      afterGameTournament(0, 3);
+    }
+    else if (player2Status === undefined){ //if (player2Status === undefined || player2Status === "offline"){
+      console.log("player2Status", player2Status);
+      afterGameTournament(3, 0);
+    }
+    else if (currentMatch[nbMatch][1]){
       switchToGame(gameState, currentMatch[nbMatch][0].myRef, currentMatch[nbMatch][1].myRef, currentMatch[nbMatch][4].myRef, true);
     }
     else{
