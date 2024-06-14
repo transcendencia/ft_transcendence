@@ -181,7 +181,7 @@ function camMovement() {
         camera.rotation.y = spaceShip.rotation.y - Math.PI;
     }
     else {
-        if (!planetInRange || spaceShip.position.z < -1293)
+        if (!planetInRange)
             return;
         const offset = 500 * (planetInRange.scale / 100);
         const SSoffset = offset - distance;   

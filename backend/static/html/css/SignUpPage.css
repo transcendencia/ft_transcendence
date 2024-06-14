@@ -17,8 +17,8 @@
 }
 
 .show {
-    visibility: visible; /* Show the element */
-    opacity: 1;
+    visibility: visible !important; /* Show the element */
+    opacity: 1 !important;
 }
 
 .signUpHeader {

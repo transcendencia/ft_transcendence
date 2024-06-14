@@ -214,7 +214,7 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
     // prepare for initialization
     gameState.loading = true;
     gameState.inLobby = false;
-    setTimeout(() => {    
+    setTimeout(() => {
       gameState.arena.game.hasToBeInitialized = true;
       // choose gameMode
       if (isTournament){

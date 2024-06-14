@@ -460,7 +460,26 @@ document.addEventListener('keyup', (event) => {
 
 const blueBar = document.getElementsByClassName("bluebar");
 const scoreUI = document.getElementsByClassName("gameUI");
+const winningScreen = document.querySelector('.winningScreen');
 const thirdPlayerUI = document.getElementsByClassName("profileCont3");
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const backToLobbyButton = document.getElementById('backToLobbyButton');
+
+    backToLobbyButton.addEventListener('click', () => {
+        // Your logic when the button is pressed
+        gameState.arena.displayBackPanel();
+        // Example: Redirect to lobby page
+        // window.location.href = 'lobby.html';
+    });
+});
+
+function showWinningScreen()
+{
+    const winningScreen = document.querySelector('.winningScreen');
+    winningScreen.classList.add('visible');
+}
+
 function cameraDebug()
 {
     console.log("\n\ncamera.position.x =  " + camera.position.x);
@@ -790,6 +809,7 @@ class Arena extends THREE.Mesh {
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
             this.bot.activateBot();
+
             this.game.isPlaying = true;
             if (!this.game.thirdPlayer)
             {
@@ -991,6 +1011,8 @@ class Arena extends THREE.Mesh {
     }
     resetPositions(loserPaddle, winnerPaddle, leftScored, whichGlitch)
     {
+        if (this.game.isOver)
+            return;
         let duration = 1150;
 
         this.thirdPlayer.deactivateThirdPlayer();
@@ -1002,7 +1024,6 @@ class Arena extends THREE.Mesh {
             tmpCamera = cameraLeft;
         else
             tmpCamera = camera;
-        scoreUI[0].style.opacity = 0;
         // BALL UP
         let ballUp = new TWEEN.Tween(this.ball.position)
         .to({y: (this.ball.position.y + this.paddleLeft.height * 5), z: winnerPaddle.position.z}, 1500)
@@ -1055,13 +1076,9 @@ class Arena extends THREE.Mesh {
             this.paddleRight.particles.isActive = false;
             this.ball.particles.isActive = false;
             this.idleCameraAnimation();
-            this.resetUI();
-            
-            // display back the panel
-            this.gameState.inGame = false;
-            this.gameState.inLobby = true;
+            const winningScreen = document.querySelector('.winning-screen');
+            winningScreen.classList.add('visible');
             this.bot.deactivateBot();
-            endGame(this.game.tournamentGame);
         });
         let targetLight = loserPaddle.defaultLight;
         if (this.getCurrentMap() === this.dragonMap)
@@ -1083,6 +1100,18 @@ class Arena extends THREE.Mesh {
         this.ball.isRolling = false;
         this.ball.speedZ = 0;
         this.ball.speedX = 0;
+    }
+    displayBackPanel()
+    {
+        this.resetUI();
+        this.gameState.inGame = false;
+        this.gameState.inLobby = true;
+        endGame(this.game.tournamentGame);
+        const winningScreen = document.querySelector('.winning-screen');
+        winningScreen.classList.remove('visible');
+        scoreUI[0].style.opacity = 0;
+        this.game.isOver = false;
+        this.isBeingReset = false;
     }
 }
 
@@ -3260,6 +3289,8 @@ class Bot {
         this.gui.add(this, 'powerUpEnabled', true, false).name('Power Up Enabled').onChange((value) => {
             this.powerUpEnabled = value;
         });
+        //close gui
+        this.gui.close();
     }
     deactivateGui() {
         this.gui.destroy();
@@ -3320,7 +3351,7 @@ class Bot {
         }
         else
             keyDown[this.ownPaddle.chargeKey] = false;
-        if (this.dashEnabled && this.isHoldingBall && this.difficulty === "hard")
+        if (this.dashEnabled && this.isHoldingBall)
         {
             // dash left if paddle is on the right side of the board
             if (this.ownPaddle.position.x > 0)
