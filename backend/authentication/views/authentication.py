@@ -64,6 +64,11 @@ def signup(request):
     user = User(username=user_data['username'], language=new_language)
     user.set_password(user_data['password'])
     user.save()
+    users = User.objects.all().order_by('id')
+
+    # Imprimer l'id et le username de chaque utilisateur
+    for user in users:
+      print(f"ID: {user.id}, Username: {user.username}")
     return Response({'status': "success", "msg_code": "successfulSignup"}, status=status.HTTP_200_OK)
   first_error = next(iter(serializer.errors.values()))[0]
   first_error_code = first_error.code 
