@@ -74,6 +74,29 @@ export function updateUserStatus(status) {
 //     })
 // }
 
+export function getUserStatus(userId) {
+    const token = localStorage.getItem('host_auth_token');
+    fetch(`get_status/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur HTTP ' + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Utilisateur trouvé :', data.status);
+    })
+    .catch(error => {
+        console.error('Erreur lors de la récupération du status :', error.message);
+    });
+}
+
 export async function get_friends_list() {
     const token = localStorage.getItem('host_auth_token');
     

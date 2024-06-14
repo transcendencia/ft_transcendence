@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -48,7 +49,15 @@ def get_status_host(request):
   user = request.user
   return Response({'status': user.status}, status=200)
 
-# def get_status()
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_status(request, userId):
+  try:
+    user = get_object_or_404(User, id=userId)
+    return Response({'status': user.status}, status=200)
+  except User.DoesNotExist:
+    return Response({'status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

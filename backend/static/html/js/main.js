@@ -402,6 +402,8 @@ function toggleEscapeContainerVisibility() {
 
 let pauseGame = false;
 
+import { getUserStatus } from './userManagement.js';
+
 document.addEventListener('keydown', (event) => {
     if (event.target.tagName === 'INPUT')
         return;
