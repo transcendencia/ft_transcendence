@@ -34,6 +34,7 @@ const powerupsText = document.getElementById('gamemodeText');
 const mapsText = document.getElementById('mapsText');
 const botDifficultyText = document.getElementById('botDifficultyText');
 const enabledText = document.getElementById('gamemodeNameText');
+const botDifficultyLevelText = document.getElementById('botDifficultyLevelText');
 const startText = document.getElementById('startText');
 const player1Text = document.getElementById('player1Text');
 const player2Text = document.getElementById('player2Text');
@@ -50,6 +51,7 @@ function translateArenaPageTexts() {
     powerupsText.textContent = getTranslatedText('gamemode');
     mapsText.textContent = getTranslatedText('maps');
     botDifficultyText.textContent = getTranslatedText('botDifficulty');
+    botDifficultyLevelText.textContent = getTranslatedText('botDifficultyMedium');
     enabledText.textContent = getTranslatedText('gamemodeNameText1');
     startText.textContent = getTranslatedText('start');
     arenaBackButton.textContent = getTranslatedText('backButton');
@@ -62,8 +64,13 @@ const trnmtPowerupsText = document.getElementById('trnmtGamemodeText');
 const trnmtMapsText = document.getElementById('trnmtMapsText');
 const trnmtBotDifficultyText = document.getElementById('trnmtBotDifficultyText');
 const trnmtEnabledText = document.getElementById('gamemodeNameText2');
+const trnmtbotDifficultyLevelText = document.getElementById('trnmtBotDifficultyLevelText');
 const trnmtStartText = document.getElementById('launch');
+const trnmtThirdPlayerText = document.getElementById('thirdPlayerText');
 const trnmtBackButton = document.getElementById('trnmtBackButton');
+const trnmtNextMatch = document.getElementById('next-match');
+const trnmtLaunchMatch = document.getElementById('launchMatch');
+
 
 function translateTournamentPageTexts() {
     for (let i = 0; i < trnmtPlayerTexts.length; i++)
@@ -74,9 +81,13 @@ function translateTournamentPageTexts() {
     trnmtPowerupsText.textContent = getTranslatedText('gamemode');
     trnmtMapsText.textContent = getTranslatedText('maps');
     trnmtBotDifficultyText.textContent = getTranslatedText('botDifficulty');
+    trnmtbotDifficultyLevelText.textContent = getTranslatedText('botDifficultyMedium');
     trnmtEnabledText.textContent = getTranslatedText('gamemodeNameText1');
     trnmtStartText.textContent = getTranslatedText('start');
+    trnmtThirdPlayerText.textContent = getTranslatedText('thirdPlayer');
     trnmtBackButton.textContent = getTranslatedText('backButton');
+    trnmtNextMatch.textContent = getTranslatedText('nextMatch');
+    trnmtLaunchMatch.textContent = getTranslatedText('launchMatch');
 }
 
 const loginText = document.getElementById('loginText');

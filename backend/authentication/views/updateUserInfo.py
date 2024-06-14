@@ -54,10 +54,11 @@ def get_status_host(request):
 @permission_classes([IsAuthenticated])
 def get_status(request, userId):
   try:
-    user = get_object_or_404(User, id=userId)
-    return Response({'status': user.status}, status=200)
+    print(userId)
+    user = User.objects.get(id=userId)
+    return Response({'user_status': user.status}, status=200)
   except User.DoesNotExist:
-    return Response({'status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
+    return Response({'user_status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
