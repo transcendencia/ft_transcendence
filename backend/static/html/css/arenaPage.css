@@ -21,10 +21,6 @@
     overflow: hidden;
 }
 
-.rightColumn * {
-    /* border: 5px solid violet; */
-}
-
 .userlistBackground {
     background-color: #000f61b2;
     border-radius: 5px;

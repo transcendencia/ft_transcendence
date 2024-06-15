@@ -193,6 +193,15 @@ export function endGame(isTournament) {
     gameState.arena.game.resetUsers();
 }
 
+export function rematchGame() {
+    let user3 = null;
+
+    if (gameState.arena.game.thirdPlayer)
+        user3 = gameState.arena.game.user3.id    
+    createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode);
+    gameState.arena.game.resetUsers();
+}
+
 const gameUI = document.querySelector(".gameUI");
 
 export function switchToGame(gameState, player1, player2, player3, isTournament) {
