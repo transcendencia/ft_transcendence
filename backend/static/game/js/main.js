@@ -432,18 +432,19 @@ let doubleKeyPress = {
 
 document.addEventListener('keydown', (event) => {
     if (keyDown.hasOwnProperty(event.key)) {
+        if (gameState != undefined && gameState.arena != undefined && gameState.arena.bot != undefined && gameState.arena.bot.isPlaying)
+        {
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown')
+                return;
+        }
         keyDown[event.key] = true;
 
-        // Check for double presses of specific keys
         if (doubleKeyPress.hasOwnProperty(event.key)) {
-            if (lastKeyPressTime[event.key] && Date.now() - lastKeyPressTime[event.key] < 200 && Date.now() - lastKeyUpTime[event.key] < 200) {
-                // Double press action for ArrowRight and 'd'
-                // console.log(`Double press detected for ${event.key}`);
-                doubleKeyPress[event.key] = true; // Set to true to indicate a double press
-            } else {
-                doubleKeyPress[event.key] = false; // Reset for next detection
-            }
-            lastKeyPressTime[event.key] = Date.now(); // Update the last press time
+            if (lastKeyPressTime[event.key] && Date.now() - lastKeyPressTime[event.key] < 200 && Date.now() - lastKeyUpTime[event.key] < 200) 
+                doubleKeyPress[event.key] = true;
+            else
+                doubleKeyPress[event.key] = false;
+            lastKeyPressTime[event.key] = Date.now();
         }
     }
 });
@@ -580,6 +581,7 @@ class Arena extends THREE.Mesh {
         this.spaceMap = new SpaceMap(this);
         this.skyMap = new SkyMap(this);
         this.dragonMap = new DragonMap(this);
+        this.singlePlayer = false;
         this.spaceMap.initMap();
         this.composer1 = new EffectComposer(renderer);
         this.composer2 = new EffectComposer(renderer2);
@@ -761,7 +763,6 @@ class Arena extends THREE.Mesh {
             this.ball.rotation.y += 0.1;
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
-        // if (!this.bot.isPlaying)
         this.paddleRight.animatePaddle(this);
         if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling)
         {
@@ -816,8 +817,9 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
-            this.bot.activateBot();
-
+            scoreUI[0].style.opacity = 1;
+            if (this.game.user2.isBot)
+                this.bot.activateBot();
             this.game.isPlaying = true;
             if (!this.game.thirdPlayer)
             {
@@ -825,13 +827,15 @@ class Arena extends THREE.Mesh {
                 this.paddleLeft.changePaddleControls(false);
                 this.paddleRight.changePaddleControls(false);
                 cameraLeft.lookAt(this.position);
-                swapToSplitScreen();
+                if (!this.game.user2.isBot)
+                    swapToSplitScreen();
+                else
+                    this.setSinglePlayerFov();
                 this.setSplitCameraPositions(camera, cameraLeft);
-                scoreUI[0].style.opacity = 1;
             }
             else
             {
-                scoreUI[0].style.opacity = 1;
+                thirdPlayerUI[0].style.opacity = 1;
                 swapToFullScreen();
                 this.setTopView(camera, false);
                 this.paddleLeft.changePaddleControls(true);
@@ -903,6 +907,11 @@ class Arena extends THREE.Mesh {
         targetY = this.position.y + this.height  + this.width / 3;
         targetZ = this.position.z - this.width * 0.85;
         targetX = this.position.x;
+        if (this.game.user2.isBot)
+        {
+            targetY *= 1.3;
+            targetZ *= 1.1;
+        }
         // Create tweens for each property
         const rightTween = new TWEEN.Tween(_cameraRight.position)
         .to({ y: targetY, z: targetZ, x: targetX }, duration)
@@ -912,6 +921,19 @@ class Arena extends THREE.Mesh {
         })
         leftTween.start();
         rightTween.start();
+    }
+    setSinglePlayerFov()
+    {
+        const duration = 1500;
+
+        new TWEEN.Tween(this.camera.fov)
+        .to({value: 81}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            this.camera.updateProjectionMatrix();
+        })
+        .start();
+        
     }
     updateMaps()
     {
@@ -1077,6 +1099,8 @@ class Arena extends THREE.Mesh {
             this.game.isPlaying = false;
             this.game.isOver = false;
             swapToFullScreen();
+            if (this.game.thirdPlayer)
+                thirdPlayerUI[0].style.opacity = 1;
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
             this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
@@ -1085,8 +1109,16 @@ class Arena extends THREE.Mesh {
             this.ball.particles.isActive = false;
             this.idleCameraAnimation();
             const winningScreen = document.querySelector('.winning-screen');
+            const winningText = document.getElementById('winningText');
+            const scoreText = document.getElementById('scoreText');
+            scoreText.textContent = this.game.leftScore + ' - ' + this.game.rightScore;
+            if (this.game.leftScore === 3)
+                winningText.textContent = this.game.user1.username + ' wins!';
+            else
+                winningText.textContent = this.game.user2.username + ' wins!';
             winningScreen.classList.add('visible');
-            this.bot.deactivateBot();
+            if (this.game.user2.isBot === 'Bot')
+                this.bot.deactivateBot();
         });
         let targetLight = loserPaddle.defaultLight;
         if (this.getCurrentMap() === this.dragonMap)
@@ -1120,6 +1152,8 @@ class Arena extends THREE.Mesh {
     displayBackPanel()
     {
         this.resetUI();
+        if (this.game.user2.isBot)
+            this.bot.deactivateBot();
         this.gameState.inGame = false;
         this.gameState.inLobby = true;
         endGame(this.game.tournamentGame);
@@ -3256,14 +3290,12 @@ class Bot {
     activateBot() {
         if (this.difficulty === "easy")
         {
-            console.log("easy");
             this.powerUpEnabled = false;
             this.dashEnabled = false;
             this.timeToUpdate = 1500;
         }
         else if (this.difficulty === "medium")
         {
-            console.log("medium");
             this.powerUpEnabled = false;
             this.dashEnabled = true;
             this.dashLikeness = 1;
@@ -3271,7 +3303,6 @@ class Bot {
         }
         else if (this.difficulty === "hard")
         {
-            console.log("hard");
             this.powerUpEnabled = true;
             this.dashEnabled = true;
             this.dashLikeness = 5;
@@ -3484,7 +3515,8 @@ class UserStats {
     }
     reset()
     {
-        this.isBot = false;
+        if (this.username != 'bot')
+            this.isBot = false;
         this.isWinner = false;
         this.pointsScored = 0;
         this.pointsTaken = 0;
@@ -3495,6 +3527,10 @@ class UserStats {
     setUser(username, id, profilePicture)
     {
         this.username = username;
+        if (username === 'bot')
+            this.isBot = true;
+        else
+            this.isBot = false;
         this.id = id;
         this.profilePicture = profilePicture;
         this.usernameElement.textContent = username;
@@ -3528,7 +3564,6 @@ class Game {
         this.user2 = new UserStats(false, this.user2Username, this.user2ProfilePicture); // User2 is the right paddle
         this.user3 = new UserStats(true, this.user3Username, this.user3ProfilePicture); // User3 is the third player
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
-
 
         // OUTPUT
         this.loserPaddle;
@@ -3729,36 +3764,35 @@ class Particle {
 }
 
 function swapToSplitScreen() {
-        thirdPlayerUI[0].style.opacity = 0;
-        const targetWidth = window.innerWidth / 2;
-        const duration = 500; // Animation duration in milliseconds
-        new TWEEN.Tween(renderer.domElement)
-            .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(() => {
-                renderer.setSize(renderer.domElement.width, window.innerHeight);
-            })
-            .start();
+    thirdPlayerUI[0].style.opacity = 0;
+    const targetWidth = window.innerWidth / 2;
+    const duration = 500; // Animation duration in milliseconds
+    new TWEEN.Tween(renderer.domElement)
+        .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            renderer.setSize(renderer.domElement.width, window.innerHeight);
+        })
+        .start();
 
-        const aspectRatio = (window.innerWidth / window.innerHeight) / 2;
-        new TWEEN.Tween(camera)
-            .to({ aspect: aspectRatio, fov: 95 }, duration)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(() => {
-                camera.updateProjectionMatrix();
-            })
-            .onComplete(() => {
-                blueBar[0].style.transition = "opacity 2s ease";
-                blueBar[0].style.opacity = 0.2;
-            })
-            .start();
+    const aspectRatio = (window.innerWidth / window.innerHeight) / 2;
+    new TWEEN.Tween(camera)
+        .to({ aspect: aspectRatio, fov: 95 }, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            camera.updateProjectionMatrix();
+        })
+        .onComplete(() => {
+            blueBar[0].style.transition = "opacity 2s ease";
+            blueBar[0].style.opacity = 0.2;
+        })
+        .start();
 }
 
 function swapToFullScreen()
 {
     blueBar[0].style.transition = "opacity 0.5s ease";
     blueBar[0].style.opacity = 0;
-    thirdPlayerUI[0].style.opacity = 1;
     const targetWidth = window.innerWidth;
     const duration = 500; // Animation duration in milliseconds
     new TWEEN.Tween(renderer.domElement)
@@ -3810,7 +3844,6 @@ function animate()
         TWEEN.update();
         if (gameState.inGame)
         {
-            // console.log("inGame");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();
