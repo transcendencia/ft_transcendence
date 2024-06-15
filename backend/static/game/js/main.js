@@ -18,7 +18,7 @@ import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/sha
 import { lobbyVisuals } from '../../html/js/main.js';
 import { gameStarted } from '../../html/js/arenaPage.js';
 // import { gameStarted } from '../../html/js/arenaPage.js';
-import { endGame } from '../../html/js/arenaPage.js';
+import { endGame, rematchGame } from '../../html/js/arenaPage.js';
 import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
@@ -467,10 +467,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const backToLobbyButton = document.getElementById('backToLobbyButton');
 
     backToLobbyButton.addEventListener('click', () => {
-        // Your logic when the button is pressed
         gameState.arena.displayBackPanel();
-        // Example: Redirect to lobby page
-        // window.location.href = 'lobby.html';
+    });
+    const rematchButton = document.getElementById('rematchButton');
+
+    rematchButton.addEventListener('click', () => {
+        rematchGame();
+        keyDown['e'] = true;
+        gameState.arena.resetUIForRematch();
+        setTimeout(() => {
+            keyDown['e'] = false;
+        }, 10);
+        // stylish and (optional) functional code here 
     });
 });
 
@@ -1100,6 +1108,14 @@ class Arena extends THREE.Mesh {
         this.ball.isRolling = false;
         this.ball.speedZ = 0;
         this.ball.speedX = 0;
+    }
+    resetUIForRematch()
+    {
+        this.game.isOver = false;
+        this.isBeingReset = false;
+        this.resetUI();
+        const winningScreen = document.querySelector('.winning-screen');
+        winningScreen.classList.remove('visible');
     }
     displayBackPanel()
     {
