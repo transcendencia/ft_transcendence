@@ -197,7 +197,7 @@ export function rematchGame() {
     let user3 = null;
 
     if (gameState.arena.game.thirdPlayer)
-        user3 = gameState.arena.game.user3.id    
+        user3 = gameState.arena.game.user3.id  
     createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode);
     gameState.arena.game.resetUsers();
 }
@@ -256,7 +256,6 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
       // const 
       gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
       gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
-    //   if (typeof player3 !== "undefined"){
         if (playerNb === 2) {
         gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
         gameState.arena.game.thirdPlayer = true;
