@@ -157,6 +157,8 @@ export function getProfileInfo() {
 			document.getElementById('username').textContent = data.profile_info.username;
 			document.getElementById('bio').textContent = data.profile_info.bio;
 			document.getElementById('profile_pic').src = data.profile_info.profile_picture;
+            document.getElementById('changeUsernameInput').value = data.profile_info.username;
+            document.getElementById('changeBioInput').value = data.profile_info.bio;
             const basicStats = document.getElementById('winLoseTexts1');
             basicStats.innerHTML = `
                 <div class="basicStats"> ${getTranslatedText('winLoseText1')} : 1</div>
