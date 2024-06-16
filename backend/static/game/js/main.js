@@ -3267,6 +3267,7 @@ class Bot {
 class UserStats {
     constructor(isThirdPlayer, usernameElement, ppElement) {
     
+        console.log(usernameElement);
         this.isThirdPlayer = isThirdPlayer;
         this.isWinner = false;
         this.usernameElement = usernameElement;
