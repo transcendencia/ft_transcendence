@@ -25,7 +25,7 @@ class User(AbstractUser):
   is_host = models.BooleanField(default=False)
   friends = models.ManyToManyField("self", through="FriendRequest", symmetrical=False, related_name='related_friends', blank=True)
   graphic_mode = models.CharField(max_length=10)
-  
+
   def get_profile_info(self):
     return {'id': self.id, 'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url}
 
@@ -58,7 +58,20 @@ class Game(models.Model):
   gameplayMode = models.CharField(max_length=255)
   modeGame = models.CharField(max_length=255, default="test")
   date = models.DateTimeField(default=timezone.now)
-
+  
   def __str__(self):
     return f"{self.gameplayMode}"
-    
+
+class UserStat(models.Model):
+  player = models.ForeignKey(User, on_delete=models.CASCADE)
+  game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='user_stats')
+  isThirsPlayer = models.BooleanField(default=False)
+  isWinner = models.BooleanField(default=False)
+  # usernameElement
+  # pointsScored
+  # pointsTaken
+  # nbDashes
+  # nbPoweredUsed
+  # nbBounces
+  # isBot
+  # id
