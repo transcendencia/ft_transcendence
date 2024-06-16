@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -28,6 +30,7 @@ def change_language(request):
   else:
     return Response(status=405)
 
+# adapter avec un id pour que se soit applicable au user non host
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -41,13 +44,6 @@ def update_status(request):
     return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
   else:
     return Response(status=405)
-
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_status_host(request):
-  user = request.user
-  return Response({'status': user.status}, status=200)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -84,9 +80,9 @@ def change_profile_info(request):
 
         serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
         if 'profile-pic' in request.FILES:
-            # if request.user.profile_picture.url != 'media/default.png':
-            #       print("coucou")
-            #       request.user.profile_picture.delete()
+            print(request.user.profile_picture.name)
+            if request.user.profile_picture.name != 'default.png':
+              request.user.profile_picture.delete()
             uploaded_file = request.FILES['profile-pic']
             request.user.profile_picture = uploaded_file
             request.user.save()
