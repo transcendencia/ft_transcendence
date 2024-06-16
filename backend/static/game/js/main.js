@@ -3301,7 +3301,6 @@ class UserStats {
     }
     toJson() {
         return {
-            id: this.id,
             isThirdPlayer: this.isThirdPlayer,
             isWinner: this.isWinner,
             pointsScored: this.pointsScored,

@@ -26,8 +26,20 @@ class User(AbstractUser):
   friends = models.ManyToManyField("self", through="FriendRequest", symmetrical=False, related_name='related_friends', blank=True)
   graphic_mode = models.CharField(max_length=10)
 
+  nbr_match = models.IntegerField(default=0)
+  nbr_match_win = models.IntegerField(default=0)
+  nbr_match_lost = models.IntegerField(default=0)
+  nbr_goals = models.IntegerField(default=0)
+
   def get_profile_info(self):
-    return {'id': self.id, 'username': self.username, 'bio': self.bio, 'profile_picture': self.profile_picture.url}
+    return {'id': self.id, 
+    'username': self.username, 
+    'bio': self.bio, 
+    'profile_picture': self.profile_picture.url, 
+    'nbr_match': self.nbr_match, 
+    'nbr_match_win': self.nbr_match_win,
+    'nbr_match_lost': self.nbr_match_lost,
+    'nbr_goals': self.nbr_goals}
 
 
 class FriendRequest(models.Model):
@@ -36,7 +48,6 @@ class FriendRequest(models.Model):
   status_choices = [
     ('accepted', 'accepted'),
     ('pending', 'pending'),
-    ('declined', 'declined'),
   ]
   status = models.CharField(max_length=10, choices=status_choices, default='pending')
 
@@ -65,11 +76,9 @@ class Game(models.Model):
 class UserStat(models.Model):
   player = models.ForeignKey(User, on_delete=models.CASCADE)
   game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='user_stats')
-  isThirsPlayer = models.BooleanField(default=False)
   isWinner = models.BooleanField(default=False)
   pointsScored = models.IntegerField(default=-1)
   pointsTaken = models.IntegerField(default=-1)
   nbDashes = models.IntegerField(default=-1)
   nbPoweredUsed = models.IntegerField(default=-1)
   nbBounces = models.IntegerField(default=-1)
-  isBot = models.IntegerField(default=-1)
