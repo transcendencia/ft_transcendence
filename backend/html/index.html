@@ -238,8 +238,20 @@
             <div id="startText" class="redButton">Start</div>
         </div>
       </div>
-    </div> 
-
+    </div>
+    <div class="enterPasswordWindow">
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        AtomiK
+      </div>
+      <div class="validateDeleteText">Enter your password</div>
+      <div class="changeInfoBar" style="height: 20%;">
+        <input id="enterPasswordInput" name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" type="password" placeholder="Password"></input>
+      </div>
+      <div id="arenaLogInButton" class="validateDeleteButton">Log in</div>
+    </div>
 
 
 
@@ -376,7 +388,6 @@
                 <div class="validateDeleteButton" id="deleteAccountCancel">No</div>
               </div>
             </div>
-          <div id="blockingPanel" class="blockingPanel"></div>
           <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between; flex-shrink: 0;">
             <div id="friendListText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
             <div class="friendSearchBar">
@@ -389,6 +400,7 @@
       </div>
     </div>
   </div>
+  <div id="blockingPanel" class="blockingPanel"></div>
 
 
 

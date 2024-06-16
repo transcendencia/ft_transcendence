@@ -365,10 +365,6 @@
     background-color: rgba(14, 255, 26, 0.322);
 }
 
-.arenaFriendTile:hover {
-    background-color: rgba(14, 255, 26, 0.500);
-}
-
 .loupeFriendTile {
     border-color: rgb(14, 255, 26) !important;
     background-color: rgba(14, 255, 26, 0.459) !important;
