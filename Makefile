@@ -29,6 +29,7 @@ prune:
 
 fclean:
 	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
+	- @ find backend/media -type f ! -name 'default.png' ! -name 'botLogo.png' -delete
 
 re: down
 	${MAKE} all
