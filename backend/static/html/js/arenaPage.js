@@ -12,7 +12,7 @@ const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
 userlistTitle.textContent = getTranslatedText('userlist');
 
-let plusClicked = false;
+let plusClicked = 0;
 const botID = 0;
 let playerNb = 0;
 
@@ -324,13 +324,11 @@ export function resetUserInfoVisual(userInfoCont, clonedImg, profilePic, tileTex
 
 export function resetToPlusButton(userInfoCont, oldObj, textCont, type) {
     userInfoCont.parentNode.replaceChild(oldObj, userInfoCont)
-    console.log(type);
     if (type === 'Friend')
         textCont.style.backgroundColor = "rgba(14, 255, 26, 0.322)";
     else if (type === 'Bot')
         textCont.style.backgroundColor = "rgba(164, 67, 255, 0.257)";
     else textCont.style.backgroundColor = '#00000031';
-    textCont.classList.add('hoverable');
     oldObj.style.backgroundColor = grey;
 }
 
@@ -345,7 +343,6 @@ export function createUserInfoObject(tile, i) {
     profilePic.appendChild(clonedImg);
     userInfoCont.appendChild(profilePic);
     userInfoCont.appendChild(textNode);
-    console.log(tile.type);
     if (isBot(i)) {
         userInfoCont.style.borderColor = purple;
         profilePic.style.borderColor = purple;
@@ -353,45 +350,77 @@ export function createUserInfoObject(tile, i) {
     return {userInfoCont, clonedImg, profilePic, tileText};
 }
 
+const blockingPanel = document.getElementById('blockingPanel');
+const pwWindow = document.querySelector(".enterPasswordWindow");
+const validatePasswordButton = document.getElementById("arenaLogInButton");
+let tempTileIndex = -1; // To store the index of the tile that was clicked
+
 function addEventListenerToTiles() {
     userTiles.forEach((tile, i) => {
-        const textCont = tile.HTMLelement.querySelector(".textContainer");
         profileAdded[i] = false;
-        tile.HTMLelement.addEventListener('click', function(){
-        if (plusClicked && !profileAdded[i]) {
-            profileAdded[i] = true;
-            playerNb++;
-            const newObj = createUserInfoObject(tile, i);
-            if (plusClicked === 1)
-                addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, 1);
-            else addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, 0);
-            console.log("user add:", tile.user);
-            const oldObj = plusButtons[plusClicked - 1];
-            oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
-            resetGlow();
-            resetAddingMode();
-            newObj.userInfoCont.addEventListener('mouseenter', function () {
-                displayRemovePlayerVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic);
-            });
-            newObj.userInfoCont.addEventListener('mouseleave', function () {
-                resetUserInfoVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic, newObj.tileText, i, tile);
-            });
-            newObj.userInfoCont.addEventListener('click', function() {
-                resetToPlusButton(newObj.userInfoCont, oldObj, textCont, tile.type);
-                profileAdded[i] = false;
-                profileAdded[botID] = false;
-                playerNb--;
-                removeUserFromMatch(tile.user.id);
-            });
-            if (tile.type === 'Friend')
-                textCont.style.backgroundColor = 'rgba(14, 255, 26, 0.500)';
-            else if (tile.type === 'Bot')
-                textCont.style.backgroundColor = 'rgba(164, 67, 255, 0.500)';
-            else textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.500)';
-        }
-    });
+        tile.HTMLelement.addEventListener('click', function() {
+            if (plusClicked && !profileAdded[i]) {
+                if (isBot(i) /*|| playerAlreadyLogged*/) {
+                    tempTileIndex = i;
+                    putUserInMatch();
+                    return;
+                }
+                pwWindow.classList.toggle("showRectangle");
+                blockingPanel.style.visibility = 'visible';
+                tempTileIndex = i;
+                const newObj = createUserInfoObject(tile, i);
+                pwWindow.replaceChild(newObj.userInfoCont, pwWindow.querySelector('.userInfoCont'));
+            }
+        });
     });
 }
+
+function putUserInMatch() {
+    if (plusClicked && !profileAdded[tempTileIndex]) {
+        const i = tempTileIndex;
+        const tile = userTiles[i];
+        const textCont = tile.HTMLelement.querySelector(".textContainer");
+        
+        pwWindow.classList.remove("showRectangle");
+        blockingPanel.style.visibility = 'hidden';
+        profileAdded[i] = true;
+        playerNb++;
+        if (plusClicked === 1)
+            addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, 1);
+        else addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, 0);
+        const newObj = createUserInfoObject(tile, i);
+        const oldObj = plusButtons[plusClicked - 1];
+        oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
+        resetGlow();
+        resetAddingMode();
+
+        newObj.userInfoCont.addEventListener('mouseenter', function () {
+            displayRemovePlayerVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic);
+        });
+        
+        newObj.userInfoCont.addEventListener('mouseleave', function () {
+            resetUserInfoVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic, newObj.tileText, i, tile);
+        });
+        
+        newObj.userInfoCont.addEventListener('click', function() {
+            resetToPlusButton(newObj.userInfoCont, oldObj, textCont, tile.type);
+            profileAdded[i] = false;
+            profileAdded[botID] = false;
+            playerNb--;
+            removeUserFromMatch(tile.user.id);
+        });
+        
+        if (tile.type === 'Friend')
+            textCont.style.backgroundColor = 'rgba(14, 255, 26, 0.500)';
+        else if (tile.type === 'Bot')
+            textCont.style.backgroundColor = 'rgba(164, 67, 255, 0.500)';
+        else textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.500)';
+    }
+}
+
+validatePasswordButton.addEventListener('click', function() {
+    putUserInMatch();
+});
 
 const matchPlayer = [];
 

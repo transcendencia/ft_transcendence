@@ -41,6 +41,7 @@
     left: 50%;
     position: fixed;
     transform: translate(-50%, -50%);
+    background-color: rgba(12, 0, 124, 0.489);
 }
 
 .submitChangeButton {
@@ -169,8 +170,6 @@
     flex-shrink: 0;
     position: absolute;
     z-index: 9999;
-    flex-direction: column; /* Stack elements vertically */
-    align-items: center;
 }
 
 .validateDeleteText {
@@ -197,6 +196,10 @@
     justify-content: center;
     overflow: hidden; 
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
+.validateDeleteButton:hover {
+    background-color: #3776ff53;
 }
 
 .showRectangle {
