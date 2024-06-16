@@ -3266,8 +3266,6 @@ class Bot {
 
 class UserStats {
     constructor(isThirdPlayer, usernameElement, ppElement) {
-    
-        console.log(usernameElement);
         this.isThirdPlayer = isThirdPlayer;
         this.isWinner = false;
         this.usernameElement = usernameElement;
@@ -3300,6 +3298,19 @@ class UserStats {
         this.profilePicture = profilePicture;
         this.usernameElement.textContent = username;
         this.ppElement.src = profilePicture;
+    }
+    toJson() {
+        return {
+            id: this.id,
+            isThirdPlayer: this.isThirdPlayer,
+            isWinner: this.isWinner,
+            pointsScored: this.pointsScored,
+            pointsTaken: this.pointsTaken,
+            nbDashes: this.nbDashes,
+            nbPowerUsed: this.nbPowerUsed,
+            nbBounces: this.nbBounces,
+            isBot: this.isBot,
+        };
     }
 }
 

@@ -67,11 +67,9 @@ class UserStat(models.Model):
   game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='user_stats')
   isThirsPlayer = models.BooleanField(default=False)
   isWinner = models.BooleanField(default=False)
-  # usernameElement
-  # pointsScored
-  # pointsTaken
-  # nbDashes
-  # nbPoweredUsed
-  # nbBounces
-  # isBot
-  # id
+  pointsScored = models.IntegerField(default=-1)
+  pointsTaken = models.IntegerField(default=-1)
+  nbDashes = models.IntegerField(default=-1)
+  nbPoweredUsed = models.IntegerField(default=-1)
+  nbBounces = models.IntegerField(default=-1)
+  isBot = models.IntegerField(default=-1)
