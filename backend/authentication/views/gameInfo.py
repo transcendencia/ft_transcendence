@@ -93,5 +93,11 @@ def add_game(request):
         modeGame=modeGame,
     )
     game.save()
+    
+    user1 = data['user1']
+    user2 = data['user2']
+    user3 = data.get('user3', None)
+    print("user1", user1)
+    print("user2", user2)
     return JsonResponse({'status': 'success', 'game_id': game.id})
   return JsonResponse({'status': 'fail'}, status=400)
