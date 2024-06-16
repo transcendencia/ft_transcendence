@@ -161,10 +161,10 @@ export function getProfileInfo() {
             document.getElementById('changeBioInput').value = data.profile_info.bio;
             const basicStats = document.getElementById('winLoseTexts1');
             basicStats.innerHTML = `
-                <div class="basicStats"> ${getTranslatedText('winLoseText1')} : 1</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText2')} : 1</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText3')} : 1</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText4')} : 1</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.profile_info.nbr_match}</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.profile_info.nbr_match_win}</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
             `;
             RenderHostMatch(data.profile_info);
             RenderUserTournament(data.profile_info);
