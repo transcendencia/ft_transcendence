@@ -81,17 +81,22 @@ def change_profile_info(request):
           random_color = random.choice(colors)
           randon_items = random.choice(items)
           res = random_color + randon_items
-          res = request.data.get('username')
-          data.pop('anonymousStatus')
-          print(res)
-        
+          user_tmp = request.data.get('username')
+          print(user_tmp)
+        username = request.POST.get("username")
+        print("test")
+        print(username)
+        data.pop('anonymousStatus')
         print(request.data)
+        print(data)
         serializer = UpdateInfoSerializer(instance=request.user, data=data)
         if 'profile-pic' in request.FILES:
             uploaded_file = request.FILES['profile-pic']
             request.user.profile_picture = uploaded_file
             request.user.save()
-            print("picture changed") #LOG
+            print("picture changed") 
+        
+        
         if serializer.is_valid():
             serializer.save()
             return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=200)
