@@ -19,6 +19,7 @@ urlpatterns = [
     path('get_game_player2/', gameInfo.get_game_player2, name="get_game_player2"),
     path('change_graphic_mode/', updateUserInfo.change_graphic_mode, name="change_graphic_mode"),
     path('delete_account/', updateUserInfo.delete_account, name="delete_account"),
+     path('get_stats/<int:userId>', updateUserInfo.get_stats, name="get_stats"),
 
     #friendship.py
     path('send_friend_request/', friendship.send_friend_request, name="send_friend_request"),

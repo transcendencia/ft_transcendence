@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 
-from ..models import User
+from ..models import User, UserStat
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
 
 #--------------------LANGUAGE--------------------
@@ -69,6 +69,21 @@ def get_profile_info(request):
   else:
     return Response(status=405)
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_stats(request, userId):
+  try:
+    user = get_object_or_404(User, id=userId)
+    gameWon = UserStat.objects.filter(player=user, isWinner=True)
+    nbrGameWon = gameWon.count()
+    percentageGameWon = round((nbrGameWon * 100) / user.nbr_match, 1) if user.nbr_match > 0 else 0
+    print(percentageGameWon)
+    percentageGameLost = round(100 - percentageGameWon, 1)
+    return Response({'percentageGameWon': percentageGameWon, 'percentageGameLost': percentageGameLost})
+  except User.DoesNotExist:
+    return Response({'status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -77,7 +92,9 @@ def change_profile_info(request):
         print(request.data)
         # copier data dans un nouveau truc pour pouvoir changer  les valeurs (bien changer les endroit ou est appeler request.data par le nom de la nouvele variables)
         # checker request.data.get('anonymousStatus') == 'true'
-
+        anonymousStatus = request.data.get('anonymousStatus') == 'true'
+        print(anonymousStatus)
+        
         serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
         if 'profile-pic' in request.FILES:
             print(request.user.profile_picture.name)
@@ -126,3 +143,4 @@ def change_graphic_mode(request):
 def delete_account(request):
   request.user.delete()
   return Response({'status' : "success"})
+
