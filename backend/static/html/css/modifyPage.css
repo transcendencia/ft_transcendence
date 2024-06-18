@@ -65,7 +65,6 @@
     flex-direction: row;
     align-items: center;
     gap: 20px; /*Espace entre les boutons */
-    margin-top: 50px; /*Marge supérieure pour éloigner les boutons du haut de la page*/
 }
 
 .profilePicButton {

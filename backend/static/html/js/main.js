@@ -224,7 +224,6 @@ function disconnectLoggedGuest(userInfoCont) {
 }
 
 function displayUsersLogged() {
-
     userList.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
@@ -413,7 +412,7 @@ document.addEventListener('keydown', (event) => {
         // if (token) {
             showPage('none');
             startAnimation();
-            // displayUsersLogged();
+            displayUsersLogged();
         // }
         // localStorage.clear();
     }
