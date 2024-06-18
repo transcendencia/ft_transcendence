@@ -172,7 +172,6 @@ function handleLogin(event) {
                 setCurrentLanguage(data.language);
                 setEscapeLanguageVisual();
                 get_friends_list();
-                get_user_list();
                 getProfileInfo();
                 TranslateAllTexts();
                 getGameInfo();

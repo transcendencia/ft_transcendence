@@ -416,6 +416,8 @@ document.addEventListener('keydown', (event) => {
         // }
         // localStorage.clear();
     }
+    if (event.key === 't')
+        getUserStatus(96);
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
     if (event.key == 'Escape') {

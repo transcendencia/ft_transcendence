@@ -1,5 +1,6 @@
 import { getCookie } from './loginPage.js';
 import { getProfileInfo } from './userManagement.js';
+import { toggleThirdPlayerMode } from '../../tournament/js/newTournament.js';
 
 let anonymousStatus;
 
@@ -79,12 +80,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
   toggleSwitch.addEventListener('click', function() {
       this.classList.toggle('active');
-      if (this.classList.contains('active')) {
+      if (this.classList.contains('active'))
         anonymousStatus = true;
-        console.log(anonymousStatus);
-      } else {
-          anonymousStatus = false;
-          console.log(anonymousStatus);
-      }
+      else anonymousStatus = false;
+  });
+});
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  const thirdPlayerToggleSwitch = document.getElementById('thirdPlayertoggleSwitch');
+  thirdPlayerToggleSwitch.addEventListener('click', function() {
+      this.classList.toggle('active');
+      toggleThirdPlayerMode();
   });
 });
