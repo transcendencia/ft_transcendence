@@ -92,7 +92,6 @@ export function getUserStatus(userId) {
         return response.json();
     })
     .then(data => {
-        console.log('Utilisateur trouvé :', data.user_status);
         return data.user_status;
     })
     .catch(error => {

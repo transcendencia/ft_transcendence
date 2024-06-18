@@ -257,6 +257,22 @@
       <div id="arenaLogInButton" class="validateDeleteButton">Log in</div>
       </div>
     </div>
+    <div class="enterPasswordWindow">
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        AtomiK
+      </div>
+      <div class="validateDeleteText">Enter your alias for the tournament</div>
+      <div class="changeInfoBar" style="height: 20%;">
+        <input id="enterAliasInput" class="text-input3" style="font-size: 20px;" type="text" placeholder="alias"></input>
+      </div>
+      <div class="buttonContainer" style="height: 10%;">
+        <div id="aliasBackLogInButton" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">back</div>
+      <div id="aliasLogInButton" class="validateDeleteButton">Validate</div>
+      </div>
+    </div>
 
 
 
@@ -420,15 +436,11 @@
           <div id="trnmtTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div>
         </div>
         <div class="secondLineTournament">
-          <div id="leftColumn" class="leftColumn">
+          <div id="leftColumn" class="leftColumn before-launch">
             <div id="trnmtUserlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
             <div id="userlistTournamentPage" class="userlistBackground before-launch"></div>
-            <h2 id="next-match" class="matchInfo" style="display:none;"></h2>
-            <p id="match" class="matchInfo" style="display:none;"></p>
-            <div id="launchMatch" class="startTournamentButton" style="display:none;"></div>
             <div id="trnmtBackButton" class="planetBackButton" style="width: 90%">Back</div>
           </div>
-          <!-- when the tournament is launch -->
         <div id="midColumn" class="rightColumn">
           <div class="addPlayerToTournament before-launch">
             <div class="elemContTournament">
@@ -516,7 +528,7 @@
             </div>
           </div>
           <!-- when the tournament is launch -->
-          <div id="bracket" class="theme theme-dark" style="display:none;">
+          <div id="bracket" class="topTournament theme theme-dark" style="display:none;">
             <div class="bracket">
               <div class="column one">
                 <div id="A1-A2-match" class="match">
@@ -673,6 +685,14 @@
             </div>        
           </div>
             </div>
+          </div>
+          <div id="bottomTournament" class="bottomTournament" style="display: none;">
+            <div id="trnmtBackButton" class="planetBackButton" style="width: 20%; height: 50%;">Back</div>
+            <div class="matchInfo">
+              <p id="next-match" style="padding-left: 20px;"></p>
+              <div id="match"  style="padding-left: 20px;"></div>
+            </div>
+            <div id="launchMatch" class="startTournamentButton"></div>
           </div>
         </div>
         </div>

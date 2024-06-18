@@ -4,6 +4,7 @@ import { createUserInfoObject, displayRemovePlayerVisual, resetToPlusButton, res
 import { blue, purple, grey, lightGrey } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
 import { getProfileInfo, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
+import { planetInRange } from "../../html/js/planetIntersection.js";
 
 
 export let gamemodeCounterTournament = 0;
@@ -122,6 +123,8 @@ export function resetTournament() {
   bracketElement.style.display = "none";
   nextMatchElement.style.display = "none";
   matchElement.style.display = "none";
+  bottomTournamentElement.style.display = "none";
+  midColumn.style.width = '80%';
   profileAddedToTournament = [];
   playerNb = 0;
   tournamentState = 0;
@@ -195,11 +198,13 @@ function resetAddingModeTournament() {
       otherPlusButton.style.pointerEvents = 'auto';
   });
   profileAddedToTournament[botID] = false;
+  userTilesTournament.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'none';});
 }
 
 function setAddingModeTournament(plusButton, i) {
   userlistTitle.textContent = getTranslatedText('chooseProfile');
   plusClickedTournament = i + 1;
+  userTilesTournament.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'auto';});
   plusButtons.forEach(function(otherPlusButton) {
       if (otherPlusButton !== plusButton) {
           otherPlusButton.style.pointerEvents = 'none';
@@ -254,9 +259,12 @@ export function resetPlusButton() {
 };
 
 const blockingPanel = document.getElementById('blockingPanel');
-const pwWindow = document.querySelector(".enterPasswordWindow");
+const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const validatePasswordButton = document.getElementById("arenaLogInButton");
+const validateAliasButton = document.getElementById("aliasLogInButton");
 const backPasswordButton = document.getElementById("arenaBackLogInButton");
+const backAliasButton = document.getElementById("aliasBackLogInButton");
 let tempTileIndexTournament = -1; // To store the index of the tile that was clicked
 
 function addEventListenerToTilesTournament() {
@@ -272,24 +280,37 @@ function addEventListenerToTilesTournament() {
               pwWindow.classList.toggle("showRectangle");
               blockingPanel.style.visibility = 'visible';
               tempTileIndexTournament = i;
-              const newObj = createUserInfoObject(tile, i);
+              let newObj = createUserInfoObject(tile, i);
               pwWindow.replaceChild(newObj.userInfoCont, pwWindow.querySelector('.userInfoCont'));
+              newObj = createUserInfoObject(tile, i);
+              aliasWindow.replaceChild(newObj.userInfoCont, aliasWindow.querySelector('.userInfoCont'));
           }
       });
   });
 }
 
-  export function putUserInTournament() {
+  function askForAlias(){
+    pwWindow.classList.remove("showRectangle");
+    aliasWindow.classList.toggle("showRectangle");
+  }
+
+  function returnToPassword(){
+    aliasWindow.classList.remove("showRectangle");
+    pwWindow.classList.toggle("showRectangle");
+  }
+
+  function putUserInTournament() {
     if (plusClickedTournament && !profileAddedToTournament[tempTileIndexTournament]) {
       const i = tempTileIndexTournament;
       const tile = userTilesTournament[i];
       const textCont = tile.HTMLelement.querySelector(".textContainer");
 
-      pwWindow.classList.remove("showRectangle");
+      aliasWindow.classList.remove("showRectangle");
       blockingPanel.style.visibility = 'hidden';
       profileAddedToTournament[i] = true;
       playerNb++;
       const newObj = createUserInfoObject(tile, i);
+      // console.log("username", username);
       addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
       const oldObj = plusButtons[plusClickedTournament - 1];
       oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
@@ -308,7 +329,6 @@ function addEventListenerToTilesTournament() {
           playerNb--;
           removeUserFromTournament(tile.user.id);
       });
-
       if (tile.type === 'Friend')
         textCont.classList.remove('friendBg');
       else if (tile.type === 'Bot')
@@ -318,26 +338,49 @@ function addEventListenerToTilesTournament() {
   }
 
   validatePasswordButton.addEventListener('click', function() {
-    putUserInTournament();
+    if (planetInRange.name === "tournament")
+      askForAlias()
+      // putUserInTournament();
   });
 
   backPasswordButton.addEventListener('click', function() {
     
   });
 
+  validateAliasButton.addEventListener('click', function() {
+    putUserInTournament();
+    const inputElement = document.getElementById('enterAliasInput');
+    if (inputElement) {
+      const inputValue = inputElement.value;
+      if (inputValue === "")
+        return ;
+      console.log(inputValue);
+      console.log("tournament player:", tournamentPlayer); 
+      if (tournamentPlayer.some(player=> player.username === inputValue))
+        return ;
+      return ;
+    }
+  });
+
+  backAliasButton.addEventListener('click', function() {
+    returnToPassword();
+  });
+
   const tournamentPlayer = [];
 
   export function addUserToTournament(playerId, username, profile_picture) {
-      if (!tournamentPlayer.some(player => player.username === username)) {
-          tournamentPlayer.push({
-            playerId: playerId,
-            username: username,
-            profile_picture: profile_picture,
-            order: -1,
-            position: 0,
-            round: 1,
-          });
-      }
+    if (tournamentPlayer.some(player=> player.username === username && player.username !== "bot")){
+      console.log("error");
+      return ;
+    }
+    tournamentPlayer.push({
+      playerId: playerId,
+      username: username,
+      profile_picture: profile_picture,
+      order: -1,
+      position: 0,
+      round: 1,
+    });
   }
 
   function removeUserFromTournament(playerId) {
@@ -470,36 +513,29 @@ function addEventListenerToTilesTournament() {
   const launchTournamentElement = document.getElementById("launch");
   const launchMatchElement = document.getElementById("launchMatch");
   const bracketElement = document.getElementById("bracket");
-  const nextMatchElement = document.getElementById("next-match");
+  const bottomTournamentElement = document.getElementById("bottomTournament");
   const matchElement = document.getElementById("match");
+  const nextMatchElement = document.getElementById("next-match");
+  const midColumn = document.getElementById("midColumn");
 
-  //launch the tournament when there is the right amount of players
-  //create the matchup / print the bracket structure
 
-  function botInTournament(tournamentPlayer){
+  function  countNonBotPlayer(tournamentPlayer){
+    let nbPlayer = 0;
     for (let player of tournamentPlayer) {
-      if (player.username === "bot")
-          return 1;
+      if (player.username !== "bot")
+        nbPlayer ++;
     }
-    return 0;
+    return nbPlayer;
   }
 
   launchTournamentElement.addEventListener("click", function() {
-    if (tournamentPlayer.length < 3){
+    if (countNonBotPlayer(tournamentPlayer) < 3){
       const ul = document.getElementById("error_msg");
-      // ul.textContent = "Not enough players";
-      ul.textContent = getTranslatedText('ErrorMinus3');
-      return ;
-    }
-    else if (tournamentPlayer.length < 4 && botInTournament(tournamentPlayer)){
-      const ul = document.getElementById("error_msg");
-      // ul.textContent = "4 players minimum to play with a bot";
-      ul.textContent = getTranslatedText('ErrorMinus4');
+      ul.textContent = getTranslatedText('ErrorMinus');
       return ;
     }
     else if (tournamentPlayer.length > 8){
       const ul = document.getElementById("error_msg");
-      // ul.textContent = "Too many players";
       ul.textContent = getTranslatedText('ErrorTooMany');
       return ;
     }
@@ -523,8 +559,8 @@ function addEventListenerToTilesTournament() {
    });
     launchMatchElement.style.display = "flex";
     bracketElement.style.display = "inline";
-    nextMatchElement.style.display = "flex";
-    matchElement.style.display = "flex";
+    bottomTournamentElement.style.display = "flex";
+    midColumn.style.width = "100%";
     printBracket(tournamentPlayer, currentMatch, thirdPlayerMode);
   });
 
@@ -568,14 +604,21 @@ function addEventListenerToTilesTournament() {
   }
 
   function findWinner(){
+    afterGameTournament(3,0);
+    return;
+    if (!currentMatch[nbMatch][1]){
+      afterGameTournament(3, 0);
+      return;
+    }
     const player1Status = getUserStatus(currentMatch[nbMatch][0].myRef.playerId);
     const player2Status = getUserStatus(currentMatch[nbMatch][1].myRef.playerId);
     if (player1Status === undefined)//if (player1Status === undefined || player1Status === "offline"){
       afterGameTournament(0, 3);
     else if (player2Status === undefined) //if (player2Status === undefined || player2Status === "offline"){
       afterGameTournament(3, 0);
-    else if (currentMatch[nbMatch][1])
+    else if (currentMatch[nbMatch][0].myRef.playerId === currentMatch[nbMatch][1].myRef.playerId)
+      afterGameTournament(3, 0);
+    else
       switchToGame(gameState, currentMatch[nbMatch][0].myRef, currentMatch[nbMatch][1].myRef, currentMatch[nbMatch][4].myRef, true);
-    else afterGameTournament(3, 0);
   }
 

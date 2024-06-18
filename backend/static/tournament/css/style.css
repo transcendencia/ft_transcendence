@@ -36,6 +36,22 @@ body {
   flex-direction: row;
 }
 
+.topTournament{
+  display: flex;
+  height: 80%;
+  width: 100%;
+}
+
+.bottomTournament{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20%;
+  width: 100%;
+  text-align: center;
+  flex-direction: row;
+}
+
 .square {
   border: 2px solid red;
 }
@@ -171,13 +187,15 @@ body {
 }
 
 .matchInfo{
-  /* border: 5px solid wheat; */
-  height: 10%;
-  width: 90%;
+  border: 4px solid #3777ff;
+  background-color: #000f61b2;
+  border-radius: 10px;
+  height: 50%;
+  width: 50%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  /* padding: 0px 5px; */
+  justify-content: center;
+  margin: 50px;
 }
 
 h2 {
@@ -195,7 +213,6 @@ p{
   font-size: 15px;
   color: white;
   font-family: 'Space';
-  padding-top: 5px;
 }
 
 .startTournamentButton {
@@ -210,9 +227,9 @@ p{
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 85px;
-  width: 225px;
-  margin-bottom: 50px;
+  height: 30px;
+  width: 320px;
+  margin-right: 50px;
 }
 
 .startTournamentButton:hover {

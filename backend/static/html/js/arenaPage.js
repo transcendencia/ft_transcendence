@@ -274,7 +274,7 @@ const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
     let player2;
     let player3;
-    if (matchPlayer.length < 2)
+    if (matchPlayer.length < 2 || (matchPlayer.length < 3 && matchPlayer[1].thirdPlayer))
         return;
     if (matchPlayer.length === 2){
         player2 = matchPlayer[1];
@@ -380,7 +380,7 @@ export function createUserInfoObject(tile, i) {
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
-const pwWindow = document.querySelector(".enterPasswordWindow");
+const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
 const validatePasswordButton = document.getElementById("arenaLogInButton");
 const backPasswordButton = document.getElementById("arenaBackLogInButton");
 let tempTileIndex = -1; // To store the index of the tile that was clicked
@@ -448,7 +448,8 @@ function putUserInMatch() {
 }
 
 validatePasswordButton.addEventListener('click', function() {
-    putUserInMatch();
+    if (planetInRange.name === "arena")
+        putUserInMatch();
 });
 
 backPasswordButton.addEventListener('click', function() {
@@ -529,6 +530,7 @@ export function RenderHostMatch(user) {
   }
 
 import { get_friends_list } from "./userManagement.js";
+import { planetInRange } from "./planetIntersection.js";
 
 const backButtonArenaPage = document.querySelectorAll(".planetBackButton");
 
