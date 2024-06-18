@@ -1,6 +1,7 @@
 import { getCookie } from './loginPage.js';
 import { getTranslatedText} from "./translatePages.js";
-import { RenderHostMatch, RenderUserTournament, RenderAllUsersInList, RenderAllUsersTournament} from "./arenaPage.js";
+import { RenderHostMatch, RenderAllUsersInList} from "./arenaPage.js";
+import { RenderUserTournament, RenderAllUsersTournament } from '../../tournament/js/newTournament.js';
 
 export function updateUserGraphicMode(graphicMode) {
 	const token = localStorage.getItem('host_auth_token');
@@ -76,7 +77,7 @@ export function updateUserStatus(status) {
 
 export function getUserStatus(userId) {
     const token = localStorage.getItem('host_auth_token');
-    fetch(`get_status/${userId}`, {
+    return fetch(`get_status/${userId}`, {
         method: 'GET',
         headers: {
             'Authorization': `Token ${token}`,
@@ -85,12 +86,14 @@ export function getUserStatus(userId) {
     })
     .then(response => {
         if (!response.ok) {
+            // console.log(response.user_status);
             throw new Error('Erreur HTTP ' + response.status);
         }
         return response.json();
     })
     .then(data => {
-        console.log('Utilisateur trouvé :', data.status);
+        console.log('Utilisateur trouvé :', data.user_status);
+        return data.user_status;
     })
     .catch(error => {
         console.error('Erreur lors de la récupération du status :', error.message);

@@ -229,10 +229,12 @@
               <div class="optionButton">
                 <div class="buttonTitle">
                   <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
-                    ?
+                  <div id="botDifficultyText">
+                    Bot difficulty
+                  </div>
                   <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
                 </div>
-                <div class="buttonCont"></div>
+                <div id="botDifficultyLevelText" class="buttonCont">Medium</div>
               </div>
             </div>
             <div id="startText" class="redButton">Start</div>
@@ -420,19 +422,13 @@
         <div class="secondLineTournament">
           <div id="leftColumn" class="leftColumn">
             <div id="trnmtUserlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
-            <div id="userlistTournamentPage" class="userlistBackground before-launch">
-              <!-- <div id="botUserTournamentTile" class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
-                <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
-                <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
-              </div> -->
-            </div>
+            <div id="userlistTournamentPage" class="userlistBackground before-launch"></div>
+            <h2 id="next-match" class="matchInfo" style="display:none;"></h2>
+            <p id="match" class="matchInfo" style="display:none;"></p>
+            <div id="launchMatch" class="startTournamentButton" style="display:none;"></div>
             <div id="trnmtBackButton" class="planetBackButton" style="width: 90%">Back</div>
           </div>
           <!-- when the tournament is launch -->
-          <h2 id="next-match" class="matchInfo" style="display:none;">Next match to be played:</h2>
-          <p id="match" class="matchInfo" style="display:none;"></p>
-          <div id="launchMatch" class="startTournamentButton" style="display:none;">Start match</div>
-        </div>
         <div id="midColumn" class="rightColumn">
           <div class="addPlayerToTournament before-launch">
             <div class="elemContTournament">
@@ -443,7 +439,7 @@
               </div>
               <div class="playerText"> Player 1 </div>
               </div>
-              <div class="addPlayer">
+              <div class="addPlayer"> 
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
                 <div class="playerText"> Player 2 </div>
               </div>
@@ -499,10 +495,12 @@
             <div class="optionButtonVert">
               <div class="buttonTitleVert">
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
-                  ?
+                <div id="trnmtBotDifficultyText">
+                  Bot difficulty
+                </div>
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
               </div>
-              <div class="buttonContVert"></div>
+              <div id="trnmtBotDifficultyLevelText" class="buttonContVert">Medium</div>
             </div>
           </div>
           <div class="rightColumnBottom before-launch">
@@ -511,8 +509,10 @@
               <div id="error_msg" class="errorMsg"></div>
             </div>
             <div class="rightColumnBottomRight before-launch">
-              <div class="plusThirdPlayer">OFF</div>
-              <p style="padding-left: 10px;">   Third Player</p>
+              <div class="switch"  id="thirdPlayertoggleSwitch">
+                <div class="slider"></div>
+              </div> 
+              <p id="thirdPlayerText" style="padding-left: 10px;">Third Player</p>
             </div>
           </div>
           <!-- when the tournament is launch -->

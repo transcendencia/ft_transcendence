@@ -204,9 +204,9 @@
 
 .optionButton {
     border-radius: 5px;
-    margin: 25px;
-    height: 90%;
-    width: 30%;
+    margin: 5px 0px;
+    height: 85%;
+    width: 33%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -219,11 +219,12 @@
     border: 5px solid #3777ff;
     background-color: #000f61b2;
     display: flex;
+    text-align: center;
     justify-content: space-between;
     align-items: center;
     font-family: 'Space';
     height: 20%;
-    width: 75%;
+    width: 85%;
     font-size: 18px;
     color: white;
     z-index: 99;
@@ -260,7 +261,7 @@
     align-items: center;
     text-align: center;
     height: 80%;
-    width: 65%;
+    width: 70%;
 }
 
 .choosePlayerCont {
