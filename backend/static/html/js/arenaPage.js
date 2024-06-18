@@ -273,7 +273,6 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
     }, 250);
   }
 
-
 export function changeGraphics(mode) {
     if (gameState.graphics === mode)
         return;
@@ -468,7 +467,8 @@ validatePasswordButton.addEventListener('click', function() {
 });
 
 backPasswordButton.addEventListener('click', function() {
-    
+    pwWindow.classList.remove("showRectangle");
+    blockingPanel.style.visibility = 'hidden';
 });
 
 const matchPlayer = [];

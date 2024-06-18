@@ -6,7 +6,6 @@ import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted } from "./arenaPage.js";
 import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleRSContainerVisibility, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
-import { landedOnPlanet, togglePlanet, cancelLanding } from "./enterPlanet.js";
 import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
 
 function addGlow(elementId, glow) {
@@ -30,21 +29,17 @@ signupHereButton.addEventListener('click', function() {
 
 showPage('loginPage');
 
-
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
-        if (icon.id === 'graphicsIcon1' && gameState.graphics != 'low')
-        {
+        if (icon.id === 'graphicsIcon1' && gameState.graphics != 'low') {
             gameState.graphicsNeedToChange = true;
             gameState.graphics = 'low';
         }
-        if (icon.id === 'graphicsIcon2' && gameState.graphics != 'medium')
-        {
+        if (icon.id === 'graphicsIcon2' && gameState.graphics != 'medium') {
             gameState.graphicsNeedToChange = true;
             gameState.graphics = 'medium';
         }
-        if (icon.id === 'graphicsIcon3' && gameState.graphics != 'high')
-        {
+        if (icon.id === 'graphicsIcon3' && gameState.graphics != 'high') {
             gameState.graphicsNeedToChange = true;
             gameState.graphics = 'high';
         }
@@ -300,6 +295,14 @@ function getGameInfo() {
 var disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", handleLogout);
 
+function resetHTMLelements(){
+    document.querySelector(".gameUI").style.visibility = 'hidden';
+    document.getElementsByClassName("bluebar")[0].style.opacity = 0;
+    document.getElementById('c4').style.display = 'block';
+    document.getElementById('c3').style.display = 'none';
+    document.getElementById('c1').style.display = 'none';
+}
+
 function handleLogout() {
     updateUserStatus('offline')
     .then(() => {
@@ -311,17 +314,11 @@ function handleLogout() {
     .catch(error => {
         console.error('Erreur :', error);
     });
-    if (gameState.inGame)
-    {
+    if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
         toggleGameStarted();
-        document.querySelector(".gameUI").style.visibility = 'hidden';
-        document.getElementsByClassName("bluebar")[0].style.opacity = 0;
-        document.querySelector('.loginPage').style.visibility = 'visible';
-        document.getElementById('c4').style.display = 'block';
-        document.getElementById('c3').style.display = 'none';
-        document.getElementById('c1').style.display = 'none';
+        resetHTMLelements();
     }
     togglePause();
     spaceShip.position.set(0, 0, -1293.5);

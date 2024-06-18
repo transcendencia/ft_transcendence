@@ -257,7 +257,7 @@ const blockingPanel = document.getElementById('blockingPanel');
 const pwWindow = document.querySelector(".enterPasswordWindow");
 const validatePasswordButton = document.getElementById("arenaLogInButton");
 const backPasswordButton = document.getElementById("arenaBackLogInButton");
-let tempTileIndexTournament = -1; // To store the index of the tile that was clicked
+let tempTileIndexTournament = -1;
 
 function addEventListenerToTilesTournament() {
   userTilesTournament.forEach((tile, i) => {
@@ -322,7 +322,8 @@ function addEventListenerToTilesTournament() {
   });
 
   backPasswordButton.addEventListener('click', function() {
-    
+    pwWindow.classList.remove("showRectangle");
+    blockingPanel.style.visibility = 'hidden';
   });
 
   const tournamentPlayer = [];
@@ -366,7 +367,7 @@ function addEventListenerToTilesTournament() {
   let currentMatch = [];
   let round = 1;
   let nbMatch;
-  let thirdPlayerMode = false; //must be removed to use the real variable
+  let thirdPlayerMode = false;
 
   function makeMatchup() {
     const ul = document.getElementById("match");
