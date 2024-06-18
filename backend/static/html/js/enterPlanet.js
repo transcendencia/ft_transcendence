@@ -83,6 +83,11 @@ export function triggerInfiniteAnim(img1, img2) {
     img2.style.animation = "upDownImgR 2s infinite alternate ease-in-out";
 }
 
+export function cancelLanding()
+{
+    landedOnPlanet = false;
+}
+
 export function togglePlanet() {
     if (planetInRange.name === "settings")
         clearInterval(checkEach5Sec);
