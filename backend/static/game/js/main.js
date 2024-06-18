@@ -449,7 +449,6 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-var scorePoints = document.getElementsByClassName("parallelogram");
 
 document.addEventListener('keyup', (event) => {
     if (keyDown.hasOwnProperty(event.key)) {
@@ -459,9 +458,9 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
+const scorePoints = document.getElementsByClassName("parallelogram");
 const blueBar = document.getElementsByClassName("bluebar");
 const scoreUI = document.getElementsByClassName("gameUI");
-const winningScreen = document.querySelector('.winningScreen');
 const thirdPlayerUI = document.getElementsByClassName("profileCont3");
 
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -3825,9 +3824,9 @@ function glitch(glitchEffect)
     }, 500);
 }
 
-let fpsInterval = 1000 / 75; // 75 FPS
-let stats = new Stats();
-let lastUpdateTime = performance.now();
+// let fpsInterval = 1000 / 75; // 75 FPS
+// let stats = new Stats();
+// let lastUpdateTime = performance.now();
 
 function animate()
 {

@@ -18,6 +18,7 @@ import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { userList } from './userManagement.js';
 import { returnToHost } from './userPage.js'
 
+
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
 const renderer = new THREE.WebGLRenderer({
@@ -45,25 +46,15 @@ class LobbyVisuals
         this.currentGraphics = 'medium';
         this.composer;
         this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-        
         this.spaceCubeMapTexture = cubeLoader.load([
-            '../../static/game/texturePlayground/spaceMap/nx.png',
-            '../../static/game/texturePlayground/spaceMap/px.png',
-            '../../static/game/texturePlayground/spaceMap/py.png',
-            '../../static/game/texturePlayground/spaceMap/ny.png',
-            '../../static/game/texturePlayground/spaceMap/nz.png',
-            '../../static/game/texturePlayground/spaceMap/pz.png'
+            '../../static/game/texturePlayground/blueSpaceMap/nx.png',
+            '../../static/game/texturePlayground/blueSpaceMap/px.png',
+            '../../static/game/texturePlayground/blueSpaceMap/py.png',
+            '../../static/game/texturePlayground/blueSpaceMap/ny.png',
+            '../../static/game/texturePlayground/blueSpaceMap/nz.png',
+            '../../static/game/texturePlayground/blueSpaceMap/pz.png'
         ]);
         this.scene.background = this.spaceCubeMapTexture;
-
-        this.boostCubeMapTexture = cubeLoader.load([
-            '../../static/game/texturePlayground/boostSpaceMap/nx.png',
-            '../../static/game/texturePlayground/boostSpaceMap/px.png',
-              '../../static/game/texturePlayground/boostSpaceMap/py.png',
-              '../../static/game/texturePlayground/boostSpaceMap/ny.png',
-              '../../static/game/texturePlayground/boostSpaceMap/nz.png',
-              '../../static/game/texturePlayground/boostSpaceMap/pz.png'
-          ]);
 
         this.bloomPass.threshold = 0.1;
         this.bloomPass.strength = 0.3;
@@ -137,10 +128,6 @@ class LobbyVisuals
         .onUpdate(() => {
             this.camera.updateProjectionMatrix();
         })
-        .onComplete(() => {
-            if (this.currentGraphics === 'high')
-                this.scene.background = this.boostCubeMapTexture;
-        })
         .start();
     }
     deactivateSpeedEffect()
@@ -152,10 +139,6 @@ class LobbyVisuals
             this.camera.updateProjectionMatrix();
         })
         .start();
-        if (this.currentGraphics != 'high')
-            return;
-        this.scene.background = this.spaceCubeMapTexture;
-    
     }
     render()
     {
