@@ -24,17 +24,11 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'w')
         wKeyPressed = true;
     if (event.key === 'a')
-        {
-            // lobbyVisuals.removeAfterPass();
             aKeyPressed = true;
-        }
     if (event.key === 's')
         sKeyPressed = true;    
     if (event.key === 'd')
-        {
-            // lobbyVisuals.removeAfterPass();
             dKeyPressed = true;
-        }
     aKeyIsPressed = true;
 });
 
