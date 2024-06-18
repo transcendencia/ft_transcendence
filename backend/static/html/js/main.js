@@ -3,7 +3,7 @@ import { showPage } from './showPages.js';
 import {spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
-import {landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
+import {cancelLanding, landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
@@ -16,6 +16,7 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
+
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -30,6 +31,10 @@ const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
+export function toggleLobbyStart() {
+    lobbyStart = !lobbyStart;
+}
+
 class LobbyVisuals
 {
     constructor(scene, camera, renderer)
@@ -40,25 +45,15 @@ class LobbyVisuals
         this.currentGraphics = 'medium';
         this.composer;
         this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-        
         this.spaceCubeMapTexture = cubeLoader.load([
-            '../../static/game/texturePlayground/spaceMap/nx.png',
-            '../../static/game/texturePlayground/spaceMap/px.png',
-            '../../static/game/texturePlayground/spaceMap/py.png',
-            '../../static/game/texturePlayground/spaceMap/ny.png',
-            '../../static/game/texturePlayground/spaceMap/nz.png',
-            '../../static/game/texturePlayground/spaceMap/pz.png'
+            '../../static/game/texturePlayground/blueSpaceMap/nx.png',
+            '../../static/game/texturePlayground/blueSpaceMap/px.png',
+            '../../static/game/texturePlayground/blueSpaceMap/py.png',
+            '../../static/game/texturePlayground/blueSpaceMap/ny.png',
+            '../../static/game/texturePlayground/blueSpaceMap/nz.png',
+            '../../static/game/texturePlayground/blueSpaceMap/pz.png'
         ]);
         this.scene.background = this.spaceCubeMapTexture;
-
-        this.boostCubeMapTexture = cubeLoader.load([
-            '../../static/game/texturePlayground/boostSpaceMap/nx.png',
-            '../../static/game/texturePlayground/boostSpaceMap/px.png',
-              '../../static/game/texturePlayground/boostSpaceMap/py.png',
-              '../../static/game/texturePlayground/boostSpaceMap/ny.png',
-              '../../static/game/texturePlayground/boostSpaceMap/nz.png',
-              '../../static/game/texturePlayground/boostSpaceMap/pz.png'
-          ]);
 
         this.bloomPass.threshold = 0.1;
         this.bloomPass.strength = 0.3;
@@ -132,10 +127,6 @@ class LobbyVisuals
         .onUpdate(() => {
             this.camera.updateProjectionMatrix();
         })
-        .onComplete(() => {
-            if (this.currentGraphics === 'high')
-                this.scene.background = this.boostCubeMapTexture;
-        })
         .start();
     }
     deactivateSpeedEffect()
@@ -147,10 +138,13 @@ class LobbyVisuals
             this.camera.updateProjectionMatrix();
         })
         .start();
-        if (this.currentGraphics != 'high')
-            return;
-        this.scene.background = this.spaceCubeMapTexture;
-    
+    }
+    render()
+    {
+        if (this.currentGraphics === 'high')
+            this.composer.render();
+        else
+            this.renderer.render(this.scene, this.camera);
     }
 }
 
@@ -355,6 +349,7 @@ function planetMovement() {
 export function startAnimation() {
     let target = -1298;
     let duration = 500;
+    spaceShip.rotation.set(0, 0, 0);
     let anim1 = new TWEEN.Tween(spaceShip.position)
     .to({z: target}, duration)
     .easing(TWEEN.Easing.Linear.None)
@@ -382,13 +377,14 @@ export function startAnimation() {
         .onComplete(() => {
             spaceShipInt.visible = false;
             lobbyStart = true;
+            cancelLanding();
             toggleRSContainerVisibility();
         });
         anim1.chain(anim2, anim3);
         anim1.start();
     }
 
-function toggleEscapeContainerVisibility() {
+export function toggleEscapeContainerVisibility() {
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
@@ -400,6 +396,10 @@ function toggleEscapeContainerVisibility() {
 }
 
 let pauseGame = false;
+
+export function togglePause() {
+    pauseGame ? pauseGame = false : pauseGame = true;
+}
 
 import { getUserStatus } from './userManagement.js';
 

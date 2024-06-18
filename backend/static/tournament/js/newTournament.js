@@ -263,7 +263,6 @@ const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
 const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const validatePasswordButton = document.getElementById("arenaLogInButton");
 const validateAliasButton = document.getElementById("aliasLogInButton");
-const backPasswordButton = document.getElementById("arenaBackLogInButton");
 const backAliasButton = document.getElementById("aliasBackLogInButton");
 let tempTileIndexTournament = -1; // To store the index of the tile that was clicked
 
@@ -329,11 +328,11 @@ function addEventListenerToTilesTournament() {
           playerNb--;
           removeUserFromTournament(tile.user.id);
       });
-      if (tile.type === 'Friend')
-        textCont.classList.remove('friendBg');
+      if (tile.type === 'Friend') 
+        textCont.classList.add('friendBg');
       else if (tile.type === 'Bot')
-          textCont.classList.remove('botBg');
-      else textCont.classList.remove('defaultBg');
+        textCont.classList.add('botBg');
+      else textCont.classList.add('defaultBg');
     }
   }
 
@@ -341,10 +340,6 @@ function addEventListenerToTilesTournament() {
     if (planetInRange.name === "tournament")
       askForAlias()
       // putUserInTournament();
-  });
-
-  backPasswordButton.addEventListener('click', function() {
-    
   });
 
   validateAliasButton.addEventListener('click', function() {

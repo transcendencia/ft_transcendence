@@ -21,10 +21,6 @@
     overflow: hidden;
 }
 
-.rightColumn * {
-    /* border: 5px solid violet; */
-}
-
 .userlistBackground {
     background-color: #000f61b2;
     border-radius: 5px;
@@ -77,15 +73,15 @@
 }
 
 .friendBg {
-    background-color: rgba(14, 255, 26, 0.322);
+    background-color: rgba(14, 255, 110, 0.5) !important;
 }
 
 .botBg {
-    background-color: rgba(164, 67, 255, 0.257);
+    background-color: rgba(164, 67, 255, 0.500) !important;
 }
 
 .defaultBg {
-    background-color: #00000031;
+    background-color: rgba(90, 142, 255, 0.500) !important;
 }
 .imgContainer {
     border-radius: 5px;

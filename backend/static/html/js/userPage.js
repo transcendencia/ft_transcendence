@@ -361,7 +361,9 @@ async function RenderUsersSearched(query) {
   
 inputElement.addEventListener('input', function(event) {
   const searchQuery = this.value.trim();
-    RenderUsersSearched(searchQuery);
+  if (searchQuery.length === 0)
+    renderFriendList();
+  else RenderUsersSearched(searchQuery);
 });
 
 export async function renderFriendList() {

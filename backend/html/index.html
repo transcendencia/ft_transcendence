@@ -393,7 +393,7 @@
                    <div class="profilePicContainer">
                       <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
-                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
+                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicBut ton">Choose file</label>
                     </div>
                     <div id= "changeInfoMessage" class="changeInfoMessage"></div>
                     <div class="buttonContainer">
@@ -409,14 +409,16 @@
                 <div class="validateDeleteButton" id="deleteAccountCancel">No</div>
               </div>
             </div>
-          <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between; flex-shrink: 0;">
-            <div id="friendListText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
-            <div class="friendSearchBar">
-              <input id="searchInput" class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . ."></input>
-            </div>
-            <div id="userlistUserPage" class="userlistBackground" style="height:85%; width: 100%; border-radius: 10px;">
-            </div>
-            <div id="userBackButton" class="planetBackButton">Back</div>
+            <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between; flex-shrink: 0; align-items: flex-start;">
+              <div class="titleContainer" style="width: 100%; display: flex; justify-content: center;">
+                  <div id="friendListText" style="font-size: 20px; font-family: 'space'; color: white; text-align: center;"> Friends List </div>
+              </div>
+              <div class="friendSearchBar" style="width: 95%;">
+                  <input id="searchInput" class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . .">
+              </div>
+              <div id="userlistUserPage" class="userlistBackground" style="height:85%; width: 95%; border-radius: 10px;">
+              </div>
+              <div id="userBackButton" class="planetBackButton" style="width: 95%;">Back</div>
           </div>
       </div>
     </div>
@@ -801,6 +803,16 @@
           <div id="username3Text" style="color: rgb(255, 255, 255); ">TonDaron</div>
         </div>
     </div>
+    <div class="winning-screen">
+      <div id="winningText">Player 1 wins!</div>
+      <div id="scoreText">10 - 5</div>
+      <button id="rematchButton">
+          <div id="rematchText">Rematch</div>
+      </button>
+      <button id="backToLobbyButton">
+          <div id="backToLobbyText">Back to lobby</div>
+      </button>
+  </div>
   </div>
   
 
@@ -811,6 +823,7 @@
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/7/Stats.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script type="module" src="{% static 'html/js/main.js' %}"></script>
     <script type="module" src="{% static 'html/js/arenaPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/loginPage.js' %}"></script>
