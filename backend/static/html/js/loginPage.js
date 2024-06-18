@@ -313,7 +313,7 @@ function handleLogout() {
     });
     if (gameState.inGame)
     {
-        // gameState.inGame = false;
+        gameState.inGame = false;
         gameState.inLobby = true;
         toggleGameStarted();
         document.querySelector(".gameUI").style.visibility = 'hidden';
