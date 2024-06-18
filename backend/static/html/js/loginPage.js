@@ -1,11 +1,13 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
-import { alien1, alien2, alien3} from "./objs.js";
+import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { changeGraphics } from "./arenaPage.js";
-import { startAnimation } from "./main.js";
+import { changeGraphics, toggleGameStarted } from "./arenaPage.js";
+import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleRSContainerVisibility, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
+import { landedOnPlanet, togglePlanet, cancelLanding } from "./enterPlanet.js";
+import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -219,8 +221,9 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
  
     const scoreAndThirdPlayer = document.createElement('div');
     scoreAndThirdPlayer.classList.add('scoreAndThirdPlayer');
-    scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">Third Player : ${thirdPlayer}</div>`;
-  
+    if (thirdPlayer === null)
+        scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">No Third Player</div>`;
+    else scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">Third Player : ${thirdPlayer}</div>`;
     const userHI2 = document.createElement('div');
     userHI2.classList.add('userHI');
     if (player2Name.length > 8)
@@ -308,5 +311,28 @@ function handleLogout() {
     .catch(error => {
         console.error('Erreur :', error);
     });
+    if (gameState.inGame)
+    {
+        gameState.inGame = false;
+        gameState.inLobby = true;
+        toggleGameStarted();
+        document.querySelector(".gameUI").style.visibility = 'hidden';
+        document.getElementsByClassName("bluebar")[0].style.opacity = 0;
+        document.querySelector('.loginPage').style.visibility = 'visible';
+        document.getElementById('c4').style.display = 'block';
+        document.getElementById('c3').style.display = 'none';
+        document.getElementById('c1').style.display = 'none';
+    }
+    togglePause();
+    spaceShip.position.set(0, 0, -1293.5);
+    spaceShip.rotation.set(0, 0, 0);
+    setTimeout(() => {
+        toggleBlurDisplay(true);
+        toggleEscapeContainerVisibility();
+        resetOutline();
+        spaceShipInt.visible = true;
+        showPage('loginPage');
+        toggleLobbyStart();
+    }, 50);
     // localStorage.setItem('hostLoggedIn', 'false');
 };

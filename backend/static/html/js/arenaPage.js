@@ -41,7 +41,7 @@ function Glow() {
 
 let gamemodeCounter = 0;
 let mapCounter = 0;
-let botDifficulty = 0;
+let botDifficulty = 1;
 
 function toggleGamemode(buttonHeader, imgIndex) {
     if (imgIndex === 0){
@@ -87,7 +87,7 @@ function handleBotDifficulty(buttonHeader, imgIndex) {
     if (imgIndex === 0){
         botDifficulty--;
         if (botDifficulty === -1)
-            botDifficulty = 3;
+            botDifficulty = 2;
     }
     else {
         botDifficulty++;    
@@ -95,11 +95,11 @@ function handleBotDifficulty(buttonHeader, imgIndex) {
             botDifficulty = 0;
     }
     if (botDifficulty === 0)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('botDifficultyEasy');
+        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyEasy');
     else if (botDifficulty === 1)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('botDifficultyMedium');
+        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyMedium');
     else if (botDifficulty === 2)
-        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('botDifficultyHard');
+        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyHard');
 }
 
 const buttonHeaders = document.querySelectorAll('.buttonTitle');
@@ -173,6 +173,10 @@ function setAddingMode(plusButton, i) {
 
 export let gameStarted = false;
 
+export function toggleGameStarted() {
+    gameStarted = !gameStarted;
+}
+
 export function endGame(isTournament) {
     gameStarted = false;
     let user3 = null;
@@ -193,6 +197,15 @@ export function endGame(isTournament) {
     document.getElementById('c4').style.display = 'block';
     document.getElementById('c3').style.display = 'none';
     document.getElementById('c1').style.display = 'none';
+    gameState.arena.game.resetUsers();
+}
+
+export function rematchGame() {
+    let user3 = null;
+
+    if (gameState.arena.game.thirdPlayer)
+        user3 = gameState.arena.game.user3.id  
+    createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode);
     gameState.arena.game.resetUsers();
 }
 
@@ -217,7 +230,7 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
     // prepare for initialization
     gameState.loading = true;
     gameState.inLobby = false;
-    setTimeout(() => {    
+    setTimeout(() => {
       gameState.arena.game.hasToBeInitialized = true;
       // choose gameMode
       if (isTournament){
@@ -244,16 +257,18 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
       gameState.arena.game.map = mapList[mapCounter];
       // choose bot difficulty
       const difficultyList = ["easy", "medium", "hard"];
-      // gameState.arena.game.botDifficulty = difficultyList[botDifficulty];
+      gameState.arena.bot.difficulty = difficultyList[botDifficulty];
 
       // add players
       // const 
       gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
       gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
-      if (typeof player3 !== "undefined"){
+        if (playerNb === 2) {
         gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
         gameState.arena.game.thirdPlayer = true;
       }
+      else
+        gameState.arena.game.thirdPlayer = false;
       gameState.arena.game.tournamentGame = isTournament;
     }, 250);
   }
@@ -350,14 +365,13 @@ export function resetUserInfoVisual(userInfoCont, clonedImg, profilePic, tileTex
 }
 
 export function resetToPlusButton(userInfoCont, oldObj, textCont, type) {
-    userInfoCont.parentNode.replaceChild(oldObj, userInfoCont)
-    if (type === 'Friend') {
-        textCont.classList.add('friendBg');
-    } else if (type === 'Bot') {
-        textCont.classList.add('botBg');
-    } else {
-        textCont.classList.add('defaultBg');
-    }
+    userInfoCont.parentNode.replaceChild(oldObj, userInfoCont);
+    if (type === 'Friend')
+        textCont.classList.remove('friendBg');
+    else if (type === 'Bot')
+        textCont.classList.remove('botBg');
+    else
+        textCont.classList.remove('defaultBg');
     oldObj.style.backgroundColor = grey;
 }
 
@@ -439,11 +453,13 @@ function putUserInMatch() {
             playerNb--;
             removeUserFromMatch(tile.user.id);
         });
-        if (tile.type === 'Friend')
-            textCont.classList.remove('friendBg');
+        if (tile.type === 'Friend') {
+            console.log("oui");
+            textCont.classList.add('friendBg');
+        }
         else if (tile.type === 'Bot')
-            textCont.classList.remove('botBg');
-        else textCont.classList.remove('defaultBg');
+            textCont.classList.add('botBg');
+        else textCont.classList.add('defaultBg');
     }
 }
 
