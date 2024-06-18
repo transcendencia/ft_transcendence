@@ -33,3 +33,40 @@ Quit the server with CONTROL-C.
 [14/Jun/2024 14:53:52] "GET /return_friends_list/ HTTP/1.1" 200 267
 [14/Jun/2024 14:53:57] "GET /return_friends_list/ HTTP/1.1" 200 267
 [14/Jun/2024 14:54:02] "GET /return_friends_list/ HTTP/1.1" 200 267
+
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def change_profile_info(request):
+    if request.method == 'POST':
+        data = request.data.copy()
+        anonymousStatus = request.data.get('anonymousStatus') == 'true'
+        if anonymousStatus:
+          random_color = random.choice(colors)
+          randon_items = random.choice(items)
+          res = random_color + randon_items
+          user_tmp = data.get('username')
+          nbrUser = User.objects.all().count()
+          print(nbrUser)
+          for i in range(nbrUser + 1):
+            if not User.objects.filter(username=res).exists():
+              data['username'] = res
+              break
+            else:
+              res = random.choice(colors) + random.choice(items)
+        data.pop('anonymousStatus')
+        serializer = UpdateInfoSerializer(instance=request.user, data=data)
+        if 'profile-pic' in request.FILES:
+            uploaded_file = request.FILES['profile-pic']
+            request.user.profile_picture = uploaded_file
+            request.user.save()
+            print("picture changed") 
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=200)
+        first_error = next(iter(serializer.errors.values()))[0]
+        print(first_error)
+        return Response({'status': "failure", "message": first_error}, status=400)
+
