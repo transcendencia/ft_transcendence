@@ -12,7 +12,7 @@ const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
 userlistTitle.textContent = getTranslatedText('userlist');
 
-let plusClicked = 0;
+let plusClicked = false;
 const botID = 0;
 let playerNb = 0;
 
@@ -353,6 +353,7 @@ export function createUserInfoObject(tile, i) {
 const blockingPanel = document.getElementById('blockingPanel');
 const pwWindow = document.querySelector(".enterPasswordWindow");
 const validatePasswordButton = document.getElementById("arenaLogInButton");
+const backPasswordButton = document.getElementById("arenaLogInBackButton");
 let tempTileIndex = -1; // To store the index of the tile that was clicked
 
 function addEventListenerToTiles() {
@@ -421,6 +422,10 @@ function putUserInMatch() {
 validatePasswordButton.addEventListener('click', function() {
     putUserInMatch();
 });
+
+backPasswordButton.addEventListener('click', function() {
+    
+}
 
 const matchPlayer = [];
 

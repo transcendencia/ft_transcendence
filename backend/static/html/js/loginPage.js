@@ -112,7 +112,7 @@ languageIcons.forEach(function(icon) {
         // Send POST request to change user language in the back if user is logged in
         const token = localStorage.getItem('host_auth_token');
         if (token && currentLanguage !== icon.id) {
-            updateUserLanguage(incon.id);
+            updateUserLanguage(icon.id);
         }
     });
     //init english flag
