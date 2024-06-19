@@ -27,9 +27,12 @@ def login_page(request):
     username = request.POST.get("username")
     username_lower = username.lower()
     password = request.POST.get("password")
-    new_language = request.POST.get("language")
-    languageClicked = request.POST.get("languageClicked") == 'true'
+    hostLoggedIn = request.POST.get("hostLoggedIn") == 'true'
+    if hostLoggedIn:
+      new_language = request.POST.get("language")
+      languageClicked = request.POST.get("languageClicked") == 'true'
 
+    print(username_lower, password)
     user = authenticate(username=username_lower, password=password)
     if user is not None:
       # if user.status is not 'online':
@@ -37,9 +40,10 @@ def login_page(request):
         user.status = 'online'
         print("je suis le host")
         token, created = Token.objects.get_or_create(user=user)
-        user.is_host = True
-        if languageClicked and new_language != user.language:
-          user.language = new_language
+        if hostLoggedIn:
+          user.is_host = True
+          if languageClicked and new_language != user.language:
+            user.language = new_language
         user.save()
         return  Response({'status': "succes", 'token': token.key, 'msg_code': "loginSuccessful", 'language': user.language, 'id': user.id, 'graphic_mode': user.graphic_mode})
     else:
@@ -47,7 +51,6 @@ def login_page(request):
   except Exception as e:
       print(str(e))
       return Response({'status': "error", 'message': str(e)})
-
 
 @api_view(['POST']) 
 @permission_classes([AllowAny])  

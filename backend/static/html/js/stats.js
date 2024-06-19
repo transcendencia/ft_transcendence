@@ -148,7 +148,6 @@ export function getUserStats(userId) {
     return response.json();
   })
   .then(data => {
-    console.log("wagwwanananan");
     mapChart.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
 	modeChart.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
     winLostChart.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);

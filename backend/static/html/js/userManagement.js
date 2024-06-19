@@ -134,7 +134,7 @@ export function get_user_list() {
     })
     .then(response => response.json())
     .then(data => {
-        RenderAllUsersTournament(data);
+        RenderAllUsersTournament(data); 
     })
     .catch(error => {
         console.error('Error:', error);
