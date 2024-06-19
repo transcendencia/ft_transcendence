@@ -24,17 +24,11 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'w')
         wKeyPressed = true;
     if (event.key === 'a')
-        {
-            // lobbyVisuals.removeAfterPass();
             aKeyPressed = true;
-        }
     if (event.key === 's')
         sKeyPressed = true;    
     if (event.key === 'd')
-        {
-            // lobbyVisuals.removeAfterPass();
             dKeyPressed = true;
-        }
     aKeyIsPressed = true;
 });
 
@@ -64,7 +58,7 @@ document.addEventListener('keypress', (event) => {
 
 let distance = 10.5;
 let height = 4.5;
-let moveSpeed = 5;
+let moveSpeed = 8;
 let rotSpeed = 0.10;
 const tolerance = 0.01; 
 

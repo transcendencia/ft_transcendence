@@ -6,7 +6,7 @@ body {
 #a {
     display: flex;
     flex-direction: row;
-    background-color: #333; /* Set background color to black/gray space color */
+    background-color: #010727; /* Set background color to black/gray space color */
     width: 100vw; /* Use viewport width for container */
     height: 100vh; /* Use viewport height for container */
 }
@@ -67,4 +67,8 @@ body {
    top: 50%;
    left: 50%;
    transform: translate(-50%, -50%);
+}
+
+.playerText {
+    z-index:99; font-size: 15px; font-family: 'space'; color: white;
 }

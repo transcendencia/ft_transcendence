@@ -13,6 +13,7 @@ body {
 #c1, #c2 {
     width: 100%; /* Each canvas takes up 50% of the window width */
     height: 100%; /* Each canvas fills the entire window height */
+    cursor: none; /* Hide the cursor */
 }
 
 #c1 {
@@ -117,6 +118,7 @@ body {
     visibility: hidden;
     opacity: 0;
     transition: opacity 2s ease;
+    cursor: url('../assets/cursor/gun.cur'), auto;
 }
 
 .scoreUI {
@@ -163,4 +165,133 @@ body {
 
 .shadowfilter {
     filter: drop-shadow(0px 0px 20px #0724ff);
+}
+
+@keyframes slideInUp {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 50%);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.winning-screen {
+    padding: 20px;
+    background: rgba(58, 115, 255, 0.3);
+    border-radius: 15px;
+    border: 4px solid #3777ff;
+    width: 40%;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    visibility: hidden;
+    opacity: 0;
+    box-shadow: 0 0 20px rgba(0, 0, 255, 0.5);
+    background-image: radial-gradient(circle, rgba(58, 115, 255, 0.5), rgba(58, 115, 255, 0.2));
+    cursor: url('../assets/cursor/default.cur'), auto;
+}
+
+.winning-screen.visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    animation: slideInUp 0.5s ease-out forwards;
+}
+
+#winningText {
+    margin-top: 20px;
+    font-size: 50px;
+    font-family: 'space';
+    color: white;
+    animation: fadeIn 2s ease-out forwards;
+}
+
+#scoreText {
+    font-size: 30px;
+    font-family: 'space';
+    color: white;
+    margin: 20px 0; 
+    padding: 10px 20px;
+    border-radius: 10px;
+    position: relative;
+    background: rgba(0, 21, 255, 0.398);
+    border: 2px solid rgba(13, 117, 207, 0.718);
+}
+
+#backToLobbyText, #rematchText {
+    font-size: 20px;
+    font-family: 'space';
+    color: white;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+#backToLobbyButton {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background: linear-gradient(270deg, red, darkred, purple, red);
+    background-size: 400% 400%;
+    color: white;
+    border: 2px solid #ff0000;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.3s;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+    animation: gradientShift 10s ease infinite;
+    margin-top: 15px;
+}
+
+#backToLobbyButton:hover {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 1);
+    transform: scale(1.1);
+}
+
+#rematchButton {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background: linear-gradient(270deg, blue, darkblue, teal, blue);
+    background-size: 400% 400%;
+    color: white;
+    border: 2px solid #0000ff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.3s;
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.5);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+    animation: gradientShift 10s ease infinite;
+}
+
+#rematchButton:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 255, 1);
+    transform: scale(1.1);
 }

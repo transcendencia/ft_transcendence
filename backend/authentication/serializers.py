@@ -7,7 +7,12 @@ import logging
 class UserSerializer(serializers.ModelSerializer):
 	class Meta():
 		model = User
-		fields = ['username', 'password']
+		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'bio', 'is_host']
+
+error_codes = {
+    "length_exceeded": "Username must contain 12 characters maximum.",
+    "unique": "A user with that username already exists."
+}
 
 class SignupSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True)
@@ -22,7 +27,17 @@ class SignupSerializer(serializers.ModelSerializer):
 	
 	def validate_username(self, value):
 		if len(value) > 13:
-			raise serializers.ValidationError("Username must contains 12 characters maximum.")
+			raise serializers.ValidationError(error_codes["length_exceeded"], code="length_exceeded")
+		if value == 'bot':
+			raise serializers.ValidationError(error_codes["unique"], code="unique")
+		return value
+
+	def validate_confirmation_password(self, value):
+		confirmation_password = value
+		password = self.initial_data.get('password')
+
+		if password != confirmation_password:
+			raise PasswordValidationError(detail="Password not identical")
 		return value
 
 	# def validate_password(self, value):
@@ -31,14 +46,6 @@ class SignupSerializer(serializers.ModelSerializer):
 	# 	except ValidationError as e:
 	# 		raise PasswordValidationError(detail=e.error_list[0])
 	# 	return value
-	
-	def validate_confirmation_password(self, value):
-		confirmation_password = value
-		password = self.initial_data.get('password')
-
-		if password != confirmation_password:
-			raise PasswordValidationError(detail="Password not identical")
-		return value
 
 class UpdateInfoSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True, required=False)
