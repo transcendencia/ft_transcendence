@@ -145,9 +145,9 @@ RGPDPolicy.addEventListener('click', function() {
 });
 
 const infoButton = document.getElementById("infoButton");
-infoButton.addEventListener("click", displayInfo);
+infoButton.addEventListener("click", displayAnonymousMode);
 
-function displayInfo() {
+function displayAnonymousMode() {
   console.log("je display info");
   document.getElementById("displayAnonymousMode").classList.toggle("showRectangle")
 }
