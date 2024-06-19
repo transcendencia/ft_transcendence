@@ -1,13 +1,18 @@
-export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, scorePlayer2, gameplayMode) {
+export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, scorePlayer2, gameplayMode, modeGame, user1, user2, user3) {
     const csrfToken = getCookie('csrftoken');
 
+    console.log(user1);
     const payload = {
         player1: player1Id,
         player2: player2Id,
         player3: player3Id,
         scorePlayer1: scorePlayer1,
         scorePlayer2: scorePlayer2,
-        gameplayMode: gameplayMode
+        gameplayMode: gameplayMode,
+        modeGame: modeGame,
+        user1: user1.toJson(),
+        user2: user2.toJson(),
+        user3: user3.toJson()
     };
     try {
         const response = await fetch('/add_game/', {
@@ -44,3 +49,5 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+
