@@ -1,7 +1,8 @@
 import { togglePlanet } from './enterPlanet.js';
 import {  getCookie, createMatchBlock} from './loginPage.js';
-import { get_friends_list, send_request, accept_friend_request, delete_friend_request } from './userManagement.js';
+import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
+import { getUserStats} from './stats.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
 const statsScreen = document.querySelector('.statsBlock');
@@ -40,12 +41,14 @@ export let checkEach5Sec;
 export function initUserPlanet() {
   renderFriendList();
   const basicStats = document.getElementById('winLoseTexts1');
-  basicStats.innerHTML = `
-      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
-      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
-      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
-      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
-  `;
+  getProfileInfo();
+  getUserStats(localStorage.getItem("host_id"));
+  // basicStats.innerHTML = `
+  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
+  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
+  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
+  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
+  // `;
   checkEach5Sec = setInterval(async function() {
     if (await isListsChanged()) {
       if (inputElement.value === '')

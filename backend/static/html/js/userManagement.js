@@ -114,7 +114,6 @@ export async function get_friends_list() {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-
         const data = await response.json();
         return data;
     } catch (error) {
@@ -160,12 +159,14 @@ export function getProfileInfo() {
 			document.getElementById('username').textContent = data.profile_info.username;
 			document.getElementById('bio').textContent = data.profile_info.bio;
 			document.getElementById('profile_pic').src = data.profile_info.profile_picture;
+            document.getElementById('changeUsernameInput').value = data.profile_info.username;
+            document.getElementById('changeBioInput').value = data.profile_info.bio;
             const basicStats = document.getElementById('winLoseTexts1');
             basicStats.innerHTML = `
-                <div class="basicStats"> ${getTranslatedText('winLoseText1')} : 1</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText2')} : 1</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText3')} : 1</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText4')} : 1</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.profile_info.nbr_match}</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.profile_info.nbr_match_win}</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
+                <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
             `;
             RenderHostMatch(data.profile_info);
             RenderUserTournament(data.profile_info);

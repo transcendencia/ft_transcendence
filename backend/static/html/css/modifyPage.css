@@ -152,7 +152,7 @@
 .changeProfilePicture {
     /* margin: 30px 30px 30px 30px; */
     color: white; /* Set text color to white */
-    font-size: 20px; /* Adjust font size as needed */
+    font-size: 17px; /* Adjust font size as needed */
     font-family: "Space";
     text-align: center;
     /* text-shadow: 
@@ -233,6 +233,11 @@
     color: #060706;
 } */
 
+.toggle-container {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .switch {
     position: relative;
     display: inline-block;
@@ -261,4 +266,11 @@
 
 .switch.active .slider {
     transform: translateX(26px);
+}
+
+.info-logo {
+    width: 5px; /* Ajustez la largeur selon vos besoins */
+    height: 5px; /* Ajustez la hauteur selon vos besoins */
+    /* margin-left: 10px; Espace à gauche du toggle switch */
+    cursor: pointer;
 }

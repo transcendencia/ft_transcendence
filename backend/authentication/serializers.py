@@ -26,10 +26,13 @@ class SignupSerializer(serializers.ModelSerializer):
 			field.error_messages['blank'] = "All fields must be completed."
 	
 	def validate_username(self, value):
+		value = value.lower()
 		if len(value) > 13:
 			raise serializers.ValidationError(error_codes["length_exceeded"], code="length_exceeded")
 		if value == 'bot':
 			raise serializers.ValidationError(error_codes["unique"], code="unique")
+		if User.objects.filter(username=value).exists():
+			raise serializers.ValidationError("Username already exist")
 		return value
 
 	def validate_confirmation_password(self, value):
@@ -47,6 +50,7 @@ class SignupSerializer(serializers.ModelSerializer):
 	# 		raise PasswordValidationError(detail=e.error_list[0])
 	# 	return value
 
+
 class UpdateInfoSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True, required=False)
 	class Meta():
@@ -61,8 +65,12 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 
 	def	validate_username(self, value):
 		if value:
+			value = value.lower()
 			if len(value) > 13:
 				raise serializers.ValidationError("Username must contains 12 characters maximum.")
+			current_user = self.instance
+			if current_user and current_user.username == value:
+				return value 
 			if User.objects.filter(username=value).exists():
 				raise serializers.ValidationError("Username already exist")
 		return value

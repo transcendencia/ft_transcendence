@@ -1,13 +1,16 @@
+import os
+
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum, F, FloatField, ExpressionWrapper, Case, When
 
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 
-from ..models import User
+from ..models import User, UserStat
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
 
 #--------------------LANGUAGE--------------------
@@ -28,6 +31,7 @@ def change_language(request):
   else:
     return Response(status=405)
 
+# adapter avec un id pour que se soit applicable au user non host
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -41,13 +45,6 @@ def update_status(request):
     return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
   else:
     return Response(status=405)
-
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_status_host(request):
-  user = request.user
-  return Response({'status': user.status}, status=200)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -74,6 +71,71 @@ def get_profile_info(request):
   else:
     return Response(status=405)
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_stats(request, userId):
+  try:
+    user = get_object_or_404(User, id=userId)
+    gameWon = UserStat.objects.filter(player=user, isWinner=True)
+    nbrGameWon = gameWon.count()
+    allGames = UserStat.objects.filter(player=user).order_by('date')
+    nbrGames = allGames.count()
+
+    # Win rate
+    percentageGameWon = round((nbrGameWon * 100) / user.nbr_match, 1) if user.nbr_match > 0 else 0
+    percentageGameLost = round(100 - percentageGameWon, 1)
+
+    # Dashes / PoweredUsed
+    sums = allGames.aggregate(totalDashes=Sum('nbDashes'), totalPoweredUsed=Sum('nbPoweredUsed'), )
+
+    totalDashes = sums['totalDashes'] or 0
+    totalPoweredUsed = sums['totalPoweredUsed'] or 0
+
+    total = totalDashes + totalPoweredUsed
+    if total > 0:
+      dashesPercentage = (totalDashes / total) * 100
+      poweredUsedPercentage = (totalPoweredUsed / total) * 100
+    else:
+      dashesPercentage = 0
+      poweredUsedPercentage = 0
+    # Efficiency rate
+    allGames_annotated = allGames.annotate(
+      efficiency_ratio=ExpressionWrapper(
+        F('pointsScored') / 
+        Case(
+            When(pointsTaken__gt=0, then=F('pointsTaken')),
+            default=1.0,
+            output_field=FloatField()
+        ),
+        output_field=FloatField()
+      )
+    )
+
+    efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
+
+    maxStreak = 0
+    currentStreak = 0
+
+    for game in allGames:
+      if game.isWinner:
+        currentStreak += 1
+        if currentStreak > maxStreak:
+          maxStreak = currentStreak
+      else:
+          currentStreak = 0
+    
+    return Response({
+      'percentageGameWon': percentageGameWon, 
+      'percentageGameLost': percentageGameLost,
+      'dashesPercentage': dashesPercentage,
+      'poweredUsedPercentage': poweredUsedPercentage,
+      'efficiencyRatios': efficiencyRatios,
+      'nbrGames': nbrGames,
+      'currentStreak': currentStreak})
+  except User.DoesNotExist:
+    return Response({'status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -82,12 +144,14 @@ def change_profile_info(request):
         print(request.data)
         # copier data dans un nouveau truc pour pouvoir changer  les valeurs (bien changer les endroit ou est appeler request.data par le nom de la nouvele variables)
         # checker request.data.get('anonymousStatus') == 'true'
-
+        anonymousStatus = request.data.get('anonymousStatus') == 'true'
+        print(anonymousStatus)
+        
         serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
         if 'profile-pic' in request.FILES:
-            # if request.user.profile_picture.url != 'media/default.png':
-            #       print("coucou")
-            #       request.user.profile_picture.delete()
+            print(request.user.profile_picture.name)
+            if request.user.profile_picture.name != 'default.png':
+              request.user.profile_picture.delete()
             uploaded_file = request.FILES['profile-pic']
             request.user.profile_picture = uploaded_file
             request.user.save()
@@ -131,3 +195,4 @@ def change_graphic_mode(request):
 def delete_account(request):
   request.user.delete()
   return Response({'status' : "success"})
+
