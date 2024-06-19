@@ -13,3 +13,4 @@ venv/
 #production files
 backend/productionfiles/
 backend/migrations/
+backend/authentication/migrations/0001_initial.py

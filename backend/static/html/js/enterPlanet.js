@@ -1,13 +1,19 @@
 import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
-export let landedOnPlanet = false;
+import { checkEach5Sec, initUserPlanet } from './userPage.js';
+import { resetTournament, tournamentState, addEventListenersToPlusButtons } from '../../tournament/js/newTournament.js';
+import { initArenaPlanet } from './arenaPage.js';
+import { initTournamentPlanet } from '../../tournament/js/newTournament.js';
 
+export let landedOnPlanet = false;
 let planetPanel = document.querySelectorAll(".planetPanel");
 let background = document.querySelectorAll(".background");
 let imagesArena = planetPanel[0].querySelectorAll("img");
 let imagesUser = planetPanel[1].querySelectorAll("img");
+let imagesTournament = planetPanel[2].querySelectorAll("img");
 let anim;
+
 
 export function togglePanelDisplay() {
     if (anim)
@@ -19,6 +25,7 @@ export function togglePanelDisplay() {
         imagesArena[0].style.animation = "moveImageRight 2s forwards";
         imagesArena[1].style.animation = "moveImageLeft 2s forwards";
         background[0].style.animation = "expandBG 2s forwards";
+        initArenaPlanet();
     } else {
         imagesArena[0].style.animation = "moveImageRightreverse 1s forwards";
         imagesArena[1].style.animation = "moveImageLeftreverse 1s forwards";
@@ -32,6 +39,7 @@ export function togglePanelDisplay() {
         imagesUser[0].style.animation = "moveImageRight 2s forwards";
         imagesUser[1].style.animation = "moveImageLeft 2s forwards";
         background[1].style.animation = "expandBG 2s forwards";
+        initUserPlanet();
     } else {
         imagesUser[0].style.animation = "moveImageRightreverse 1s forwards";
         imagesUser[1].style.animation = "moveImageLeftreverse 1s forwards";
@@ -39,6 +47,23 @@ export function togglePanelDisplay() {
         anim = setTimeout(function() {planetPanel[1].style.animation = "";}, 1000)
     }
 
+    if (landedOnPlanet && planetInRange.name == "tournament") {
+        if (tournamentState === 2)
+            resetTournament();
+        // else
+        //    addEventListenersToPlusButtons();
+        initTournamentPlanet();
+        anim = setTimeout(function () {triggerInfiniteAnim(imagesTournament[0], imagesTournament[1])}, 2000);
+        planetPanel[2].style.animation = "roll 2s forwards";
+        imagesTournament[0].style.animation = "moveImageRight 2s forwards";
+        imagesTournament[1].style.animation = "moveImageLeft 2s forwards";
+        background[2].style.animation = "expandBG 2s forwards";
+    } else {
+        imagesTournament[0].style.animation = "moveImageRightreverse 1s forwards";
+        imagesTournament[1].style.animation = "moveImageLeftreverse 1s forwards";
+        background[2].style.animation = "expandBGreverse 1s forwards"
+        anim = setTimeout(function() {planetPanel[2].style.animation = "";}, 1000)
+    }
 }
 
 function resetRotations() {
@@ -58,7 +83,14 @@ export function triggerInfiniteAnim(img1, img2) {
     img2.style.animation = "upDownImgR 2s infinite alternate ease-in-out";
 }
 
+export function cancelLanding()
+{
+    landedOnPlanet = false;
+}
+
 export function togglePlanet() {
+    if (planetInRange.name === "settings")
+        clearInterval(checkEach5Sec);
     if (!landedOnPlanet)
         landedOnPlanet = true;
     else {
@@ -70,5 +102,4 @@ export function togglePlanet() {
     resetOutlineAndText();
     toggleBlurDisplay();
     togglePanelDisplay();
-    // translateArenaPageTexts();
 }

@@ -15,7 +15,10 @@
     <link rel="stylesheet" href="{% static '../static/html/css/arenaPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/SignUpPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/userPage.css' %}">
+    <link rel="stylesheet" href="{% static '../static/html/css/modifyPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/game/style/style.css' %}">
+    <link rel="stylesheet" href="{% static '../static/tournament/css/style.css' %}">
+    <link rel="stylesheet" href="{% static '../static/tournament/css/bracket.css' %}">
     <script type="importmap">
         {
           "imports": {
@@ -50,7 +53,7 @@
         <div class="titleText" id="passwordText">
           - Password -
           <div class="textBar">
-            <input class="text-input" name="password" spellcheck="false" type="password"></input>
+            <input class="text-input" name="password" spellcheck="false" type="password" autocomplete="off"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
         </div>
@@ -83,8 +86,8 @@
     <div class="perspective">
         <form id="signupForm" method="post" action="signup/">
           {% csrf_token %}
-        Sign Up
-        <p style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
+        <div id="signUpTitle">Sign Up</div>
+        <p id="createAccountText" style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
         <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
           Login
         <div class="textBar">
@@ -95,20 +98,20 @@
       <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
           Password
         <div class="textBar">
-          <input class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password"></input>
+          <input class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
       <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
         confirm password
         <div class="textBar">
-          <input class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password"></input>
+          <input class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
       </div>
       <div class="perspective3">
-        <div id= "messageContainerSignup" class="signupMessageCont"></div>
+        <div id="messageContainerSignup" class="signupMessageCont"></div>
       </div>
       <div class="perspective2">
         <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button>
@@ -118,6 +121,8 @@
       Back to login
     </div>
 </div>
+
+
 
 
 
@@ -153,6 +158,10 @@
         Players Connected
       </div>
     </div>
+
+
+
+
     <!-- ARENA PLANET -->
     <div class="planetPanel">
         <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
@@ -161,11 +170,8 @@
         <div class="leftColumn">
           <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
           <div id="userlistArenaPage" class="userlistBackground">
-        <div id="botUserTile" class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
-          <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
-          <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
-        </div>
-        </div>
+          </div>
+        <div id="arenaBackButton" class="planetBackButton" style="width: 90%;">Back</div>
         </div>
         <div class="rightColumn">
           <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Arena </div>
@@ -175,12 +181,12 @@
             <div id="player3Text" style="font-size: 15px; font-family: 'space'; color: white;"></div>
           </div>
           <div class="rightColumnRow">
-              <div class="elemCont">
-                <div class="userInfoCont">
-                  <div class="profilePic">
-                  <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+            <div class="elemCont">
+              <div class="userInfoCont">
+                <div class="profilePic">
+                  <img id="player1MatchPicture">
                 </div>
-                AtomiK
+                <div id="player1MatchUsername"></div>
               </div>
               <div id="player1Text" style="font-size: 15px; font-family: 'space'; color: white;"> Player 1 </div>
             </div>
@@ -223,26 +229,52 @@
               <div class="optionButton">
                 <div class="buttonTitle">
                   <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
-                    ?
+                  <div id="botDifficultyText">
+                    Bot difficulty
+                  </div>
                   <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
                 </div>
-                <div class="buttonCont"></div>
+                <div id="botDifficultyLevelText" class="buttonCont">Medium</div>
               </div>
             </div>
             <div id="startText" class="redButton">Start</div>
         </div>
       </div>
-    </div> 
+    </div>
+    <div class="enterPasswordWindow">
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        AtomiK
+      </div>
+      <div class="validateDeleteText">Enter your password</div>
+      <div class="changeInfoBar" style="height: 20%;">
+        <input id="enterPasswordInput" name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" type="password" placeholder="Password"></input>
+      </div>
+      <div class="buttonContainer" style="height: 10%;">
+        <div id="arenaBackLogInButton" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">back</div>
+      <div id="arenaLogInButton" class="validateDeleteButton">Log in</div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
 
     <!-- USER PLANET -->
     <div class="planetPanel">
       <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
       <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
-      <div class="background blueShadowfilter" style="flex-direction: column; align-items: flex-start;">
-        <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white; margin-top: -15px;"> Profile </div>
-        <div class="userPagesContainer">
-          <div id="hostUserPage" class="userPage">
-            <div class="rightColumn" style="width: 75%;">
+      <div class="background blueShadowfilter" style="flex-direction: column;">
+        <div id="profileTitleText" style="font-size: 50px; font-family: 'space'; color: white; margin-top: -15px;"> Profile </div>
+        <div class="userPage">
+          <div class="userPagesContainer">
+            <div id="hostUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0;">
               <div class="aboveStatsBlock">
                 <div class="leftBlock">
                   <div class="userInfoBlock">
@@ -257,15 +289,15 @@
                         <img src="{% static 'html/assets/icons/pencil.png' %}">
                       </div>
                     </div>
-                    <div class="winLoseTexts">
-                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 13</div> 
-                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 5</div> 
-                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 8</div>
-                        <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : 33</div>
+                    <div id="winLoseTexts1" class="winLoseTexts">
+                        <div class="basicStats"> Parties : 13</div> 
+                        <div class="basicStats"> Victoires : 5</div> 
+                        <div class="basicStats"> Defaites : 8</div>
+                        <div class="basicStats"> Buts : 33</div>
                       </div>
                     </div>
                   <div class="statsModesBlock">
-                   <p>statistics</p> 
+                   <p id="statisticsText">statistics</p> 
                    <div class="statsModes">
                      <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
                      <div class="statButton" style="border-radius: 0px;">Stat2</div>
@@ -275,73 +307,387 @@
                 </div>
                 <div class="rightBlock">
                 <div id="historyText" style="font-size: 20px; font-family: 'space'; color: white; margin-bottom: 4px">History</div>
-                  <div class="history">
+                  <div id="hostHistory" class="history">
                   </div>
                 </div>
               </div>
-              <div class="statsBlock"></div>
+              <div class="statsBlock">
+                <canvas id="winLostStat"></canvas>
+              </div>
+              </div>
+              <div id="searchedUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0">
+                <div class="aboveStatsBlock">
+                  <div class="leftBlock">
+                    <div id="searchedUserInfoBlock" class="userInfoBlock">
+                      <div class="nameImgBlock" id="profile_info">
+                        <div class="imgFrame"><img id="profile_pic2"></div> <!-- Photo de profil-->
+                        <div class="mail-pseudo-info">
+                          <div id="username2" style="color: rgb(255, 255, 255); "></div> <!-- Username -->
+                          <div id="bio2" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
+                        </div>
+                      </div>
+                      <div class="userInfoBottomBlock">
+                        <div id="winLoseTexts2" class="winLoseTexts">
+                          <div class="basicStats"> Parties : 13</div> 
+                          <div class="basicStats"> Victoires : 5</div> 
+                          <div class="basicStats"> Defaites : 8</div>
+                          <div class="basicStats"> Buts : 33</div>
+                        </div>
+                        <div class="friendActionCont">
+                          <img src="{% static 'html/assets/icons/checkMark.png' %}">
+                          <img src="{% static 'html/assets/icons/redCross.svg' %}">
+                          <img src="{% static 'html/assets/icons/plus.png' %}">
+                          <p>Request Sent</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="statsModesBlock">
+                     <p id="statisticsText2">statistics</p> 
+                     <div class="statsModes">
+                       <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
+                       <div class="statButton" style="border-radius: 0px;">Stat2</div>
+                       <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="rightBlock">
+                  <div id="historyText2" style="font-size: 20px; font-family: 'space'; color: white; margin-bottom: 4px">History</div>
+                    <div id="searchedUserHistory" class="history">
+                    </div>
+                  </div>
+                </div>
+                <div class="statsBlock"></div>
+              </div>
+
+              <form id="userInfoForm" class="modifyPage"> <!--Je modifie les info ici-->
+                <div id="changeInfo" style="font-size: 13px; font-family: 'space'; color: white">Only fill in information you want to change</div>
+               <div  class="toggle-container">
+                  <span class= "changeProfilePicture">Anonymous mode:</span>
+                  <div class="switch" id="toggleSwitch">
+                    <div class="slider"></div>
+                  </div>
+                  <img class="info-icon" src="../static/html/assets/icons/info.png" alt="Information" />
+                </div>
+                  <div class="changeInfoBar">
+                      <input id="changeUsernameInput" name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
+                    </div>
+                    <div class="changeInfoBar">
+                      <input id="changeBioInput" name="bio" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Bio" maxlength="28"></input>
+                    </div>
+                    <div class="changeInfoBar">
+                      <input id="changePasswordInput"name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Password"></input>
+                    </div>
+                    <div class="changeInfoBar">
+                      <input id="changeConfirmPasswordInput" name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password"></input>
+                    </div>
+                   <div class="profilePicContainer">
+                      <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
+                      <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
+                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicBut ton">Choose file</label>
+                    </div>
+                    <div id= "changeInfoMessage" class="changeInfoMessage"></div>
+                    <div class="buttonContainer">
+                      <div id="deleteAccountButton"class="deleteAccountButton">Delete Account</div>
+                      <div id="submitInfoButton" class="submitChangeButton">Submit</div>
+                    </div>
+                </form>
             </div>
-      <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between;">
-        <div id="FriendListText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
-        <div class="friendSearchBar">
-          <input id="searchInput" class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . ."></input>
+            <div class="validateDelete">
+              <div id="validateDeleteAccountText" class="validateDeleteText">All data will be permanently lost. Are you sure you want to delete your account?</div>
+              <div class="buttonContainer">
+                <div class="validateDeleteButton" id="deleteAccountConfirmation">Yes</div>
+                <div class="validateDeleteButton" id="deleteAccountCancel">No</div>
+              </div>
+            </div>
+            <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between; flex-shrink: 0; align-items: flex-start;">
+              <div class="titleContainer" style="width: 100%; display: flex; justify-content: center;">
+                  <div id="friendListText" style="font-size: 20px; font-family: 'space'; color: white; text-align: center;"> Friends List </div>
+              </div>
+              <div class="friendSearchBar" style="width: 95%;">
+                  <input id="searchInput" class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . .">
+              </div>
+              <div id="userlistUserPage" class="userlistBackground" style="height:85%; width: 95%; border-radius: 10px;">
+              </div>
+              <div id="userBackButton" class="planetBackButton" style="width: 95%;">Back</div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div id="blockingPanel" class="blockingPanel"></div>
+
+
+
+
+
+    <!-- TOURNAMENT PLANET  -->
+    <div class="planetPanel">
+      <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
+      <img src="{% static 'game/assets/scoreUI.png' %}" class="blueShadowfilter">
+      <div class="background blueShadowfilter" style="flex-direction: column;">
+        <div class="titleTournament">
+          <div id="trnmtTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div>
         </div>
-        <div id="userlistUserPage" class="userlistBackground" style="height:85%; width: 100%; border-radius: 10px;">
+        <div class="secondLineTournament">
+          <div id="leftColumn" class="leftColumn">
+            <div id="trnmtUserlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
+            <div id="userlistTournamentPage" class="userlistBackground before-launch"></div>
+            <h2 id="next-match" class="matchInfo" style="display:none;"></h2>
+            <p id="match" class="matchInfo" style="display:none;"></p>
+            <div id="launchMatch" class="startTournamentButton" style="display:none;"></div>
+            <div id="trnmtBackButton" class="planetBackButton" style="width: 90%">Back</div>
+          </div>
+          <!-- when the tournament is launch -->
+        <div id="midColumn" class="rightColumn">
+          <div class="addPlayerToTournament before-launch">
+            <div class="elemContTournament">
+              <div class="addPlayer">
+              <div class="userInfoContTournament">
+                <div class="profilePic"><img id="player1TournamentPicture"></div>
+                <div id="player1TournamentUsername"></div>
+              </div>
+              <div class="playerText"> Player 1 </div>
+              </div>
+              <div class="addPlayer"> 
+                <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
+                <div class="playerText"> Player 2 </div>
+              </div>
+              <div class="addPlayer">
+                <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
+                <div class="playerText"> Player 3 </div>
+              </div>
+              <div class="addPlayer">
+                <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
+                <div class="playerText"> Player 4 </div>
+              </div>
+            </div>
+            <div class="elemContTournament">
+              <div class="addPlayer">
+                <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
+                <div class="playerText"> Player 5 </div>
+              </div>
+              <div class="addPlayer">
+                <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
+                <div class="playerText"> Player 6 </div>
+              </div>
+              <div class="addPlayer">
+                <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
+                <div class="playerText"> Player 7 </div>
+              </div>
+              <div class="addPlayer">
+                <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
+                <div class="playerText"> Player 8 </div>
+              </div>
+            </div>
+          </div>
+          <div class="buttonsContVert before-launch">
+            <div class="optionButtonVert">
+              <div class="buttonTitleVert">
+                <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
+                <div id="trnmtGamemodeText">
+                  gamemode
+                </div>
+                <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
+              </div>
+            <div id="gamemodeNameText2" class="buttonContVert" style="font-size: 20px;">Classic</div>
+            </div>
+            <div class="optionButtonVert">
+              <div class="buttonTitleVert">
+                <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
+                <div id="trnmtMapsText">
+                  Maps
+                </div>
+                <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
+              </div>
+              <div class="buttonContVert">Space</div>
+            </div>
+            <div class="optionButtonVert">
+              <div class="buttonTitleVert">
+                <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
+                <div id="trnmtBotDifficultyText">
+                  Bot difficulty
+                </div>
+                <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
+              </div>
+              <div id="trnmtBotDifficultyLevelText" class="buttonContVert">Medium</div>
+            </div>
+          </div>
+          <div class="rightColumnBottom before-launch">
+            <div class="rightColumnBottomLeft">
+              <div id="launch" class="startMatchButton">Start</div>
+              <div id="error_msg" class="errorMsg"></div>
+            </div>
+            <div class="rightColumnBottomRight before-launch">
+              <div class="switch"  id="thirdPlayertoggleSwitch">
+                <div class="slider"></div>
+              </div> 
+              <p id="thirdPlayerText" style="padding-left: 10px;">Third Player</p>
+            </div>
+          </div>
+          <!-- when the tournament is launch -->
+          <div id="bracket" class="theme theme-dark" style="display:none;">
+            <div class="bracket">
+              <div class="column one">
+                <div id="A1-A2-match" class="match">
+                  <div id="A1" class="match-top team" style="display:none;">
+                    <span id="A1_name" class="name"></span>
+                    <span id="A1_score" class="score"></span>
+                  </div>
+                  <div id="A2" class="match-bottom team" style="display:none;">
+                    <span id="A2_name" class="name"></span>
+                    <span id="A2_score" class="score"></span>
+                  </div>
+                  <div id="third-A1" class="match-third team third" style="display:none;">
+                    <span id="third-A1_name" class="name"></span>
+                  </div>
+                  <div id="first-top-top" style="display:none;">
+                    <div class="match-lines">
+                      <div class="line one"></div>
+                      <div class="line two"></div>
+                    </div>
+                    <div class="match-lines alt">
+                      <div class="line one"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="A3-A4-match" class="match">
+                  <div id="A3" class="match-top team" style="display:none;">
+                    <span id="A3_name" class="name"></span>
+                    <span id="A3_score" class="score"></span>
+                  </div>
+                  <div id="A4" class="match-bottom team" style="display:none;">
+                    <span id="A4_name" class="name"></span>
+                    <span id="A4_score" class="score"></span>
+                  </div>
+                  <div id="third-A2" class="match-third team third" style="display:none;">
+                    <span id="third-A2_name" class="name"></span>
+                  </div>
+                  <div id="first-top-bot" style="display:none;">
+                    <div class="match-lines">
+                      <div class="line one"></div>
+                      <div class="line two"></div>
+                    </div>
+                    <div class="match-lines alt">
+                      <div class="line one"></div>
+                    </div>
+                  </div>
+                </div>
+            <div id="A5-A6-match" class="match">
+              <div id="A5" class="match-top team" style="display:none;">
+                <span id="A5_name" class="name"></span>
+                <span id="A5_score" class="score"></span>
+              </div>
+              <div id="A6" class="match-bottom team" style="display:none;">
+                <span id="A6_name" class="name"></span>
+                <span id="A6_score" class="score"></span>
+              </div>
+              <div id="third-A3" class="match-third team third" style="display:none;">
+                <span id="third-A3_name" class="name"></span>
+              </div>
+              <div id="first-bot-top" style="display:none;">
+                <div class="match-lines">
+                  <div class="line one"></div>
+                  <div class="line two"></div>
+                </div>
+                <div class="match-lines alt">
+                  <div class="line one"></div>
+                </div>
+              </div>
+            </div>
+            <div id="A7-A8-match" class="match">
+              <div id="A7" class="match-top team" style="display:none;">
+                <span id="A7_name" class="name"></span>
+                <span id="A7_score" class="score"></span>
+              </div>
+              <div id="A8" class="match-bottom team" style="display:none;">
+                <span id="A8_name" class="name"></span>
+                <span id="A8_score" class="score"></span>
+              </div>
+              <div id="third-A4" class="match-third team third" style="display:none;">
+                <span id="third-A4_name" class="name"></span>
+              </div>
+              <div id="first-bot-bot" style="display:none;">
+                <div class="match-lines">
+                  <div class="line one"></div>
+                  <div class="line two"></div>
+                </div>
+                <div class="match-lines alt">
+                  <div class="line one"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column two">
+            <div id="B1-B2-match" class="match">
+              <div id="B1" class="match-top team" style="display:none;">
+                <span id="B1_name" class="name"></span>
+                <span id="B1_score" class="score"></span>
+              </div>
+              <div id="B2" class="match-bottom team" style="display:none;">
+                <span id="B2_name" class="name"></span>
+                <span id="B2_score" class="score"></span>
+              </div>
+              <div id="third-B1" class="match-third team third" style="display:none;">
+                <span id="third-B1_name" class="name"></span>
+              </div>
+              <div id="second-top" class="match-lines" style="display:none;">
+                <div class="line one"></div>
+                <div class="line two"></div>
+              </div>
+              <div id="first-second-top" class="match-lines alt" style="display:none;">
+                <div class="line one"></div>
+              </div>
+            </div>
+            <div id="B3-B4-match" class="match">
+              <div id="B3" class="match-top team" style="display:none;">
+                <span id="B3_name" class="name"></span>
+                <span id="B3_score" class="score"></span>
+              </div>
+              <div id="B4" class="match-bottom team" style="display:none;">
+                <span id="B4_name" class="name"></span>
+                <span id="B4_score" class="score"></span>
+              </div>
+              <div id="third-B2" class="match-third team third" style="display:none;">
+                <span id="third-B2_name" class="name"></span>
+              </div>
+              <div id="second-bot" class="match-lines" style="display:none;">
+                <div class="line one"></div>
+                <div class="line two"></div>
+              </div>
+              <div id="first-second-bot" class="match-lines alt" style="display:none;">
+                <div class="line one"></div>
+              </div>
+            </div>
+          </div>
+          <div class="column three">
+            <div id="C1-C2-match" class="match">
+              <div id="C1" class="match-top team" style="display:none;">
+                <span id="C1_name" class="name"></span>
+                <span id="C1_score" class="score"></span>
+              </div>
+              <div id="C2" class="match-bottom team" style="display:none;">
+                <span id="C2_name" class="name"></span>
+                <span id="C2_score" class="score"></span>
+              </div>
+              <div id="third-C1" class="match-third team third" style="display:none;">
+                <span id="third-C1_name" class="name"></span>
+              </div>
+              <div class="match-lines">
+                <div class="line one"></div>
+                <div class="line two"></div>
+              </div>
+              <div id="second-line" class="match-lines alt" style="display:none;">
+                <div class="line one"></div>
+              </div>
+            </div>        
+          </div>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
     </div>
-    <div id="exploreUserPage" class="exploreUserPage">
-      <div class="rightColumn" style="width: 75%;">
-        <div class="aboveStatsBlock">
-          <div class="leftBlock">
-            <div class="userInfoBlock">
-              <div class="nameImgBlock" id="profile_info">
-                <div class="imgFrame"><img id="profile_pic" src="" alt="Photo de profil"></div> 
-                <div class="mail-pseudo-info">
-                  <div id="username" style="color: rgb(255, 255, 255); "></div> 
-                  <div id="bio" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> 
-                </div>
-                <div class="pencilImg">
-                  <img src="{% static 'html/assets/icons/pencil.png' %}">
-                </div>
-              </div>
-              <div class="winLoseTexts">
-                  <div style="font-family: 'Space'; font-size: 20px; color: white"> Parties : 13</div> 
-                  <div style="font-family: 'Space'; font-size: 20px; color: white"> Victoires : 5</div> 
-                  <div style="font-family: 'Space'; font-size: 20px; color: white"> Defaites : 8</div>
-                  <div style="font-family: 'Space'; font-size: 20px; color: white"> Buts : 33</div>
-                </div>
-              </div>
-            <div class="statsModesBlock">
-              <p>statistics</p> 
-              <div class="statsModes">
-                <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
-                <div class="statButton" style="border-radius: 0px;">Stat2</div>
-                <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
-              </div>
-            </div>
-          </div>
-          <div class="rightBlock">
-          <div id="historyText" style="font-size: 20px; font-family: 'space'; color: white; margin-bottom: 4px">History</div>
-            <div class="history">
-            </div>
-          </div>
-        </div>
-        <div class="statsBlock"></div>
-      </div>
-<div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between;">
-  <div id="FriendListText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
-  <div class="friendSearchBar">
-    <input class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . ."></input>
-  </div>
-  <div id="userlistUserPage" class="userlistBackground" style="height:85%; width: 100%; border-radius: 10px;">
-  </div>
-</div>
-</div>  
-</div>
-</div>
-</div>  
-</div>
+    
+    
 
 <!-- ESCAPE PAGE -->
 <div class="coloredPanel"></div>
@@ -372,7 +718,7 @@
                 <div class="icon" style="background-image: url('../static/html/assets/icons/frenchAlienWhite.png');" ></div>
                 <div class="flag" style="background-image: url('../static/html/assets/icons/FR_NU.png');"></div>
               </div>
-              <div class="languageIcon glow" id="en1">
+              <div class="languageIcon" id="en1">
                 <div class="icon" style="background-image: url('../static/html/assets/icons/englishAlienWhite.png');" ></div>
                 <div class="flag" style="background-image: url('../static/html/assets/icons/BR_NU.png');"></div>
               </div>
@@ -393,7 +739,7 @@
       <div class="redButton" id="disconnectButton" style="margin-top: -30px;width: 35%; height: 8%;">Disconnect</div>
     </div>
     </div>
-
+    
     <!-- GAME STUFF -->
   <div class="bluebar glow"></div>
   <div class="gameUI">
@@ -419,9 +765,9 @@
       <div class="elemCont">
         <div class="userInfoCont">
           <div class="profilePic">
-            <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+            <img id= pp1 src="{% static 'html/assets/icons/ES_NU.png' %}">
           </div>
-          AtomiK
+          <div id="username1Text" style="color: rgb(255, 255, 255); ">AtomiK</div>
         </div>
       </div>
     </div>
@@ -429,34 +775,55 @@
     <div class="elemCont">
         <div class="userInfoCont">
           <div class="profilePic">
-            <img src="{% static 'html/assets/icons/BR_NU.png' %}" style="transform: scaleX(-1);">
+            <img id = pp2 src="{% static 'html/assets/icons/BR_NU.png' %}" style="transform: scaleX(-1);">
           </div>
-          <p style="transform: scaleX(-1);">
-            TonDaron
-          </p>
+            <div id="username2Text" style="color: rgb(255, 255, 255); transform: scaleX(-1); ">TonDaron</div>
         </div>
       </div>
     </div>
     <div class="profileCont3" style="transform: translate(-50%, -50%) scale(0.7);">
         <div class="userInfoCont">
           <div class="profilePic">
-            <img src="{% static 'html/assets/icons/FR_NU.png' %}">
+            <img id= pp3 src="{% static 'html/assets/icons/FR_NU.png' %}">
           </div>
-          blipbloup
+          <div id="username3Text" style="color: rgb(255, 255, 255); ">TonDaron</div>
         </div>
     </div>
+    <div class="winning-screen">
+      <div id="winningText">Player 1 wins!</div>
+      <div id="scoreText">10 - 5</div>
+      <button id="rematchButton">
+          <div id="rematchText">Rematch</div>
+      </button>
+      <button id="backToLobbyButton">
+          <div id="backToLobbyText">Back to lobby</div>
+      </button>
   </div>
+  </div>
+  
+
+
+
   <div id="fps-counter" style="position: fixed; top: 10px; left: 10%; background: rgba(0, 0, 0, 0.5); color: white; padding: 5px;"></div>
-    
+
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/7/Stats.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script type="module" src="{% static 'html/js/main.js' %}"></script>
     <script type="module" src="{% static 'html/js/arenaPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/loginPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/translatePages.js' %}"></script>
     <script type="module" src="{% static 'html/js/userPage.js' %}"></script>
+    <script type="module" src="{% static 'html/js/modifyPage.js' %}"></script>
+    <script type="module" src="{% static 'html/js/stats.js' %}"></script>
     <script type="module" src="{% static 'game/js/main.js' %}"></script>
+    <script type="module" src="{% static 'tournament/js/gameData.js' %}"></script>
+    <script type="module" src="{% static 'tournament/js/newTournament.js' %}"></script>
+    <script type="module" src="{% static 'tournament/js/bracket.js' %}"></script>
+
 
 </body>
 </html>

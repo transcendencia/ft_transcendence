@@ -1,4 +1,5 @@
 .leftColumn {
+    /* border: 5px solid wheat; */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -6,6 +7,7 @@
     height: 100%;
     width: 20%;
     text-align: center;
+    z-index: 1;
 }
 
 .rightColumn {
@@ -16,10 +18,7 @@
     align-items: center;
     height: 100%;
     width: 80%;
-}
-
-.rightColumn * {
-    /* border: 5px solid violet; */
+    overflow: hidden;
 }
 
 .userlistBackground {
@@ -46,7 +45,6 @@
     align-items: center;
 }
 
-
 @keyframes shadowBlink {
     100% {box-shadow: 0 0 40px rgba(171, 80, 0, 255)}
     0% {box-shadow: 0 0 40px rgba(171, 0, 0, 0)}
@@ -55,10 +53,10 @@
 .textContainer {
     margin-left: -5px;
     border-radius: 5px;
-    border: 4px solid rgba(55, 118, 255, 0.39);
+    border: 4px solid rgba(55, 118, 255, 0.30);
     border-left: none;
     background-color: #00000031;
-    font-size: 15px;
+    font-size: 12px;
     font-family: "space";
     text-align: center;
     color: #3777ff;
@@ -67,8 +65,24 @@
     align-items: center;
     height: 95%;
     width: 80%;
+    pointer-events: none;
 }
 
+.textContainer:hover {
+    background-color: rgba(90, 142, 255, 0.500);
+}
+
+.friendBg {
+    background-color: rgba(14, 255, 110, 0.5) !important;
+}
+
+.botBg {
+    background-color: rgba(164, 67, 255, 0.500) !important;
+}
+
+.defaultBg {
+    background-color: rgba(90, 142, 255, 0.500) !important;
+}
 .imgContainer {
     border-radius: 5px;
     border: 4px solid rgba(55, 118, 255, 0.39);
@@ -79,11 +93,13 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    z-index: 2;
 }
 
 .imgContainer img{
     height: 100%;
     width: auto;
+    object-fit: cover;
 }
 
 .plusPlayer {
@@ -103,6 +119,8 @@
 
 .plusPlayer:hover {
     background-color: rgb(50,50,50);
+    cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+
 }
 
 .movingSpaceShip1 {
@@ -177,13 +195,14 @@
     flex-direction: row;
     height: 20%;
     width: 98%;
+
 }
 
 .optionButton {
     border-radius: 5px;
-    margin: 25px;
-    height: 90%;
-    width: 30%;
+    margin: 5px 0px;
+    height: 85%;
+    width: 33%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -196,11 +215,12 @@
     border: 5px solid #3777ff;
     background-color: #000f61b2;
     display: flex;
+    text-align: center;
     justify-content: space-between;
     align-items: center;
     font-family: 'Space';
     height: 20%;
-    width: 75%;
+    width: 85%;
     font-size: 18px;
     color: white;
     z-index: 99;
@@ -209,6 +229,18 @@
 .buttonTitle img {
     height: 120%;
     width: auto;
+    cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+
+}
+
+.arenaBotTile {
+    color: rgb(164, 67, 255);
+    border-color: rgb(164, 67, 255);
+    background-color: rgba(164, 67, 255, 0.257);
+}
+
+.arenaBotTile:hover {
+    background-color: rgba(164, 67, 255, 0.500);
 }
 
 .buttonCont {
@@ -225,7 +257,7 @@
     align-items: center;
     text-align: center;
     height: 80%;
-    width: 65%;
+    width: 70%;
 }
 
 .choosePlayerCont {
@@ -257,6 +289,7 @@
 .redButton:hover {
     background-color: rgb(194, 0, 0);
     box-shadow: 0 0 40px #be1c00;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .pongField {
@@ -282,4 +315,28 @@
     100% {
         height: 110%;
     }
+}
+
+.enterPasswordWindow {
+    display: none;
+    background-color: #000f61;
+    border: 4px solid #3777ff;
+    border-radius: 5px;
+    /* display: flex; */
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column; /* Stack elements vertically */
+    height: 30%;
+    width: 60%;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: fixed;
+    z-index: 5;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.enterPasswordWindow * {
+    z-index: 5;
 }

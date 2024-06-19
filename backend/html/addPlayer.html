@@ -24,6 +24,7 @@
   </form>
 </div>
 
+
 <h1>List of Games</h1>
 <ul style="overflow-y: auto; max-height: 500px;">
   {% for game in allGames %}
@@ -41,7 +42,7 @@
 </ul>
 
 
-<script type="module" src="{% static 'tournament/js/addGameData.js' %}"></script>
+<script type="module" src="{% static 'tournament/js/gameData.js' %}"></script>
 
 <script>
   const newUserButton = document.getElementById("NewUser");
