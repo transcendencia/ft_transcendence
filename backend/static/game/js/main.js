@@ -3593,6 +3593,7 @@ class GameState {
         this.loading = false;
         this.arenaCreated = false;
         this.inGame = false;
+        this.paused = false;
         this.inLobby = true;
         this.graphicsNeedToChange = false; 
         this.graphics = 'medium'; // (options = 'low', 'medium', 'high') (loginPage.js)
@@ -3627,6 +3628,9 @@ class GameState {
             this.arena.graphics = this.graphics;   
         }
         updateUserGraphicMode(this.graphics);
+    }
+    togglePause() {
+        this.paused = !this.paused;
     }
 }
 
@@ -3837,11 +3841,12 @@ function animate()
     // if (elapsed < fpsInterval) return; // Skip if too big FPS
     // else
     {
+        console.log('pause = ' + gameState.paused);
         gameState.monitorGameState();
         if (gameState.inLobby)
             return ;
         TWEEN.update();
-        if (gameState.inGame)
+        if (gameState.inGame && !gameState.paused)
         {
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();

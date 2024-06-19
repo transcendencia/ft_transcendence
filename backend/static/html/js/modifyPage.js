@@ -55,7 +55,7 @@ function deleteAccount() {
     // deconnecter tout les guest
     // delete account dans la db
     document.querySelector(".validateDelete").classList.toggle("showRectangle");
-    blockingPanel.style.visibility = 'visible';
+    blockingPanel.style.visibility = 'hidden';
 
     document.getElementById('deleteAccountCancel').addEventListener("click", function() {
 		  document.querySelector(".validateDelete").classList.toggle("showRectangle");

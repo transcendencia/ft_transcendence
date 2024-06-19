@@ -16,6 +16,7 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
+import { gameState } from '../../game/js/main.js';
 
 
 let cubeLoader = new THREE.CubeTextureLoader();
@@ -385,6 +386,7 @@ export function startAnimation() {
     }
 
 export function toggleEscapeContainerVisibility() {
+    togglePause();
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
@@ -398,6 +400,7 @@ export function toggleEscapeContainerVisibility() {
 let pauseGame = false;
 
 export function togglePause() {
+    gameState.togglePause();
     pauseGame ? pauseGame = false : pauseGame = true;
 }
 
