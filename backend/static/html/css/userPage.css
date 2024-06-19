@@ -359,15 +359,25 @@
     animation: shadowBlink 1s infinite alternate ease-in-out !important;
 }
 
+.onlineFriendTile {
+    color: #00d062 !important;
+    border-color: 	#00d062 !important;
+    background-color: #058743 !important;
+}
+
 .friendTile {
-    color: rgb(14, 255, 110) !important;
-    border-color: rgb(14, 255, 110) !important;
-    background-color: rgba(14, 255, 110, 0.459) !important;
+    color: #306844aa;
+    border-color: 	#306844aa;
+    background-color: #182c25aa;
+}
+
+.loupeFriendTile:hover {
+    background-color: rgba(2, 158, 10, 0.432) !important;
 }
 
 .arenaFriendTile {
-    color: rgb(14, 255, 26);
-    border-color: rgb(14, 255, 26);
+    color: #306844aa;
+    border-color: #306844aa;
     background-color: rgba(14, 255, 26, 0.322);
 }
 
@@ -375,14 +385,6 @@
     background-color: rgba(14, 255, 26, 0.500);
 }
 
-.loupeFriendTile {
-    border-color: rgb(14, 255, 26) !important;
-    background-color: rgba(14, 255, 26, 0.459) !important;
-}
-
-.loupeFriendTile:hover {
-    background-color: rgba(2, 158, 10, 0.432) !important;
-}
 
 .loupeRequestTile {
     border-color: #ffb30eff !important;
@@ -420,10 +422,15 @@
     justify-content: center;
     height: 100%;
     width: 25%;
+    border-radius: 5px;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+    border: 3px solid;
+}
+
+.defaultLoupeImgColor {
     background-color: #5d75ff47;
     border: 3px solid #3777ff;
-    border-radius: 5px;
-    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;}
+}
 
 .loupeImg img {
     height: auto;
@@ -508,7 +515,7 @@
 .text-input2 {
     position: absolute;
     width: 20%; /* Match the width of the container */
-    height: 30%; /* Automatically adjust height based on content */
+    height: 6%; /* Automatically adjust height based on content */
     background: none;
     border: none;
     color: white; /* Set text color to white */
@@ -527,3 +534,50 @@
     width: 40px;
     height: 40;
 }
+
+.redPellet {
+    border: 2px solid #306844aa;
+    display: block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    position: absolute;
+    top: -8px;
+    left: -5px;
+    flex-shrink: 0;
+    z-index: 5;
+}
+
+@keyframes moveGradient {
+    0% {
+        background-position: 25% 25%;
+    }
+    10% {
+        background-position: 30% 30%;
+    }
+    70% {
+        background-position: 35% 35%;
+    }
+    100% {
+        background-position: 80% 80%;
+    }
+}
+
+.Offline {
+    background: linear-gradient(135deg, rgb(7, 36, 98)35%, rgb(83, 136, 251), rgb(7, 36, 98) 65%);
+    background-size: 500% 500%;
+    animation: moveGradient 3s linear infinite;
+}
+
+.Online {
+    background: linear-gradient(135deg, rgb(31, 83, 1)35%, rgb(104, 197, 91), rgb(31, 83, 1) 65%);
+    background-size: 500% 500%;
+    animation: moveGradient 3s linear infinite;
+}
+
+.InGame {
+    background: linear-gradient(135deg, rgb(98, 7, 7)35%,  rgb(255, 0, 0), rgb(98, 7, 7) 65%);
+    background-size: 500% 500%;
+    animation: moveGradient 3s linear infinite;
+}
+  

@@ -51,6 +51,19 @@ graphicsIcons.forEach(function(icon) {
     });
 });
 
+
+function updateGraphicsIcon(mode) {
+    graphicsIcons.forEach(function(otherIcon) {
+        removeGlow(otherIcon.id, 'redGlow');
+    });
+    if (mode === "low")
+        addGlow("graphicsIcon1", 'redGlow');
+    else if (mode === "medium")
+        addGlow("graphicsIcon2", 'redGlow');
+    else if (mode === "high")
+        addGlow("graphicsIcon3", 'redGlow');
+}
+
  export function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -160,18 +173,21 @@ function handleLoginHost(event) {
     .then(response => response.json())
     .then(data => {
         if (data.status == "succes") {
-            localStorage.setItem('hostLoggedIn', 'true');
-            localStorage.setItem("host_auth_token", data.token);
-            localStorage.setItem("host_id", data.id);
-            setCurrentLanguage(data.language);
-            setEscapeLanguageVisual();
-            get_friends_list();
-            getProfileInfo();
-            TranslateAllTexts();
-            getGameInfo();
-            changeGraphics(data.graphic_mode);
-            showPage('none');
-            startAnimation();
+            // if (localStorage.getItem("hostLoggedIn") === "false") {
+                localStorage.setItem('hostLoggedIn', 'true');
+                localStorage.setItem("host_auth_token", data.token);
+                localStorage.setItem("host_id", data.id);
+                setCurrentLanguage(data.language);
+                setEscapeLanguageVisual();
+                get_friends_list();
+                getProfileInfo();
+                TranslateAllTexts();
+                getGameInfo();
+                changeGraphics(data.graphic_mode);
+                updateGraphicsIcon(data.graphic_mode);
+                showPage('none');
+                startAnimation();
+            // }
         } else 
             document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
     })
