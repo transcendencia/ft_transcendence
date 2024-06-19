@@ -19,6 +19,10 @@ from ..serializers import UserSerializer, SignupSerializer
 def index(request):
   return render(request, 'index.html')
 
+#to move 
+def rgpd(request):
+  return render(request, 'rgpd.html')  
+
 # cree un loginForm pour rendre le code plus clair
 @api_view(['POST'])
 @permission_classes([AllowAny])  
