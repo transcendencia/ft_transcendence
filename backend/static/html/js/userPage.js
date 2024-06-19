@@ -296,6 +296,10 @@ function getHistoryMatchPlayer2(user) {
   });
 }
 
+function fillAndDisplaySearchedPage(loupeContainer, reqId, user, type) {
+
+}
+
 function applyOnlineFriendTileColor(loupeContainer, textContainer, imgContainer) {
   textContainer.classList.add('onlineFriendTile');
   imgContainer.classList.add('onlineFriendTile');
@@ -323,6 +327,8 @@ function applyTypeToTile (imgContainer, textContainer, loupeContainer, type, use
   textContainer.classList.add(`${type}Tile`);
   loupeContainer.classList.add(`${type}Tile`);
   loupeContainer.classList.add(`loupe${type.charAt(0).toUpperCase() + type.slice(1)}Tile`);
+  loupeContainer.classList.add('loupeImg');
+  loupeContainer.classList.add('defaultLoupeImgColor');
   if (type === 'friend') {
     loupeContainer.classList.remove('defaultLoupeImgColor');
     loupeContainer.classList.remove('defaultTile');
@@ -333,13 +339,7 @@ function applyTypeToTile (imgContainer, textContainer, loupeContainer, type, use
       applyOnlineFriendTileColor(loupeContainer, textContainer, imgContainer);
     userTile.appendChild(createStatusPellet(random));
   }
-}
 
-function appendTileToChild(imgContainer, textContainer, loupeContainer, userTile) {
-  userTile.appendChild(imgContainer);
-  userTile.appendChild(textContainer);
-  userTile.appendChild(loupeContainer);
-  userListBackground.appendChild(userTile);
 }
 
 function createUserTile(user, type, reqId) {
@@ -358,19 +358,22 @@ function createUserTile(user, type, reqId) {
   textContainer.textContent = user.username;
 
   const loupeContainer = document.createElement('div');
-  loupeContainer.classList.add('loupeImg');
-  loupeContainer.classList.add('defaultLoupeImgColor');
   loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
   loupeContainer.addEventListener('click', () => {
     slideAnimations(loupeContainer);
     setTimeout(() => {
+      fillSearchedUserPage(user, type);
       if (reqId !== undefined)
         requestId = reqId;
-      fillSearchedUserPage(user, type);
     }, 125);
   });
+
   applyTypeToTile(imgContainer, textContainer, loupeContainer, type, userTile);
-  appendTileToChild(imgContainer, textContainer, loupeContainer, userTile);
+
+  userTile.appendChild(imgContainer);
+  userTile.appendChild(textContainer);
+  userTile.appendChild(loupeContainer);
+  userListBackground.appendChild(userTile);
 }
 
 async function RenderUsersSearched(query) {

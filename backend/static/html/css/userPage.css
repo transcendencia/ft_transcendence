@@ -420,11 +420,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    width: 25%;
+    height: 90%;
+    width: 15%;
     border-radius: 5px;
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
-    border: 3px solid;
+    border: 4px solid;
 }
 
 .defaultLoupeImgColor {
