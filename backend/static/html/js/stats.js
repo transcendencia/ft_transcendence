@@ -4,9 +4,6 @@ import { getCookie } from './loginPage.js';
 Chart.defaults.font.family = 'Space';
 Chart.defaults.color = 'white';
 
-const canvas = document.getElementById('winLostStat');
-const canvas_ctx = canvas.getContext('2d');
-
 let dataWinRate = [0, 0];
 const data = {
 	labels:['Win', 'Lost'],
@@ -89,6 +86,10 @@ export function getUserStats(userId) {
 		console.log(data);
 		dataWinRate[0] = data.percentageGameWon;
 		dataWinRate[1] = data.percentageGameLost;
+		// console.log("dahsesPercentage", data.dashesPercentage);
+		// console.log("poweredUsedPercentage", data.poweredUsedPercentage);
+		// console.log("efficencyRatios", data.efficiencyRatios);
+		// console.log("nbrGames", data.nbrGames);
 		drawChart();
 	})
 	.catch(error => {

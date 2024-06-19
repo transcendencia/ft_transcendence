@@ -3,6 +3,7 @@ import os
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum, F, FloatField, ExpressionWrapper, Case, When
 
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -77,10 +78,44 @@ def get_stats(request, userId):
     user = get_object_or_404(User, id=userId)
     gameWon = UserStat.objects.filter(player=user, isWinner=True)
     nbrGameWon = gameWon.count()
+    allGames = UserStat.objects.filter(player=user)
+    nbrGames = allGames.count()
+
+    # Win rate
     percentageGameWon = round((nbrGameWon * 100) / user.nbr_match, 1) if user.nbr_match > 0 else 0
-    print(percentageGameWon)
     percentageGameLost = round(100 - percentageGameWon, 1)
-    return Response({'percentageGameWon': percentageGameWon, 'percentageGameLost': percentageGameLost})
+
+    # Dashes / PoweredUsed
+    sums = allGames.aggregate(totalDashes=Sum('nbDashes'), totalPoweredUsed=Sum('nbPoweredUsed'), )
+
+    totalDashes = sums['totalDashes']
+    totalPoweredUsed = sums['totalPoweredUsed']
+
+    total = totalDashes + totalPoweredUsed
+    dashesPercentage = (totalDashes / total) * 100
+    poweredUsedPercentage = (totalPoweredUsed / total) * 100
+    
+    # Efficiency rate
+    allGames_annotated = allGames.annotate(
+      efficiency_ratio=ExpressionWrapper(
+        F('pointsScored') / 
+        Case(
+            When(pointsTaken__gt=0, then=F('pointsTaken')),
+            default=1.0,
+            output_field=FloatField()
+        ),
+        output_field=FloatField()
+      )
+    )
+
+    efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
+    return Response({
+      'percentageGameWon': percentageGameWon, 
+      'percentageGameLost': percentageGameLost,
+      'dashesPercentage': dashesPercentage,
+      'poweredUsedPercentage': poweredUsedPercentage,
+      'efficiencyRatios': efficiencyRatios,
+      'nbrGames': nbrGames})
   except User.DoesNotExist:
     return Response({'status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
 
