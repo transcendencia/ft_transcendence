@@ -31,6 +31,10 @@
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
+.deleteAccountButton:hover {
+    background-color: #ff373735;
+}
+
 .blockingPanel {
     border: 5px solid white;
     z-index: 3;
@@ -41,6 +45,7 @@
     left: 50%;
     position: fixed;
     transform: translate(-50%, -50%);
+    background-color: rgba(12, 0, 124, 0.489);
 }
 
 .submitChangeButton {
@@ -59,12 +64,15 @@
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
+.submitChangeButton:hover {
+    background-color: #000f61b2;
+}
+
 .buttonContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 20px; /*Espace entre les boutons */
-    margin-top: 50px; /*Marge supérieure pour éloigner les boutons du haut de la page*/
 }
 
 .profilePicButton {
@@ -113,7 +121,7 @@
 
 .text-input3 {
     position: relative;
-    width: 50%; /* Match the width of the container */
+    width: 90%; /* Match the width of the container */
     height: 30%; /* Automatically adjust height based on content */
     background: none;
     border: none;
@@ -144,7 +152,7 @@
 .changeProfilePicture {
     /* margin: 30px 30px 30px 30px; */
     color: white; /* Set text color to white */
-    font-size: 20px; /* Adjust font size as needed */
+    font-size: 17px; /* Adjust font size as needed */
     font-family: "Space";
     text-align: center;
     /* text-shadow: 
@@ -169,8 +177,6 @@
     flex-shrink: 0;
     position: absolute;
     z-index: 9999;
-    flex-direction: column; /* Stack elements vertically */
-    align-items: center;
 }
 
 .validateDeleteText {
@@ -199,6 +205,10 @@
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
+.validateDeleteButton:hover {
+    background-color: #3776ff53;
+}
+
 .showRectangle {
     display: flex;
 }
@@ -222,6 +232,11 @@
 /* .changeInfoMessage {
     color: #060706;
 } */
+
+.toggle-container {
+    display: inline-block;
+    vertical-align: middle;
+}
 
 .switch {
     position: relative;
@@ -251,4 +266,11 @@
 
 .switch.active .slider {
     transform: translateX(26px);
+}
+
+.info-logo {
+    width: 5px; /* Ajustez la largeur selon vos besoins */
+    height: 5px; /* Ajustez la hauteur selon vos besoins */
+    /* margin-left: 10px; Espace à gauche du toggle switch */
+    cursor: pointer;
 }

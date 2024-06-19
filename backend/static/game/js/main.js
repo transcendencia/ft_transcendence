@@ -18,7 +18,7 @@ import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/sha
 import { lobbyVisuals } from '../../html/js/main.js';
 import { gameStarted } from '../../html/js/arenaPage.js';
 // import { gameStarted } from '../../html/js/arenaPage.js';
-import { endGame } from '../../html/js/arenaPage.js';
+import { endGame, rematchGame } from '../../html/js/arenaPage.js';
 import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
@@ -432,23 +432,23 @@ let doubleKeyPress = {
 
 document.addEventListener('keydown', (event) => {
     if (keyDown.hasOwnProperty(event.key)) {
+        if (gameState != undefined && gameState.arena != undefined && gameState.arena.bot != undefined && gameState.arena.bot.isPlaying)
+        {
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown')
+                return;
+        }
         keyDown[event.key] = true;
 
-        // Check for double presses of specific keys
         if (doubleKeyPress.hasOwnProperty(event.key)) {
-            if (lastKeyPressTime[event.key] && Date.now() - lastKeyPressTime[event.key] < 200 && Date.now() - lastKeyUpTime[event.key] < 200) {
-                // Double press action for ArrowRight and 'd'
-                // console.log(`Double press detected for ${event.key}`);
-                doubleKeyPress[event.key] = true; // Set to true to indicate a double press
-            } else {
-                doubleKeyPress[event.key] = false; // Reset for next detection
-            }
-            lastKeyPressTime[event.key] = Date.now(); // Update the last press time
+            if (lastKeyPressTime[event.key] && Date.now() - lastKeyPressTime[event.key] < 200 && Date.now() - lastKeyUpTime[event.key] < 200) 
+                doubleKeyPress[event.key] = true;
+            else
+                doubleKeyPress[event.key] = false;
+            lastKeyPressTime[event.key] = Date.now();
         }
     }
 });
 
-var scorePoints = document.getElementsByClassName("parallelogram");
 
 document.addEventListener('keyup', (event) => {
     if (keyDown.hasOwnProperty(event.key)) {
@@ -458,9 +458,36 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
+const scorePoints = document.getElementsByClassName("parallelogram");
 const blueBar = document.getElementsByClassName("bluebar");
 const scoreUI = document.getElementsByClassName("gameUI");
 const thirdPlayerUI = document.getElementsByClassName("profileCont3");
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const backToLobbyButton = document.getElementById('backToLobbyButton');
+
+    backToLobbyButton.addEventListener('click', () => {
+        gameState.arena.displayBackPanel();
+    });
+    const rematchButton = document.getElementById('rematchButton');
+
+    rematchButton.addEventListener('click', () => {
+        rematchGame();
+        keyDown['e'] = true;
+        gameState.arena.resetUIForRematch();
+        setTimeout(() => {
+            keyDown['e'] = false;
+        }, 10);
+        // stylish and (optional) functional code here 
+    });
+});
+
+function showWinningScreen()
+{
+    const winningScreen = document.querySelector('.winningScreen');
+    winningScreen.classList.add('visible');
+}
+
 function cameraDebug()
 {
     console.log("\n\ncamera.position.x =  " + camera.position.x);
@@ -553,6 +580,7 @@ class Arena extends THREE.Mesh {
         this.spaceMap = new SpaceMap(this);
         this.skyMap = new SkyMap(this);
         this.dragonMap = new DragonMap(this);
+        this.singlePlayer = false;
         this.spaceMap.initMap();
         this.composer1 = new EffectComposer(renderer);
         this.composer2 = new EffectComposer(renderer2);
@@ -734,7 +762,6 @@ class Arena extends THREE.Mesh {
             this.ball.rotation.y += 0.1;
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
-        // if (!this.bot.isPlaying)
         this.paddleRight.animatePaddle(this);
         if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling)
         {
@@ -778,8 +805,6 @@ class Arena extends THREE.Mesh {
             this.paddleRight.light.power += 0.1;
             this.bot.isPlaying = !this.bot.isPlaying;
         }
-        if (keyDown['i'])
-            this.bot.calculateBallLandingPosition();
         if (keyDown['e'])
         {
             // cameraLeft.position.copy(this.position);
@@ -791,7 +816,9 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
-            this.bot.isPlaying = true;
+            scoreUI[0].style.opacity = 1;
+            if (this.game.user2.isBot)
+                this.bot.activateBot();
             this.game.isPlaying = true;
             if (!this.game.thirdPlayer)
             {
@@ -799,13 +826,15 @@ class Arena extends THREE.Mesh {
                 this.paddleLeft.changePaddleControls(false);
                 this.paddleRight.changePaddleControls(false);
                 cameraLeft.lookAt(this.position);
-                swapToSplitScreen();
+                if (!this.game.user2.isBot)
+                    swapToSplitScreen();
+                else
+                    this.setSinglePlayerFov();
                 this.setSplitCameraPositions(camera, cameraLeft);
-                scoreUI[0].style.opacity = 1;
             }
             else
             {
-                scoreUI[0].style.opacity = 1;
+                thirdPlayerUI[0].style.opacity = 1;
                 swapToFullScreen();
                 this.setTopView(camera, false);
                 this.paddleLeft.changePaddleControls(true);
@@ -877,6 +906,11 @@ class Arena extends THREE.Mesh {
         targetY = this.position.y + this.height  + this.width / 3;
         targetZ = this.position.z - this.width * 0.85;
         targetX = this.position.x;
+        if (this.game.user2.isBot)
+        {
+            targetY *= 1.3;
+            targetZ *= 1.1;
+        }
         // Create tweens for each property
         const rightTween = new TWEEN.Tween(_cameraRight.position)
         .to({ y: targetY, z: targetZ, x: targetX }, duration)
@@ -886,6 +920,19 @@ class Arena extends THREE.Mesh {
         })
         leftTween.start();
         rightTween.start();
+    }
+    setSinglePlayerFov()
+    {
+        const duration = 1500;
+
+        new TWEEN.Tween(this.camera.fov)
+        .to({value: 81}, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            this.camera.updateProjectionMatrix();
+        })
+        .start();
+        
     }
     updateMaps()
     {
@@ -993,6 +1040,8 @@ class Arena extends THREE.Mesh {
     }
     resetPositions(loserPaddle, winnerPaddle, leftScored, whichGlitch)
     {
+        if (this.game.isOver)
+            return;
         let duration = 1150;
 
         this.thirdPlayer.deactivateThirdPlayer();
@@ -1004,7 +1053,6 @@ class Arena extends THREE.Mesh {
             tmpCamera = cameraLeft;
         else
             tmpCamera = camera;
-        scoreUI[0].style.opacity = 0;
         // BALL UP
         let ballUp = new TWEEN.Tween(this.ball.position)
         .to({y: (this.ball.position.y + this.paddleLeft.height * 5), z: winnerPaddle.position.z}, 1500)
@@ -1040,7 +1088,6 @@ class Arena extends THREE.Mesh {
         .to({y: this.ball.startingPoint.y}, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
-            this.resetUI();
             loserPaddle.light.power = loserPaddle.defaultLight;
             winnerPaddle.light.power = winnerPaddle.defaultLight;
             this.ball.isgoingRight = true;
@@ -1051,6 +1098,8 @@ class Arena extends THREE.Mesh {
             this.game.isPlaying = false;
             this.game.isOver = false;
             swapToFullScreen();
+            if (this.game.thirdPlayer)
+                thirdPlayerUI[0].style.opacity = 1;
             this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
             this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
             this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
@@ -1058,12 +1107,17 @@ class Arena extends THREE.Mesh {
             this.paddleRight.particles.isActive = false;
             this.ball.particles.isActive = false;
             this.idleCameraAnimation();
-            this.resetUI();
-            
-            // display back the panel
-            this.gameState.inGame = false;
-            this.gameState.inLobby = true; 
-            endGame(this.game.tournamentGame);
+            const winningScreen = document.querySelector('.winning-screen');
+            const winningText = document.getElementById('winningText');
+            const scoreText = document.getElementById('scoreText');
+            scoreText.textContent = this.game.leftScore + ' - ' + this.game.rightScore;
+            if (this.game.leftScore === 3)
+                winningText.textContent = this.game.user1.username + ' wins!';
+            else
+                winningText.textContent = this.game.user2.username + ' wins!';
+            winningScreen.classList.add('visible');
+            if (this.game.user2.isBot === 'Bot')
+                this.bot.deactivateBot();
         });
         let targetLight = loserPaddle.defaultLight;
         if (this.getCurrentMap() === this.dragonMap)
@@ -1086,21 +1140,27 @@ class Arena extends THREE.Mesh {
         this.ball.speedZ = 0;
         this.ball.speedX = 0;
     }
-    changeTheme(theme)
+    resetUIForRematch()
     {
-        this.material.color.set(theme.arenaColor);
-        this.paddleLeft.material.color.set(theme.paddleColor);
-        this.paddleRight.material.color.set(theme.paddleColor);
-        this.paddleLeft.superChargingColor = theme.paddleSuperchargingColor;
-        this.paddleRight.superChargingColor = theme.paddleSuperchargingColor;
-        this.paddleLeft.dashingColor = theme.paddleDashingColor;
-        this.paddleRight.dashingColor = theme.paddleDashingColor;
-        this.paddleLeft.defaultColor = theme.paddleColor;
-        this.paddleRight.defaultColor = theme.paddleColor;
-        this.ball.material.color.set(theme.ballInitialColor);
-        this.ball.finalColor = theme.ballFinalColor;
-        this.ball.initialColor = theme.ballInitialColor;
-        scene.background = new THREE.Color(theme.backgroundColor);
+        this.game.isOver = false;
+        this.isBeingReset = false;
+        this.resetUI();
+        const winningScreen = document.querySelector('.winning-screen');
+        winningScreen.classList.remove('visible');
+    }
+    displayBackPanel()
+    {
+        this.resetUI();
+        if (this.game.user2.isBot)
+            this.bot.deactivateBot();
+        this.gameState.inGame = false;
+        this.gameState.inLobby = true;
+        endGame(this.game.tournamentGame);
+        const winningScreen = document.querySelector('.winning-screen');
+        winningScreen.classList.remove('visible');
+        scoreUI[0].style.opacity = 0;
+        this.game.isOver = false;
+        this.isBeingReset = false;
     }
 }
 
@@ -3207,66 +3267,235 @@ class Bot {
         this.enemyPaddle = enemyPaddle;
         this.isPlaying = false;
         this.targetX = 0;
+        this.difficulty = "medium";
         this.lastTargetUpdate;
         this.zValue = this.ownPaddle.position.z; // rightpaddle : x positive to the right, z positive
         this.enemyZValue = this.enemyPaddle.position.z;
         this.intervalSet = false;
+        this.dashRange = this.arena.width * 20 * this.ownPaddle.moveSpeed;
+        this.timeToUpdate = 1000;
+        this.dashLikeness = 3;
+        this.ballTimeToLand = -1;
+        this.paddleTimeToReach = -1;
+        this.isHoldingBall = false;
+        this.powerUpLikeness = 1;
+        this.powerUp = false;
+        this.powerUpEnabled = true;
+        this.updatesToPowerUp = 0;
+        this.dashEnabled = true;
+        this.intervalId = null; // Store interval ID
+        this.gui;
     }
-    play()
-    {
-        if (!this.intervalSet)
+    activateBot() {
+        if (this.difficulty === "easy")
         {
-            this.intervalSet = true;
-            setInterval(() => this.updateTarget(), 1000);
+            this.powerUpEnabled = false;
+            this.dashEnabled = false;
+            this.timeToUpdate = 1500;
         }
-        this.moveToTarget(this.targetX)
+        else if (this.difficulty === "medium")
+        {
+            this.powerUpEnabled = false;
+            this.dashEnabled = true;
+            this.dashLikeness = 1;
+            this.timeToUpdate = 1000;
+        }
+        else if (this.difficulty === "hard")
+        {
+            this.powerUpEnabled = true;
+            this.dashEnabled = true;
+            this.dashLikeness = 5;
+            this.timeToUpdate = 1000;
+        }
+        if (!this.isPlaying)
+            this.initGUI();
+        this.isPlaying = true;
+        if (this.powerUpLikeness)
+            this.updatesToPowerUp = (Math.floor(Math.random() * 30) + 1) / this.powerUpLikeness;
+    }
+    deactivateBot() {
+        this.isPlaying = false;
+        this.deactivateGui();
+    }
+    initGUI() {
+        this.gui = new dat.GUI();
+        this.gui.add(this, 'timeToUpdate', 100, 5000).name('Time To Update').onChange((value) => {
+            this.updateInterval(value);
+        });
+        this.gui.add(this, 'dashLikeness', 1, 5).name('Dash Likeness').onChange((value) => {
+            this.dashLikeness = value;
+        });
+        this.gui.add(this, 'powerUpLikeness', 0, 5).name('Power Up Likeness').onChange((value) => {
+            this.powerUpLikeness = value;
+            this.updatesToPowerUp = (Math.floor(Math.random() * 30) + 1) / this.powerUpLikeness;
+        });
+        this.gui.add(this, 'dashEnabled', true, false).name('Dash Enabled').onChange((value) => {
+            this.dashEnabled = value
+        });
+        this.gui.add(this, 'powerUpEnabled', true, false).name('Power Up Enabled').onChange((value) => {
+            this.powerUpEnabled = value;
+        });
+        //close gui
+        this.gui.close();
+    }
+    deactivateGui() {
+        this.gui.destroy();
+    }
+    updateInterval(newInterval) {
+        this.timeToUpdate = newInterval;
+        if (this.intervalSet) {
+            clearInterval(this.intervalId);
+            this.intervalId = setInterval(() => this.scanGameInfo(), this.timeToUpdate);
+        }
+    }
+    play() {
+        if (!this.intervalSet) {
+            this.intervalSet = true;
+            this.intervalId = setInterval(() => this.scanGameInfo(), this.timeToUpdate);
+        }
+        if (this.positionReached(this.ownPaddle.position.x, this.targetX) && this.isHoldingBall)
+            this.targetX = this.generateRandomTarget();
+        if (this.updatesToPowerUp <= 0)
+        {
+            this.powerUp = true;
+            this.updatesToPowerUp = (Math.floor(Math.random() * 30) + 1) / this.powerUpLikeness;
+        }
+        else
+            this.powerUp = false;
+        this.moveToTarget(this.targetX);
+        this.ballTimeToLand--;
     }
     moveToTarget(targetX)
     {
-        if (this.ownPaddle.position.x + this.ownPaddle.width / 2 >= targetX && this.ownPaddle.position.x - this.ownPaddle.width / 2 <= targetX)
+        if (this.positionReached(this.ownPaddle.position.x, targetX))
         {
-            keyDown['ArrowLeft'] = false;
-            keyDown['ArrowRight'] = false;
+            keyDown[this.ownPaddle.leftKey] = false;
+            keyDown[this.ownPaddle.rightKey] = false;
+            doubleKeyPress[this.ownPaddle.leftKey] = false;
+            doubleKeyPress[this.ownPaddle.rightKey] = false;
         }
         else if (this.ownPaddle.position.x < targetX)
         {
-            keyDown['ArrowRight'] = true;
-            keyDown['ArrowLeft'] = false;
+            if (this.dashEnabled && this.ownPaddle.position.x + this.dashRange < targetX && this.ballTimeToLand < this.paddleTimeToReach * this.dashLikeness)
+                doubleKeyPress[this.ownPaddle.rightKey] = true;
+            keyDown[this.ownPaddle.rightKey] = true;
+            keyDown[this.ownPaddle.leftKey] = false;
+            doubleKeyPress[this.ownPaddle.leftKey] = false;
         }
         else if (this.ownPaddle.position.x > targetX)
         {
-            keyDown['ArrowLeft'] = true;
-            keyDown['ArrowRight'] = false;
+            if (this.dashEnabled && this.ownPaddle.position.x - this.dashRange > targetX && this.ballTimeToLand < this.paddleTimeToReach * this.dashLikeness)
+                doubleKeyPress[this.ownPaddle.leftKey] = true;
+            keyDown[this.ownPaddle.leftKey] = true;
+            keyDown[this.ownPaddle.rightKey] = false;
+            doubleKeyPress[this.ownPaddle.rightKey] = false;
+        }
+        if (this.powerUp)
+        {
+            keyDown[this.ownPaddle.chargeKey] = true;
+            this.powerUp = false;
+        }
+        else
+            keyDown[this.ownPaddle.chargeKey] = false;
+        if (this.dashEnabled && this.isHoldingBall)
+        {
+            // dash left if paddle is on the right side of the board
+            if (this.ownPaddle.position.x > 0)
+            {
+                doubleKeyPress[this.ownPaddle.leftKey] = true;
+                doubleKeyPress[this.ownPaddle.rightKey] = false;
+            }
+            // dash right if paddle is on the left side of the board
+            else
+            {
+                doubleKeyPress[this.ownPaddle.rightKey] = true;
+                doubleKeyPress[this.ownPaddle.leftKey] = false;
+            }
         }
     }
+    positionReached(paddleX, targetX)
+    {
+        return paddleX + this.ownPaddle.width / 2 >= targetX && paddleX - this.ownPaddle.width / 2 <= targetX;
+    }
     calculateBallLandingPosition() {
-        if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
-            return;
         const ballAcceleration = this.arena.ball.acceleration;
         let ballPositionX = this.arena.ball.position.x;
         let ballPositionZ = this.arena.ball.position.z;
         let ballSpeedX = this.arena.ball.speedX;
         const ballSpeedZ = this.arena.ball.speedZ;
-        if (ballSpeedZ > 0) {
-            while (ballPositionZ < this.zValue) {
-                ballSpeedX += ballAcceleration;
-                ballPositionX += ballSpeedX;
-                ballPositionZ += ballSpeedZ;
-                if ((ballPositionX + ballSpeedX <= (this.arena.position.x - this.arena.length / 2)) || (ballPositionX + ballSpeedX >= this.arena.position.x +this.arena.length / 2)) // detect collision with border
-                    ballSpeedX *= -1;
+
+        // if ball is going towards the enemy
+        if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
+        {
+            if (ballSpeedZ < 0) {
+                while (ballPositionZ > this.enemyZValue) {
+                    ballSpeedX += ballAcceleration;
+                    ballPositionX += ballSpeedX;
+                    ballPositionZ += ballSpeedZ;
+                    if ((ballPositionX + ballSpeedX <= (this.arena.position.x - this.arena.length / 2)) || (ballPositionX + ballSpeedX >= this.arena.position.x +this.arena.length / 2)) // detect collision with border
+                        ballSpeedX *= -1;
+                }
+            }    
+        }
+        // if ball is going towards the bot
+        else
+        {
+            if (ballSpeedZ > 0) {
+                while (ballPositionZ < this.zValue) {
+                    ballSpeedX += ballAcceleration;
+                    ballPositionX += ballSpeedX;
+                    ballPositionZ += ballSpeedZ;
+                    if ((ballPositionX + ballSpeedX <= (this.arena.position.x - this.arena.length / 2)) || (ballPositionX + ballSpeedX >= this.arena.position.x +this.arena.length / 2)) // detect collision with border
+                        ballSpeedX *= -1;
+                }
             }
         }
         return ballPositionX;
     }
-    updateTarget()
+    calculateBallTimeToLand()
+    {
+        if (this.arena.ball.speedZ * this.ownPaddle.position.z <= 0)
+        {
+            this.ballTimeToLand = -1;
+            return;
+        }
+        let ballPositionZ = this.arena.ball.position.z;
+        let ballSpeedZ = this.arena.ball.speedZ;
+        let framesToLand = 0;
+        while (ballPositionZ < this.zValue) {
+            ballPositionZ += ballSpeedZ;
+            framesToLand++;
+        }
+        return framesToLand;
+    }
+    calculateTimeToReachTarget(paddleX, targetX)
+    {
+        if (targetX === paddleX)
+            return 0;
+        const distance = Math.abs(this.ownPaddle.position.x - targetX);
+        return distance / (this.ownPaddle.moveSpeed * this.arena.length);
+    }
+    scanGameInfo()
     {
         this.targetX = this.calculateBallLandingPosition();
+        this.ballTimeToLand = this.calculateBallTimeToLand();
+        this.paddleTimeToReach = this.calculateTimeToReachTarget(this.ownPaddle.position.x, this.targetX);
+        this.isHoldingBall = this.detectSupercharge();
+        if (this.powerUpEnabled)
+            this.updatesToPowerUp--;
+    }
+    detectSupercharge()
+    {
+        return (this.arena.ball.isSupercharging && this.arena.ball.position.z * this.ownPaddle.position.z > 0)
+    }
+    generateRandomTarget()
+    {
+        return Math.random() * (this.arena.width - 2) - this.arena.width / 2 + 1;
     }
 }
 
 class UserStats {
     constructor(isThirdPlayer, usernameElement, ppElement) {
-    
         this.isThirdPlayer = isThirdPlayer;
         this.isWinner = false;
         this.usernameElement = usernameElement;
@@ -3284,7 +3513,8 @@ class UserStats {
     }
     reset()
     {
-        this.isBot = false;
+        if (this.username != 'bot')
+            this.isBot = false;
         this.isWinner = false;
         this.pointsScored = 0;
         this.pointsTaken = 0;
@@ -3295,10 +3525,26 @@ class UserStats {
     setUser(username, id, profilePicture)
     {
         this.username = username;
+        if (username === 'bot')
+            this.isBot = true;
+        else
+            this.isBot = false;
         this.id = id;
         this.profilePicture = profilePicture;
         this.usernameElement.textContent = username;
         this.ppElement.src = profilePicture;
+    }
+    toJson() {
+        return {
+            isThirdPlayer: this.isThirdPlayer,
+            isWinner: this.isWinner,
+            pointsScored: this.pointsScored,
+            pointsTaken: this.pointsTaken,
+            nbDashes: this.nbDashes,
+            nbPowerUsed: this.nbPowerUsed,
+            nbBounces: this.nbBounces,
+            isBot: this.isBot,
+        };
     }
 }
 
@@ -3329,8 +3575,6 @@ class Game {
         this.user3 = new UserStats(true, this.user3Username, this.user3ProfilePicture); // User3 is the third player
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
 
-
-        // this.user2Username.textContent = 'caca';
         // OUTPUT
         this.loserPaddle;
         this.winnerPaddle;
@@ -3360,6 +3604,7 @@ class GameState {
         this.loading = false;
         this.arenaCreated = false;
         this.inGame = false;
+        this.paused = false;
         this.inLobby = true;
         this.graphicsNeedToChange = false; 
         this.graphics = 'medium'; // (options = 'low', 'medium', 'high') (loginPage.js)
@@ -3394,6 +3639,9 @@ class GameState {
             this.arena.graphics = this.graphics;   
         }
         updateUserGraphicMode(this.graphics);
+    }
+    togglePause() {
+        this.paused = !this.paused;
     }
 }
 
@@ -3530,36 +3778,35 @@ class Particle {
 }
 
 function swapToSplitScreen() {
-        thirdPlayerUI[0].style.opacity = 0;
-        const targetWidth = window.innerWidth / 2;
-        const duration = 500; // Animation duration in milliseconds
-        new TWEEN.Tween(renderer.domElement)
-            .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(() => {
-                renderer.setSize(renderer.domElement.width, window.innerHeight);
-            })
-            .start();
+    thirdPlayerUI[0].style.opacity = 0;
+    const targetWidth = window.innerWidth / 2;
+    const duration = 500; // Animation duration in milliseconds
+    new TWEEN.Tween(renderer.domElement)
+        .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            renderer.setSize(renderer.domElement.width, window.innerHeight);
+        })
+        .start();
 
-        const aspectRatio = (window.innerWidth / window.innerHeight) / 2;
-        new TWEEN.Tween(camera)
-            .to({ aspect: aspectRatio, fov: 95 }, duration)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(() => {
-                camera.updateProjectionMatrix();
-            })
-            .onComplete(() => {
-                blueBar[0].style.transition = "opacity 2s ease";
-                blueBar[0].style.opacity = 0.2;
-            })
-            .start();
+    const aspectRatio = (window.innerWidth / window.innerHeight) / 2;
+    new TWEEN.Tween(camera)
+        .to({ aspect: aspectRatio, fov: 95 }, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            camera.updateProjectionMatrix();
+        })
+        .onComplete(() => {
+            blueBar[0].style.transition = "opacity 2s ease";
+            blueBar[0].style.opacity = 0.2;
+        })
+        .start();
 }
 
 function swapToFullScreen()
 {
     blueBar[0].style.transition = "opacity 0.5s ease";
     blueBar[0].style.opacity = 0;
-    thirdPlayerUI[0].style.opacity = 1;
     const targetWidth = window.innerWidth;
     const duration = 500; // Animation duration in milliseconds
     new TWEEN.Tween(renderer.domElement)
@@ -3592,9 +3839,9 @@ function glitch(glitchEffect)
     }, 500);
 }
 
-let fpsInterval = 1000 / 75; // 75 FPS
-let stats = new Stats();
-let lastUpdateTime = performance.now();
+// let fpsInterval = 1000 / 75; // 75 FPS
+// let stats = new Stats();
+// let lastUpdateTime = performance.now();
 
 function animate()
 {
@@ -3609,9 +3856,8 @@ function animate()
         if (gameState.inLobby)
             return ;
         TWEEN.update();
-        if (gameState.inGame)
+        if (gameState.inGame && !gameState.paused)
         {
-            // console.log("inGame");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();

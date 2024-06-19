@@ -22,8 +22,9 @@ fetch('../../static/html/languages.json')
 export function getTranslatedText(key) {
     if (languageFile) {
         if (languageFile[currentLanguage])
-        return languageFile[currentLanguage][key];
-    else console.error('Current language ' + currentLanguage + 'not found in language file');
+            return languageFile[currentLanguage][key];
+        else 
+            console.error('Current language ' + currentLanguage + 'not found in language file');
     }
 }
 
@@ -31,7 +32,9 @@ const userlistText = document.getElementById('userlistText');
 const arenaTitleText = document.getElementById('arenaTitleText');
 const powerupsText = document.getElementById('gamemodeText');
 const mapsText = document.getElementById('mapsText');
+const botDifficultyText = document.getElementById('botDifficultyText');
 const enabledText = document.getElementById('gamemodeNameText');
+const botDifficultyLevelText = document.getElementById('botDifficultyLevelText');
 const startText = document.getElementById('startText');
 const player1Text = document.getElementById('player1Text');
 const player2Text = document.getElementById('player2Text');
@@ -47,6 +50,8 @@ function translateArenaPageTexts() {
     player3Text.textContent = getTranslatedText('player') + ' 3';
     powerupsText.textContent = getTranslatedText('gamemode');
     mapsText.textContent = getTranslatedText('maps');
+    botDifficultyText.textContent = getTranslatedText('botDifficulty');
+    botDifficultyLevelText.textContent = getTranslatedText('botDifficultyMedium');
     enabledText.textContent = getTranslatedText('gamemodeNameText1');
     startText.textContent = getTranslatedText('start');
     arenaBackButton.textContent = getTranslatedText('backButton');
@@ -57,9 +62,15 @@ const trnmtUserlistText = document.getElementById('trnmtUserlistText');
 const trnmtTitleText = document.getElementById('trnmtTitleText');
 const trnmtPowerupsText = document.getElementById('trnmtGamemodeText');
 const trnmtMapsText = document.getElementById('trnmtMapsText');
+const trnmtBotDifficultyText = document.getElementById('trnmtBotDifficultyText');
 const trnmtEnabledText = document.getElementById('gamemodeNameText2');
+const trnmtbotDifficultyLevelText = document.getElementById('trnmtBotDifficultyLevelText');
 const trnmtStartText = document.getElementById('launch');
+const trnmtThirdPlayerText = document.getElementById('thirdPlayerText');
 const trnmtBackButton = document.getElementById('trnmtBackButton');
+const trnmtNextMatch = document.getElementById('next-match');
+const trnmtLaunchMatch = document.getElementById('launchMatch');
+
 
 function translateTournamentPageTexts() {
     for (let i = 0; i < trnmtPlayerTexts.length; i++)
@@ -69,9 +80,14 @@ function translateTournamentPageTexts() {
     trnmtTitleText.textContent = getTranslatedText('tournamentTitle');
     trnmtPowerupsText.textContent = getTranslatedText('gamemode');
     trnmtMapsText.textContent = getTranslatedText('maps');
+    trnmtBotDifficultyText.textContent = getTranslatedText('botDifficulty');
+    trnmtbotDifficultyLevelText.textContent = getTranslatedText('botDifficultyMedium');
     trnmtEnabledText.textContent = getTranslatedText('gamemodeNameText1');
     trnmtStartText.textContent = getTranslatedText('start');
+    trnmtThirdPlayerText.textContent = getTranslatedText('thirdPlayer');
     trnmtBackButton.textContent = getTranslatedText('backButton');
+    trnmtNextMatch.textContent = getTranslatedText('nextMatch');
+    trnmtLaunchMatch.textContent = getTranslatedText('launchMatch');
 }
 
 const loginText = document.getElementById('loginText');
@@ -164,8 +180,8 @@ const chooseProfilePic = document.getElementById('chooseProfilePic');
 const deleteAccountButton = document.getElementById('deleteAccountButton');
 const submitInfoButton = document.getElementById('submitInfoButton');
 const validateDeleteAccountText = document.getElementById('validateDeleteAccountText');
-const buttonValidateDelete = document.getElementById('buttonValidateDelete');
-const buttonCancelDelete = document.getElementById('buttonCancelDelete');
+const deleteAccountConfirmation = document.getElementById('deleteAccountConfirmation');
+const deleteAccountCancel = document.getElementById('deleteAccountCancel');
 
 function translateModifyPageTexts(){
     changeInfoText.textContent = getTranslatedText('changeInfoText');
@@ -177,8 +193,8 @@ function translateModifyPageTexts(){
     deleteAccountButton.textContent = getTranslatedText('deleteAccountButton');
     submitInfoButton.textContent = getTranslatedText('submitInfoButton');
     validateDeleteAccountText.textContent = getTranslatedText('validateDeleteAccountText');
-    buttonValidateDelete.textContent = getTranslatedText('buttonValidateDelete');
-    buttonCancelDelete.textContent = getTranslatedText('buttonCancelDelete');
+    deleteAccountConfirmation.textContent = getTranslatedText('deleteAccountConfirmation');
+    deleteAccountCancel.textContent = getTranslatedText('deleteAccountCancel');
 }
 
 export function TranslateAllTexts() {
