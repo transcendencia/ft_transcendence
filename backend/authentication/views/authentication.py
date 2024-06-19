@@ -48,6 +48,27 @@ def login_page(request):
       print(str(e))
       return Response({'status': "error", 'message': str(e)})
 
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def logGuest(request):
+#   try:
+#     username = request.POST.get("username")
+#     username_lower = username.lower()
+#     password = request.POST.get("password")
+
+#     user = authenticate(username=username_lower, password=password)
+#     if user is not None:
+#       user.last_login_date = timezone.now()
+#       user.status = 'online'
+#       token, created = Token.objects.get_or_create(user=user)
+#       user.is_host = False
+#       user.save()
+#       return  Response({'status': "succes", 'token': token.key, 'msg_code': "loginSuccessful"})
+#     else:
+#       return  Response({'status': "failure", 'msg_code': "loginFailed"})
+#   except Exception as e:
+#       print(str(e))
+#       return Response({'status': "error", 'message': str(e)})
 
 @api_view(['POST']) 
 @permission_classes([AllowAny])  

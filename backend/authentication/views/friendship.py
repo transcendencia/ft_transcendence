@@ -16,9 +16,6 @@ from rest_framework.response import Response
 from ..models import User, FriendRequest
 from ..serializers import UserSerializer, SignupSerializer, UserListSerializer
 
-# User = get_user_model() #J'en ai vrmt besoin??
-
-
 #verifier qu'une friend request n'existe pas deja entre ces 2 user 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])

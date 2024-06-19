@@ -462,11 +462,15 @@ function putUserInMatch() {
     }
 }
 
-import { handleLoginGuest } from "./loginPage.js";
-
+let guestLoggedIn = []
 validatePasswordButton.addEventListener('click', function() {
     // console.log(userTiles[tempTileIndex]);
-    handleLoginGuest(userTiles[tempTileIndex].user);
+    if (guestLoggedIn.length < 7) {
+        // handleLoginHost(userTiles[tempTileIndex].user);
+        console.log(guestLoggedIn.length);
+    }
+    else
+        console.log("Too many guest");
     putUserInMatch();
 });
 

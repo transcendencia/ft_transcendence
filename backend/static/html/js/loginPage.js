@@ -138,9 +138,10 @@ function setEscapeLanguageVisual() {
     icon.querySelector('.icon').style.opacity = 0;
 }
 
-// if (localStorage.getItem("hostLoggedIn") === null) {
-    //     localStorage.setItem('hostLoggedIn', 'false');
-    // }
+if (localStorage.getItem("hostLoggedIn") === null) {
+        localStorage.setItem('hostLoggedIn', 'false');
+}
+
 // Add event listener to the loginForm
 const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', handleLoginHost);
@@ -180,10 +181,26 @@ function handleLoginHost(event) {
     });
 }
 
-export function handleLoginGuest(user) {
-    // const formData = new
-    console.log(user);
-}
+// export function handleLoginGuest(user) {
+//     var passwordInput = document.getElementById('enterPasswordInput');
+//     var formData = new FormData();
+//     formData.append('username', user.username);
+//     formData.append('password', passwordInput.value);
+    
+//     fetch('logGuest/', {
+//         method: 'POST',
+//         body: formData
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+       
+//     })
+//     .catch(error => {
+//         console.error('Erreur :', error);
+//     });
+
+//     console.log(user);
+// }
 
 export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
 
