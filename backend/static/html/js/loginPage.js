@@ -1,12 +1,13 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { moveCameraToBackOfCockpit }  from "./signUpPage.js";
 import { showPage } from "./showPages.js";
-import { alien1, alien2, alien3} from "./objs.js";
+import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { changeGraphics } from "./arenaPage.js";
-import { startAnimation } from "./main.js";
+import { changeGraphics, toggleGameStarted } from "./arenaPage.js";
+import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleRSContainerVisibility, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
+import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -32,18 +33,15 @@ showPage('loginPage');
 
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
-        if (icon.id === 'graphicsIcon1' && gameState.graphics != 'low')
-        {
+        if (icon.id === 'graphicsIcon1' && gameState.graphics != 'low') {
             gameState.graphicsNeedToChange = true;
             gameState.graphics = 'low';
         }
-        if (icon.id === 'graphicsIcon2' && gameState.graphics != 'medium')
-        {
+        if (icon.id === 'graphicsIcon2' && gameState.graphics != 'medium') {
             gameState.graphicsNeedToChange = true;
             gameState.graphics = 'medium';
         }
-        if (icon.id === 'graphicsIcon3' && gameState.graphics != 'high')
-        {
+        if (icon.id === 'graphicsIcon3' && gameState.graphics != 'high') {
             gameState.graphicsNeedToChange = true;
             gameState.graphics = 'high';
         }
@@ -113,7 +111,7 @@ languageIcons.forEach(function(icon) {
         // Send POST request to change user language in the back if user is logged in
         const token = localStorage.getItem('host_auth_token');
         if (token && currentLanguage !== icon.id) {
-            updateUserLanguage(incon.id);
+            updateUserLanguage(icon.id);
         }
     });
     //init english flag
@@ -173,7 +171,6 @@ function handleLogin(event) {
                 setCurrentLanguage(data.language);
                 setEscapeLanguageVisual();
                 get_friends_list();
-                get_user_list();
                 getProfileInfo();
                 TranslateAllTexts();
                 getGameInfo();
@@ -221,8 +218,9 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
  
     const scoreAndThirdPlayer = document.createElement('div');
     scoreAndThirdPlayer.classList.add('scoreAndThirdPlayer');
-    scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">Third Player : ${thirdPlayer}</div>`;
-  
+    if (thirdPlayer === null)
+        scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">No Third Player</div>`;
+    else scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">Third Player : ${thirdPlayer}</div>`;
     const userHI2 = document.createElement('div');
     userHI2.classList.add('userHI');
     if (player2Name.length > 8)
@@ -299,6 +297,14 @@ function getGameInfo() {
 var disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", handleLogout);
 
+function resetHTMLelements(){
+    document.querySelector(".gameUI").style.visibility = 'hidden';
+    document.getElementsByClassName("bluebar")[0].style.opacity = 0;
+    document.getElementById('c4').style.display = 'block';
+    document.getElementById('c3').style.display = 'none';
+    document.getElementById('c1').style.display = 'none';
+}
+
 function handleLogout() {
     updateUserStatus('offline')
     .then(() => {
@@ -310,5 +316,22 @@ function handleLogout() {
     .catch(error => {
         console.error('Erreur :', error);
     });
+    if (gameState.inGame) {
+        gameState.inGame = false;
+        gameState.inLobby = true;
+        toggleGameStarted();
+        resetHTMLelements();
+    }
+    togglePause();
+    spaceShip.position.set(0, 0, -1293.5);
+    spaceShip.rotation.set(0, 0, 0);
+    setTimeout(() => {
+        toggleBlurDisplay(true);
+        toggleEscapeContainerVisibility();
+        resetOutline();
+        spaceShipInt.visible = true;
+        showPage('loginPage');
+        toggleLobbyStart();
+    }, 50);
     // localStorage.setItem('hostLoggedIn', 'false');
 };

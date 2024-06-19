@@ -9,9 +9,6 @@ export function showPage(pageId) {
     if (pageId == 'none')
         return;
     pageId = '.' + pageId;
-
-    console.log("SHOW PAGE");
-    console.log(pageId);
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.remove('invisible');
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page

@@ -67,8 +67,18 @@
         "gamemodeNameText2": "Powerless",
         "gamemodeNameText3": "Spin Only",
         "maps": "Maps",
+        "botDifficulty": "Bot level",
+        "botDifficultyEasy": "Easy",
+        "botDifficultyMedium": "Medium",
+        "botDifficultyHard": "Hard",
         "start": "Start",
+        "thirdPlayer": "Third Player",
         "removePlayer": "Remove player",
+        "ErrorMinus3": "Not enough players",
+        "ErrorMinus4": "4 players minimum to play with a bot",
+        "ErrorTooMany": "Too many players",
+        "nextMatch": "Next match:",
+        "launchMatch": "Start match",
 
         "friendlist": "Friend List",
         "history": "History",
@@ -88,8 +98,8 @@
         "deleteAccountButton": "Delete Account",
         "submitInfoButton": "Submit",
         "validateDeleteAccountText": "All data will be permanently lost. Are you sure you want to delete your account?",
-        "buttonValidateDelete": "Yes",
-        "buttonCancelDelete": "No"
+        "deleteAccountConfirmation": "Yes",
+        "deleteAccountCancel": "No"
     },
     "es": {
         "login": "Usuario",
@@ -157,8 +167,18 @@
         "gamemodeNameText2": "Sin Poderes",
         "gamemodeNameText3": "Curvatura",
         "maps": "Mapas",
+        "botDifficulty": "Nivel del robot",
+        "botDifficultyEasy": "Facil",
+        "botDifficultyMedium": "Medio",
+        "botDifficultyHard": "Dura",
         "start": "Comenzar",
+        "thirdPlayer": "Tercer jugador",
         "removePlayer": "Eliminar",
+        "ErrorMinus3": "No hay suficiente jugador",
+        "ErrorMinus4": "Minimo 4 jugadores para jugar con un bot",
+        "ErrorTooMany": "Demasiados jugadores",
+        "nextMatch": "Proximo partido:",
+        "launchMatch": "Empezar partido",
         
         "friendlist": "Lista de amigos",
         "history": "Historial",
@@ -178,8 +198,8 @@
         "deleteAccountButton": "Borrar cuenta",
         "submitInfoButton": "Entregar",
         "validateDeleteAccountText": "Todos los datos se perderán permanentemente. ¿Estás seguro de que quieres eliminar tu cuenta?",
-        "buttonValidateDelete": "Si",
-        "buttonCancelDelete": "No"
+        "deleteAccountConfirmation": "Si",
+        "deleteAccountCancel": "No"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -245,8 +265,18 @@
         "gamemodeNameText2": "Sans Pouvoirs",
         "gamemodeNameText3": "Balles Courbes",
         "maps": "Cartes",
+        "botDifficulty": "niveau de l'IA",
+        "botDifficultyEasy": "Facile",
+        "botDifficultyMedium": "Moyen",
+        "botDifficultyHard": "Difficile",
         "start": "Commencer",
+        "thirdPlayer": "Troisieme joueur",
         "removePlayer": "Supprimer",
+        "ErrorMinus3": "Pas assez de joueurs",
+        "ErrorMinus4": "4 joueurs minimum pour jouer avec un bot",
+        "ErrorTooMany": "Trop de joueurs",
+        "nextMatch": "Prochain match:",
+        "launchMatch": "Commencer le match",
 
         "friendlist": "Liste d'amis",
         "history": "Historique",
@@ -266,7 +296,7 @@
         "deleteAccountButton": "Supprimer le compte",
         "submitInfoButton": "Soumettre",
         "validateDeleteAccountText": "Toutes les données seront définitivement perdues. Êtes-vous sûr de vouloir supprimer votre compte ?",
-        "buttonValidateDelete": "Oui",
-        "buttonCancelDelete": "Non"
+        "deleteAccountConfirmation": "Oui",
+        "deleteAccountCancel": "Non"
     }
 }

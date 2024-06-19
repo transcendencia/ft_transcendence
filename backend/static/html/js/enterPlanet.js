@@ -4,6 +4,7 @@ import { resetOutline, resetOutlineAndText, planetInRange } from "./planetInters
 import { checkEach5Sec, initUserPlanet } from './userPage.js';
 import { resetTournament, tournamentState, addEventListenersToPlusButtons } from '../../tournament/js/newTournament.js';
 import { initArenaPlanet } from './arenaPage.js';
+import { initTournamentPlanet } from '../../tournament/js/newTournament.js';
 
 export let landedOnPlanet = false;
 let planetPanel = document.querySelectorAll(".planetPanel");
@@ -49,8 +50,9 @@ export function togglePanelDisplay() {
     if (landedOnPlanet && planetInRange.name == "tournament") {
         if (tournamentState === 2)
             resetTournament();
-        else
-            addEventListenersToPlusButtons();
+        // else
+        //    addEventListenersToPlusButtons();
+        initTournamentPlanet();
         anim = setTimeout(function () {triggerInfiniteAnim(imagesTournament[0], imagesTournament[1])}, 2000);
         planetPanel[2].style.animation = "roll 2s forwards";
         imagesTournament[0].style.animation = "moveImageRight 2s forwards";
@@ -79,6 +81,11 @@ function resetRotations() {
 export function triggerInfiniteAnim(img1, img2) {
     img1.style.animation = "upDownImgL 2s infinite alternate ease-in-out";
     img2.style.animation = "upDownImgR 2s infinite alternate ease-in-out";
+}
+
+export function cancelLanding()
+{
+    landedOnPlanet = false;
 }
 
 export function togglePlanet() {

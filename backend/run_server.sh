@@ -32,9 +32,16 @@ USER_STATUS=${DJANGO_USER_STATUS:-"active"}
 python manage.py shell <<EOF
 from django.core.management import call_command
 from authentication.models import User
+import os
 
-if not User.objects.filter(username='${USER_USERNAME}').exists():
-    User.objects.create_user(username='${USER_USERNAME}', password='${USER_PASSWORD}', status="online", profile_picture="media/botLogo.jpg")
+# Définition des variables utilisateur
+USER_USERNAME = '${DJANGO_USER_USERNAME:-"bot"}'
+USER_PASSWORD = '${DJANGO_USER_PASSWORD:-"bot1234"}'
+USER_STATUS = '${DJANGO_USER_STATUS:-"online"}'
+
+if not User.objects.filter(username=USER_USERNAME).exists():
+    user = User.objects.create_user(username=USER_USERNAME, password=USER_PASSWORD, status=USER_STATUS)
+    user.profile_picture = "botLogo.jpg"
     user.save()
 EOF
 

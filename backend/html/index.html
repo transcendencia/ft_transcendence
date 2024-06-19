@@ -195,7 +195,7 @@ confidentiality policy
           <div id="userlistText" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
           <div id="userlistArenaPage" class="userlistBackground">
           </div>
-        <div id="arenaBackButton" class="planetBackButton">Back</div>
+        <div id="arenaBackButton" class="planetBackButton" style="width: 90%;">Back</div>
         </div>
         <div class="rightColumn">
           <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Arena </div>
@@ -253,17 +253,34 @@ confidentiality policy
               <div class="optionButton">
                 <div class="buttonTitle">
                   <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
-                    ?
+                  <div id="botDifficultyText">
+                    Bot difficulty
+                  </div>
                   <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
                 </div>
-                <div class="buttonCont"></div>
+                <div id="botDifficultyLevelText" class="buttonCont">Medium</div>
               </div>
             </div>
             <div id="startText" class="redButton">Start</div>
         </div>
       </div>
-    </div> 
-
+    </div>
+    <div class="enterPasswordWindow">
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        AtomiK
+      </div>
+      <div class="validateDeleteText">Enter your password</div>
+      <div class="changeInfoBar" style="height: 20%;">
+        <input id="enterPasswordInput" name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" type="password" placeholder="Password"></input>
+      </div>
+      <div class="buttonContainer" style="height: 10%;">
+        <div id="arenaBackLogInButton" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">back</div>
+      <div id="arenaLogInButton" class="validateDeleteButton">Log in</div>
+      </div>
+    </div>
 
     <!-- USER PLANET -->
     <div class="planetPanel">
@@ -310,7 +327,9 @@ confidentiality policy
                   </div>
                 </div>
               </div>
-              <div class="statsBlock"></div>
+              <div class="statsBlock">
+                <canvas id="winLostStat"></canvas>
+              </div>
               </div>
               <div id="searchedUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0">
                 <div class="aboveStatsBlock">
@@ -358,9 +377,13 @@ confidentiality policy
 
               <form id="userInfoForm" class="modifyPage"> <!--Je modifie les info ici-->
                 <div id="changeInfo" style="font-size: 13px; font-family: 'space'; color: white">Only fill in information you want to change</div>
-                <div class="switch" id="toggleSwitch">
-                  <div class="slider"></div>
-                </div>  
+               <div  class="toggle-container">
+                  <span class= "changeProfilePicture">Anonymous mode:</span>
+                  <div class="switch" id="toggleSwitch">
+                    <div class="slider"></div>
+                  </div>
+                  <img class="info-icon" src="../static/html/assets/icons/info.png" alt="Information" />
+                </div>
                   <div class="changeInfoBar">
                       <input id="changeUsernameInput" name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
                     </div>
@@ -376,7 +399,7 @@ confidentiality policy
                    <div class="profilePicContainer">
                       <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
-                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
+                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicBut ton">Choose file</label>
                     </div>
                     <div id= "changeInfoMessage" class="changeInfoMessage"></div>
                     <div class="buttonContainer">
@@ -388,23 +411,25 @@ confidentiality policy
             <div class="validateDelete">
               <div id="validateDeleteAccountText" class="validateDeleteText">All data will be permanently lost. Are you sure you want to delete your account?</div>
               <div class="buttonContainer">
-                <div id="buttonValidateDelete" class="validateDeleteButton" id="deleteAccountConfirmation">Yes</div>
-                <div id="buttonCancelDelete" class="validateDeleteButton" id="deleteAccountCancel">No</div>
+                <div class="validateDeleteButton" id="deleteAccountConfirmation">Yes</div>
+                <div class="validateDeleteButton" id="deleteAccountCancel">No</div>
               </div>
             </div>
-          <div id="blockingPanel" class="blockingPanel"></div>
-          <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between; flex-shrink: 0;">
-            <div id="friendListText" style="font-size: 20px; font-family: 'space'; color: white"> Friends List </div>
-            <div class="friendSearchBar">
-              <input id="searchInput" class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . ."></input>
-            </div>
-            <div id="userlistUserPage" class="userlistBackground" style="height:85%; width: 100%; border-radius: 10px;">
-            </div>
-            <div id="userBackButton" class="planetBackButton">Back</div>
+            <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between; flex-shrink: 0; align-items: flex-start;">
+              <div class="titleContainer" style="width: 100%; display: flex; justify-content: center;">
+                  <div id="friendListText" style="font-size: 20px; font-family: 'space'; color: white; text-align: center;"> Friends List </div>
+              </div>
+              <div class="friendSearchBar" style="width: 95%;">
+                  <input id="searchInput" class="text-input2" style="font-size: 15px;" spellcheck="false" placeholder="Look for users . . .">
+              </div>
+              <div id="userlistUserPage" class="userlistBackground" style="height:85%; width: 95%; border-radius: 10px;">
+              </div>
+              <div id="userBackButton" class="planetBackButton" style="width: 95%;">Back</div>
           </div>
       </div>
     </div>
   </div>
+  <div id="blockingPanel" class="blockingPanel"></div>
 
 
 
@@ -421,18 +446,13 @@ confidentiality policy
         <div class="secondLineTournament">
           <div id="leftColumn" class="leftColumn">
             <div id="trnmtUserlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
-            <div id="userlistTournamentPage" class="userlistBackground before-launch">
-              <!-- <div id="botUserTournamentTile" class="userTile" style="background-color: rgba(132, 0, 255, 0.5);"> 
-                <div class="imgContainer" style="border-color: rgb(164, 67, 255);"><img src="{% static 'html/assets/icons/botLogo.jpg' %}"></div>
-                <div class="textContainer" style="color: rgb(164, 67, 255); border-color: rgb(164, 67, 255);">Bot</div>
-              </div> -->
-            </div>
-            <div id="trnmtBackButton" class="planetBackButton">Back</div>
+            <div id="userlistTournamentPage" class="userlistBackground before-launch"></div>
+            <h2 id="next-match" class="matchInfo" style="display:none;"></h2>
+            <p id="match" class="matchInfo" style="display:none;"></p>
+            <div id="launchMatch" class="startTournamentButton" style="display:none;"></div>
+            <div id="trnmtBackButton" class="planetBackButton" style="width: 90%">Back</div>
           </div>
           <!-- when the tournament is launch -->
-          <h2 id="next-match" class="matchInfo" style="display:none;">Next match to be played:</h2>
-          <p id="match" class="matchInfo" style="display:none;"></p>
-          <div id="launchMatch" class="startTournamentButton" style="display:none;">Start match</div>
         <div id="midColumn" class="rightColumn">
           <div class="addPlayerToTournament before-launch">
             <div class="elemContTournament">
@@ -443,7 +463,7 @@ confidentiality policy
               </div>
               <div class="playerText"> Player 1 </div>
               </div>
-              <div class="addPlayer">
+              <div class="addPlayer"> 
                 <div class="plusPlayerTournament"><div style="pointer-events: none;">+</div></div>
                 <div class="playerText"> Player 2 </div>
               </div>
@@ -499,10 +519,12 @@ confidentiality policy
             <div class="optionButtonVert">
               <div class="buttonTitleVert">
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}" style="transform: scaleX(-1);">
-                  ?
+                <div id="trnmtBotDifficultyText">
+                  Bot difficulty
+                </div>
                 <img src="{% static 'html/assets/icons/doubleArrow2.png' %}">
               </div>
-              <div class="buttonContVert"></div>
+              <div id="trnmtBotDifficultyLevelText" class="buttonContVert">Medium</div>
             </div>
           </div>
           <div class="rightColumnBottom before-launch">
@@ -511,8 +533,10 @@ confidentiality policy
               <div id="error_msg" class="errorMsg"></div>
             </div>
             <div class="rightColumnBottomRight before-launch">
-              <div class="plusThirdPlayer">OFF</div>
-              <p style="padding-left: 10px;">   Third Player</p>
+              <div class="switch"  id="thirdPlayertoggleSwitch">
+                <div class="slider"></div>
+              </div> 
+              <p id="thirdPlayerText" style="padding-left: 10px;">Third Player</p>
             </div>
           </div>
           <!-- when the tournament is launch -->
@@ -800,6 +824,16 @@ confidentiality policy
           <div id="username3Text" style="color: rgb(255, 255, 255); ">TonDaron</div>
         </div>
     </div>
+    <div class="winning-screen">
+      <div id="winningText">Player 1 wins!</div>
+      <div id="scoreText">10 - 5</div>
+      <button id="rematchButton">
+          <div id="rematchText">Rematch</div>
+      </button>
+      <button id="backToLobbyButton">
+          <div id="backToLobbyText">Back to lobby</div>
+      </button>
+  </div>
   </div>
   
 
@@ -810,12 +844,16 @@ confidentiality policy
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/7/Stats.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script type="module" src="{% static 'html/js/main.js' %}"></script>
     <script type="module" src="{% static 'html/js/arenaPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/loginPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/translatePages.js' %}"></script>
     <script type="module" src="{% static 'html/js/userPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/modifyPage.js' %}"></script>
+    <script type="module" src="{% static 'html/js/stats.js' %}"></script>
     <script type="module" src="{% static 'game/js/main.js' %}"></script>
     <script type="module" src="{% static 'tournament/js/gameData.js' %}"></script>
     <script type="module" src="{% static 'tournament/js/newTournament.js' %}"></script>

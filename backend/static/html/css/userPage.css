@@ -354,9 +354,9 @@
 }
 
 .friendTile {
-    color: rgb(14, 255, 26) !important;
-    border-color: rgb(14, 255, 26) !important;
-    background-color: rgba(14, 255, 26, 0.459) !important;
+    color: rgb(14, 255, 110) !important;
+    border-color: rgb(14, 255, 110) !important;
+    background-color: rgba(14, 255, 110, 0.459) !important;
 }
 
 .arenaFriendTile {
@@ -515,4 +515,9 @@
     outline: none; /* Remove default focus outline */
     resize: none; /* Remove resize handle */
     overflow: hidden; /* Prevent scrolling */
+}
+
+.stats {
+    width: 40px;
+    height: 40;
 }
