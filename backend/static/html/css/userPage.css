@@ -516,3 +516,8 @@
     resize: none; /* Remove resize handle */
     overflow: hidden; /* Prevent scrolling */
 }
+
+.stats {
+    width: 40px;
+    height: 40;
+}

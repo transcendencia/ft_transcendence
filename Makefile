@@ -29,8 +29,16 @@ prune:
 
 fclean:
 	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
+	- @find backend/media -type f ! -name 'default.png' ! -name 'botLogo.jpg' -delete
 
 re: down
 	${MAKE} all
 
+
+migration:
+	sudo rm -rf backend/authentication/migrations
+	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
+	- @find backend/media -type f ! -name 'default.png' ! -name 'botLogo.jpg' -delete
+	${MAKE} all
+	
 .PHONY: all fclean up down

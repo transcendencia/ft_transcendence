@@ -311,7 +311,9 @@
                   </div>
                 </div>
               </div>
-              <div class="statsBlock"></div>
+              <div class="statsBlock">
+                <canvas id="winLostStat"></canvas>
+              </div>
               </div>
               <div id="searchedUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0">
                 <div class="aboveStatsBlock">
@@ -359,9 +361,13 @@
 
               <form id="userInfoForm" class="modifyPage"> <!--Je modifie les info ici-->
                 <div id="changeInfo" style="font-size: 13px; font-family: 'space'; color: white">Only fill in information you want to change</div>
-                <div class="switch" id="toggleSwitch">
-                  <div class="slider"></div>
-                </div>  
+               <div  class="toggle-container">
+                  <span class= "changeProfilePicture">Anonymous mode:</span>
+                  <div class="switch" id="toggleSwitch">
+                    <div class="slider"></div>
+                  </div>
+                  <img class="info-icon" src="../static/html/assets/icons/info.png" alt="Information" />
+                </div>
                   <div class="changeInfoBar">
                       <input id="changeUsernameInput" name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
                     </div>
@@ -803,6 +809,8 @@
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/7/Stats.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script type="module" src="{% static 'html/js/main.js' %}"></script>
     <script type="module" src="{% static 'html/js/arenaPage.js' %}"></script>
@@ -810,6 +818,7 @@
     <script type="module" src="{% static 'html/js/translatePages.js' %}"></script>
     <script type="module" src="{% static 'html/js/userPage.js' %}"></script>
     <script type="module" src="{% static 'html/js/modifyPage.js' %}"></script>
+    <script type="module" src="{% static 'html/js/stats.js' %}"></script>
     <script type="module" src="{% static 'game/js/main.js' %}"></script>
     <script type="module" src="{% static 'tournament/js/gameData.js' %}"></script>
     <script type="module" src="{% static 'tournament/js/newTournament.js' %}"></script>
