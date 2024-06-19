@@ -628,4 +628,5 @@ function addEventListenerToTilesTournament() {
       afterGameTournament(3, 0);
     else
       switchToGame(gameState, currentMatch[nbMatch][0].myRef, currentMatch[nbMatch][1].myRef, currentMatch[nbMatch][4].myRef, true);
-  }
+    }
+
