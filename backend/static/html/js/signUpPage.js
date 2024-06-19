@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { camera } from './main.js';
+import { camera, landedOnPlanet } from './main.js';
 import { showPage } from './showPages.js';
 import { currentLanguage, getTranslatedText } from './translatePages.js';
 
@@ -43,13 +43,20 @@ signupForm.addEventListener('submit', handleSignup);
 //Add event listner to display RGPG page
 const RGPDPolicy = document.getElementById('RGPDPolicy');
 RGPDPolicy.addEventListener('click', function() {
+    console.log("on capte dans signup");
     showPage('rgpdPage');
 });
 
 //Add event listner to display sign-up page
 const RGPDBack = document.getElementById('RGPDBack');
 RGPDBack.addEventListener('click', function() {
-    showPage('signUpPage');
+    if (landedOnPlanet) {
+        blockingPanel.style.visibility = 'hidden';
+        showPage('none');
+    }
+        
+    else
+        showPage('signUpPage');
 });
 
 // Handle form submission

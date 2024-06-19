@@ -133,23 +133,6 @@
     </div>
 </div>
 
-<!-- 
-Es : Al aceptarte a ti mismo la
-política de confidencialidad
-Fr : En vous iscrivant vous accepter la
-politique de confidentialite
-En : By making you accept the
-confidentiality policy       
- <div id="RGPDCreate" class="newToTheGame" >
-          By creating an account you accept
- </div> 
- <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter">
-          our privacy policy 
-  </div>  
--->
-
-
-
   <!-- CANVAS -->
   <div id="a">
       <canvas id="c4"></canvas>
@@ -382,7 +365,7 @@ confidentiality policy
                   <div class="switch" id="toggleSwitch">
                     <div class="slider"></div>
                   </div>
-                  <img class="info-icon" src="../static/html/assets/icons/info.png" alt="Information" />
+                  <img id="infoButton" class="info-icon" src="../static/html/assets/icons/info_3.png" alt="Information" />
                 </div>
                   <div class="changeInfoBar">
                       <input id="changeUsernameInput" name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
@@ -396,19 +379,22 @@ confidentiality policy
                     <div class="changeInfoBar">
                       <input id="changeConfirmPasswordInput" name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password"></input>
                     </div>
+                    <div id="RGPDPolicyInUserPage" class="actionCont tinyBlueShadowfilter" style="font-size: 20px; font-family: 'space'">
+                      PRIVACY POLICY
+                    </div> 
                    <div class="profilePicContainer">
                       <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
-                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicBut ton">Choose file</label>
+                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
                     </div>
                     <div id= "changeInfoMessage" class="changeInfoMessage"></div>
                     <div class="buttonContainer">
-                      <div id="deleteAccountButton"class="deleteAccountButton">Delete Account</div>
+                      <div id="deleteAccountButton" class="deleteAccountButton">Delete Account</div>
                       <div id="submitInfoButton" class="submitChangeButton">Submit</div>
                     </div>
                 </form>
             </div>
-            <div class="validateDelete">
+            <div id="validateDelete" class="validateDelete">
               <div id="validateDeleteAccountText" class="validateDeleteText">All data will be permanently lost. Are you sure you want to delete your account?</div>
               <div class="buttonContainer">
                 <div class="validateDeleteButton" id="deleteAccountConfirmation">Yes</div>
@@ -757,6 +743,7 @@ confidentiality policy
     </div>
     <!-- RGPD PAGE -->          
   </div>
+  
   <div class="rgpdPage page invisible" >
     <div id="RGPDTitle" class="title" style="font-size : 70px;">
       PRIVACY POLICY

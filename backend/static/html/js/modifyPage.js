@@ -54,11 +54,12 @@ function deleteAccount() {
     // rediriger vers la page d'acceuil
     // deconnecter tout les guest
     // delete account dans la db
-    document.querySelector(".validateDelete").classList.toggle("showRectangle");
+    console.log("je suis dans delete account");
+    document.getElementById("validateDelete").classList.toggle("showRectangle");
     blockingPanel.style.visibility = 'hidden';
 
     document.getElementById('deleteAccountCancel').addEventListener("click", function() {
-		  document.querySelector(".validateDelete").classList.toggle("showRectangle");
+		  document.getElementById("validateDelete").classList.toggle("showRectangle");
 		  blockingPanel.style.visibility = 'hidden';
     })
 
@@ -79,7 +80,7 @@ function deleteAccount() {
 		    console.error('There was a problem with the delete_account:', error);
 		});
     // resetting ui to loginPage
-    document.querySelector(".validateDelete").classList.toggle("showRectangle");
+    document.getElementById("validateDelete").classList.toggle("showRectangle");
     togglePlanet();
     returnToHost();
     spaceShip.position.set(0, 0, -1293.5);
@@ -135,3 +136,18 @@ export function getRandomUsername() {
       throw error;
   });
 };
+
+//Add event listner to display RGPG page
+const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
+RGPDPolicy.addEventListener('click', function() {
+  blockingPanel.style.visibility = 'visible';
+  showPage('rgpdPage');
+});
+
+// const infoButton = document.getElementById("infoButton");
+// infoButton.addEventListener("click", displayInfo);
+
+// function displayInfo() {
+//   console.log("je display info");
+//   document.getElementById("displayInfo").classList.toggle("showRectangle")
+// }
