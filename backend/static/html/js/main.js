@@ -406,6 +406,8 @@ export function togglePause() {
 
 import { getUserStatus } from './userManagement.js';
 
+let firstPauseTriggered = false;
+
 document.addEventListener('keydown', (event) => {
     if (event.target.tagName === 'INPUT')
         return;
@@ -423,7 +425,14 @@ document.addEventListener('keydown', (event) => {
         getUserStatus(96);
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
-    if (event.key == 'Escape') {
+    if (event.key === 'Escape') {
+        if (gameState.inGame)
+        {
+            toggleEscapeContainerVisibility();
+            toggleBlurDisplay(false);
+            pauseGame ? pauseGame = false : pauseGame = true;
+            return;
+        }
         if (landedOnPlanet) {
             togglePlanet();
             returnToHost();
@@ -434,6 +443,7 @@ document.addEventListener('keydown', (event) => {
             return;
         }
         if (lobbyStart) {
+            console.log("coucou");
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();
