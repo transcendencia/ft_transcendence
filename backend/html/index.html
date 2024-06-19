@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{% static '../static/html/css/arenaPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/SignUpPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/userPage.css' %}">
+    <link rel="stylesheet" href="{% static '../static/html/css/rgpdPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/modifyPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/game/style/style.css' %}">
     <link rel="stylesheet" href="{% static '../static/tournament/css/style.css' %}">
@@ -30,7 +31,7 @@
 </head>
 <body>
   <!-- LOGIN PAGE -->
-    <div class="loginPage page">
+    <div class="loginPage page invisible">
     <div class="title">
       TRANSCENDENCIIA
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
@@ -82,11 +83,11 @@
   </div>
 
   <!-- SIGN UP PAGE -->
-  <div class="signUpPage page">
+  <div class="signUpPage page invisible">
     <div class="perspective">
         <form id="signupForm" method="post" action="signup/">
           {% csrf_token %}
-        <div id="signUpTitle">Sign Up</div>
+        <div id="signUpTitle"style="font-size: 56px;">Sign Up </div>
         <p id="createAccountText" style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
         <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
           Login
@@ -109,6 +110,16 @@
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
+      <!-- <div class="littleMsgCont">
+      </div> -->
+      <div>
+        <div id="RGPDCreate" class="newToTheGame" >
+          By making you accept the
+        </div> 
+        <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter">
+          privacy policy 
+        </div> 
+      </div>
       </div>
       <div class="perspective3">
         <div id="messageContainerSignup" class="signupMessageCont"></div>
@@ -118,11 +129,24 @@
       </div>
     </form>
     <div class="backButton tinyWhiteShadowfilter">
-      Back to login
+      Back
     </div>
 </div>
 
-
+<!-- 
+Es : Al aceptarte a ti mismo la
+política de confidencialidad
+Fr : En vous iscrivant vous accepter la
+politique de confidentialite
+En : By making you accept the
+confidentiality policy       
+ <div id="RGPDCreate" class="newToTheGame" >
+          By creating an account you accept
+ </div> 
+ <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter">
+          our privacy policy 
+  </div>  
+-->
 
 
 
@@ -257,14 +281,6 @@
       <div id="arenaLogInButton" class="validateDeleteButton">Log in</div>
       </div>
     </div>
-
-
-
-
-
-
-
-
 
     <!-- USER PLANET -->
     <div class="planetPanel">
@@ -739,6 +755,25 @@
       <div class="redButton" id="disconnectButton" style="margin-top: -30px;width: 35%; height: 8%;">Disconnect</div>
     </div>
     </div>
+    <!-- RGPD PAGE -->          
+  </div>
+  <div class="rgpdPage page invisible" >
+    <div id="RGPDTitle" class="title" style="font-size : 70px;">
+      PRIVACY POLICY
+    </div>
+    <div class="rgpdFrame">
+      <img src="{% static 'game/assets/scoreUI.png' %}" style="transform: rotate(180deg);">
+      <div class="backgroundRGPDText">
+       <div id="RGPDTexte" class="text-content">
+        The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. Your data is automatically deleted one year after your last connection. For any reclamation you can go to the CNIL website. 
+        </div>
+        <div id="RGPDBack" class="actionCont tinyBlueShadowfilter">
+          Back
+        </div>
+      </div>
+      <img src="{% static 'game/assets/scoreUI.png' %}">
+    </div>
+  </div>
     
     <!-- GAME STUFF -->
   <div class="bluebar glow"></div>

@@ -3,6 +3,7 @@ import { camera } from './main.js';
 import { showPage } from './showPages.js';
 import { currentLanguage, getTranslatedText } from './translatePages.js';
 
+
 export let inCockpit = false;
 
 export function moveCameraToFrontOfCockpit() {
@@ -38,6 +39,18 @@ backToLoginButton.addEventListener('click', function() {
 // Add event listener to the sign-up form
 const signupForm = document.getElementById('signupForm');
 signupForm.addEventListener('submit', handleSignup);
+
+//Add event listner to display RGPG page
+const RGPDPolicy = document.getElementById('RGPDPolicy');
+RGPDPolicy.addEventListener('click', function() {
+    showPage('rgpdPage');
+});
+
+//Add event listner to display sign-up page
+const RGPDBack = document.getElementById('RGPDBack');
+RGPDBack.addEventListener('click', function() {
+    showPage('signUpPage');
+});
 
 // Handle form submission
 function handleSignup(event) {

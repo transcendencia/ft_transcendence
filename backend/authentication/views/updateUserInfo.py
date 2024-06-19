@@ -13,6 +13,9 @@ from rest_framework.response import Response
 from ..models import User, UserStat
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
 
+from .words import colors, items
+
+import random
 #--------------------LANGUAGE--------------------
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -141,27 +144,53 @@ def get_stats(request, userId):
 @permission_classes([IsAuthenticated])
 def change_profile_info(request):
     if request.method == 'POST':
-        print(request.data)
-        # copier data dans un nouveau truc pour pouvoir changer  les valeurs (bien changer les endroit ou est appeler request.data par le nom de la nouvele variables)
-        # checker request.data.get('anonymousStatus') == 'true'
         anonymousStatus = request.data.get('anonymousStatus') == 'true'
-        print(anonymousStatus)
-        
-        serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
-        if 'profile-pic' in request.FILES:
+        if anonymousStatus:
+            request.user.profile_picture = 'default.png'
+            request.user.save()
+        data = request.data.copy()
+        data.pop('anonymousStatus')
+        serializer = UpdateInfoSerializer(instance=request.user, data=data)
+        if 'profile-pic' in request.FILES and not anonymousStatus:
             print(request.user.profile_picture.name)
             if request.user.profile_picture.name != 'default.png':
               request.user.profile_picture.delete()
             uploaded_file = request.FILES['profile-pic']
+            print(uploaded_file)
             request.user.profile_picture = uploaded_file
             request.user.save()
-            print("picture changed") #LOG
+            print("picture changed") 
         if serializer.is_valid():
             serializer.save()
             return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=200)
         first_error = next(iter(serializer.errors.values()))[0]
         print(first_error)
         return Response({'status': "failure", "message": first_error}, status=400)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def generate_unique_username(request):
+    random_color = random.choice(colors)
+    random_item = random.choice(items)
+    username = random_color + random_item
+    nbrUser = User.objects.all().count()
+    for i in range(nbrUser + 1):
+        if not User.objects.filter(username=username).exists():
+            return Response({'username': username}, status=200)
+        else:
+            random_color = random.choice(colors)
+            random_item = random.choice(items)
+            username = random_color + random_item
+    for i in range(nbrUser + 1):
+        username = f"anonymous{i}"
+        if not User.objects.filter(username=username).exists():
+            return Response({'username': username}, status=200)
+    return Response(status=400)
+
+
+
+
 
 def user_list(request):
   return render(request, 'user_list.html')

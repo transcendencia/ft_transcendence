@@ -13,8 +13,6 @@
     width :80%;
     height: 99%;
     transition: opacity 1s;
-    opacity: 0;
-    visibility: hidden; /* Hide the element */
 }
 
 /* .loginPage * {
@@ -193,6 +191,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden; /* Ensure text input doesn't overflow */
+    flex-shrink: 0 0 auto;
 }
 
 .test {
@@ -222,4 +221,14 @@
     outline: none; /* Remove default focus outline */
     resize: none; /* Remove resize handle */
     overflow: hidden; /* Prevent scrolling */
+}
+
+.privacyPlocy {
+    width: 97%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 12px;
+    flex : row;
 }

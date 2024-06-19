@@ -8,6 +8,8 @@ urlpatterns = [
     path('login_page/', authentication.login_page, name='login_page'),
     path('signup/', authentication.signup, name='signup'),
     
+    path('rgpd/', authentication.rgpd, name='rgpd'),
+
     #updateUserInfo.py
     path('change_language/', updateUserInfo.change_language, name='change_language'),
     path('update_status/', updateUserInfo.update_status, name='update_status'),
@@ -21,6 +23,8 @@ urlpatterns = [
     path('delete_account/', updateUserInfo.delete_account, name="delete_account"),
      path('get_stats/<int:userId>', updateUserInfo.get_stats, name="get_stats"),
 
+    path('generate_unique_username/', updateUserInfo.generate_unique_username, name="generate_unique_username"),
+    
     #friendship.py
     path('send_friend_request/', friendship.send_friend_request, name="send_friend_request"),
     path('accept_friend_request/', friendship.accept_friend_request, name="accept_friend_request"),
