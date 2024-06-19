@@ -133,8 +133,11 @@ def get_stats(request, userId):
     totalPointsTaken = sums['totalPointsTaken']
     print(totalBounces)
     print(totalPointsTaken)
-    if not totalPointsTaken == 0:
-      efficiency = round((totalBounces / totalPointsTaken), 1)
+    if totalBounces is not None and totalPointsTaken is not None:
+      if totalPointsTaken != 0:
+        efficiency = round((totalBounces / totalPointsTaken), 1)
+      else:
+        efficiency = -1
     else:
       efficiency = -1
 

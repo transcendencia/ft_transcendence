@@ -138,48 +138,74 @@ function setEscapeLanguageVisual() {
     icon.querySelector('.icon').style.opacity = 0;
 }
 
-if (localStorage.getItem("hostLoggedIn") === null) {
-        localStorage.setItem('hostLoggedIn', 'false');
-}
-
-// Add event listener to the loginForm
-const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', handleLoginHost);
+// if (localStorage.getItem("hostLoggedIn") === null) {
+//     console.log()
+//     localStorage.setItem('hostLoggedIn', 'false');
+// }
 
 // Handle form submission
-function handleLoginHost(event) {
-    event.preventDefault();
+export function handleLogin(formData) {
+    console.log("Je suis dans handle login");
+    if (localStorage.getItem("hostLoggedIn") === null) {
+        localStorage.setItem('hostLoggedIn', 'false');
+    }
 
-    const formData = new FormData(this);
-    formData.append('language', currentLanguage);
-    formData.append('languageClicked', languageIconsClicked);
+    const hostLoggedIn = localStorage.getItem("hostLoggedIn");
+
+    if (hostLoggedIn === 'false') {
+        formData.append('language', currentLanguage);
+        formData.append('languageClicked', languageIconsClicked);
+    }
+
     setlanguageIconsClicked(false);
+
     fetch('login_page/', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
+        console.log(data.status);
         if (data.status == "succes") {
-            localStorage.setItem('hostLoggedIn', 'true');
-            localStorage.setItem("host_auth_token", data.token);
-            localStorage.setItem("host_id", data.id);
-            setCurrentLanguage(data.language);
-            setEscapeLanguageVisual();
-            get_friends_list();
-            getProfileInfo();
-            TranslateAllTexts();
-            getGameInfo();
-            changeGraphics(data.graphic_mode);
-            showPage('none');
-            startAnimation();
-        } else 
-            document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+            console.log(hostLoggedIn);
+
+            // if (hostLoggedIn === 'false') {
+                localStorage.setItem("hostLoggedIn", 'true');
+                localStorage.setItem("host_auth_token", data.token);
+                localStorage.setItem("host_id", data.id);
+                setCurrentLanguage(data.language);
+                setEscapeLanguageVisual();
+                get_friends_list();
+                getProfileInfo();
+                TranslateAllTexts();
+                getGameInfo();
+                changeGraphics(data.graphic_mode);
+                showPage('none');
+                startAnimation();
+        //     } else {
+        //         return "SUCCESS";
+        //     }
+        // } else {
+        //     document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+        //     return "FAILURE";
+        }
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
 }
+
+// Add event listener to the loginForm
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', handleLoginSubmit);
+
+function handleLoginSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    handleLogin(formData);
+}
+
 
 // export function handleLoginGuest(user) {
 //     var passwordInput = document.getElementById('enterPasswordInput');
@@ -332,6 +358,12 @@ function handleLogout() {
     .catch(error => {
         console.error('Erreur :', error);
     });
+    const hostLoggedIn = localStorage.getItem("hostLoggedIn")
+    console.log(hostLoggedIn)
+    if (hostLoggedIn === 'true') {
+        localStorage.setItem('hostLoggedIn', 'false')
+        console.log(localStorage.getItem("hostLoggedIn"));
+    }
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
