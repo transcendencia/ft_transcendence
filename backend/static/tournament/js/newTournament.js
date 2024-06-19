@@ -1,27 +1,21 @@
-import { createGame } from "./gameData.js";
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { switchToGame } from "../../html/js/arenaPage.js";
-import { userTilesTournament } from "../../html/js/arenaPage.js";
-import { createUserInfoObject } from "../../html/js/arenaPage.js";
-import { displayRemovePlayerVisual } from "../../html/js/arenaPage.js";
-import { resetToPlusButton } from "../../html/js/arenaPage.js";
-import { resetUserInfoVisual } from "../../html/js/arenaPage.js";
-import { blue } from "../../html/js/arenaPage.js";
-import { purple } from "../../html/js/arenaPage.js";
-import { grey } from "../../html/js/arenaPage.js";
-import { lightGrey } from "../../html/js/arenaPage.js";
+import { createUserInfoObject, displayRemovePlayerVisual, resetToPlusButton, resetUserInfoVisual, createUserTile, switchToGame, userTiles } from "../../html/js/arenaPage.js";
+import { blue, purple, grey, lightGrey } from "../../html/js/arenaPage.js";
+import { printBracket, updateBracket, resetBracket } from "./bracket.js";
+import { getProfileInfo, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
+import { planetInRange } from "../../html/js/planetIntersection.js";
 
-//affichage info
 
 export let gamemodeCounterTournament = 0;
-let mapCounter = 0;
+export let mapCounterTournament = 0;
+export let botDifficultyTournament = 1;
 
 function toggleGamemodeTournament(buttonHeader, imgIndex) {
   if (imgIndex === 0){
       gamemodeCounterTournament--;
       if (gamemodeCounterTournament === -1)
-          gamemodeCounterTournament = 3;
+          gamemodeCounterTournament = 2;
       }
   else {
       gamemodeCounterTournament++;    
@@ -30,36 +24,54 @@ function toggleGamemodeTournament(buttonHeader, imgIndex) {
       } 
   if (gamemodeCounterTournament === 0)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('gamemodeNameText1');
-  if (gamemodeCounterTournament === 1)
+  else if (gamemodeCounterTournament === 1)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('gamemodeNameText2');
-  if (gamemodeCounterTournament === 2)
+  else if (gamemodeCounterTournament === 2)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('gamemodeNameText3');
 }
 
 function handleMapsTournament(buttonHeader, imgIndex) {
   if (imgIndex === 0){
-      mapCounter--;
-      if (mapCounter === -1)
-          mapCounter = 3;
-      }
+      mapCounterTournament--;
+      if (mapCounterTournament === -1)
+          mapCounterTournament = 3;
+  }
   else {
-      mapCounter++;    
-      if (mapCounter === 4)
-          mapCounter = 0;
-      } 
-  if (mapCounter === 0)
+      mapCounterTournament++;    
+      if (mapCounterTournament === 4)
+          mapCounterTournament = 0;
+  } 
+  if (mapCounterTournament === 0)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = 'Space';
-  if (mapCounter === 1)
+  else if (mapCounterTournament === 1)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = 'Ocean';
-  if (mapCounter === 2)
+  else if (mapCounterTournament === 2)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = 'Sky';
-  if (mapCounter === 3)
+  else if (mapCounterTournament === 3)
       buttonHeader.parentNode.querySelector('.buttonContVert').textContent = 'Dragon Pit';
+}
+
+function handleBotDifficulty(buttonHeader, imgIndex) {
+  if (imgIndex === 0){
+      botDifficultyTournament--;
+      if (botDifficultyTournament === -1)
+          botDifficultyTournament = 2;
+  }
+  else {
+      botDifficultyTournament++;    
+      if (botDifficultyTournament === 3)
+          botDifficultyTournament = 0;
+  }
+  if (botDifficultyTournament === 0)
+      buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyEasy');
+  else if (botDifficultyTournament === 1)
+      buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyMedium');
+  else if (botDifficultyTournament === 2)
+      buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyHard');
 }
 
 const buttonHeaders = document.querySelectorAll('.buttonTitleVert');
 buttonHeaders.forEach((buttonHeader, index) => {
-    
     const images = buttonHeader.querySelectorAll('img');
     images.forEach((image, imgIndex) => {
         image.addEventListener('mouseenter', function () {
@@ -73,19 +85,90 @@ buttonHeaders.forEach((buttonHeader, index) => {
                 toggleGamemodeTournament(buttonHeader, imgIndex);
             if (index === 1)
                 handleMapsTournament(buttonHeader, imgIndex);
+            if (index === 2)
+                handleBotDifficulty(buttonHeader, imgIndex);
         });
     });
 });
 
-//ajout des users au tournois
+export function RenderUserTournament(user) {
+    const usernameElement = document.getElementById('player1TournamentUsername');
+    usernameElement.textContent = user.username;
+    const pictureElement = document.getElementById('player1TournamentPicture');
+    pictureElement.src = user.profile_picture;
+    addUserToTournament(user.id, user.username, user.profile_picture);
+  }
 
-const userlist = document.querySelector(".userlistBackground");
+let plusButtonsTournament = document.querySelectorAll(".plusPlayerTournament");
+const userTilesTournament = [];  // Array to store the user tiles
 
-const plusButtons = document.querySelectorAll(".plusPlayerTournament");
+export async function RenderAllUsersTournament() {
+    const userListBackground = document.getElementById('userlistTournamentPage');
+    
+    userListBackground.innerHTML = '';
+    userTilesTournament.length = 0;
+    const users = await get_friends_list();
+
+    createUserTile(users.bot, 'Bot', userListBackground, userTilesTournament);
+    users.friends.forEach(obj => {
+        createUserTile(obj.user, 'Friend', userListBackground, userTilesTournament)
+    });
+    users.user_not_friend.forEach(user => {
+        createUserTile(user, '', userListBackground, userTilesTournament);
+    });
+    addEventListenerToTilesTournament();
+}
+
+export function resetPlayerDisplayTournament() {
+  profileAddedToTournament = [];
+  tournamentPlayer.length = 0;
+  getProfileInfo();
+  resetPlusButton();
+  plusButtonsTournament = document.querySelectorAll(".plusPlayerTournament");
+  plusButtonsTournament.forEach(function(otherPlusButton) {
+    otherPlusButton.style.pointerEvents = 'auto';
+  });
+}
+
+export function resetTournament() {
+  document.querySelectorAll('.before-launch').forEach(function(el) {
+    el.style.display = 'flex';
+  });
+  launchMatchElement.style.display = "none";
+  bracketElement.style.display = "none";
+  nextMatchElement.style.display = "none";
+  matchElement.style.display = "none";
+  bottomTournamentElement.style.display = "none";
+  midColumn.style.width = '80%';
+  profileAddedToTournament = [];
+  playerNb = 0;
+  tournamentState = 0;
+  tournamentPlayer.length = 0;
+  gamemodeCounterTournament = 0;
+  mapCounterTournament = 0;
+  botDifficultyTournament = 1;
+  round = 1;
+  thirdPlayerMode = false;
+  plusClickedTournament = false;
+  getProfileInfo();
+  resetPlusButton();
+  resetBracket();
+  plusButtonsTournament = document.querySelectorAll(".plusPlayerTournament");
+  plusButtonsTournament.forEach(function(otherPlusButton) {
+    otherPlusButton.style.pointerEvents = 'auto';
+  });
+  addEventListenersToPlusButtons();
+}
+
+//add user to tournaments
+
+const userlist = document.querySelectorAll(".userlistBackground")[2];
+
 let profileAddedToTournament = [];
-let plusClickedTournament = false
+let plusClickedTournament = false;
 const botID = 0;
 let playerNb = 0;
+export let tournamentState = 0;
 
 function GlowTournament() {
   userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
@@ -103,7 +186,7 @@ function GlowTournament() {
   });
 }
 
-function resetGlowTournament() {
+export function resetGlowTournament() {
   userlist.style.borderColor = blue;
   userlist.style.animation = '';
   userTilesTournament.forEach((child, i) => {
@@ -124,142 +207,210 @@ const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
 userlistTitle.textContent = getTranslatedText('userlist');
 
-function resetAddingModeTournament() {
+export function resetAddingModeTournament() {
   userlistTitle.textContent = getTranslatedText('userlist');
   plusClickedTournament = 0;
-  plusButtons.forEach(function(otherPlusButton) {
+  plusButtonsTournament.forEach(function(otherPlusButton) {
       otherPlusButton.style.pointerEvents = 'auto';
+      otherPlusButton.style.backgroundColor = grey;
   });
   profileAddedToTournament[botID] = false;
+  userTilesTournament.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'none';});
 }
 
 function setAddingModeTournament(plusButton, i) {
   userlistTitle.textContent = getTranslatedText('chooseProfile');
-  if (i === 0) {
-      plusClickedTournament = 1;
-      profileAddedToTournament[botID] = true;
-  }
-  else plusClickedTournament = i + 1;
-  plusButtons.forEach(function(otherPlusButton) {
+  plusClickedTournament = i + 1;
+  userTilesTournament.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'auto';});
+  plusButtonsTournament.forEach(function(otherPlusButton) {
       if (otherPlusButton !== plusButton) {
           otherPlusButton.style.pointerEvents = 'none';
       }
   });
 }
 
-plusButtons.forEach(function(plusButton, i) {
-  plusButton.addEventListener('click', function () {
+function addEventListenersToPlusButtons() {
+  plusButtonsTournament.forEach(function(plusButton, i) {
+    plusButton.addEventListener('click', function () {
       if (!plusClickedTournament) {
-          setAddingModeTournament(plusButton, i);
-          GlowTournament();
-          plusButton.style.backgroundColor = lightGrey;
-      }
-      else {
-          resetAddingModeTournament(plusButton);
-          resetGlowTournament();
-          plusButton.style.backgroundColor = grey;
-      }
-  });
-  //Hovering
-  plusButton.addEventListener('mouseenter', function () {
-      if (!plusClickedTournament)
-          plusButton.style.backgroundColor = lightGrey;
-  });
-
-  plusButton.addEventListener('mouseleave', function () {
-      if (!plusClickedTournament)
-          plusButton.style.backgroundColor = grey;
-  });
-});
-
-
-export function addEventListenerToTilesTournament() {
-  userTilesTournament.forEach((tile, i) => {
-      profileAddedToTournament[i] = false;
-      tile.HTMLelement.addEventListener('click', function(){
-        if (plusClickedTournament && !profileAddedToTournament[i]) {
-          profileAddedToTournament[i] = true;
-          playerNb++;
-          const newObj = createUserInfoObject(tile.HTMLelement, i);
-          console.log("user add:", tile.user);
-          addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
-          const oldObj = plusButtons[plusClickedTournament - 1];
-          oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
-          resetGlowTournament();
-          resetAddingModeTournament();
-          newObj.userInfoCont.addEventListener('mouseenter', function () {
-              displayRemovePlayerVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic);
-          });
-          newObj.userInfoCont.addEventListener('mouseleave', function () {
-              resetUserInfoVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic, newObj.tileText, i, tile);
-          });
-          newObj.userInfoCont.addEventListener('click', function() {
-              resetToPlusButton(newObj.userInfoCont, oldObj, textCont);
-              profileAddedToTournament[i] = false;
-              profileAddedToTournament[botID] = false;
-              playerNb--;
-              removeUserFromTournament(tile.user.id);
-          });
-      }
-  });
+            setAddingModeTournament(plusButton, i);
+            GlowTournament();
+            plusButton.style.backgroundColor = lightGrey;
+        }
+        else {
+            resetAddingModeTournament(plusButton);
+            resetGlowTournament();
+            plusButton.style.backgroundColor = grey;
+        }
+    });
+    //Hovering
+    plusButton.addEventListener('mouseenter', function () {
+        if (!plusClickedTournament)
+            plusButton.style.backgroundColor = lightGrey;
+    });
   
-  const textCont = tile.HTMLelement.querySelector(".textContainer");
-  textCont.addEventListener('mouseenter', function () {
-      if (plusClickedTournament && !profileAddedToTournament[i])
-      textCont.style.backgroundColor = 'rgba(90, 142, 255, 0.219)';
-  });
-  textCont.addEventListener('mouseleave', function () {
-      if (plusClickedTournament && !profileAddedToTournament[i])
-      textCont.style.backgroundColor = '#00000031';
-  });
+    plusButton.addEventListener('mouseleave', function () {
+        if (!plusClickedTournament)
+            plusButton.style.backgroundColor = grey;
+    });
   });
 }
+
+export function initTournamentPlanet(){
+  RenderAllUsersTournament();
+  addEventListenersToPlusButtons();
+}
+
+function resetPlusButton() {
+  let addPlayerElements = document.querySelectorAll('.addPlayer');
+
+  addPlayerElements.forEach((element, index) => {
+    if (index === 0)
+      return;
+    let playerNumber = index + 1;
+    element.innerHTML = `
+      <div class="plusPlayerTournament" style="pointer-events: none;">+</div></div>
+      <div id="player${playerNumber}Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player ${playerNumber} </div>
+    `;
+  });
+};
+
+const blockingPanel = document.getElementById('blockingPanel');
+const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
+const validatePasswordButton = document.getElementById("arenaLogInButton");
+const validateAliasButton = document.getElementById("aliasLogInButton");
+const backAliasButton = document.getElementById("aliasBackLogInButton");
+let tempTileIndexTournament = -1; // To store the index of the tile that was clicked
+
+function addEventListenerToTilesTournament() {
+  userTilesTournament.forEach((tile, i) => {
+      profileAddedToTournament[i] = false;
+      tile.HTMLelement.addEventListener('click', function() {
+          if (plusClickedTournament && !profileAddedToTournament[i]) {
+              if (tile.type == 'Bot' /*|| playerAlreadyLogged*/) {
+                  tempTileIndexTournament = i;
+                  putUserInTournament();
+                  return;
+              }
+              pwWindow.classList.toggle("showRectangle");
+              blockingPanel.style.visibility = 'visible';
+              tempTileIndexTournament = i;
+              let newObj = createUserInfoObject(tile, i);
+              pwWindow.replaceChild(newObj.userInfoCont, pwWindow.querySelector('.userInfoCont'));
+              newObj = createUserInfoObject(tile, i);
+              aliasWindow.replaceChild(newObj.userInfoCont, aliasWindow.querySelector('.userInfoCont'));
+          }
+      });
+  });
+}
+
+  function askForAlias(){
+    pwWindow.classList.remove("showRectangle");
+    aliasWindow.classList.toggle("showRectangle");
+  }
+
+  function returnToPassword(){
+    aliasWindow.classList.remove("showRectangle");
+    pwWindow.classList.toggle("showRectangle");
+  }
+
+  function putUserInTournament() {
+    if (plusClickedTournament && !profileAddedToTournament[tempTileIndexTournament]) {
+      const i = tempTileIndexTournament;
+      const tile = userTilesTournament[i];
+      const textCont = tile.HTMLelement.querySelector(".textContainer");
+
+      aliasWindow.classList.remove("showRectangle");
+      blockingPanel.style.visibility = 'hidden';
+      profileAddedToTournament[i] = true;
+      playerNb++;
+      const newObj = createUserInfoObject(tile, i);
+      addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
+      const oldObj = plusButtonsTournament[plusClickedTournament - 1];
+      oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
+      resetGlowTournament();
+      resetAddingModeTournament();
+      newObj.userInfoCont.addEventListener('mouseenter', function () {
+          displayRemovePlayerVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic);
+      });
+      newObj.userInfoCont.addEventListener('mouseleave', function () {
+          resetUserInfoVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic, newObj.tileText, i, tile);
+      });
+      newObj.userInfoCont.addEventListener('click', function() {
+          resetToPlusButton(newObj.userInfoCont, oldObj, textCont);
+          profileAddedToTournament[i] = false;
+          profileAddedToTournament[botID] = false;
+          playerNb--;
+          removeUserFromTournament(tile.user.id);
+      });
+      if (tile.type === 'Friend') 
+        textCont.classList.add('friendBg');
+      else if (tile.type === 'Bot')
+        textCont.classList.add('botBg');
+      else textCont.classList.add('defaultBg');
+    }
+  }
+
+  validatePasswordButton.addEventListener('click', function() {
+    if (planetInRange.name === "tournament")
+      askForAlias()
+      // putUserInTournament();
+  });
+
+  validateAliasButton.addEventListener('click', function() {
+    putUserInTournament();
+    const inputElement = document.getElementById('enterAliasInput');
+    if (inputElement) {
+      const inputValue = inputElement.value;
+      if (inputValue === "")
+        return ;
+      if (tournamentPlayer.some(player=> player.username === inputValue))
+        return ;
+      return ;
+    }
+  });
+
+  backAliasButton.addEventListener('click', function() {
+    returnToPassword();
+  });
 
   const tournamentPlayer = [];
 
   export function addUserToTournament(playerId, username, profile_picture) {
-      if (!tournamentPlayer.some(player => player.username === username)) {
-          tournamentPlayer.push({
-            playerId: playerId,
-            username: username,
-            profile_picture: profile_picture,
-            order: -1,
-            position: 0,
-            round: 1,
-          });
-      }
+    if (tournamentPlayer.some(player=> player.username === username && player.username !== "bot")){
+      return ;
+    }
+    tournamentPlayer.push({
+      playerId: playerId,
+      username: username,
+      profile_picture: profile_picture,
+      order: -1,
+      position: 0,
+      round: 1,
+    });
   }
 
   function removeUserFromTournament(playerId) {
     const playerIndex = tournamentPlayer.findIndex(player => player.playerId === playerId);
     //remove if player is find
-    if (playerIndex !== -1) {
+    if (playerIndex !== -1)
         tournamentPlayer.splice(playerIndex, 1);
-        console.log(`Player with ID ${playerId} has been removed from the tournament.`);
-    } else {
-        console.log(`Player with ID ${playerId} is not in the tournament.`);
-    }
   }
 
-  const thirdPlayerElement = document.querySelector(".plusThirdPlayer");
-  thirdPlayerElement.addEventListener("click", function() { 
-    if (thirdPlayerMode === false){
-      thirdPlayerElement.style.backgroundColor= "rgb(220, 220, 220)";
-      thirdPlayerElement.style.border= "5px solid rgb(40, 40, 40)";
+  export function toggleThirdPlayerMode() {
+    if (thirdPlayerMode === false)
       thirdPlayerMode = true;
-    }
-    else {
-      thirdPlayerElement.style.backgroundColor= "rgb(20, 20, 20)";
-      thirdPlayerElement.style.border= "5px solid white";
-      thirdPlayerMode = false;
-    }
-  });
+    else thirdPlayerMode = false;
+  }
 
   function getRandomNumber(tournamentPlayer, player1, player2) {
     let number;
+    let username;
     do {
         number = Math.floor(Math.random() * tournamentPlayer.length);
-    } while (tournamentPlayer[number].username === player1 || tournamentPlayer[number].username === player2);
+        username = tournamentPlayer[number].username;
+    } while (username === player1 || username === player2 || username === "bot");
     return number;
   }
 
@@ -267,8 +418,6 @@ export function addEventListenerToTilesTournament() {
   let round = 1;
   let nbMatch;
   let thirdPlayerMode = false; //must be removed to use the real variable
-  let gameMode;
-  let map;
 
   function makeMatchup() {
     const ul = document.getElementById("match");
@@ -286,6 +435,7 @@ export function addEventListenerToTilesTournament() {
     }
     //put final position for the winner
     if (playersInTournament.length == 1){
+      tournamentState = 2;
       tournamentPlayer.forEach(function(player){
         if (player.position === 0)
           player.position = 1;
@@ -306,11 +456,14 @@ export function addEventListenerToTilesTournament() {
           -1,
           -1,
           "",
-          gameMode,
-          map,
         ]);
       }
       else{
+        if (playersInTournament[i].username === "bot"){
+          const tmp = playersInTournament[i];
+          playersInTournament[i] = playersInTournament[i + 1];
+          playersInTournament[i + 1] = tmp;
+        }
         if (thirdPlayerMode){
           let thirdPlayer = getRandomNumber(tournamentPlayer, playersInTournament[i].username, playersInTournament[i + 1].username);
           currentMatch.push([
@@ -319,8 +472,6 @@ export function addEventListenerToTilesTournament() {
             -1,
             -1,
             { myRef: tournamentPlayer[thirdPlayer]},
-            gameMode,
-            map,
           ]);
         }
         else{
@@ -330,8 +481,6 @@ export function addEventListenerToTilesTournament() {
             -1,
             -1,
             "",
-            gameMode,
-            map,
           ]);
         }
       }
@@ -372,166 +521,33 @@ export function addEventListenerToTilesTournament() {
   const launchTournamentElement = document.getElementById("launch");
   const launchMatchElement = document.getElementById("launchMatch");
   const bracketElement = document.getElementById("bracket");
-  const nextMatchElement = document.getElementById("next-match");
+  const bottomTournamentElement = document.getElementById("bottomTournament");
   const matchElement = document.getElementById("match");
-  
-  
-  const thirdA1Element = document.getElementById("third-A1");
-  const thirdA2Element = document.getElementById("third-A2");
-  const thirdA3Element = document.getElementById("third-A3");
-  const thirdA4Element = document.getElementById("third-A4");
-  const thirdB1Element = document.getElementById("third-B1");
-  const thirdB2Element = document.getElementById("third-B2");
-  const thirdC1Element = document.getElementById("third-C1");
+  const nextMatchElement = document.getElementById("next-match");
+  const midColumn = document.getElementById("midColumn");
 
 
-  const A1Element = document.getElementById("A1");
-  const A2Element = document.getElementById("A2");
-  const A3Element = document.getElementById("A3");
-  const A4Element = document.getElementById("A4");
-  const A5Element = document.getElementById("A5");
-  const A6Element = document.getElementById("A6");
-  const A7Element = document.getElementById("A7");
-  const A8Element = document.getElementById("A8");
-  const B1Element = document.getElementById("B1");
-  const B2Element = document.getElementById("B2");
-  const B3Element = document.getElementById("B3");
-  const B4Element = document.getElementById("B4");
-  const C1Element = document.getElementById("C1");
-  const C2Element = document.getElementById("C2");
-  const A1A2matchElement = document.getElementById("A1-A2-match");
-  const A3A4matchElement = document.getElementById("A3-A4-match");
-  const A5A6matchElement = document.getElementById("A5-A6-match");
-  const A7A8matchElement = document.getElementById("A7-A8-match");
-  const B1B2matchElement = document.getElementById("B1-B2-match");
-  const B3B4matchElement = document.getElementById("B3-B4-match");
-  const C1C2matchElement = document.getElementById("C1-C2-match");
-  const firstTopTopElement = document.getElementById("first-top-top");
-  const firstTopBotElement = document.getElementById("first-top-bot");
-  const firstSecondTopElement = document.getElementById("first-second-top");
-  const firstBotTopElement = document.getElementById("first-bot-top");
-  const firstBotBotElement = document.getElementById("first-bot-bot");
-  const firstSecondBotElement = document.getElementById("first-second-bot");
-  const secondTopElement = document.getElementById("second-top");
-  const secondBotElement = document.getElementById("second-bot");
-  const secondLineElement = document.getElementById("second-line");
-  
-  function printBracket() {
-    if (!thirdPlayerMode){
-      document.querySelectorAll('.match').forEach(function(el) {
-        el.style.height = "62px";
-      });
-      document.querySelectorAll('.match-bottom').forEach(function(el) {
-        el.style.borderRadius = "0 0 5px 5px";
-      });
+  function  countNonBotPlayer(tournamentPlayer){
+    let nbPlayer = 0;
+    for (let player of tournamentPlayer) {
+      if (player.username !== "bot")
+        nbPlayer ++;
     }
-    if (tournamentPlayer.length > 0){
-      A1Element.style.display = "flex";
-      let ul = document.getElementById("A1_name");
-      ul.textContent = currentMatch[0][0].myRef.username;
-      A2Element.style.display = "flex";
-      ul = document.getElementById("A2_name");
-      ul.textContent = currentMatch[0][1].myRef.username;
-      if (thirdPlayerMode){
-        thirdA1Element.style.display = "flex";
-        ul = document.getElementById("third-A1_name");
-        ul.textContent = currentMatch[0][4].myRef.username;
-      }
-    }
-    if (tournamentPlayer.length > 2){
-      A3Element.style.display = "flex";
-      let ul = document.getElementById("A3_name");
-      ul.textContent = currentMatch[1][0].myRef.username;
-      A4Element.style.display = "flex";
-      ul = document.getElementById("A4_name");
-      if (tournamentPlayer.length > 3)
-        ul.textContent = currentMatch[1][1].myRef.username;
-      else
-        ul.textContent = "...";
-      if (thirdPlayerMode){
-        thirdA2Element.style.display = "flex";
-        ul = document.getElementById("third-A2_name");
-        if (tournamentPlayer.length > 3)
-          ul.textContent = currentMatch[1][4].myRef.username;
-        else
-          ul.textContent = "...";
-      }
-      B1Element.style.display = "flex";
-      B2Element.style.display = "flex";
-      if (thirdPlayerMode)
-        thirdB1Element.style.display = "flex";
-      firstTopTopElement.style.display = "block";
-      firstTopBotElement.style.display = "block";
-      firstSecondTopElement.style.display = "block";
-    }
-    if (tournamentPlayer.length > 4){
-      A5Element.style.display = "flex";
-      let ul = document.getElementById("A5_name");
-      ul.textContent = currentMatch[2][0].myRef.username;
-      A6Element.style.display = "flex";
-      ul = document.getElementById("A6_name");
-      if (tournamentPlayer.length > 5)
-        ul.textContent = currentMatch[2][1].myRef.username;
-      else
-        ul.textContent = "...";
-      if (thirdPlayerMode){
-        thirdA3Element.style.display = "flex";
-        ul = document.getElementById("third-A3_name");
-        if (tournamentPlayer.length > 5)
-          ul.textContent = currentMatch[2][4].myRef.username;
-        else
-          ul.textContent = "...";
-      }
-      B3Element.style.display = "flex";
-      B4Element.style.display = "flex";
-      if (thirdPlayerMode)
-        thirdB2Element.style.display = "flex";
-      C1Element.style.display = "flex";
-      C2Element.style.display = "flex";
-      if (thirdPlayerMode)
-        thirdC1Element.style.display = "flex";
-      firstBotTopElement.style.display = "block";
-      firstSecondBotElement.style.display = "block";
-      secondTopElement.style.display = "block";
-      secondBotElement.style.display = "block";
-      secondLineElement.style.display = "block";
-    }
-    if (tournamentPlayer.length > 6){
-      A7Element.style.display = "flex";
-      let ul = document.getElementById("A7_name");
-      ul.textContent = currentMatch[3][0].myRef.username;
-      A8Element.style.display = "flex";
-      ul = document.getElementById("A8_name");
-      if (tournamentPlayer.length > 7)
-        ul.textContent = currentMatch[3][1].myRef.username;
-      else
-        ul.textContent = "...";
-      if (thirdPlayerMode){
-        thirdA4Element.style.display = "flex";
-        ul = document.getElementById("third-A4_name");
-        if (tournamentPlayer.length > 7)
-          ul.textContent = currentMatch[3][4].myRef.username;
-        else
-          ul.textContent = "...";
-      }
-      firstBotBotElement.style.display = "block";
-    }
+    return nbPlayer;
   }
 
-  //launch the tournament when there is the right amount of players
-  //create the matchup / print the bracket structure
-
-  launchTournamentElement.addEventListener("click", function() {    
-    if (tournamentPlayer.length < 3){
+  launchTournamentElement.addEventListener("click", function() {
+    if (countNonBotPlayer(tournamentPlayer) < 3){
       const ul = document.getElementById("error_msg");
-      ul.textContent = "Not enough players";
+      ul.textContent = getTranslatedText('ErrorMinus');
       return ;
     }
-    if (tournamentPlayer.length > 8){
+    else if (tournamentPlayer.length > 8){
       const ul = document.getElementById("error_msg");
-      ul.textContent = "Too many players";
+      ul.textContent = getTranslatedText('ErrorTooMany');
       return ;
     }
+    tournamentState = 1;
     const ul = document.getElementById("error_msg");
     ul.textContent = "";
     tournamentPlayer.forEach(function(player){
@@ -549,115 +565,16 @@ export function addEventListenerToTilesTournament() {
     document.querySelectorAll('.before-launch').forEach(function(el) {
       el.style.display = 'none';
    });
-    launchMatchElement.style.display = "inline";
+    launchMatchElement.style.display = "flex";
     bracketElement.style.display = "inline";
-    nextMatchElement.style.display = "inline";
-    matchElement.style.display = "inline";
-    // const leftColumnElement = document.getElementById("leftColumn");
-    // const midColumnElement = document.getElementById("midColumn");
-    // const rightColumnElement = document.getElementById("rightColumn");
-    // leftColumnElement.style.width = "0%";
-    // midColumnElement.style.width = "30%";
-    // rightColumnElement.style.width = "70%";
-    printBracket();
+    bottomTournamentElement.style.display = "flex";
+    midColumn.style.width = "100%";
+    printBracket(tournamentPlayer, currentMatch, thirdPlayerMode);
   });
 
   launchMatchElement.addEventListener("click", function(){
     findWinner();
   });
-  
-  function updateBracket(winner_name){ 
-    if (round == 2){
-      if (nbMatch == 0){
-        let ul = document.getElementById("B1_name");
-        ul.textContent = winner_name;
-        if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
-          A1A2matchElement.classList.add("winner-top");
-        else
-          A1A2matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("A1_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("A2_score");
-        ul.textContent = currentMatch[nbMatch][3];
-      }
-      else if (nbMatch == 1){
-        let ul = document.getElementById("B2_name");
-        ul.textContent = winner_name;
-        if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
-          A3A4matchElement.classList.add("winner-top");
-        else
-          A3A4matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("A3_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("A4_score");
-        ul.textContent = currentMatch[nbMatch][3];
-      }
-      else if (nbMatch == 2){
-        let ul = document.getElementById("B3_name");
-        ul.textContent = winner_name;
-        if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
-          A5A6matchElement.classList.add("winner-top");
-        else
-          A5A6matchElement.classList.add("winner-bottom");
-        if (tournamentPlayer.length === 5){
-          ul = document.getElementById("B4_name");
-          ul.textContent = "...";
-        }
-        ul = document.getElementById("A5_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("A6_score");
-        ul.textContent = currentMatch[nbMatch][3];
-      }
-      else if (nbMatch == 3){
-        let ul = document.getElementById("B4_name");
-        ul.textContent = winner_name;
-        if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
-          A7A8matchElement.classList.add("winner-top");
-        else
-          A7A8matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("A7_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("A8_score");
-        ul.textContent = currentMatch[nbMatch][3];
-      }
-    }
-    if (round == 3){
-      if (nbMatch == 0){
-        let ul = document.getElementById("C1_name");
-        ul.textContent = winner_name;
-        if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
-          B1B2matchElement.classList.add("winner-top");
-        else
-          B1B2matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("B1_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("B2_score");
-        ul.textContent = currentMatch[nbMatch][3];
-      }
-      else if (nbMatch == 1){
-        let ul = document.getElementById("C2_name");
-        ul.textContent = winner_name;
-        if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
-          B3B4matchElement.classList.add("winner-top");
-        else
-          B3B4matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("B3_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("B4_score");
-        ul.textContent = currentMatch[nbMatch][3];
-      }
-    }
-    if (round == 4){
-      if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
-          C1C2matchElement.classList.add("winner-top");
-        else
-          C1C2matchElement.classList.add("winner-bottom");
-      let ul = document.getElementById("C1_score");
-      ul.textContent = currentMatch[nbMatch][2];
-      ul = document.getElementById("C2_score");
-      ul.textContent = currentMatch[nbMatch][3];
-    }
-  }
 
   function nextMatch() {
     nbMatch ++;
@@ -688,18 +605,27 @@ export function addEventListenerToTilesTournament() {
       winner_name = currentMatch[nbMatch][1].myRef.username;
       currentMatch[nbMatch][0].myRef.round ++;
     }
-    updateBracket(winner_name);
+    updateBracket(winner_name, currentMatch, nbMatch, round);
     nextMatch();
-    gameState.arena.game.resetUsers();
+    if (gameState.arenaCreated) //if the game has never been launch
+      gameState.arena.game.resetUsers();
   }
 
   function findWinner(){
-    //   createGame(currentMatch[nbMatch][0].myRef.playerId, currentMatch[nbMatch][1].myRef.playerId, currentMatch[nbMatch][4].myRef.playerId, currentMatch[nbMatch][2], currentMatch[nbMatch][3], "tournament", "test");
-    if (currentMatch[nbMatch][1]){
+    // afterGameTournament(3,0);
+    // return;
+    if (!currentMatch[nbMatch][1]){
+      afterGameTournament(3, 0);
+      return;
+    }
+    const player1Status = getUserStatus(currentMatch[nbMatch][0].myRef.playerId);
+    const player2Status = getUserStatus(currentMatch[nbMatch][1].myRef.playerId);
+    if (player1Status === undefined)//if (player1Status === undefined || player1Status === "offline"){
+      afterGameTournament(0, 3);
+    else if (player2Status === undefined) //if (player2Status === undefined || player2Status === "offline"){
+      afterGameTournament(3, 0);
+    else if (currentMatch[nbMatch][0].myRef.playerId === currentMatch[nbMatch][1].myRef.playerId)
+      afterGameTournament(3, 0);
+    else
       switchToGame(gameState, currentMatch[nbMatch][0].myRef, currentMatch[nbMatch][1].myRef, currentMatch[nbMatch][4].myRef, true);
-    }
-    else{
-
-    }
   }
-

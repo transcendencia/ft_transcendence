@@ -1,18 +1,25 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
-import { alien1, alien2, alien3} from "./objs.js";
-import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage} from "./translatePages.js";
+import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
+import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { RenderAllUsersInList } from "./arenaPage.js";
+import { changeGraphics, toggleGameStarted } from "./arenaPage.js";
+import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleRSContainerVisibility, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
+import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
+import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
 
 
-import { startAnimation } from "./main.js";
-// import { changeGraphics } from "./arenaPage.js";
+export function RenderPlayerLoggedEscPage(user){
+    const usernameElement = document.getElementById('loggedPlayerUsername');
+    usernameElement.textContent = user.username;
+    const pictureElement = document.getElementById('loggedPlayerPicture');
+    pictureElement.src = user.profile_picture;
+}
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-    element.classList.add(glow);
+        element.classList.add(glow);
 }
 
 function removeGlow(elementId, glow) {
@@ -30,21 +37,17 @@ signupHereButton.addEventListener('click', function() {
 
 showPage('loginPage');
 
-
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
-        if (icon.id === 'graphicsIcon1' && gameState.graphics != 'low')
-        {
+        if (icon.id === 'graphicsIcon1' && gameState.graphics != 'low') {
             gameState.graphicsNeedToChange = true;
             gameState.graphics = 'low';
         }
-        if (icon.id === 'graphicsIcon2' && gameState.graphics != 'medium')
-        {
+        if (icon.id === 'graphicsIcon2' && gameState.graphics != 'medium') {
             gameState.graphicsNeedToChange = true;
             gameState.graphics = 'medium';
         }
-        if (icon.id === 'graphicsIcon3' && gameState.graphics != 'high')
-        {
+        if (icon.id === 'graphicsIcon3' && gameState.graphics != 'high') {
             gameState.graphicsNeedToChange = true;
             gameState.graphics = 'high';
         }
@@ -56,7 +59,7 @@ graphicsIcons.forEach(function(icon) {
     });
 });
 
-function getCookie(name) {
+ export function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
@@ -87,7 +90,6 @@ languageIcons.forEach(function(icon) {
             alien2.visible = true;
             alien3.visible = false;
         }
-        
         if (icon.id === 'en'|| icon.id == 'en1') {
             alien1.visible = true;
             alien2.visible = false;
@@ -100,9 +102,7 @@ languageIcons.forEach(function(icon) {
         }
         addGlow(icon.id, 'glow');
         setlanguageIconsClicked(true);
-        setCurrentLanguage(icon.id);
-        if (icon.id.length === 3)
-            setCurrentLanguage(icon.id.slice(0, 2));
+        setCurrentLanguage(icon.id.slice(0, 2));
         icon.querySelector('.flag').style.opacity = 1;
         icon.querySelector('.icon').style.opacity = 0;
         TranslateAllTexts();
@@ -113,27 +113,11 @@ languageIcons.forEach(function(icon) {
                 otherIcon.querySelector('.icon').style.opacity = 1;
             }
         });
-
+        
         // Send POST request to change user language in the back if user is logged in
         const token = localStorage.getItem('host_auth_token');
-        if (token) {
-            fetch('change_language/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ language: currentLanguage })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la modification de la langue');
-                }
-            })
-            .catch(error => {
-                console.error('Erreur :', error);
-            });
+        if (token && currentLanguage !== icon.id) {
+            updateUserLanguage(icon.id);
         }
     });
     //init english flag
@@ -148,13 +132,23 @@ languageIcons.forEach(function(icon) {
     });
 
     icon.addEventListener('mouseleave', function () {
-        if (icon.id !== currentLanguage) {
+        if (icon.id.slice(0, 2) !== currentLanguage) {
             icon.querySelector('.flag').style.opacity = 0;
             icon.querySelector('.icon').style.opacity = 1;
         }
     });
 });
 
+function setEscapeLanguageVisual() {
+    addGlow(currentLanguage + '1', 'glow');
+    const icon = document.getElementById(currentLanguage + '1');
+    icon.querySelector('.flag').style.opacity = 1;
+    icon.querySelector('.icon').style.opacity = 0;
+}
+
+// if (localStorage.getItem("hostLoggedIn") === null) {
+    //     localStorage.setItem('hostLoggedIn', 'false');
+    // }
 // Add event listener to the loginForm
 const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', handleLogin);
@@ -166,6 +160,7 @@ function handleLogin(event) {
     const formData = new FormData(this);
     formData.append('language', currentLanguage);
     formData.append('languageClicked', languageIconsClicked);
+    formData.append('hostLoggedIn', localStorage.getItem("hostLoggedIn"));
     setlanguageIconsClicked(false);
     fetch('login_page/', {
         method: 'POST',
@@ -173,53 +168,31 @@ function handleLogin(event) {
     })
     .then(response => response.json())
     .then(data => {
+        
         if (data.status == "succes") {
-            localStorage.setItem("host_auth_token", data.token)
-            setCurrentLanguage(data.language);
-            TranslateAllTexts();
-            get_user_list();
-            getProfileInfo();
-            getGameInfo();
-            showPage('none');
-            startAnimation();
+            // if (localStorage.getItem("hostLoggedIn") === "false") {
+                localStorage.setItem('hostLoggedIn', 'true');
+                localStorage.setItem("host_auth_token", data.token);
+                localStorage.setItem("host_id", data.id);
+                setCurrentLanguage(data.language);
+                setEscapeLanguageVisual();
+                get_friends_list();
+                getProfileInfo();
+                TranslateAllTexts();
+                getGameInfo();
+                changeGraphics(data.graphic_mode);
+                showPage('none');
+                startAnimation();
+            // }
         } else 
-            document.getElementById('messageContainer').innerText = data.message;
+            document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
 }
 
-
-import { RenderUserMatch } from "./arenaPage.js";
-import { RenderUserTournament } from "./arenaPage.js";
-
-function getProfileInfo() {
-	const token = localStorage.getItem('host_auth_token');
-		fetch('get_profile_info/', {
-		    method: 'GET',
-			headers: {
-				'Authorization': `Token ${token}`,
-			}
-		})
-		.then(response => {
-			if (!response.ok)
-				throw new Error('Error lors de la recuperation des donne');
-				return response.json();
-		})
-		.then(data=> {
-			document.getElementById('username').textContent = data.profile_info.username;
-			document.getElementById('bio').textContent = data.profile_info.bio;
-			document.getElementById('profile_pic').src = data.profile_info.profile_picture;
-            RenderUserMatch(data.profile_info);
-            RenderUserTournament(data.profile_info);
-		})
-		.catch(error => {
-			console.error('Erreur :', error);
-		});
-}
-
-function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory) {
+export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
 
     let borderColor = '#ff3737';
     let bgColor = '#ff373777';
@@ -229,24 +202,6 @@ function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc
         bgColor = '#43ff4377';
         bg2Color = '#00ab00c0';
     }
-
-    // const serverDate = new Date(date);
-    // const userLocale = navigator.language || 'en-US';
-    // console.log(serverDate);
-    // console.log(userLocale);
-    // const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    // console.log(userTimeZone);
-    // const options = {
-    //     year: 'numeric',
-    //     month: 'numeric',
-    //     day: 'numeric',
-    //     hour: 'numeric',
-    //     minute: 'numeric',
-    //     timeZone: userTimeZone,
-    // };
-    // const formattedDate = new Intl.DateTimeFormat(userLocale, options).format(serverDate);
-    // console.log(formattedDate);
-
 
     const matchBlock = document.createElement('div');
     matchBlock.classList.add('matchBlock');
@@ -269,8 +224,9 @@ function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc
  
     const scoreAndThirdPlayer = document.createElement('div');
     scoreAndThirdPlayer.classList.add('scoreAndThirdPlayer');
-    scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">Third Player : ${thirdPlayer}</div>`;
-  
+    if (thirdPlayer === null)
+        scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">No Third Player</div>`;
+    else scoreAndThirdPlayer.innerHTML = `<div class="matchScore" style="border-color:  ${borderColor}; background-color: ${bg2Color};">${scorePlayer1} - ${scorePlayer2}</div><div class="thirdPlayer">Third Player : ${thirdPlayer}</div>`;
     const userHI2 = document.createElement('div');
     userHI2.classList.add('userHI');
     if (player2Name.length > 8)
@@ -285,12 +241,12 @@ function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc
   
     matchBlock.appendChild(firstLine);
     matchBlock.appendChild(secondLine);
-  
-    // Append match block to history container
-    const historyContainer = document.querySelector('.history');
+    
+    let historyContainer = document.getElementById('hostHistory');
+    if (!isHost)
+        historyContainer = document.getElementById('searchedUserHistory');
     historyContainer.appendChild(matchBlock);
 }
-
 
 function getGameInfo() {
 	const token = localStorage.getItem('host_auth_token');
@@ -347,70 +303,41 @@ function getGameInfo() {
 var disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", handleLogout);
 
-function handleLogout() {
-    updateUserStatus('offline');
-    localStorage.clear();
-};
+function resetHTMLelements(){
+    document.querySelector(".gameUI").style.visibility = 'hidden';
+    document.getElementsByClassName("bluebar")[0].style.opacity = 0;
+    document.getElementById('c4').style.display = 'block';
+    document.getElementById('c3').style.display = 'none';
+    document.getElementById('c1').style.display = 'none';
+}
 
-function updateUserStatus(status) {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('update_status/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ status: status })
+function handleLogout() {
+    updateUserStatus('offline')
+    .then(() => {
+        return get_user_list();
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erreur lors du logout');
-        }
+    .then(() => {
+        localStorage.clear();
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
-};
-
-function getUserStatus() {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_status/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
-};
-
-export let userList;
-import { RenderAllUsersTournament } from "./arenaPage.js";
-
-export function get_user_list() {
-    const token = localStorage.getItem('host_auth_token');
-    fetch('get_user_list/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        userList = data;
-        RenderAllUsersInList(data);
-        RenderAllUsersTournament(data);
-    })
-    .catch(error => console.error('Error:', error));
+    if (gameState.inGame) {
+        gameState.inGame = false;
+        gameState.inLobby = true;
+        toggleGameStarted();
+        resetHTMLelements();
+    }
+    togglePause();
+    spaceShip.position.set(0, 0, -1293.5);
+    spaceShip.rotation.set(0, 0, 0);
+    setTimeout(() => {
+        toggleBlurDisplay(true);
+        toggleEscapeContainerVisibility();
+        resetOutline();
+        spaceShipInt.visible = true;
+        showPage('loginPage');
+        toggleLobbyStart();
+    }, 50);
+    // localStorage.setItem('hostLoggedIn', 'false');
 };
