@@ -35,16 +35,22 @@ backToLoginButton.addEventListener('click', function() {
     moveCameraToBackOfCockpit();
 });
 
+
+var submitChangeButton = document.getElementById("submitSignUp");
+submitChangeButton.addEventListener("click", handleSignup);
 // Add event listener to the sign-up form
-const signupForm = document.getElementById('signupForm');
-signupForm.addEventListener('submit', handleSignup);
+// const signupForm = document.getElementById('signupForm');
+// signupForm.addEventListener('submit', handleSignup);
 
 // Handle form submission
 function handleSignup(event) {
     event.preventDefault();
     
-    const formData = new FormData(event.target);
+    var form = document.getElementById("signupForm");
+    var formData = new FormData(form);
     formData.append('language', currentLanguage);
+    // console.log(formData);
+    // const formData = new FormData(event.target);
     fetch('signup/', {
         method: 'POST',
         body: formData

@@ -82,9 +82,9 @@
   </div>
 
   <!-- SIGN UP PAGE -->
-  <div class="signUpPage page">
+  <form id="signupForm" class="signUpPage page">
     <div class="perspective">
-        <form id="signupForm" method="post" action="signup/">
+        <!-- <form id="signupForm" method="post" action="signup/"> -->
           {% csrf_token %}
         <div id="signUpTitle">Sign Up</div>
         <p id="createAccountText" style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
@@ -114,13 +114,14 @@
         <div id="messageContainerSignup" class="signupMessageCont"></div>
       </div>
       <div class="perspective2">
-        <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button>
+        <div id="submitSignUp" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</div>
+        <!-- <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button> -->
       </div>
-    </form>
+    <!-- </form> -->
     <div class="backButton tinyWhiteShadowfilter">
       Back to login
     </div>
-</div>
+  </form>
 
 
 
@@ -282,7 +283,7 @@
                       <div class="imgFrame"><img id="profile_pic" src="" alt="Photo de profil"></div> <!-- Photo de profil-->
                       <div class="mail-pseudo-info">
                         <div id="username" style="color: rgb(255, 255, 255); "></div> <!-- Username -->
-                        <div id="bio" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
+                        <div id="alias" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
                       </div>
                       <div class="pencilImg">
                         <!-- <button class="pencil" onclick="showPage()"></button> -->
@@ -324,7 +325,7 @@
                         <div class="imgFrame"><img id="profile_pic2"></div> <!-- Photo de profil-->
                         <div class="mail-pseudo-info">
                           <div id="username2" style="color: rgb(255, 255, 255); "></div> <!-- Username -->
-                          <div id="bio2" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
+                          <div id="alias2" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
                         </div>
                       </div>
                       <div class="userInfoBottomBlock">
@@ -373,7 +374,7 @@
                       <input id="changeUsernameInput" name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
                     </div>
                     <div class="changeInfoBar">
-                      <input id="changeBioInput" name="bio" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Bio" maxlength="28"></input>
+                      <input id="changeAliasInput" name="alias" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Alias" maxlength="28"></input>
                     </div>
                     <div class="changeInfoBar">
                       <input id="changePasswordInput"name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Password"></input>
@@ -384,7 +385,7 @@
                    <div class="profilePicContainer">
                       <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
-                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicBut ton">Choose file</label>
+                      <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
                     </div>
                     <div id= "changeInfoMessage" class="changeInfoMessage"></div>
                     <div class="buttonContainer">
