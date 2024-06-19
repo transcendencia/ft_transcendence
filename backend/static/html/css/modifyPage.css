@@ -197,7 +197,7 @@
     font-family: 'space'; 
     color: #3777ff;
     height: 50px; /* Utilisez des pixels pour une hauteur fixe */
-    width: 200px;
+    width: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
