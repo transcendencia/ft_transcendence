@@ -452,10 +452,8 @@ function putUserInMatch() {
             playerNb--;
             removeUserFromMatch(tile.user.id);
         });
-        if (tile.type === 'Friend') {
-            console.log("oui");
+        if (tile.type === 'Friend')
             textCont.classList.add('friendBg');
-        }
         else if (tile.type === 'Bot')
             textCont.classList.add('botBg');
         else textCont.classList.add('defaultBg');

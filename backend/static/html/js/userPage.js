@@ -296,15 +296,62 @@ function getHistoryMatchPlayer2(user) {
   });
 }
 
+function applyOnlineFriendTileColor(loupeContainer, textContainer, imgContainer) {
+  textContainer.classList.add('onlineFriendTile');
+  imgContainer.classList.add('onlineFriendTile');
+  loupeContainer.classList.add('onlineFriendTile');
+  loupeContainer.classList.remove('friendTile');
+  loupeContainer.classList.remove('loupeFriendTile');
+}
+
+function createStatusPellet(status) {
+  if (status === 0)
+    status = 'Offline';
+  else if (status === 1)
+    status = 'Online';
+  else if (status === 2)
+    status = 'InGame';
+  const statusPelletElement = document.createElement('div');
+  statusPelletElement.classList.add('redPellet');
+  statusPelletElement.classList.add('onlineFriendTile');
+  statusPelletElement.classList.add(status);
+  return statusPelletElement;
+}
+
+function applyTypeToTile (imgContainer, textContainer, loupeContainer, type, userTile) {
+  imgContainer.classList.add(`${type}Tile`);
+  textContainer.classList.add(`${type}Tile`);
+  loupeContainer.classList.add(`${type}Tile`);
+  loupeContainer.classList.add(`loupe${type.charAt(0).toUpperCase() + type.slice(1)}Tile`);
+  if (type === 'friend') {
+    loupeContainer.classList.remove('defaultLoupeImgColor');
+    loupeContainer.classList.remove('defaultTile');
+    const random = Math.floor(Math.random() * 3); 
+    if (random === 1)
+      applyOnlineFriendTileColor(loupeContainer, textContainer, imgContainer);
+    else if (random === 2)
+      applyOnlineFriendTileColor(loupeContainer, textContainer, imgContainer);
+    userTile.appendChild(createStatusPellet(random));
+  }
+}
+
+function appendTileToChild(imgContainer, textContainer, loupeContainer, userTile) {
+  userTile.appendChild(imgContainer);
+  userTile.appendChild(textContainer);
+  userTile.appendChild(loupeContainer);
+  userListBackground.appendChild(userTile);
+}
+
 function createUserTile(user, type, reqId) {
   if (user.isHost)
     return;
-    const userTile = document.createElement('div');
+  
+  const userTile = document.createElement('div');
   userTile.classList.add('userTile');
   
   const imgContainer = document.createElement('div');
   imgContainer.classList.add('imgContainer');
-  imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
+  imgContainer.innerHTML += `<img src="${user.profile_picture}">`;
   
   const textContainer = document.createElement('div');
   textContainer.classList.add('textContainer');
@@ -312,6 +359,7 @@ function createUserTile(user, type, reqId) {
 
   const loupeContainer = document.createElement('div');
   loupeContainer.classList.add('loupeImg');
+  loupeContainer.classList.add('defaultLoupeImgColor');
   loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
   loupeContainer.addEventListener('click', () => {
     slideAnimations(loupeContainer);
@@ -321,16 +369,8 @@ function createUserTile(user, type, reqId) {
       fillSearchedUserPage(user, type);
     }, 125);
   });
-
-  imgContainer.classList.add(`${type}Tile`);
-  textContainer.classList.add(`${type}Tile`);
-  loupeContainer.classList.add(`loupe${type.charAt(0).toUpperCase() + type.slice(1)}Tile`);
-
-  userTile.appendChild(imgContainer);
-  userTile.appendChild(textContainer);
-  userTile.appendChild(loupeContainer);
-  
-  userListBackground.appendChild(userTile);
+  applyTypeToTile(imgContainer, textContainer, loupeContainer, type, userTile);
+  appendTileToChild(imgContainer, textContainer, loupeContainer, userTile);
 }
 
 async function RenderUsersSearched(query) {
@@ -362,7 +402,7 @@ async function RenderUsersSearched(query) {
 
   filteredRequestList.forEach(obj => createUserTile(obj.user, 'request', obj.request_id));
   filteredFriendList.forEach(obj => createUserTile(obj.user, 'friend', obj.request_id));
-  filteredOthers.forEach(user => createUserTile(user, '', undefined));
+  filteredOthers.forEach(user => createUserTile(user, 'default', undefined));
 }
   
 inputElement.addEventListener('input', function(event) {
