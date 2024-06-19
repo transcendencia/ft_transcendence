@@ -77,14 +77,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
   const toggleSwitch = document.getElementById('toggleSwitch');
 
   toggleSwitch.addEventListener('click', function() {
-      this.classList.toggle('active');
-      if (this.classList.contains('active')) {
-        anonymousStatus = true;
-        console.log("IN MODIFY PAGE .JS")
-        console.log(anonymousStatus);
-      } else {
-          anonymousStatus = false;
-          console.log(anonymousStatus);
-      }
-  });
+    this.classList.toggle('active');
+    if (this.classList.contains('active')) {
+      anonymousStatus = true;
+      getRandomUsername();
+    } else {
+        anonymousStatus = false;
+    }
 });
+});
+
+export function getRandomUsername() {
+  const token = localStorage.getItem('host_auth_token');
+  fetch('generate_unique_username/', {
+      method: 'GET',
+      headers: {
+          'Authorization': `Token ${token}`,
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data.username);
+    document.getElementById('changeUsernameInput').value = data.username;
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      throw error;
+  });
+};

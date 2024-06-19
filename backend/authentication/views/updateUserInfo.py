@@ -75,19 +75,16 @@ def get_profile_info(request):
 @permission_classes([IsAuthenticated])
 def change_profile_info(request):
     if request.method == 'POST':
-        data = request.data.copy()
         anonymousStatus = request.data.get('anonymousStatus') == 'true'
+        print(anonymousStatus)
         if anonymousStatus:
-          username = generate_unique_username(colors, items)
-          if username:
-            data['username'] = username
-          else:
-            return Response({'status': 'failure', 'message': 'Could not generate unique username'}, status=400)
-        print(username)
-        data.pop('anonymousStatus')
-        serializer = UpdateInfoSerializer(instance=request.user, data=data)
-        if 'profile-pic' in request.FILES:
+            request.user.profile_picture = 'default.png'
+            request.user.save()
+        request.data.pop('anonymousStatus')
+        serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
+        if 'profile-pic' in request.FILES and not anonymousStatus:
             uploaded_file = request.FILES['profile-pic']
+            print(uploaded_file)
             request.user.profile_picture = uploaded_file
             request.user.save()
             print("picture changed") 
@@ -98,15 +95,17 @@ def change_profile_info(request):
         print(first_error)
         return Response({'status': "failure", "message": first_error}, status=400)
 
-def generate_unique_username(colors, items):
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def generate_unique_username(request):
     random_color = random.choice(colors)
     random_item = random.choice(items)
     username = random_color + random_item
     nbrUser = User.objects.all().count()
-    
     for i in range(nbrUser + 1):
         if not User.objects.filter(username=username).exists():
-            return username
+            return Response({'username': username}, status=200)
         else:
             random_color = random.choice(colors)
             random_item = random.choice(items)
@@ -114,9 +113,10 @@ def generate_unique_username(colors, items):
     for i in range(nbrUser + 1):
         username = f"anonymous{i}"
         if not User.objects.filter(username=username).exists():
-            return username
-    
-    return None
+            return Response({'username': username}, status=200)
+    return Response(status=400)
+
+
 
 
 
