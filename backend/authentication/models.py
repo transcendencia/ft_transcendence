@@ -73,6 +73,7 @@ class Game(models.Model):
   
   def __str__(self):
     return f"{self.gameplayMode}"
+
 class UserStat(models.Model):
   player = models.ForeignKey(User, on_delete=models.CASCADE)
   game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='user_stats')

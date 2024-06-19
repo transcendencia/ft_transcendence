@@ -460,13 +460,24 @@ function putUserInMatch() {
     }
 }
 
-import { handleLoginGuest } from "./loginPage.js";
+// import { handleLogin } from './loginPage.js';
 
-validatePasswordButton.addEventListener('click', function() {
-    // console.log(userTiles[tempTileIndex]);
-    handleLoginGuest(userTiles[tempTileIndex].user);
-    putUserInMatch();
-});
+// let guestLoggedIn = []
+// validatePasswordButton.addEventListener('click', function() {
+//     // console.log(userTiles[tempTileIndex]);
+//     if (guestLoggedIn.length < 7) {
+//         // handleLoginHost(userTiles[tempTileIndex].user);
+//         console.log(guestLoggedIn.length);
+//         const password = document.getElementById("enterPasswordInput");
+//         const formData = new FormData();
+//         formData.append("username", userTiles[tempTileIndex].user.username);
+//         formData.append("password", password.value);
+//         console.log(handleLogin(formData));
+//     }
+//     else
+//         console.log("Too many guest");
+//     putUserInMatch();
+// });
 
 backPasswordButton.addEventListener('click', function() {
     pwWindow.classList.remove("showRectangle");
