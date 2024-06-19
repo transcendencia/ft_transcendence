@@ -6,7 +6,8 @@ import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie } from './loginPage.js';
 import { getProfileInfo } from './userManagement.js';
-import { toggleThirdPlayerMode } from '../../tournament/js/newTournament.js';
+
+//import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
 
 let anonymousStatus;
 
@@ -151,3 +152,10 @@ function displayAnonymousMode() {
   console.log("je display info");
   document.getElementById("displayAnonymousMode").classList.toggle("showRectangle")
 }
+
+/*const InfosBack = document.getElementById("infoButton");
+InfosBack.addEventListener("click", displayAnonymousInfos);
+
+function displayAnonymousInfos() {
+  document.getElementById("displayAnonymousInfos").classList.toggle("showRectangle")
+}*/
