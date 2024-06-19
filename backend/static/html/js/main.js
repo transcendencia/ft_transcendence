@@ -451,9 +451,6 @@ document.addEventListener('keydown', (event) => {
             pauseGame ? pauseGame = false : pauseGame = true;
         }
     }
-    if (event.key === 'l') {
-        switchToGame();
-    }
 });
 
 let targetBlur = 0;
