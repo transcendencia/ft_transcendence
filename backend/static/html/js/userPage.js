@@ -2,10 +2,9 @@ import { togglePlanet } from './enterPlanet.js';
 import {  getCookie, createMatchBlock} from './loginPage.js';
 import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
-import { getUserStats} from './stats.js';
+import { getUserStats, chooseStats } from './stats.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
-const statsScreen = document.querySelector('.statsBlock');
 const colorClicked = '#5d75ff47';
 
 statsButtons.forEach((button, index) => {
@@ -17,6 +16,8 @@ statsButtons.forEach((button, index) => {
         for (let i = 3; i < 6; i++)
           statsButtons[i].style.backgroundColor = 'transparent';
       button.style.backgroundColor = colorClicked;
+      chooseStats(index + 1);
+      getUserStats(localStorage.getItem("host_id"));
     });
 });
 
