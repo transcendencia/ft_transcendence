@@ -128,7 +128,7 @@ export function initUserPlanet() {
   const userListBackground = document.getElementById('userlistUserPage');
   const profilePic = document.getElementById('profile_pic2');
   const username = document.getElementById('username2');
-  const bio = document.getElementById('bio2');
+  const alias = document.getElementById('alias2');
   const friendActionCont = document.querySelector('.friendActionCont');
   const checkMarkImg = friendActionCont.querySelectorAll('img')[0];
   const redCrossImg = friendActionCont.querySelectorAll('img')[1];
@@ -220,7 +220,7 @@ export function initUserPlanet() {
     // Update the DOM elements with user information
     profilePic.src = user.profile_picture;
     username.textContent = user.username;
-    bio.textContent = user.bio;
+    alias.textContent = user.alias;
 
     document.getElementById('searchedUserHistory').innerHTML = '';
     
