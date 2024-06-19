@@ -93,7 +93,7 @@ export function getUserStats(userId) {
 		// console.log("currentStreak", data.currentStreak);
 		// console.log("mapPercentages", data.mapPercentages);
 		// console.log("modePercentages", data.modePercentages);
-		console.log("efficiency", data.efficiency);
+		// console.log("efficiency", data.efficiency);
 		drawChart();
 	})
 	.catch(error => {
