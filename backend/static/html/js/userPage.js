@@ -42,7 +42,9 @@ export function initUserPlanet() {
   renderFriendList();
   const basicStats = document.getElementById('winLoseTexts1');
   getProfileInfo();
-  getUserStats(localStorage.getItem("host_id"));
+  setTimeout(() => {
+    getUserStats(localStorage.getItem("host_id"));
+  }, 1750);
   // basicStats.innerHTML = `
   //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
   //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
