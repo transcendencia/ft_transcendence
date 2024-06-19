@@ -144,10 +144,10 @@ RGPDPolicy.addEventListener('click', function() {
   showPage('rgpdPage');
 });
 
-// const infoButton = document.getElementById("infoButton");
-// infoButton.addEventListener("click", displayInfo);
+const infoButton = document.getElementById("infoButton");
+infoButton.addEventListener("click", displayInfo);
 
-// function displayInfo() {
-//   console.log("je display info");
-//   document.getElementById("displayInfo").classList.toggle("showRectangle")
-// }
+function displayInfo() {
+  console.log("je display info");
+  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle")
+}
