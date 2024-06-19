@@ -152,10 +152,3 @@ function displayAnonymousMode() {
   console.log("je display info");
   document.getElementById("displayAnonymousMode").classList.toggle("showRectangle")
 }
-
-/*const InfosBack = document.getElementById("infoButton");
-InfosBack.addEventListener("click", displayAnonymousInfos);
-
-function displayAnonymousInfos() {
-  document.getElementById("displayAnonymousInfos").classList.toggle("showRectangle")
-}*/
