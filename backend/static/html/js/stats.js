@@ -90,6 +90,7 @@ export function getUserStats(userId) {
 		// console.log("poweredUsedPercentage", data.poweredUsedPercentage);
 		// console.log("efficencyRatios", data.efficiencyRatios);
 		// console.log("nbrGames", data.nbrGames);
+		console.log("currentStreak", data.currentStreak);
 		drawChart();
 	})
 	.catch(error => {

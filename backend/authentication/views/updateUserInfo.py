@@ -78,7 +78,7 @@ def get_stats(request, userId):
     user = get_object_or_404(User, id=userId)
     gameWon = UserStat.objects.filter(player=user, isWinner=True)
     nbrGameWon = gameWon.count()
-    allGames = UserStat.objects.filter(player=user)
+    allGames = UserStat.objects.filter(player=user).order_by('date')
     nbrGames = allGames.count()
 
     # Win rate
@@ -88,13 +88,16 @@ def get_stats(request, userId):
     # Dashes / PoweredUsed
     sums = allGames.aggregate(totalDashes=Sum('nbDashes'), totalPoweredUsed=Sum('nbPoweredUsed'), )
 
-    totalDashes = sums['totalDashes']
-    totalPoweredUsed = sums['totalPoweredUsed']
+    totalDashes = sums['totalDashes'] or 0
+    totalPoweredUsed = sums['totalPoweredUsed'] or 0
 
     total = totalDashes + totalPoweredUsed
-    dashesPercentage = (totalDashes / total) * 100
-    poweredUsedPercentage = (totalPoweredUsed / total) * 100
-    
+    if total > 0:
+      dashesPercentage = (totalDashes / total) * 100
+      poweredUsedPercentage = (totalPoweredUsed / total) * 100
+    else:
+      dashesPercentage = 0
+      poweredUsedPercentage = 0
     # Efficiency rate
     allGames_annotated = allGames.annotate(
       efficiency_ratio=ExpressionWrapper(
@@ -109,13 +112,26 @@ def get_stats(request, userId):
     )
 
     efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
+
+    maxStreak = 0
+    currentStreak = 0
+
+    for game in allGames:
+      if game.isWinner:
+        currentStreak += 1
+        if currentStreak > maxStreak:
+          maxStreak = currentStreak
+      else:
+          currentStreak = 0
+    
     return Response({
       'percentageGameWon': percentageGameWon, 
       'percentageGameLost': percentageGameLost,
       'dashesPercentage': dashesPercentage,
       'poweredUsedPercentage': poweredUsedPercentage,
       'efficiencyRatios': efficiencyRatios,
-      'nbrGames': nbrGames})
+      'nbrGames': nbrGames,
+      'currentStreak': currentStreak})
   except User.DoesNotExist:
     return Response({'status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
 

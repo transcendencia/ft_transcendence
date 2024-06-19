@@ -82,3 +82,4 @@ class UserStat(models.Model):
   nbDashes = models.IntegerField(default=-1)
   nbPoweredUsed = models.IntegerField(default=-1)
   nbBounces = models.IntegerField(default=-1)
+  date = models.DateTimeField(default=timezone.now)
