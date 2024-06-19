@@ -82,12 +82,15 @@ def get_stats(request, userId):
     allGames = UserStat.objects.filter(player=user).order_by('date')
     nbrGames = allGames.count()
 
+    mapPercentages = {}
+    modePercentages = {}
+
     # Win rate
     percentageGameWon = round((nbrGameWon * 100) / user.nbr_match, 1) if user.nbr_match > 0 else 0
     percentageGameLost = round(100 - percentageGameWon, 1)
 
     # Dashes / PoweredUsed
-    sums = allGames.aggregate(totalDashes=Sum('nbDashes'), totalPoweredUsed=Sum('nbPoweredUsed'), )
+    sums = allGames.aggregate(totalDashes=Sum('nbDashes'), totalPoweredUsed=Sum('nbPoweredUsed'))
 
     totalDashes = sums['totalDashes'] or 0
     totalPoweredUsed = sums['totalPoweredUsed'] or 0
@@ -99,6 +102,7 @@ def get_stats(request, userId):
     else:
       dashesPercentage = 0
       poweredUsedPercentage = 0
+
     # Efficiency rate
     allGames_annotated = allGames.annotate(
       efficiency_ratio=ExpressionWrapper(
@@ -114,6 +118,7 @@ def get_stats(request, userId):
 
     efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
 
+    # Current streak
     maxStreak = 0
     currentStreak = 0
 
@@ -125,6 +130,60 @@ def get_stats(request, userId):
       else:
           currentStreak = 0
     
+    spaceMap = 0
+    dragonMap = 0
+    skyMap = 0
+    oceanMap = 0
+    classicMode = 0
+    spinOnlyMode = 0
+    powerlessMode = 0
+
+    for game in allGames:
+      
+      # Map counter
+      print("map game", game.mapGame)
+      if game.mapGame == "oceanMap":
+        oceanMap += 1 
+      elif game.mapGame == "spaceMap":
+          spaceMap += 1
+      elif game.mapGame == "dragonMap":
+          dragonMap += 1
+      elif game.mapGame == "skyMap":
+          skyMap += 1
+      
+      # Mode counter
+      print("mode game", game.modeGame)
+      if game.modeGame == "CLASSIC":
+        classicMode += 1
+      elif game.modeGame == "SPINONLY":
+        spinOnlyMode += 1
+      elif game.modeGame == "POWERLESS":
+        powerlessMode += 1
+    
+    # Map percentage
+    oceanMapPercentage = round((oceanMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    spaceMapPercentage = round((spaceMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    dragonMapPercentage = round((dragonMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    skyMapPercentage = round((skyMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+
+    # Mode percantage
+    classicModePercentage = round((classicMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    spinOnlyModePercentage = round((spinOnlyMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    powerlessModePercentage = round((powerlessMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+
+    mapPercentages = {
+      "oceanMap": oceanMapPercentage,
+      "spaceMap": spaceMapPercentage,
+      "dragonMap": dragonMapPercentage,
+      "skyMap": skyMapPercentage
+    }
+
+    modePercentages = {
+      "classicMode": classicModePercentage,
+      "spinOnlyMode": spinOnlyModePercentage,
+      "powerlessMode": powerlessModePercentage
+    }
+
     return Response({
       'percentageGameWon': percentageGameWon, 
       'percentageGameLost': percentageGameLost,
@@ -132,7 +191,11 @@ def get_stats(request, userId):
       'poweredUsedPercentage': poweredUsedPercentage,
       'efficiencyRatios': efficiencyRatios,
       'nbrGames': nbrGames,
-      'currentStreak': currentStreak})
+      'currentStreak': currentStreak,
+      'mapPercentages': mapPercentages,
+      'modePercentages' : modePercentages
+    })
+
   except User.DoesNotExist:
     return Response({'status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
 

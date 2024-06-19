@@ -68,6 +68,7 @@ class Game(models.Model):
   scorePlayer2 = models.IntegerField(default=-1)
   gameplayMode = models.CharField(max_length=255)
   modeGame = models.CharField(max_length=255, default="test")
+  mapGame = models.CharField(max_length=255, default="spaceMap")
   date = models.DateTimeField(default=timezone.now)
   
   def __str__(self):
@@ -81,4 +82,6 @@ class UserStat(models.Model):
   nbDashes = models.IntegerField(default=-1)
   nbPoweredUsed = models.IntegerField(default=-1)
   nbBounces = models.IntegerField(default=-1)
+  modeGame = models.CharField(max_length=255, default="test")
+  mapGame = models.CharField(max_length=255, default="spaceMap")
   date = models.DateTimeField(default=timezone.now)

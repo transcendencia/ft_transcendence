@@ -29,24 +29,19 @@ def login_page(request):
     password = request.POST.get("password")
     new_language = request.POST.get("language")
     languageClicked = request.POST.get("languageClicked") == 'true'
-    hostLoggedIn = request.POST.get("hostLoggedIn") == 'true'
 
     user = authenticate(username=username_lower, password=password)
     if user is not None:
-      # if user.status != 'online':
-        # if not hostLoggedIn:
+      # if user.status is not 'online':
+        user.last_login_date = timezone.now()
+        user.status = 'online'
         print("je suis le host")
         token, created = Token.objects.get_or_create(user=user)
         user.is_host = True
         if languageClicked and new_language != user.language:
-            user.language = new_language
-        user.last_login_date = timezone.now()
-        user.status = 'online'
+          user.language = new_language
         user.save()
-        # ATTENTION -> le token a pas return si c'est pas un host
         return  Response({'status': "succes", 'token': token.key, 'msg_code': "loginSuccessful", 'language': user.language, 'id': user.id, 'graphic_mode': user.graphic_mode})
-      # else:
-        # return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"})
     else:
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
   except Exception as e:

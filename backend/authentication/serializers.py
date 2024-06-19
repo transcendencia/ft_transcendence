@@ -55,7 +55,7 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True, required=False)
 	class Meta():
 		model = User
-		fields = ['username', 'password', 'alis', 'profile_picture', 'confirmation_password']
+		fields = ['username', 'password', 'alias', 'profile_picture', 'confirmation_password']
 		extra_kwargs = {
 			'password': {'write_only': True, 'required': False},
 			'username': {'required': False},

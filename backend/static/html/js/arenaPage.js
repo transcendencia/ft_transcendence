@@ -185,12 +185,12 @@ export function endGame(isTournament) {
         user3 = gameState.arena.game.user3.id
     if (isTournament){
         planetPanel[2].style.visibility = 'visible';
-        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3);
+        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3);
         afterGameTournament(gameState.arena.game.leftScore, gameState.arena.game.rightScore);
     }
     else{
         planetPanel[0].style.visibility = 'visible';
-        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3);
+        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3);
     }
     rsContainer.style.visibility = 'visible';
     gameUI.style.visibility = 'hidden';
@@ -205,7 +205,7 @@ export function rematchGame() {
 
     if (gameState.arena.game.thirdPlayer)
         user3 = gameState.arena.game.user3.id  
-    createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode);
+    createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3);
     gameState.arena.game.resetUsers();
 }
 
@@ -462,7 +462,11 @@ function putUserInMatch() {
     }
 }
 
+import { handleLoginGuest } from "./loginPage.js";
+
 validatePasswordButton.addEventListener('click', function() {
+    // console.log(userTiles[tempTileIndex]);
+    handleLoginGuest(userTiles[tempTileIndex].user);
     putUserInMatch();
 });
 

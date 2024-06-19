@@ -79,6 +79,7 @@ def add_game(request):
     scorePlayer2 = data['scorePlayer2']
     gameplayMode = data['gameplayMode']
     modeGame = data['modeGame']
+    mapGame = data['mapGame']
 
     player1 = User.objects.get(id=player1_id)
     player2 = User.objects.get(id=player2_id)
@@ -91,6 +92,7 @@ def add_game(request):
         scorePlayer2=scorePlayer2,
         gameplayMode=gameplayMode,
         modeGame=modeGame,
+        mapGame=mapGame,
     )
     game.save()
     
@@ -120,7 +122,10 @@ def createUserStat(user, game, userStat):
     pointsTaken=userStat['pointsTaken'],
     nbDashes=userStat['nbDashes'],
     nbPoweredUsed=userStat['nbPowerUsed'],
-    nbBounces=userStat['nbBounces'])
+    nbBounces=userStat['nbBounces'],
+    modeGame=game.modeGame,
+    mapGame=game.mapGame)
+    
   new_stat.save()
 
   return JsonResponse({'status': 'success'})
