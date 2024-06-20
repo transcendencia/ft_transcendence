@@ -149,6 +149,12 @@ const infoButton = document.getElementById("infoButton");
 infoButton.addEventListener("click", displayAnonymousMode);
 
 function displayAnonymousMode() {
-  console.log("je display info");
-  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle")
+  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
+}
+
+const infoBack = document.getElementById("infoBack");
+infoBack.addEventListener("click", backInfosDisplay);
+
+function backInfosDisplay() {
+  console.log("back button");
 }
