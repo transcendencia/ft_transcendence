@@ -2,7 +2,7 @@ export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, 
     const csrfToken = getCookie('csrftoken');
 
     console.log(user1);
-    console.log(map);
+    console.log(modeGame);
     const payload = {
         player1: player1Id,
         player2: player2Id,
