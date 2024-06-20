@@ -169,7 +169,7 @@ export function handleLogin(formData) {
         if (data.status == "succes") {
             console.log(hostLoggedIn);
 
-            // if (hostLoggedIn === 'false') {
+            if (hostLoggedIn === 'false') {
                 localStorage.setItem("hostLoggedIn", 'true');
                 localStorage.setItem("host_auth_token", data.token);
                 localStorage.setItem("host_id", data.id);
@@ -182,12 +182,13 @@ export function handleLogin(formData) {
                 changeGraphics(data.graphic_mode);
                 showPage('none');
                 startAnimation();
-        //     } else {
-        //         return "SUCCESS";
-        //     }
-        // } else {
-        //     document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
-        //     return "FAILURE";
+            } else {
+                const token = data.token;
+                return {token};
+            }
+        } else {
+            document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+            return false;
         }
     })
     .catch(error => {
