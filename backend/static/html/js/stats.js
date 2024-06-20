@@ -116,22 +116,24 @@ class DoughnutGraph {
   }
 
 // // get charts blocks by id
-const stat1 = document.getElementById('ststsBlock1');
-const stat2 = document.getElementById('ststsBlock2');
 
 export function chooseStats(stat) {
 	const stat1 = document.getElementById('statsBlock1');
 	const stat2 = document.getElementById('statsBlock2');
+	const stat3 = document.getElementById('statsBlock3');
 	if (stat === 1) {
 		stat1.style.display = 'flex';
 		stat2.style.display = 'none';
+		stat3.style.display = 'none';
 	} else if (stat === 2){
 		stat2.style.display = 'flex';
 		stat1.style.display = 'none';
+		stat3.style.display = 'none';
 	}
 	else if (stat === 3){
 		stat2.style.display = 'none';
 		stat1.style.display = 'none';
+		stat3.style.display = 'flex';
 	}
 }
 
