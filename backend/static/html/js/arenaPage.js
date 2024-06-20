@@ -462,24 +462,29 @@ function putUserInMatch() {
     }
 }
 
-// import { handleLogin } from './loginPage.js';
+import { handleLogin } from './loginPage.js';
 
-// let guestLoggedIn = []
-// validatePasswordButton.addEventListener('click', function() {
-//     // console.log(userTiles[tempTileIndex]);
-//     if (guestLoggedIn.length < 7) {
-//         // handleLoginHost(userTiles[tempTileIndex].user);
-//         console.log(guestLoggedIn.length);
-//         const password = document.getElementById("enterPasswordInput");
-//         const formData = new FormData();
-//         formData.append("username", userTiles[tempTileIndex].user.username);
-//         formData.append("password", password.value);
-//         console.log(handleLogin(formData));
-//     }
-//     else
-//         console.log("Too many guest");
-//     putUserInMatch();
-// });
+let guestLoggedIn =  {
+    user: "nom_utilisateur",
+    token: "token_utilisateur"
+};
+
+validatePasswordButton.addEventListener('click', function() {
+    // if (guestLoggedIn.length < 7) {
+        // console.log(guestLoggedIn.length);
+        const password = document.getElementById("enterPasswordInput");
+        const formData = new FormData();
+        formData.append("username", userTiles[tempTileIndex].user.username);
+        formData.append("password", password.value);
+        // console.log(handleLogin(formData));
+        if (handleLogin(formData) === flase) {
+            
+        }
+    // }
+    // else
+        // console.log("Too many guest");
+    putUserInMatch();
+});
 
 backPasswordButton.addEventListener('click', function() {
     pwWindow.classList.remove("showRectangle");
