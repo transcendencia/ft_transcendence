@@ -52,14 +52,14 @@ export function initUserPlanet() {
   //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
   //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
   // `;
-  checkEach5Sec = setInterval(async function() {
-    if (await isListsChanged()) {
-      if (inputElement.value === '')
-        await renderFriendList();
-      else await RenderUsersSearched(inputElement.value);
-    }
-    console.log("Checking...");
-  }, 5000);
+  // checkEach5Sec = setInterval(async function() {
+  //   if (await isListsChanged()) {
+  //     if (inputElement.value === '')
+  //       await renderFriendList();
+  //     else await RenderUsersSearched(inputElement.value);
+  //   }
+  //   console.log("Checking...");
+  // }, 20000);
 }
 
 // Sample user data
@@ -296,50 +296,15 @@ function getHistoryMatchPlayer2(user) {
   });
 }
 
-function fillAndDisplaySearchedPage(loupeContainer, reqId, user, type) {
-
-}
-
-function applyOnlineFriendTileColor(loupeContainer, textContainer, imgContainer) {
-  textContainer.classList.add('onlineFriendTile');
-  imgContainer.classList.add('onlineFriendTile');
-  loupeContainer.classList.add('onlineFriendTile');
-  loupeContainer.classList.remove('friendTile');
-  loupeContainer.classList.remove('loupeFriendTile');
-}
-
 function createStatusPellet(status) {
-  if (status === 0)
-    status = 'Offline';
-  else if (status === 1)
-    status = 'Online';
-  else if (status === 2)
-    status = 'InGame';
   const statusPelletElement = document.createElement('div');
   statusPelletElement.classList.add('redPellet');
-  statusPelletElement.classList.add('onlineFriendTile');
-  statusPelletElement.classList.add(status);
+  if (status === 'InGame' || status === 'Online')
+    statusPelletElement.classList.add('OnlineFriendTile');
+    else statusPelletElement.classList.add('OfflineFriendTile');
+  if (status !== 'Offline')
+    statusPelletElement.classList.add(status);
   return statusPelletElement;
-}
-
-function applyTypeToTile (imgContainer, textContainer, loupeContainer, type, userTile) {
-  imgContainer.classList.add(`${type}Tile`);
-  textContainer.classList.add(`${type}Tile`);
-  loupeContainer.classList.add(`${type}Tile`);
-  loupeContainer.classList.add(`loupe${type.charAt(0).toUpperCase() + type.slice(1)}Tile`);
-  loupeContainer.classList.add('loupeImg');
-  loupeContainer.classList.add('defaultLoupeImgColor');
-  if (type === 'friend') {
-    loupeContainer.classList.remove('defaultLoupeImgColor');
-    loupeContainer.classList.remove('defaultTile');
-    const random = Math.floor(Math.random() * 3); 
-    if (random === 1)
-      applyOnlineFriendTileColor(loupeContainer, textContainer, imgContainer);
-    else if (random === 2)
-      applyOnlineFriendTileColor(loupeContainer, textContainer, imgContainer);
-    userTile.appendChild(createStatusPellet(random));
-  }
-
 }
 
 function createUserTile(user, type, reqId) {
@@ -359,6 +324,7 @@ function createUserTile(user, type, reqId) {
 
   const loupeContainer = document.createElement('div');
   loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
+  loupeContainer.classList.add('loupeImg');
   loupeContainer.addEventListener('click', () => {
     slideAnimations(loupeContainer);
     setTimeout(() => {
@@ -368,7 +334,16 @@ function createUserTile(user, type, reqId) {
     }, 125);
   });
 
-  applyTypeToTile(imgContainer, textContainer, loupeContainer, type, userTile);
+  //status : 'offline', 'online', or '' to fit css classes names.
+  const status = (type === 'Friend') ? (user.status === 'Online' || user.status === 'InGame' ? 'Online' : 'Offline') : '';
+  const colorClass = `${status}${type}Tile`;
+
+  imgContainer.classList.add(`dark${colorClass}`);
+  textContainer.classList.add(colorClass);
+  loupeContainer.classList.add(colorClass);
+  loupeContainer.classList.add('hovered');
+  if (type === 'Friend')
+    userTile.appendChild(createStatusPellet(user.status));
 
   userTile.appendChild(imgContainer);
   userTile.appendChild(textContainer);
@@ -380,40 +355,43 @@ async function RenderUsersSearched(query) {
   userListBackground.innerHTML = ''; // Clear existing user tiles
 
   if (query === '') {
-    renderFriendList();
-    return;
+      renderFriendList();
+      return;
   }
-  const data = await get_friends_list();
-  if (!data)
-    return ;
-  let requestList = [];
-  let friendList = [];
-  let otherList = [];
 
-  if (data.received_request_list.length > 0)  
-    requestList = data.received_request_list.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()));
-  if (data.friends.length > 0)
-    friendList = data.friends.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()));
-  if (data.other_user_list.length)
-    otherList = data.other_user_list.filter(obj => obj.username.toLowerCase().includes(query.toLowerCase()));
-  
-  previousReqFriendList = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.username)).concat(data.friends.sort((a, b) => a.user.username.localeCompare(b.username)));
+  try {
+      const data = await get_friends_list();
+      if (!data) return;
 
-  const filteredRequestList = requestList.sort((a, b) => a.user.username.localeCompare(b.username));
-  const filteredFriendList = friendList.sort((a, b) => a.user.username.localeCompare(b.username));
-  const filteredOthers = otherList.sort((a, b) => a.username.localeCompare(b.username));
+      // Filter and sort the lists based on the query
+      const requestList = data.received_request_list.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
+                                                      .sort((a, b) => a.user.username.localeCompare(b.user.username));
+      const friendList = data.friends.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
+                                     .sort((a, b) => {
+                                         // Define status order
+                                         const statusOrder = { 'Online': 0, 'InGame': 1, 'Offline': 2 };
+                                         // Compare status first, then by username
+                                         if (a.user.status !== b.user.status) {
+                                             return statusOrder[a.user.status] - statusOrder[b.user.status];
+                                         }
+                                         return a.user.username.localeCompare(b.user.username);
+                                     });
+      const otherList = data.other_user_list.filter(user => user.username.toLowerCase().includes(query.toLowerCase()))
+                                            .sort((a, b) => a.username.localeCompare(b.username));
 
-  filteredRequestList.forEach(obj => createUserTile(obj.user, 'request', obj.request_id));
-  filteredFriendList.forEach(obj => createUserTile(obj.user, 'friend', obj.request_id));
-  filteredOthers.forEach(user => createUserTile(user, 'default', undefined));
+      // Clear and concatenate previous lists for consistent sorting
+      previousReqFriendList = data.received_request_list.concat(data.friends);
+
+      // Render tiles based on filtered and sorted lists
+      requestList.forEach(obj => createUserTile(obj.user, 'Request', obj.request_id));
+      friendList.forEach(obj => createUserTile(obj.user, 'Friend', obj.request_id));
+      otherList.forEach(user => createUserTile(user, 'Default', undefined));
+  } catch (error) {
+      console.error('Error in rendering searched users:', error);
+  }
 }
+
   
-inputElement.addEventListener('input', function(event) {
-  const searchQuery = this.value.trim();
-  if (searchQuery.length === 0)
-    renderFriendList();
-  else RenderUsersSearched(searchQuery);
-});
 
 export async function renderFriendList() {
   userListBackground.innerHTML = ''; // Clear existing user tiles
@@ -421,13 +399,45 @@ export async function renderFriendList() {
   try {
       const data = await get_friends_list();
       const sortedRequests = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
-      const sortedFriends = data.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
+      
+      // Assign random status directly to each friend's user object
+      const statusArray = ['Offline', 'Online', 'InGame'];
+      data.friends.forEach(friend => {
+          const randomStatus = statusArray[Math.floor(Math.random() * statusArray.length)];
+          friend.user.status = randomStatus;
+      });
 
+      const sortedFriends = data.friends.sort((a, b) => {
+          const statusOrder = { 'Online': 0, 'InGame': 1, 'Offline': 2 };
+          if (statusOrder[a.user.status] !== statusOrder[b.user.status]) {
+              return statusOrder[a.user.status] - statusOrder[b.user.status];
+          }
+          return a.user.username.localeCompare(b.user.username);
+      });
+      
       previousReqFriendList = sortedRequests.concat(sortedFriends);
-
-      sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'request', userSendingRq.request_id));
-      sortedFriends.forEach(user => createUserTile(user.user, 'friend', user.request_id));
-  } catch (error) {
+      
+      sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'Request', userSendingRq.request_id));
+      sortedFriends.forEach(friend => createUserTile(friend.user, 'Friend', friend.request_id));
+    } catch (error) {
       console.error('Error in rendering friend list:', error);
+    }
   }
-} 
+
+  let searchTimeout;
+
+  inputElement.addEventListener('input', function(event) {
+      const searchQuery = this.value.trim();
+  
+      // Clear previous timeout
+      clearTimeout(searchTimeout);
+  
+      // Set new timeout to execute RenderUsersSearched after 300ms of user inactivity
+      searchTimeout = setTimeout(() => {
+          if (searchQuery.length === 0) {
+              renderFriendList();
+          } else {
+              RenderUsersSearched(searchQuery);
+          }
+      }, 300); // Adjust the debounce delay as needed
+  });

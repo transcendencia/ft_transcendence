@@ -17,7 +17,7 @@ function addGlow(elementId, glow) {
 function removeGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-    element.classList.remove(glow);
+        element.classList.remove(glow);
 }
 
 let languageIcons = document.querySelectorAll('.languageIcon');
@@ -57,7 +57,7 @@ function updateGraphicsIcon(mode) {
         removeGlow(otherIcon.id, 'redGlow');
     });
     if (mode === "low")
-        addGlow("graphicsIcon1", 'redGlow');
+    addGlow("graphicsIcon1", 'redGlow');
     else if (mode === "medium")
         addGlow("graphicsIcon2", 'redGlow');
     else if (mode === "high")
