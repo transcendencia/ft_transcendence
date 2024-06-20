@@ -19,25 +19,10 @@ let playerNb = 0;
 
 export const blue = '#3777ff';
 export const purple = 'rgb(164, 67, 255)'
+export const bgPurple = '#2d25a1'
 export const grey = '#141414';
 export const lightGrey = '#505050';
 export const green = 'rgb(14, 255, 26)';
-
-function Glow() {
-    userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-    userlist.style.borderColor = '#ffb30eff';
-    userlist.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
-    userTiles.forEach((tile, i) => {
-        if (profileAdded[i])
-            return;
-        const tileChildren = tile.HTMLelement.querySelectorAll(":scope > *");
-        tileChildren.forEach(function(element) {
-            element.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-            element.style.borderColor = '#ffb30eff';
-            element.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
-        });
-    });
-}
 
 let gamemodeCounter = 0;
 let mapCounter = 0;
@@ -144,19 +129,22 @@ buttonHeaders.forEach((buttonHeader, index) => {
     });
 });
 
+function Glow() {
+userlist.classList.add('whiteGlowing');
+    userTiles.forEach((tile, i) => {
+        if (profileAdded[i])
+            return;
+        const tileChildren = tile.HTMLelement.querySelectorAll(":scope > *");
+        tileChildren.forEach(child => child.classList.add('whiteGlowing'))
+    });
+}
 
 function resetGlow() {
-    userlist.style.borderColor = blue;
-    userlist.style.animation = '';
+    userlist.classList.remove('whiteGlowing')
     userTiles.forEach((child, i) => {
         const children = child.HTMLelement.querySelectorAll(":scope > *");
         children.forEach(element => {
-            element.style.borderColor = blue;
-            element.style.animation = '';
-            if (isBot(i))
-                element.style.borderColor = purple;
-            else if (child.type === 'Friend')
-                element.style.borderColor = green;
+            element.classList.remove('whiteGlowing')
         });
         
     });
@@ -169,7 +157,7 @@ function resetAddingMode() {
         otherPlusButton.style.pointerEvents = 'auto';
     });
     profileAdded[botID] = false;
-    userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'none';});
+    userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").classList.remove('hovered')});
 }
 
 function setAddingMode(plusButton, i) {
@@ -177,11 +165,11 @@ function setAddingMode(plusButton, i) {
     if (i === 0) {
         plusClicked = 1;
         profileAdded[botID] = true;
-        userTiles.forEach((tile, index) => {if(!isBot(index)) tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'auto';});
+        userTiles.forEach((tile, index) => {if(!isBot(index)) tile.HTMLelement.querySelector(".textContainer").classList.add('hovered')});
     }
     else {
         plusClicked = 2;
-        userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'auto';});
+        userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").classList.add('hovered')});
     }
     plusButtons.forEach(function(otherPlusButton) {
         if (otherPlusButton !== plusButton) {
@@ -407,7 +395,9 @@ export function createUserInfoObject(tile, i) {
     userInfoCont.appendChild(textNode);
     if (isBot(i)) {
         userInfoCont.style.borderColor = purple;
+        userInfoCont.style.backgroundColor = bgPurple;
         profilePic.style.borderColor = purple;
+        profilePic.style.backgroundColor = bgPurple;
     }
     return {userInfoCont, clonedImg, profilePic, tileText};
 }
@@ -480,24 +470,24 @@ function putUserInMatch() {
     }
 }
 
-// import { handleLogin } from './loginPage.js';
+import { handleLogin } from './loginPage.js';
 
-// let guestLoggedIn = []
-// validatePasswordButton.addEventListener('click', function() {
-//     // console.log(userTiles[tempTileIndex]);
-//     if (guestLoggedIn.length < 7) {
-//         // handleLoginHost(userTiles[tempTileIndex].user);
-//         console.log(guestLoggedIn.length);
-//         const password = document.getElementById("enterPasswordInput");
-//         const formData = new FormData();
-//         formData.append("username", userTiles[tempTileIndex].user.username);
-//         formData.append("password", password.value);
-//         console.log(handleLogin(formData));
-//     }
-//     else
-//         console.log("Too many guest");
-//     putUserInMatch();
-// });
+let guestLoggedIn = []
+validatePasswordButton.addEventListener('click', function() {
+    // // console.log(userTiles[tempTileIndex]);
+    // if (guestLoggedIn.length < 7) {
+    //     // handleLoginHost(userTiles[tempTileIndex].user);
+    //     console.log(guestLoggedIn.length);
+    //     const password = document.getElementById("enterPasswordInput");
+    //     const formData = new FormData();
+    //     formData.append("username", userTiles[tempTileIndex].user.username);
+    //     formData.append("password", password.value);
+    //     console.log(handleLogin(formData));
+    // }
+    // else
+    //     console.log("Too many guest");
+    putUserInMatch();
+});
 
 backPasswordButton.addEventListener('click', function() {
     pwWindow.classList.remove("showRectangle");
@@ -539,9 +529,15 @@ export function createUserTile(user, type, userListBackground, userTilesTemp) {
     const textContainer = document.createElement('div');
     textContainer.classList.add('textContainer');
     textContainer.textContent = user.username;
-    
-    imgContainer.classList.add(`arena${type}Tile`);
-    textContainer.classList.add(`arena${type}Tile`);
+    textContainer.style.width = '85%';
+    if (type === 'Friend') {
+        imgContainer.classList.add(`Online${type}Tile`);
+        textContainer.classList.add(`Online${type}Tile`);
+    }
+    else {
+        imgContainer.classList.add(`${type}Tile`);
+        textContainer.classList.add(`${type}Tile`);    
+    }
 
     userTile.appendChild(imgContainer);
     userTile.appendChild(textContainer);
@@ -565,7 +561,7 @@ export async function RenderAllUsersInList() {
 
     createUserTile(users.bot, 'Bot', userListBackground, userTiles);
     users.friends.forEach(obj => {createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
-    users.user_not_friend.forEach(user => {createUserTile(user, '', userListBackground, userTiles)});
+    users.user_not_friend.forEach(user => {createUserTile(user, 'Default', userListBackground, userTiles)});
     addEventListenerToTiles();
 }
 

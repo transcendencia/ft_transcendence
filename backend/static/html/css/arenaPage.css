@@ -2,7 +2,7 @@
     /* border: 5px solid wheat; */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     height: 100%;
     width: 20%;
@@ -11,7 +11,6 @@
 }
 
 .rightColumn {
-    /* border: 5px solid wheat; */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -19,6 +18,10 @@
     height: 100%;
     width: 80%;
     overflow: hidden;
+}
+
+.whiteGlowing {
+    animation: shadowBlink 0.5s infinite alternate linear;
 }
 
 .userlistBackground {
@@ -35,47 +38,9 @@
     overflow-x: hidden; /* Enable vertical scrolling */
 }
 
-.userTile {
-    margin: 3%;
-    width: 95%;
-    height: 8%;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    position: relative;
-}
-
 @keyframes shadowBlink {
-    100% {box-shadow: 0 0 40px rgba(171, 80, 0, 255)}
-    0% {box-shadow: 0 0 40px rgba(171, 0, 0, 0)}
-}
-
-.textContainer {
-    margin-left: -5px;
-    border-radius: 5px;
-    border: 4px solid rgba(55, 118, 255, 0.30);
-    border-left: none;
-    background-color: #00000031;
-    font-size: 12px;
-    font-family: "space";
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 95%;
-    width: 60%;
-    pointer-events: none;
-}
-
-.defaultTile {
-    border-color: rgba(55, 118, 255, 0.30);
-    background-color: #00000031;
-    color: #3777ff;
-}
-
-.textContainer:hover {
-    background-color: rgba(90, 142, 255, 0.500);
+    100% {box-shadow: 0 0 10px white; }
+    0% {box-shadow: 0 0 10px #ffffff00; }
 }
 
 .friendBg {
@@ -90,24 +55,6 @@
     background-color: rgba(90, 142, 255, 0.500) !important;
 }
 
-.imgContainer {
-    border-radius: 5px;
-    border: 4px solid rgba(55, 118, 255, 0.39);
-    height: 100%;
-    width: 20%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    z-index: 2;
-}
-
-.imgContainer img{
-    height: 100%;
-    width: auto;
-    object-fit: cover;
-}
 
 .plusPlayer {
     font-family: "computer";
@@ -238,16 +185,6 @@
     width: auto;
     cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
 
-}
-
-.arenaBotTile {
-    color: rgb(164, 67, 255);
-    border-color: rgb(164, 67, 255);
-    background-color: rgba(164, 67, 255, 0.257);
-}
-
-.arenaBotTile:hover {
-    background-color: rgba(164, 67, 255, 0.500);
 }
 
 .buttonCont {
