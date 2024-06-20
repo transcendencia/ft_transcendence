@@ -103,7 +103,7 @@ def get_stats(request, userId):
       print("mode game", game.modeGame)
       if game.modeGame == "CLASSIC":
         classicMode += 1
-      elif game.modeGame == "SPINONLY":
+      elif game.modeGame == "SPIN ONLY":
         spinOnlyMode += 1
       elif game.modeGame == "POWERLESS":
         powerlessMode += 1

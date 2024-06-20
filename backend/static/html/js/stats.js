@@ -37,6 +37,8 @@ class DoughnutGraph {
 			const result = (this.dataStats[0] / (this.dataStats[0] + this.dataStats[1]) * 100).toFixed(1);
 			ctx.fillText(result + '%', left + width / 2, top + height / 2);
 		  }
+		  else if (title === 'Modes played' || title === 'Maps played')
+			ctx.fillText('', left + width / 2, top + height / 2);
 		  else
 		  	ctx.fillText(this.dataStats[0] + '%', left + width / 2, top + height / 2);
 		}
