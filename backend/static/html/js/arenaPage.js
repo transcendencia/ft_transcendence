@@ -83,6 +83,26 @@ function handleMaps(buttonHeader, imgIndex) {
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Dragon Pit';
 }
 
+// function handleBotDifficulty(buttonHeader, imgIndex) {
+//     if (imgIndex === 0){
+//         botDifficulty--;
+//         if (botDifficulty === -1)
+//             botDifficulty = 2;
+//     }
+//     else {
+//         botDifficulty++;    
+//         if (botDifficulty === 2)
+//             botDifficulty = 0;
+//     }
+//     if (botDifficulty === 0)
+//         buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyEasy');
+//     else if (botDifficulty === 1)
+//         buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyMedium');
+//     else if (botDifficulty === 2)
+//         buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyHard');
+// }
+
+
 function handleBotDifficulty(buttonHeader, imgIndex) {
     if (imgIndex === 0){
         botDifficulty--;
@@ -91,16 +111,16 @@ function handleBotDifficulty(buttonHeader, imgIndex) {
     }
     else {
         botDifficulty++;    
-        if (botDifficulty === 2)
+        if (botDifficulty === 3)
             botDifficulty = 0;
     }
     if (botDifficulty === 0)
-        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyEasy');
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('botDifficultyEasy');
     else if (botDifficulty === 1)
-        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyMedium');
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('botDifficultyMedium');
     else if (botDifficulty === 2)
-        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyHard');
-}
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('botDifficultyHard');
+  }
 
 const buttonHeaders = document.querySelectorAll('.buttonTitle');
 buttonHeaders.forEach((buttonHeader, index) => {

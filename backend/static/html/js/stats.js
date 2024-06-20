@@ -33,7 +33,12 @@ class DoughnutGraph {
 		  ctx.fillStyle = chart.config.options.plugins.centerText.fontColor;
 		  ctx.textAlign = 'center';
 		  ctx.textBaseline = 'middle';
-		  ctx.fillText(this.dataStats[0] + '%', left + width / 2, top + height / 2);
+		  if (title === 'Accuracy') {
+			const result = (this.dataStats[0] / (this.dataStats[0] + this.dataStats[1]) * 100).toFixed(1);
+			ctx.fillText(result + '%', left + width / 2, top + height / 2);
+		  }
+		  else
+		  	ctx.fillText(this.dataStats[0] + '%', left + width / 2, top + height / 2);
 		}
 	  };
   
@@ -128,10 +133,10 @@ export function chooseStats(stat) {
 	}
 }
 
-const winLostChart = new DoughnutGraph('winLostStat', 'Win rate', ['#5dffa990', '#ff5d5d90']);
-const mapChart = new DoughnutGraph('mapStat', 'Map', ['#ff5f02bb', '#1f15efbb', '#ccfbfbbb', '#000030bb']);
-const modeChart = new DoughnutGraph('gameModeStat', 'Mode', ['#5dffa990', '#ff5d5d90', '#ff5f02bb']);
-const dashChart = new DoughnutGraph('dashStat', 'Dash', ['#5dffa990', '#ff5d5d90']);
+const winLostChart = new DoughnutGraph('winLostStat', 'Win%', ['#5dffa990', '#ff5d5d90']);
+const mapChart = new DoughnutGraph('mapStat', 'Maps played', ['#ff5f02bb', '#1f15efbb', '#ccfbfbbb', '#000030bb']);
+const modeChart = new DoughnutGraph('gameModeStat', 'Modes played', ['#5dffa990', '#ff5d5d90', '#ff5f02bb']);
+const accuracy = new DoughnutGraph('accuracyStat', 'Accuracy', ['#5dffa990', '#ff5d5d90']);
 export function getUserStats(userId) {
   const token = localStorage.getItem('host_auth_token');
   fetch(`get_stats/${userId}`, {
@@ -150,8 +155,9 @@ export function getUserStats(userId) {
   .then(data => {
     mapChart.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
 	modeChart.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
+	// console.log("data", data);
     winLostChart.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);
-	dashChart.updateData([data.dashesPercentage, data.poweredUsedPercentage], ['Dash used', 'Power ups']);
+	accuracy.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
   })
   .catch(error => {
     console.error('Error fetching user stats:', error);
