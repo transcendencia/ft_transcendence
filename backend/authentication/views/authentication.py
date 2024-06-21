@@ -19,6 +19,10 @@ from ..serializers import UserSerializer, SignupSerializer
 def index(request):
   return render(request, 'index.html')
 
+#to move 
+def rgpd(request):
+  return render(request, 'rgpd.html')  
+
 # cree un loginForm pour rendre le code plus clair
 @api_view(['POST'])
 @permission_classes([AllowAny])  
@@ -35,7 +39,7 @@ def login_page(request):
     print(username_lower, password)
     user = authenticate(username=username_lower, password=password)
     if user is not None:
-      # if user.status is not 'online':
+      if user.status is not 'online':
         user.last_login_date = timezone.now()
         user.status = 'online'
         print("je suis le host")
@@ -46,6 +50,8 @@ def login_page(request):
             user.language = new_language
         user.save()
         return  Response({'status': "succes", 'token': token.key, 'msg_code': "loginSuccessful", 'language': user.language, 'id': user.id, 'graphic_mode': user.graphic_mode})
+      else:
+        return Response({'status': "failure", 'msg_code': userAlreadyLoggedIn})
     else:
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
   except Exception as e:

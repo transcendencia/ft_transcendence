@@ -463,27 +463,41 @@ function putUserInMatch() {
 }
 
 import { handleLogin } from './loginPage.js';
+import { displayUsersLogged} from './main.js';
 
-let guestLoggedIn =  {
-    user: "nom_utilisateur",
-    token: "token_utilisateur"
-};
+export let guestLoggedIn = [];
 
-validatePasswordButton.addEventListener('click', function() {
-    // if (guestLoggedIn.length < 7) {
+// let guestLoggedIn =  {
+//     user: "nom_utilisateur",
+//     token: "token_utilisateur"
+// };
+
+validatePasswordButton.addEventListener('click', async function() {
+    if (guestLoggedIn.length < 7) {
         // console.log(guestLoggedIn.length);
+        let guest = userTiles[tempTileIndex].user;
         const password = document.getElementById("enterPasswordInput");
         const formData = new FormData();
-        formData.append("username", userTiles[tempTileIndex].user.username);
+        formData.append("username", guest.username);
         formData.append("password", password.value);
-        // console.log(handleLogin(formData));
-        if (handleLogin(formData) === flase) {
+    
+        try {
+            let guestToken = await handleLogin(formData);
             
+            if (guestToken) {
+                guestLoggedIn.push([guest, guestToken]);
+                console.log("Contenu actuel de guestLoggedIn :", guestLoggedIn);
+                displayUsersLogged();
+            } else {
+                console.log("Erreur dans le login");
+            }
+        } catch (error) {
+            console.error('Erreur lors de la connexion :', error);
         }
-    // }
-    // else
-        // console.log("Too many guest");
-    putUserInMatch();
+        putUserInMatch();
+    }
+    else
+    console.log("Too many guest");
 });
 
 backPasswordButton.addEventListener('click', function() {
