@@ -38,8 +38,9 @@ def change_language(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def update_status(request):
+def update_status(request, userId):
   if request.method == 'POST':
+    print(request.user)
     if request.data.get('status') == 'offline': #a checker
       request.user.is_host = False
     request.user.status = request.data.get('status')
