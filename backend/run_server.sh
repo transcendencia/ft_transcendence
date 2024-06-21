@@ -11,11 +11,19 @@ then
     echo "PostgreSQL started"
 fi
 
+#openssl genpkey -algorithm RSA -out privkey.pem -aes256
+#openssl req -new -key privkey.pem -out cert.csr
+#openssl x509 -req -days 365 -in cert.csr -signkey privkey.pem -out fullchain.pem
+
+
 # python manage.py makemigrations
 python manage.py makemigrations
 python manage.py makemigrations authentication
 python manage.py migrate
 python manage.py collectstatic --noinput
+
+#uvicorn backend.asgi:application --host 0.0.0.0 --port 8000  --port 443 --ssl-keyfile privkey.pem --ssl-certfile fullchain.pem
+
 
 USER_USERNAME=${DJANGO_USER_USERNAME:-"bot"}
 USER_PASSWORD=${DJANGO_USER_PASSWORD:-"bot1234"}
@@ -38,4 +46,3 @@ if not User.objects.filter(username=USER_USERNAME).exists():
 EOF
 
 python manage.py runserver 0.0.0.0:8000
-# uvicorn backend.asgi:application --host 0.0.0.0 --port 8000

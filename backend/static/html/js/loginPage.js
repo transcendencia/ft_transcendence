@@ -1,4 +1,5 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
+import { moveCameraToBackOfCockpit }  from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
@@ -23,9 +24,10 @@ function removeGlow(elementId, glow) {
 let languageIcons = document.querySelectorAll('.languageIcon');
 let graphicsIcons = document.querySelectorAll('.graphicsIcon');
 const signupHereButton = document.querySelector('.actionCont');
-signupHereButton.addEventListener('click', function() {
+
+if (signupHereButton.addEventListener('click', function() {
     moveCameraToFrontOfCockpit();
-});
+}));
 
 showPage('loginPage');
 
@@ -138,16 +140,12 @@ function setEscapeLanguageVisual() {
     icon.querySelector('.icon').style.opacity = 0;
 }
 
-// if (localStorage.getItem("hostLoggedIn") === null) {
-//     console.log()
-//     localStorage.setItem('hostLoggedIn', 'false');
-// }
-
 // Handle form submission
-export function handleLogin(formData) {
+export async function handleLogin(formData) {
     console.log("Je suis dans handle login");
     if (localStorage.getItem("hostLoggedIn") === null) {
-        localStorage.setItem('hostLoggedIn', 'false');
+        console.log("jse set hostLoggendIn a false");
+        localStorage.setItem("hostLoggedIn", 'false');
     }
 
     const hostLoggedIn = localStorage.getItem("hostLoggedIn");
@@ -159,40 +157,45 @@ export function handleLogin(formData) {
 
     setlanguageIconsClicked(false);
 
-    fetch('login_page/', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data.status);
-        if (data.status == "succes") {
-            console.log(hostLoggedIn);
+    return new Promise((resolve, reject) => {
+        fetch('login_page/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            let guest_token = null;
+            console.log(data.status);
+            if (data.status === "succes") {
+                console.log("hostLoggedIn", hostLoggedIn);
 
-            if (hostLoggedIn === 'false') {
-                localStorage.setItem("hostLoggedIn", 'true');
-                localStorage.setItem("host_auth_token", data.token);
-                localStorage.setItem("host_id", data.id);
-                setCurrentLanguage(data.language);
-                setEscapeLanguageVisual();
-                get_friends_list();
-                getProfileInfo();
-                TranslateAllTexts();
-                getGameInfo();
-                changeGraphics(data.graphic_mode);
-                showPage('none');
-                startAnimation();
+                if (hostLoggedIn === 'false') {
+                    localStorage.setItem("hostLoggedIn", 'true');
+                    localStorage.setItem("host_auth_token", data.token);
+                    localStorage.setItem("host_id", data.id);
+                    setCurrentLanguage(data.language);
+                    setEscapeLanguageVisual();
+                    get_friends_list();
+                    getProfileInfo();
+                    TranslateAllTexts();
+                    getGameInfo();
+                    changeGraphics(data.graphic_mode);
+                    showPage('none');
+                    startAnimation();
+                } else {
+                    guest_token = data.token;
+                    console.log("guest loggin successful");
+                }
+                resolve(guest_token); // Résoudre avec le token du guest
             } else {
-                const token = data.token;
-                return {token};
+                document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+                resolve(null); // Résoudre avec null en cas d'échec
             }
-        } else {
-            document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
-            return false;
-        }
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
+        })
+        .catch(error => {
+            console.error('Erreur :', error);
+            reject(error); // Rejeter avec l'erreur
+        });
     });
 }
 
@@ -362,7 +365,8 @@ function handleLogout() {
     const hostLoggedIn = localStorage.getItem("hostLoggedIn")
     console.log(hostLoggedIn)
     if (hostLoggedIn === 'true') {
-        localStorage.setItem('hostLoggedIn', 'false')
+        // localStorage.setItem('hostLoggedIn', 'false');
+        localStorage.clear();
         console.log(localStorage.getItem("hostLoggedIn"));
     }
     if (gameState.inGame) {

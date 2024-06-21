@@ -100,8 +100,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
   toggleSwitch.addEventListener('click', function() {
       this.classList.toggle('active');
-      if (this.classList.contains('active'))
+      if (this.classList.contains('active')) {
         anonymousStatus = true;
+        getRandomUsername();
+
+      }
       else anonymousStatus = false;
   });
 });
@@ -113,3 +116,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
       toggleThirdPlayerMode();
   });
 });
+
+export function getRandomUsername() {
+  const token = localStorage.getItem('host_auth_token');
+  fetch('generate_unique_username/', {
+      method: 'GET',
+      headers: {
+          'Authorization': `Token ${token}`,
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data.username);
+    document.getElementById('changeUsernameInput').value = data.username;
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      throw error;
+  });
+};

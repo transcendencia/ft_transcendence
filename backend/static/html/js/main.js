@@ -218,8 +218,10 @@ function disconnectLoggedGuest(userInfoCont) {
     lsCont.removeChild(userInfoCont);
 }
 
-function displayUsersLogged() {
-    userList.forEach(user => {
+import { guestLoggedIn } from './arenaPage.js'
+
+export function displayUsersLogged() {
+    guestLoggedIn.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
         const userInfoCont = document.createElement('div');
@@ -229,11 +231,11 @@ function displayUsersLogged() {
         profilePic.classList.add('profilePic');
 
         const img = document.createElement('img');
-        img.src = user.profile_picture;
+        img.src = user[0].profile_picture;
 
         profilePic.appendChild(img);
         userInfoCont.appendChild(profilePic);
-        const usernameText = document.createTextNode(user.username);
+        const usernameText = document.createTextNode(user[0].username);
         userInfoCont.appendChild(usernameText);
         lsCont.appendChild(userInfoCont);
         // if (user.isHost)
@@ -242,7 +244,7 @@ function displayUsersLogged() {
             displayRemovePlayerVisual(userInfoCont, img, profilePic);
         });
         userInfoCont.addEventListener('mouseleave', function () {
-            resetUserInfoLoggedVisual(userInfoCont, img, profilePic, user);
+            resetUserInfoLoggedVisual(userInfoCont, img, profilePic, user[0]);
         });
         userInfoCont.addEventListener('click', function () {
             disconnectLoggedGuest(userInfoCont);
@@ -397,6 +399,28 @@ export function toggleEscapeContainerVisibility() {
     }
 }
 
+/*On va chercher la référence entre le html et le fichier js*/
+const rgpdStructure = document.getElementById("rgpdstructure");
+const rgpdBG = document.getElementById("rgpdBG");
+//recuperer ton bouton et apres tu add eventlistener
+//button.addEventListener("click", (event) => {})
+
+let rgpdDisplayed = false;
+
+function toggleRGPDContainerVisibility() {
+    if (!rgpdDisplayed) {
+        rgpdStructure.style.animation = 'headerDown 0.5s ease forwards'
+        rgpdBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
+        rgpdDisplayed = true;
+    }
+    else {
+        rgpdBG.style.animation = 'rollBG 0.2s ease backwards'
+        rgpdStructure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
+        rgpdDisplayed = false;
+    }
+}
+
+
 let pauseGame = false;
 
 export function togglePause() {
@@ -419,8 +443,6 @@ document.addEventListener('keydown', (event) => {
         // }
         // localStorage.clear();
     }
-    if (event.key === 't')
-        getUserStatus(96);
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
     if (event.key == 'Escape') {
@@ -440,6 +462,7 @@ document.addEventListener('keydown', (event) => {
             resetOutlineAndText();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
+        console.log("ON APPUIE SUR  ECHAPPE");
     }
     if (event.key === 'l') {
         switchToGame();

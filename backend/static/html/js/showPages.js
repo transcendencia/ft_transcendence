@@ -1,7 +1,8 @@
 export function showPage(pageId) {
     var pages = document.querySelectorAll('.page');
     pages.forEach(function(page) {
-        page.classList.remove('show'); // Remove the 'show' class from all pages
+        page.classList.remove('show');
+        page.classList.add('invisible'); // Remove the 'show' class from all pages
     });
 
     // Show the selected page
@@ -9,6 +10,7 @@ export function showPage(pageId) {
         return;
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
+    selectedPage.classList.remove('invisible');
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
 }
 
@@ -25,9 +27,3 @@ anchors.forEach(function(anchor) {
         showPage(id);
     });
 });
-
-window.addEventListener('popstate', function(event) {
-    showPage(event.state);
-});
-
-history.replaceState('home', null, null);
