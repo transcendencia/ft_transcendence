@@ -39,7 +39,8 @@ def login_page(request):
     print(username_lower, password)
     user = authenticate(username=username_lower, password=password)
     if user is not None:
-      if user.status is not 'online':
+      print(user.status)
+      if user.status == "offline":
         user.last_login_date = timezone.now()
         user.status = 'online'
         print("je suis le host")
@@ -49,9 +50,9 @@ def login_page(request):
           if languageClicked and new_language != user.language:
             user.language = new_language
         user.save()
-        return  Response({'status': "succes", 'token': token.key, 'msg_code': "loginSuccessful", 'language': user.language, 'id': user.id, 'graphic_mode': user.graphic_mode})
+        return Response({'status': "succes", 'token': token.key, 'msg_code': "loginSuccessful", 'language': user.language, 'id': user.id, 'graphic_mode': user.graphic_mode})
       else:
-        return Response({'status': "failure", 'msg_code': userAlreadyLoggedIn})
+        return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"})
     else:
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
   except Exception as e:

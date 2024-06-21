@@ -45,9 +45,11 @@ export function updateUserLanguage(new_language) {
     });
 }
 
-export function updateUserStatus(status) {
-    const token = localStorage.getItem('host_auth_token');
-    return fetch('update_status/', {
+export function updateUserStatus(status, userId, token) {
+    // const token = localStorage.getItem('host_auth_token');
+    console.log("userId", userId);
+    console.log("token", token);
+    return fetch(`update_status/${userId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

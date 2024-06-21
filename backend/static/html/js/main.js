@@ -218,10 +218,8 @@ function disconnectLoggedGuest(userInfoCont) {
     lsCont.removeChild(userInfoCont);
 }
 
-import { guestLoggedIn } from './arenaPage.js'
-
-export function displayUsersLogged() {
-    guestLoggedIn.forEach(user => {
+export function displayUsersLogged(user) {
+    // guestLoggedIn.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
         const userInfoCont = document.createElement('div');
@@ -231,11 +229,11 @@ export function displayUsersLogged() {
         profilePic.classList.add('profilePic');
 
         const img = document.createElement('img');
-        img.src = user[0].profile_picture;
+        img.src = user.profile_picture;
 
         profilePic.appendChild(img);
         userInfoCont.appendChild(profilePic);
-        const usernameText = document.createTextNode(user[0].username);
+        const usernameText = document.createTextNode(user.username);
         userInfoCont.appendChild(usernameText);
         lsCont.appendChild(userInfoCont);
         // if (user.isHost)
@@ -244,12 +242,12 @@ export function displayUsersLogged() {
             displayRemovePlayerVisual(userInfoCont, img, profilePic);
         });
         userInfoCont.addEventListener('mouseleave', function () {
-            resetUserInfoLoggedVisual(userInfoCont, img, profilePic, user[0]);
+            resetUserInfoLoggedVisual(userInfoCont, img, profilePic, user);
         });
         userInfoCont.addEventListener('click', function () {
             disconnectLoggedGuest(userInfoCont);
         });
-    });
+    // });
 }
 
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -439,7 +437,7 @@ document.addEventListener('keydown', (event) => {
         // if (token) {
             showPage('none');
             startAnimation();
-            displayUsersLogged();
+            // displayUsersLogged();
         // }
         // localStorage.clear();
     }

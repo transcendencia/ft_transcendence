@@ -487,7 +487,7 @@ validatePasswordButton.addEventListener('click', async function() {
             if (guestToken) {
                 guestLoggedIn.push([guest, guestToken]);
                 console.log("Contenu actuel de guestLoggedIn :", guestLoggedIn);
-                displayUsersLogged();
+                displayUsersLogged(guest);
             } else {
                 console.log("Erreur dans le login");
             }

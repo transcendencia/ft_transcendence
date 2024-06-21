@@ -341,7 +341,10 @@ function getGameInfo() {
 
 // Logout
 var disconnectButton = document.getElementById("disconnectButton");
-disconnectButton.addEventListener("click", handleLogout);
+disconnectButton.addEventListener("click", () => {
+    console.log("j'appuie sur le disconnect button");
+    handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token')); 
+});
 
 function resetHTMLelements(){
     document.querySelector(".gameUI").style.visibility = 'hidden';
@@ -351,8 +354,21 @@ function resetHTMLelements(){
     document.getElementById('c1').style.display = 'none';
 }
 
-function handleLogout() {
-    updateUserStatus('offline')
+import { guestLoggedIn } from "./arenaPage.js";
+
+function handleLogout(userId, token) {
+    
+    // Disconnect all the guest
+    if (userId === localStorage.getItem('host_id')) {
+        guestLoggedIn.forEach(user => {
+            updateUserStatus('offline', user[0].id, user[1]);
+        });
+    }
+    // guestLoggedIn.clear();
+
+    // Disconnect the host
+    console.log("j'essaie de me logout");
+    updateUserStatus('offline', userId, token)
     .then(() => {
         return get_user_list();
     })

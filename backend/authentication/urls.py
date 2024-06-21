@@ -12,7 +12,7 @@ urlpatterns = [
 
     #updateUserInfo.py
     path('change_language/', updateUserInfo.change_language, name='change_language'),
-    path('update_status/', updateUserInfo.update_status, name='update_status'),
+    path('update_status/<int:userId>', updateUserInfo.update_status, name='update_status'),
     path('get_status/<int:userId>', updateUserInfo.get_status, name='get_status'),
     path('change_profile_info/', updateUserInfo.change_profile_info, name="change_profile_info"),
     path('get_profile_info/', updateUserInfo.get_profile_info, name="get_profile_info"),
