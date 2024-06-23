@@ -156,5 +156,5 @@ const infoBack = document.getElementById("infoBack");
 infoBack.addEventListener("click", backInfosDisplay);
 
 function backInfosDisplay() {
-  console.log("back button");
+  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
 }
