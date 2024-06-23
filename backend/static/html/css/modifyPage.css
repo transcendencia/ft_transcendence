@@ -291,6 +291,10 @@
 }
 
 
+.infoBack:hover {
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
 .info-icon:hover {
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
