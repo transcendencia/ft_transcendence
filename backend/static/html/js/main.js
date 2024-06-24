@@ -19,6 +19,7 @@ import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
 
 
+
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
 const renderer = new THREE.WebGLRenderer({
@@ -26,7 +27,20 @@ const renderer = new THREE.WebGLRenderer({
     antialias: true,
     toneMapping: THREE.ReinhardToneMapping
 });
+
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.autoUpdate = true;
+
 const scene = new THREE.Scene();
+
+scene.traverse(obj => {
+    if (obj instanceof THREE.Mesh) {
+      obj.castShadow = true;
+      obj.receiveShadow = true;
+    }
+  });
+
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
@@ -35,6 +49,23 @@ const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 export function toggleLobbyStart() {
     lobbyStart = !lobbyStart;
 }
+
+    // LIGHTING
+    const pointLight = new THREE.PointLight(0xffffff, 1)
+    pointLight.castShadow = true;
+    pointLight.position.copy(sun.position);
+    pointLight.scale.set(10, 10, 10);
+    
+    const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
+    pointLight2.castShadow = true;
+    pointLight2.position.set(0,5,-1300);
+    
+    const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
+    spaceShipPointLight.castShadow = true;
+    const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
+    const lightHelper = new THREE.PointLightHelper(pointLight);
+    scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
+
 
 class LobbyVisuals
 {
@@ -56,9 +87,9 @@ class LobbyVisuals
         ]);
         this.scene.background = this.spaceCubeMapTexture;
 
-        this.bloomPass.threshold = 0.1;
+        this.bloomPass.threshold = 0.2;
         this.bloomPass.strength = 0.3;
-        this.bloomPass.radius = 0.2;
+        this.bloomPass.radius = 0.8;
         this.stars = [];
         this.addStars(1000);
     }
@@ -305,21 +336,7 @@ export const outlinePass = new OutlinePass(
     export let cameraDirection = new THREE.Vector3();
     camera.getWorldDirection(cameraDirection);
     
-    // LIGHTING
-    const pointLight = new THREE.PointLight(0xffffff, 1)
-    pointLight.castShadow = true;
-    pointLight.position.copy(sun.position);
-    pointLight.scale.set(10, 10, 10);
-    
-    const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
-    pointLight2.castShadow = true;
-    pointLight2.position.set(0,5,-1300);
-    
-    const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
-    spaceShipPointLight.castShadow = true;
-    const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
-    const lightHelper = new THREE.PointLightHelper(pointLight);
-    scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
+
     
 
 function planetMovement() {

@@ -323,8 +323,19 @@
                 <canvas id="gameModeStat"></canvas>
                 <canvas id="mapStat"></canvas>
               </div>
-              <div id="statsBlock3" class="statsBlock" style="display:none;">
-                <canvas id="pointsPerGameStat"></canvas>
+              <div id="statsBlock3" class="statsBlockNoGraphs" style="display:none;">
+                <div class="statColumn">
+                  <div class="statItem">Current Winstreak: <span id="currentWinstreak">100</span></div>
+                  <div class="statItem">Total Balls Missed: <span id="totalBallsMissed">50</span></div>
+                  <div class="statItem">Games Played: <span id="gamesPlayed">10</span></div>
+                  <div class="statItem">Highest Score: <span id="highestScore">2000</span></div>
+                </div>
+                <div class="statColumn">
+                  <div class="statItem">Matches: <span id="matches">1</span></div>
+                  <div class="statItem">Wins: <span id="wins">0</span></div>
+                  <div class="statItem">Losses: <span id="losses">1</span></div>
+                  <div class="statItem">Goals: <span id="goals">1</span></div>
+                </div>
               </div>
             </div>
               <div id="searchedUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0">
