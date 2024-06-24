@@ -816,6 +816,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
+            this.game.startingTime = Date.now();
             scoreUI[0].style.opacity = 1;
             if (this.game.user2.isBot)
                 this.bot.activateBot();
@@ -1096,6 +1097,7 @@ class Arena extends THREE.Mesh {
             this.ball.bounceCount = 0;
             this.isBeingReset = false;
             this.game.isPlaying = false;
+            this.game.gameTime = Date.now() - this.game.startingTime;
             this.game.isOver = false;
             swapToFullScreen();
             if (this.game.thirdPlayer)
@@ -3562,6 +3564,8 @@ class Game {
         this.thirdPlayer = false;
         this.hasToBeInitialized = false;
         this.tournamentGame = false;
+        this.startingTime = 0;
+        this.gameTime = 0;
         // next variables are all to be inputed in string format
         this.user1Username = document.getElementById('username1Text');
         this.user2Username = document.getElementById('username2Text');
