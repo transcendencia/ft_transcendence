@@ -6,15 +6,12 @@
 
 .rightSideContainer {
 	/* border: 5px solid wheat; */
-	display: flex;
-	align-items: center;
-	position: fixed;
 	top: 0%;
 	right: -50%;
 	font-family: "computer";
-	flex-direction: column;
 	width: auto; /* Change width to auto */
 	max-width: max-content; /* Set a minimum width */
+    position: fixed;
 }
 
 #minimapContainer {
