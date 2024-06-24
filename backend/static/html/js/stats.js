@@ -7,11 +7,9 @@ class DoughnutGraph {
 	  this.chart = null;
 	  Chart.defaults.font.family = 'Space';
 	  Chart.defaults.color = 'white';
-	  if (title === 'Map')
-		this.position = 'bottom';
-	  else
-		this.position = 'bottom';
-  
+	  this.position = 'bottom';
+	  if (title === 'Modes played' || title === 'Maps played')
+		cutoutPercentage = '0%';
 	  this.data = {
 		labels: ['Label 1', 'Label 2'],
 		datasets: [{
@@ -117,24 +115,79 @@ class DoughnutGraph {
 
 // // get charts blocks by id
 
+function removeClasses(stat) {
+	stat.classList.remove('slideInLeft');
+	stat.classList.remove('slideInRight');
+	stat.classList.remove('slideOutLeft');
+	stat.classList.remove('slideOutRight');
+}
+
 export function chooseStats(stat) {
-	const stat1 = document.getElementById('statsBlock1');
-	const stat2 = document.getElementById('statsBlock2');
-	const stat3 = document.getElementById('statsBlock3');
-	if (stat === 1) {
-		stat1.style.display = 'flex';
-		stat2.style.display = 'none';
-		stat3.style.display = 'none';
-	} else if (stat === 2){
-		stat2.style.display = 'flex';
-		stat1.style.display = 'none';
-		stat3.style.display = 'none';
-	}
-	else if (stat === 3){
-		stat2.style.display = 'none';
-		stat1.style.display = 'none';
-		stat3.style.display = 'flex';
-	}
+    const stat1 = document.getElementById('statsBlock1');
+    const stat2 = document.getElementById('statsBlock2');
+    const stat3 = document.getElementById('statsBlock3');
+    removeClasses(stat1);
+    removeClasses(stat2);
+    removeClasses(stat3);
+
+    if (stat === 1) {
+        if (stat2.style.display === 'flex') {
+            stat2.classList.add('slideOutRight');
+            setTimeout(() => {
+                stat2.style.display = 'none';
+                stat2.classList.remove('slideOutRight');
+                stat1.classList.add('slideInLeft');
+                stat1.style.display = 'flex';
+            }, 250);
+        } else if (stat3.style.display === 'flex') {
+            stat3.classList.add('slideOutRight');
+            setTimeout(() => {
+                stat3.style.display = 'none';
+                stat3.classList.remove('slideOutRight');
+                stat1.classList.add('slideInLeft');
+                stat1.style.display = 'flex';
+            }, 250);
+        } else {
+            stat1.style.display = 'flex';
+            stat1.classList.add('slideInLeft');
+        }
+    } else if (stat === 2) {
+        if (stat1.style.display === 'flex') {
+            stat1.classList.add('slideOutLeft');
+            setTimeout(() => {
+                stat1.style.display = 'none';
+                stat1.classList.remove('slideOutLeft');
+                stat2.classList.add('slideInRight');
+                stat2.style.display = 'flex';
+            }, 250);
+        } else if (stat3.style.display === 'flex') {
+            stat3.classList.add('slideOutRight');
+            setTimeout(() => {
+                stat3.style.display = 'none';
+                stat3.classList.remove('slideOutRight');
+                stat2.classList.add('slideInLeft');
+                stat2.style.display = 'flex';
+            }, 250);
+        }
+    } else if (stat === 3) {
+        if (stat1.style.display === 'flex') {
+            stat1.classList.add('slideOutLeft');
+            setTimeout(() => {
+                stat1.style.display = 'none';
+                stat1.classList.remove('slideOutLeft');
+                stat3.classList.add('slideInRight');
+                stat3.style.display = 'flex';
+            }, 250);
+        } else if (stat2.style.display === 'flex') {
+            stat2.classList.add('slideOutLeft');
+            setTimeout(() => {
+                stat2.style.display = 'none';
+                stat2.classList.remove('slideOutLeft');
+                stat3.classList.add('slideInRight');
+                stat3.style.display = 'flex';
+            }, 250);
+        }
+    }
 }
 
 const winLostChart = new DoughnutGraph('winLostStat', 'Win%', ['#5dffa990', '#ff5d5d90']);
