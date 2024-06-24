@@ -446,6 +446,10 @@ document.addEventListener('keydown', (event) => {
     if (event.key == 'Escape') {
         if (landedOnPlanet) {
             togglePlanet();
+            toggleEscapeContainerVisibility();
+            blockingPanel.style.visibility = 'hidden';
+            showPage('none');
+            togglePause();
             returnToHost();
             return;
         }
