@@ -8,7 +8,7 @@ import { getCookie } from './loginPage.js';
 import { getProfileInfo } from './userManagement.js';
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
-
+let isInfosShow = false;
 let anonymousStatus;
 
 var submitChangeButton = document.querySelector(".submitChangeButton");
@@ -138,7 +138,6 @@ export function getRandomUsername() {
   });
 };
 
-//Add event listner to display RGPG page
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
 RGPDPolicy.addEventListener('click', function() {
   blockingPanel.style.visibility = 'visible';
@@ -150,6 +149,7 @@ infoButton.addEventListener("click", displayAnonymousMode);
 
 function displayAnonymousMode() {
   document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
+  isInfosShow = true;
 }
 
 const infoBack = document.getElementById("infoBack");
@@ -157,4 +157,18 @@ infoBack.addEventListener("click", backInfosDisplay);
 
 function backInfosDisplay() {
   document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
+  isInfosShow = false;
 }
+
+document.addEventListener('keydown', (event) => {
+  if (event.key == 'Escape') {
+    if (landedOnPlanet) {
+      if (isInfosShow == true)
+      {
+          document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
+          isInfosShow = false;
+      }
+      document.getElementById("validateDelete").classList.toggle("showRectangle");
+    }
+  }
+});
