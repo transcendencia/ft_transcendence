@@ -1,5 +1,5 @@
 import { togglePlanet } from './enterPlanet.js';
-import {  getCookie, createMatchBlock} from './loginPage.js';
+import {  getCookie, createMatchBlock, getGameInfo} from './loginPage.js';
 import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 import { getUserStats, chooseStats } from './stats.js';
@@ -41,8 +41,9 @@ export let checkEach5Sec;
 
 export function initUserPlanet() {
   renderFriendList();
-  const basicStats = document.getElementById('winLoseTexts1');
   getProfileInfo();
+  // getGameInfo();
+  //delay the animation of stats while page is opening
   setTimeout(() => {
     getUserStats(localStorage.getItem("host_id"));
   }, 1750);
@@ -52,14 +53,14 @@ export function initUserPlanet() {
   //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
   //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
   // `;
-  // checkEach5Sec = setInterval(async function() {
-  //   if (await isListsChanged()) {
-  //     if (inputElement.value === '')
-  //       await renderFriendList();
-  //     else await RenderUsersSearched(inputElement.value);
-  //   }
-  //   console.log("Checking...");
-  // }, 20000);
+  checkEach5Sec = setInterval(async function() {
+    if (await isListsChanged()) {
+      if (inputElement.value === '')
+        await renderFriendList();
+      else await RenderUsersSearched(inputElement.value);
+    }
+    console.log("Checking...");
+  }, 20000);
 }
 
 // Sample user data
@@ -154,12 +155,13 @@ export function initUserPlanet() {
 
   checkMarkImg.addEventListener('click', async () => {
     resetProfile();
-    displayFriendProfile();
+    displayFriendProfile(displayedUserOnSearchPage);
+    console.log(displayedUserOnSearchPage);
     try {
       await accept_friend_request(requestId);
       await RenderUsersSearched(inputElement.value);
     } catch (error) {
-      console.error('Error deleting friend request:', error);
+      console.error('Error validating friend request:', error);
     }
   });
 
@@ -178,10 +180,12 @@ export function initUserPlanet() {
   }
 
   function resetProfile() {
-    friendActionCont.classList.remove("friendTile");
-    friendActionCont.classList.remove("requestTile");
-    profilePic.parentNode.classList.remove("friendTile");
-    profilePic.parentNode.classList.remove("requestTile");
+    friendActionCont.classList.remove("OnlineFriendTile");
+    friendActionCont.classList.remove("RequestTile");
+    friendActionCont.classList.remove("OfflineFriendTile");
+    profilePic.parentNode.classList.remove("OnlineFriendTile");
+    profilePic.parentNode.classList.remove("RequestTile");
+    profilePic.parentNode.classList.remove("OfflineFriendTile");
     friendActionCont.style.justifyContent = 'center';
     checkMarkImg.style.display = "none";
     redCrossImg.style.display = "none";
@@ -189,14 +193,20 @@ export function initUserPlanet() {
     bluePlusImg.style.display = "block";
   }
 
-  function displayFriendProfile() {
+  function displayFriendProfile(user) {
     bluePlusImg.style.display = "none";
     checkMarkImg.style.display = "none";
     requestSentElem.style.display = 'none';
     redCrossImg.style.display = "block";
     friendActionCont.style.justifyContent = 'center';
-    friendActionCont.classList.add("friendTile");
-    profilePic.parentNode.classList.add("friendTile");
+    if (user.status === 'Online' || user.status === 'InGame') {
+      profilePic.parentNode.classList.add("OnlineFriendTile");
+      friendActionCont.classList.add("OnlineFriendTile");
+    }
+    else if (user.status === 'Offline'){
+      profilePic.parentNode.classList.add("OfflineFriendTile");
+      friendActionCont.classList.add("OfflineFriendTile")
+    }
   }
 
   function displayFriendRequestProfile() {
@@ -205,20 +215,21 @@ export function initUserPlanet() {
     checkMarkImg.style.display = "block";
     redCrossImg.style.display = "block";
     friendActionCont.style.justifyContent = 'space-evenly';
-    friendActionCont.classList.add("requestTile");
-    profilePic.parentNode.classList.add("requestTile");
+    friendActionCont.classList.add("RequestTile");
+    profilePic.parentNode.classList.add("RequestTile");
   }
 
   async function fillSearchedUserPage(user, type) {
     displayedUserOnSearchPage = user;
     resetProfile();
     const newData = await get_friends_list();
-    if (newData.sent_request_list.some(requestUser => requestUser.id === user.id))
+    console.log(type);
+    if (newData.sent_request_list.some(requestUser => requestUser.id === user.id) && type === 'default')
       displayRequestSent();
-    else if (type === 'request')
+    else if (type === 'Request')
       displayFriendRequestProfile();
-    else if (type === 'friend')
-      displayFriendProfile();
+    else if (type === 'Friend')
+      displayFriendProfile(user);
 
     // Update the DOM elements with user information
     profilePic.src = user.profile_picture;
@@ -310,6 +321,7 @@ function createStatusPellet(status) {
 function createUserTile(user, type, reqId) {
   if (user.isHost)
     return;
+  console.log("status:", user.status);
   
   const userTile = document.createElement('div');
   userTile.classList.add('userTile');
@@ -351,45 +363,61 @@ function createUserTile(user, type, reqId) {
   userListBackground.appendChild(userTile);
 }
 
+function assignRandomStatus(user) {
+  const statuses = ['Offline', 'Online', 'InGame'];
+  user.status = statuses[Math.floor(Math.random() * statuses.length)];
+}
+
 async function RenderUsersSearched(query) {
   userListBackground.innerHTML = ''; // Clear existing user tiles
 
   if (query === '') {
-      renderFriendList();
-      return;
+    renderFriendList();
+    return;
   }
 
   try {
-      const data = await get_friends_list();
-      if (!data) return;
+    const data = await get_friends_list();
+    if (!data) return;
 
-      // Filter and sort the lists based on the query
-      const requestList = data.received_request_list.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
-                                                      .sort((a, b) => a.user.username.localeCompare(b.user.username));
-      const friendList = data.friends.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
-                                     .sort((a, b) => {
-                                         // Define status order
-                                         const statusOrder = { 'Online': 0, 'InGame': 1, 'Offline': 2 };
-                                         // Compare status first, then by username
-                                         if (a.user.status !== b.user.status) {
-                                             return statusOrder[a.user.status] - statusOrder[b.user.status];
-                                         }
-                                         return a.user.username.localeCompare(b.user.username);
-                                     });
-      const otherList = data.other_user_list.filter(user => user.username.toLowerCase().includes(query.toLowerCase()))
-                                            .sort((a, b) => a.username.localeCompare(b.username));
+    // Filter and sort the lists based on the query
+    const requestList = data.received_request_list
+      .filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
+      .sort((a, b) => a.user.username.localeCompare(b.user.username));
+    
+    const friendList = data.friends
+      .filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
+      .sort((a, b) => {
+        // Define status order
+        const statusOrder = { 'Online': 0, 'InGame': 1, 'Offline': 2 };
+        // Compare status first, then by username
+        if (a.user.status !== b.user.status) {
+          return statusOrder[a.user.status] - statusOrder[b.user.status];
+        }
+        return a.user.username.localeCompare(b.user.username);
+      });
+    
+    const otherList = data.other_user_list
+      .filter(user => user.username.toLowerCase().includes(query.toLowerCase()))
+      .sort((a, b) => a.username.localeCompare(b.username));
 
-      // Clear and concatenate previous lists for consistent sorting
-      previousReqFriendList = data.received_request_list.concat(data.friends);
+    // Assign random status to each user
+    requestList.forEach(obj => assignRandomStatus(obj.user));
+    friendList.forEach(obj => assignRandomStatus(obj.user));
+    otherList.forEach(user => assignRandomStatus(user));
 
-      // Render tiles based on filtered and sorted lists
-      requestList.forEach(obj => createUserTile(obj.user, 'Request', obj.request_id));
-      friendList.forEach(obj => createUserTile(obj.user, 'Friend', obj.request_id));
-      otherList.forEach(user => createUserTile(user, 'Default', undefined));
+    // Clear and concatenate previous lists for consistent sorting
+    previousReqFriendList = data.received_request_list.concat(data.friends);
+
+    // Render tiles based on filtered and sorted lists
+    requestList.forEach(obj => createUserTile(obj.user, 'Request', obj.request_id));
+    friendList.forEach(obj => createUserTile(obj.user, 'Friend', obj.request_id));
+    otherList.forEach(user => createUserTile(user, 'Default', undefined));
   } catch (error) {
-      console.error('Error in rendering searched users:', error);
+    console.error('Error in rendering searched users:', error);
   }
 }
+
 
   
 
@@ -400,12 +428,8 @@ export async function renderFriendList() {
       const data = await get_friends_list();
       const sortedRequests = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
       
-      // Assign random status directly to each friend's user object
-      const statusArray = ['Offline', 'Online', 'InGame'];
-      data.friends.forEach(friend => {
-          const randomStatus = statusArray[Math.floor(Math.random() * statusArray.length)];
-          friend.user.status = randomStatus;
-      });
+      sortedRequests.forEach(obj => assignRandomStatus(obj.user));
+      data.friends.forEach(friend => assignRandomStatus(friend.user));
 
       const sortedFriends = data.friends.sort((a, b) => {
           const statusOrder = { 'Online': 0, 'InGame': 1, 'Offline': 2 };

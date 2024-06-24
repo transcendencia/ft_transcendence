@@ -300,7 +300,7 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
     historyContainer.appendChild(matchBlock);
 }
 
-function getGameInfo() {
+export function getGameInfo() {
 	const token = localStorage.getItem('host_auth_token');
 		fetch('get_game_user/', {
 		    method: 'GET',
