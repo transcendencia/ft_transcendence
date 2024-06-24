@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="{% static '../static/tournament/css/style.css' %}">
     <link rel="stylesheet" href="{% static '../static/tournament/css/bracket.css' %}">
     <script type="importmap">
-        {plusPlayer
+        {
           "imports": {
             "three": "https://cdn.jsdelivr.net/npm/three@0.129.0/build/three.module.js",
             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.129.0/examples/jsm/"
@@ -285,7 +285,7 @@
                     <div class="nameImgBlock" id="profile_info">
                       <div class="imgFrame"><img id="profile_pic" src="" alt="Photo de profil"></div> <!-- Photo de profil-->
                       <div class="mail-pseudo-info">
-                        <div id="username text-white"></div> <!-- Username -->
+                        <div id="username" class="text-white"></div> <!-- Username -->
                         <div id="alias" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
                       </div>
                       <div class="pencilImg">
@@ -347,7 +347,7 @@
                   <div class="statItem">
                     <span class="statName">Nemesis:</span>
                     <span class="statValue" id="nemesis">1</span>
-                  </div>
+                </div>
                   <div class="statItem">
                     <span class="statName">Number of friends:</span>
                     <span class="statValue" id="friendsNumber">0</span>
@@ -370,7 +370,7 @@
                       <div class="nameImgBlock" id="profile_info">
                         <div class="imgFrame"><img id="profile_pic2"></div> <!-- Photo de profil-->
                         <div class="mail-pseudo-info">
-                          <div id="username2 text-white"></div> <!-- Username -->
+                          <div id="username2" class="text-white"></div> <!-- Username -->
                           <div id="alias2" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
                         </div>
                       </div>
@@ -815,7 +815,7 @@
           <div class="profilePic">
             <img id= pp1 src="{% static 'html/assets/icons/ES_NU.png' %}">
           </div>
-          <div id="username1Text text-white">AtomiK</div>
+          <div id="username1Text" class="text-white">AtomiK</div>
         </div>
       </div>
     </div>
@@ -825,7 +825,7 @@
           <div class="profilePic">
             <img id = pp2 src="{% static 'html/assets/icons/BR_NU.png' %}" style="transform: scaleX(-1);">
           </div>
-            <div id="username2Text text-white" style="transform: scaleX(-1);">TonDaron</div>
+            <div id="username2Text" class="text-white" style="transform: scaleX(-1);">TonDaron</div>
         </div>
       </div>
     </div>
@@ -834,7 +834,7 @@
           <div class="profilePic">
             <img id= pp3 src="{% static 'html/assets/icons/FR_NU.png' %}">
           </div>
-          <div id="username3Text text-white">TonDaron</div>
+          <div id="username3Text" class="text-white">TonDaron</div>
         </div>
     </div>
     <div class="winning-screen">
