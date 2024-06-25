@@ -27,7 +27,7 @@
     height: 45%;
     width:  30%;
     border-radius: 12px;
-    background-color: rgba(0, 0, 255, 0.333);    
+    background-color: rgba(0, 0, 255, 0.5);    
     color: rgb(235, 240, 244);
     padding: 10px;
     display: flex;
@@ -44,9 +44,8 @@
 }
 
 .text-content {
-    margin-top: 10px;
-    padding-top: 60px;
-    flex: 1;
+    margin-top: 20%;
+    margin-bottom: 5%;
 }
 
 .rgpdFrame img {
