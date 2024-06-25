@@ -35,34 +35,6 @@ def change_language(request):
   else:
     return Response(status=405)
 
-
-# adapter avec un id pour que se soit applicable au user non host
-# @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-# def update_status(request):
-#   if request.method == 'POST':
-#     print(request.user.username, " status before changed:", request.user.status)
-#     if request.data.get('status') == 'offline': #a checker
-#       request.user.is_host = False
-#     request.user.status = request.data.get('status')
-#     request.user.save()
-#     print("user status after changed:", request.user.status)
-#     return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
-#   else:
-#     return Response(status=405)
-
-# @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-# def get_status(request, userId):
-#   try:
-#     print(userId)
-#     user = User.objects.get(id=userId)
-#     return Response({'user_status': user.status}, status=200)
-#   except User.DoesNotExist:
-#     return Response({'user_status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
-
 class UserStatusView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
