@@ -45,28 +45,31 @@ export function updateUserLanguage(new_language) {
     });
 }
 
-export function updateUserStatus(status, userId, token) {
-    // const token = localStorage.getItem('host_auth_token');
-    console.log("userId", userId);
+
+export async function updateUserStatus(status, token) {
     console.log("token", token);
-    return fetch(`update_status/${userId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ status: status })
-    })
-    .then(response => {
+
+    try {
+        const response = await fetch('/user/status/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ status: status })
+        });
+
         if (!response.ok) {
             throw new Error('Erreur lors du logout');
+        } else {
+            const data = await response.json();
+            console.log(`User ${data.user_id} status updated to ${data.status}`);
         }
-    })
-    .catch(error => {
+    } catch (error) {
         console.error('Erreur :', error);
-    });
-};
+    }
+}
 
 // export  function getUserStatus(userId) {
 //     return fetch('get_status/${userId}', {
@@ -79,7 +82,7 @@ export function updateUserStatus(status, userId, token) {
 
 export function getUserStatus(userId) {
     const token = localStorage.getItem('host_auth_token');
-    return fetch(`get_status/${userId}`, {
+    return fetch(`/user/status/${userId}/`, {
         method: 'GET',
         headers: {
             'Authorization': `Token ${token}`,

@@ -214,11 +214,16 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
     userInfoCont.childNodes[1].textContent = user.username;
 }
 
-function disconnectLoggedGuest(userInfoCont) {
+import { updateUserStatus } from "./userManagement.js";
+import { guestLoggedIn } from "./arenaPage.js";
+
+function disconnectLoggedGuest(userInfoCont, token) {
     lsCont.removeChild(userInfoCont);
+    updateUserStatus('offline', token);
+    let index = guestLoggedIn.indexOf(valeur);
 }
 
-export function displayUsersLogged(user) {
+export function displayUsersLogged(user, token) {
     // guestLoggedIn.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
@@ -245,7 +250,7 @@ export function displayUsersLogged(user) {
             resetUserInfoLoggedVisual(userInfoCont, img, profilePic, user);
         });
         userInfoCont.addEventListener('click', function () {
-            disconnectLoggedGuest(userInfoCont);
+            disconnectLoggedGuest(userInfoCont, token);
         });
     // });
 }
