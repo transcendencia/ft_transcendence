@@ -143,6 +143,7 @@ function setEscapeLanguageVisual() {
 // Handle form submission
 export async function handleLogin(formData) {
     console.log("Je suis dans handle login");
+    console.log("hostLoggedIn:", localStorage.getItem("hostLoggedIn"));
     if (localStorage.getItem("hostLoggedIn") === null) {
         console.log("jse set hostLoggendIn a false");
         localStorage.setItem("hostLoggedIn", 'false');
@@ -342,7 +343,6 @@ function getGameInfo() {
 // Logout
 var disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
-    console.log("j'appuie sur le disconnect button");
     handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token')); 
 });
 
@@ -354,20 +354,23 @@ function resetHTMLelements(){
     document.getElementById('c1').style.display = 'none';
 }
 
+window.addEventListener('beforeunload', function (event) {
+    handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
+    console.log("je reload la page");
+});
+
 import { guestLoggedIn } from "./arenaPage.js";
 
 function handleLogout(userId, token) {
     // Disconnect all the guest
     if (userId === localStorage.getItem('host_id')) {
-        console.log(guestLoggedIn.length());
+        console.log(guestLoggedIn.length);
         guestLoggedIn.forEach(user => {
             updateUserStatus('offline', user[1]);
         });
     }
-    // guestLoggedIn.clear();
 
     // Disconnect the host
-    console.log("j'essaie de me logout");
     updateUserStatus('offline', token)
     .then(() => {
         return get_user_list();
@@ -378,13 +381,13 @@ function handleLogout(userId, token) {
     .catch(error => {
         console.error('Erreur :', error);
     });
-    const hostLoggedIn = localStorage.getItem("hostLoggedIn")
-    console.log(hostLoggedIn)
-    if (hostLoggedIn === 'true') {
-        // localStorage.setItem('hostLoggedIn', 'false');
-        localStorage.clear();
-        console.log(localStorage.getItem("hostLoggedIn"));
-    }
+    // const hostLoggedIn = localStorage.getItem("hostLoggedIn")
+    // console.log(hostLoggedIn)
+    // if (hostLoggedIn === 'true') {
+    //     // localStorage.setItem('hostLoggedIn', 'false');
+    //     localStorage.clear();
+    //     console.log(localStorage.getItem("hostLoggedIn"));
+    // }
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
