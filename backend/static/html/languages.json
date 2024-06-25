@@ -99,7 +99,8 @@
         "submitInfoButton": "Submit",
         "validateDeleteAccountText": "All data will be permanently lost. Are you sure you want to delete your account?",
         "deleteAccountConfirmation": "Yes",
-        "deleteAccountCancel": "No"
+        "deleteAccountCancel": "No",
+        "RGPDPolicyInUserPage": "Privacy policy"
     },
     "es": {
         "login": "Usuario",
@@ -199,7 +200,8 @@
         "submitInfoButton": "Entregar",
         "validateDeleteAccountText": "Todos los datos se perderán permanentemente. ¿Estás seguro de que quieres eliminar tu cuenta?",
         "deleteAccountConfirmation": "Si",
-        "deleteAccountCancel": "No"
+        "deleteAccountCancel": "No",
+        "RGPDPolicyInUserPage": "política de confidencialidad"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -297,6 +299,7 @@
         "submitInfoButton": "Soumettre",
         "validateDeleteAccountText": "Toutes les données seront définitivement perdues. Êtes-vous sûr de vouloir supprimer votre compte ?",
         "deleteAccountConfirmation": "Oui",
-        "deleteAccountCancel": "Non"
+        "deleteAccountCancel": "Non",
+        "RGPDPolicyInUserPage": "Politique de confidentialite"
     }
 }
