@@ -32,26 +32,26 @@ def login_page(request):
     username_lower = username.lower()
     password = request.POST.get("password")
     hostLoggedIn = request.POST.get("hostLoggedIn") == 'true'
-    if hostLoggedIn:
+    if hostLoggedIn == False:
       new_language = request.POST.get("language")
       languageClicked = request.POST.get("languageClicked") == 'true'
 
-    print(username_lower, password)
+    print("username: ", username_lower, "password: ", password)
     user = authenticate(username=username_lower, password=password)
     if user is not None:
-      print(user.status)
       if user.status == "offline":
         user.last_login_date = timezone.now()
         user.status = 'online'
-        print("je suis le host")
         token, created = Token.objects.get_or_create(user=user)
-        if hostLoggedIn:
+        if hostLoggedIn == False:
           user.is_host = True
           if languageClicked and new_language != user.language:
             user.language = new_language
         user.save()
+        print("user status: ", user.status)
         return Response({'status': "succes", 'token': token.key, 'msg_code': "loginSuccessful", 'language': user.language, 'id': user.id, 'graphic_mode': user.graphic_mode})
       else:
+        print("user status: ", user.status)
         return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"})
     else:
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
@@ -79,3 +79,11 @@ def signup(request):
   first_error_code = first_error.code 
   print(first_error_code)
   return Response({'status': "failure", "msg_code": first_error_code})
+
+#SECURISER
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+  request.user.delete()
+  return Response({'status' : "success"})

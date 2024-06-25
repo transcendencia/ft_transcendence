@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, F, FloatField, ExpressionWrapper, Case, When
 
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
@@ -34,32 +35,54 @@ def change_language(request):
   else:
     return Response(status=405)
 
-# adapter avec un id pour que se soit applicable au user non host
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def update_status(request, userId):
-  if request.method == 'POST':
-    print(request.user)
-    if request.data.get('status') == 'offline': #a checker
-      request.user.is_host = False
-    request.user.status = request.data.get('status')
-    request.user.save()
-    print(request.user.username, request.user.status) #LOG
-    return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
-  else:
-    return Response(status=405)
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_status(request, userId):
-  try:
-    print(userId)
-    user = User.objects.get(id=userId)
-    return Response({'user_status': user.status}, status=200)
-  except User.DoesNotExist:
-    return Response({'user_status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
+# adapter avec un id pour que se soit applicable au user non host
+# @api_view(['POST'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def update_status(request):
+#   if request.method == 'POST':
+#     print(request.user.username, " status before changed:", request.user.status)
+#     if request.data.get('status') == 'offline': #a checker
+#       request.user.is_host = False
+#     request.user.status = request.data.get('status')
+#     request.user.save()
+#     print("user status after changed:", request.user.status)
+#     return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
+#   else:
+#     return Response(status=405)
+
+# @api_view(['GET'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def get_status(request, userId):
+#   try:
+#     print(userId)
+#     user = User.objects.get(id=userId)
+#     return Response({'user_status': user.status}, status=200)
+#   except User.DoesNotExist:
+#     return Response({'user_status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
+
+class UserStatusView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        print(request.user.username, " status before changed:", request.user.status)
+        if request.data.get('status') == 'offline':  # a checker
+            request.user.is_host = False
+        request.user.status = request.data.get('status')
+        request.user.save()
+        print("user status after changed:", request.user.status)
+        return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
+      
+    def get(self, request, userId):
+        try:
+            print(userId)
+            user = User.objects.get(id=userId)
+            return Response({'user_status': user.status}, status=200)
+        except User.DoesNotExist:
+            return Response({'user_status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -123,13 +146,6 @@ def generate_unique_username(request):
         if not User.objects.filter(username=username).exists():
             return Response({'username': username}, status=200)
     return Response(status=400)
-
-
-
-
-
-def user_list(request):
-  return render(request, 'user_list.html')
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

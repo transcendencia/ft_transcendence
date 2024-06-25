@@ -357,18 +357,18 @@ function resetHTMLelements(){
 import { guestLoggedIn } from "./arenaPage.js";
 
 function handleLogout(userId, token) {
-    
     // Disconnect all the guest
     if (userId === localStorage.getItem('host_id')) {
+        console.log(guestLoggedIn.length());
         guestLoggedIn.forEach(user => {
-            updateUserStatus('offline', user[0].id, user[1]);
+            updateUserStatus('offline', user[1]);
         });
     }
     // guestLoggedIn.clear();
 
     // Disconnect the host
     console.log("j'essaie de me logout");
-    updateUserStatus('offline', userId, token)
+    updateUserStatus('offline', token)
     .then(() => {
         return get_user_list();
     })
