@@ -464,7 +464,6 @@ document.addEventListener('keydown', (event) => {
             resetOutlineAndText();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
-        console.log("ON APPUIE SUR  ECHAPPE");
     }
     if (event.key === 'l') {
         switchToGame();

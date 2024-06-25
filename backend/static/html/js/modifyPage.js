@@ -1,4 +1,4 @@
-import { togglePanelDisplay, togglePlanet } from './enterPlanet.js';
+import { togglePanelDisplay, togglePlanet, landedOnPlanet } from './enterPlanet.js';
 import { returnToHost } from './userPage.js';
 import { resetOutline } from './planetIntersection.js';
 import { toggleBlurDisplay, toggleLobbyStart } from './main.js';
@@ -6,6 +6,7 @@ import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie } from './loginPage.js';
 import { getProfileInfo } from './userManagement.js';
+
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
 let isInfosShow = false;
@@ -148,27 +149,28 @@ const infoButton = document.getElementById("infoButton");
 infoButton.addEventListener("click", displayAnonymousMode);
 
 function displayAnonymousMode() {
+  
+  if (isInfosShow == false)
+    isInfosShow = true;
+  else if (isInfosShow == true)
+    isInfosShow = false;
   document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
-  isInfosShow = true;
 }
 
 const infoBack = document.getElementById("infoBack");
 infoBack.addEventListener("click", backInfosDisplay);
 
 function backInfosDisplay() {
-  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
   isInfosShow = false;
+  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
 }
 
 document.addEventListener('keydown', (event) => {
   if (event.key == 'Escape') {
-    if (landedOnPlanet) {
       if (isInfosShow == true)
       {
-          document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
-          isInfosShow = false;
+        isInfosShow = false;
+        document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
       }
-      document.getElementById("validateDelete").classList.toggle("showRectangle");
-    }
-  }
+    }  
 });
