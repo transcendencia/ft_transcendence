@@ -4,7 +4,7 @@ import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { changeGraphics, toggleGameStarted } from "./arenaPage.js";
+import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
 import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleRSContainerVisibility, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
 import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
@@ -67,15 +67,6 @@ graphicsIcons.forEach(function(icon) {
     }
     return cookieValue;
 }
-
-// Sélection du bouton par son ID
-// var disconnectButton = document.getElementById("disconnectButton");
-
-// // Ajout d'un gestionnaire d'événements pour le clic sur le bouton
-// disconnectButton.addEventListener("click", function() {
-//     localStorage.clear();
-//     console.log("Le bouton Disconnect a été cliqué !");
-// });
 
 languageIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
@@ -140,12 +131,19 @@ function setEscapeLanguageVisual() {
     icon.querySelector('.icon').style.opacity = 0;
 }
 
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', handleLoginSubmit);
+
+function handleLoginSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    handleLogin(formData);
+}
+
 // Handle form submission
 export async function handleLogin(formData) {
-    console.log("Je suis dans handle login");
-    console.log("hostLoggedIn:", localStorage.getItem("hostLoggedIn"));
     if (localStorage.getItem("hostLoggedIn") === null) {
-        console.log("jse set hostLoggendIn a false");
         localStorage.setItem("hostLoggedIn", 'false');
     }
 
@@ -185,53 +183,19 @@ export async function handleLogin(formData) {
                     startAnimation();
                 } else {
                     guest_token = data.token;
-                    console.log("guest loggin successful");
                 }
-                resolve(guest_token); // Résoudre avec le token du guest
+                resolve(guest_token);
             } else {
                 document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
-                resolve(null); // Résoudre avec null en cas d'échec
+                resolve(null);
             }
         })
         .catch(error => {
             console.error('Erreur :', error);
-            reject(error); // Rejeter avec l'erreur
+            reject(error);
         });
     });
 }
-
-// Add event listener to the loginForm
-const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', handleLoginSubmit);
-
-function handleLoginSubmit(event) {
-    event.preventDefault();
-
-    const formData = new FormData(this);
-    handleLogin(formData);
-}
-
-
-// export function handleLoginGuest(user) {
-//     var passwordInput = document.getElementById('enterPasswordInput');
-//     var formData = new FormData();
-//     formData.append('username', user.username);
-//     formData.append('password', passwordInput.value);
-    
-//     fetch('logGuest/', {
-//         method: 'POST',
-//         body: formData
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-       
-//     })
-//     .catch(error => {
-//         console.error('Erreur :', error);
-//     });
-
-//     console.log(user);
-// }
 
 export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
 
@@ -354,13 +318,6 @@ function resetHTMLelements(){
     document.getElementById('c1').style.display = 'none';
 }
 
-window.addEventListener('beforeunload', function (event) {
-    handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
-    console.log("je reload la page");
-});
-
-import { guestLoggedIn } from "./arenaPage.js";
-
 function handleLogout(userId, token) {
     // Disconnect all the guest
     if (userId === localStorage.getItem('host_id')) {
@@ -405,6 +362,22 @@ function handleLogout(userId, token) {
         showPage('loginPage');
         toggleLobbyStart();
     }, 50);
-    // localStorage.setItem('hostLoggedIn', 'false');
 };
 
+// window.addEventListener('beforeunload', function (event) {
+    // event.preventDefault();
+
+    // handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
+    
+    // event.returnValue = '';
+// });
+
+// window.addEventListener('unload', function (event) {
+//     handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
+// });
+
+// document.onvisibilitychange = function() {
+//     if (document.visibilityState === 'hidden') {
+//         handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
+//     }
+// };

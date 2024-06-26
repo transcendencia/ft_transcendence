@@ -148,4 +148,3 @@ def change_graphic_mode(request):
 def delete_account(request):
   request.user.delete()
   return Response({'status' : "success"})
-

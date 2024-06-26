@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
@@ -15,6 +17,8 @@ from rest_framework.response import Response
 
 from ..models import User
 from ..serializers import UserSerializer, SignupSerializer
+
+logger = logging.getLogger(__name__)
 
 def index(request):
   return render(request, 'index.html')
@@ -35,8 +39,11 @@ def login_page(request):
       newLanguage = request.POST.get("language")
       isLanguageClicked = request.POST.get("languageClicked") == 'true'
 
+    logger.debug(f'Username received: {usernameLower}, Host logged in: {isHostLoggedIn}')
+
     user = authenticate(username=usernameLower, password=password)
     if user is not None:
+      print("user status in login:", user.status)
       if user.status == "offline":
         updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
 
@@ -55,6 +62,7 @@ def login_page(request):
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
   except Exception as e:
       print(str(e))
+      logger.error(f'An error occurred: {str(e)}')
       return Response({'status': "error", 'message': str(e)})
 
 def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
@@ -83,10 +91,3 @@ def signup(request):
   first_error_code = first_error.code 
   
   return Response({'status': "failure", "msg_code": first_error_code})
-
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def delete_account(request):
-  request.user.delete()
-  return Response({'status' : "success"})
