@@ -23,35 +23,33 @@ def index(request):
 def rgpd(request):
   return render(request, 'rgpd.html')  
 
-# cree un loginForm pour rendre le code plus clair
 @api_view(['POST'])
 @permission_classes([AllowAny])  
 def login_page(request):
   try:
     username = request.POST.get("username")
-    username_lower = username.lower()
+    usernameLower = username.lower()
     password = request.POST.get("password")
-    hostLoggedIn = request.POST.get("hostLoggedIn") == 'true'
-    if hostLoggedIn == False:
-      new_language = request.POST.get("language")
-      languageClicked = request.POST.get("languageClicked") == 'true'
+    isHostLoggedIn = request.POST.get("hostLoggedIn") == 'true'
+    if isHostLoggedIn == False:
+      newLanguage = request.POST.get("language")
+      isLanguageClicked = request.POST.get("languageClicked") == 'true'
 
-    print("username: ", username_lower, "password: ", password)
-    user = authenticate(username=username_lower, password=password)
+    user = authenticate(username=usernameLower, password=password)
     if user is not None:
       if user.status == "offline":
-        user.last_login_date = timezone.now()
-        user.status = 'online'
+        updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
+
         token, created = Token.objects.get_or_create(user=user)
-        if hostLoggedIn == False:
-          user.is_host = True
-          if languageClicked and new_language != user.language:
-            user.language = new_language
-        user.save()
-        print("user status: ", user.status)
-        return Response({'status': "succes", 'token': token.key, 'msg_code': "loginSuccessful", 'language': user.language, 'id': user.id, 'graphic_mode': user.graphic_mode})
+
+        return Response({
+          'status': "succes", 
+          'token': token.key, 
+          'msg_code': "loginSuccessful",
+          'language': user.language, 
+          'id': user.id, 
+          'graphic_mode': user.graphic_mode})
       else:
-        print("user status: ", user.status)
         return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"})
     else:
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
@@ -59,28 +57,33 @@ def login_page(request):
       print(str(e))
       return Response({'status': "error", 'message': str(e)})
 
+def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
+    user.last_login_date = timezone.now()
+    user.status = 'online'
+    if isHostLoggedIn == False:
+        user.is_host = True
+        if isLanguageClicked and newLanguage != user.language:
+            user.language = newLanguage
+    user.save()
+
 @api_view(['POST']) 
 @permission_classes([AllowAny])  
 def signup(request):
-  new_language = request.POST.get("language") #on valide ?
-
+  new_language = request.POST.get("language")
   serializer = SignupSerializer(data=request.data)
+
   if serializer.is_valid():
     user_data = serializer.validated_data
     user = User(username=user_data['username'], language=new_language)
     user.set_password(user_data['password'])
     user.save()
-    # users = User.objects.all().order_by('id')
-    # Imprimer l'id et le username de chaque utilisateur
-    # for user in users:
-    #   print(f"ID: {user.id}, Username: {user.username}")
     return Response({'status': "success", "msg_code": "successfulSignup"}, status=status.HTTP_200_OK)
+  
   first_error = next(iter(serializer.errors.values()))[0]
   first_error_code = first_error.code 
-  print(first_error_code)
+  
   return Response({'status': "failure", "msg_code": first_error_code})
 
-#SECURISER
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
