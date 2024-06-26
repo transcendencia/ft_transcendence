@@ -8,7 +8,6 @@ import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
-import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js'
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
@@ -547,4 +546,4 @@ const checkModelsLoaded = setInterval(() => {
     }
 }, 100);
 
-export {scene, THREE, camera, spaceShip, spaceShipPointLight, landedOnPlanet, planetCam}
+export {scene, camera, spaceShip, spaceShipPointLight, landedOnPlanet, planetCam}
