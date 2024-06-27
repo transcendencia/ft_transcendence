@@ -139,6 +139,8 @@
 
 .statValue {
     color: #ffb30e; /* Different color for the stat value */
+    font-size: 25px;
+    font-family: 'Computer';
 }
 
 /* Add subtle animations */
