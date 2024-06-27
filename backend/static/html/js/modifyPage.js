@@ -149,11 +149,7 @@ const infoButton = document.getElementById("infoButton");
 infoButton.addEventListener("click", displayAnonymousMode);
 
 function displayAnonymousMode() {
-  
-  if (isInfosShow == false)
-    isInfosShow = true;
-  else if (isInfosShow == true)
-    isInfosShow = false;
+  isInfosShow = !isInfosShow;
   document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
 }
 

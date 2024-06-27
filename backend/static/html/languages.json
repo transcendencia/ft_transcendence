@@ -101,7 +101,8 @@
         "deleteAccountConfirmation": "Yes",
         "deleteAccountCancel": "No",
         "RGPDPolicyInUserPage": "Privacy policy",
-        "infoBack" : "Back"
+        "infoBack" : "Back",
+        "textAnonymous": "When you activate anonymous mode you have a randon username and default profil picture"
     },
     "es": {
         "login": "Usuario",
@@ -193,17 +194,19 @@
         "statisticsText": "Estadisticas",
         "backButton": "volver",
 
-        "changeInfoText": "Complete solo la información que desea cambiar",
+        "changeInfoText": "Complete solo la informacion que desea cambiar",
         "changeUsernameInput": "Nombre de usuario",
         "changeProfilePicture": "Foto de perfil",
         "chooseProfilePic": "Elija el archivo",
         "deleteAccountButton": "Borrar cuenta",
         "submitInfoButton": "Entregar",
-        "validateDeleteAccountText": "Todos los datos se perderán permanentemente. ¿Estás seguro de que quieres eliminar tu cuenta?",
+        "validateDeleteAccountText": "Todos los datos se perderan permanentemente. ¿Estas seguro de que quieres eliminar tu cuenta?",
         "deleteAccountConfirmation": "Si",
         "deleteAccountCancel": "No",
-        "RGPDPolicyInUserPage": "política de confidencialidad",
-        "infoBack" : "Volver"
+        "RGPDPolicyInUserPage": "politica de confidencialidad",
+        "infoBack" : "Volver",
+        "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada"
+        
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -299,10 +302,11 @@
         "chooseProfilePic": "Choisir le fichier",
         "deleteAccountButton": "Supprimer le compte",
         "submitInfoButton": "Soumettre",
-        "validateDeleteAccountText": "Toutes les données seront définitivement perdues. Êtes-vous sûr de vouloir supprimer votre compte ?",
+        "validateDeleteAccountText": "Toutes les donnees seront definitivement perdues. Etes-vous sûr de vouloir supprimer votre compte ?",
         "deleteAccountConfirmation": "Oui",
         "deleteAccountCancel": "Non",
         "RGPDPolicyInUserPage": "Politique de confidentialite",
-        "infoBack" : "Retour"
+        "infoBack" : "Retour",
+        "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut"
     }
 }
