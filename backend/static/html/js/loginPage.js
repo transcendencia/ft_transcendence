@@ -27,8 +27,6 @@ signupHereButton.addEventListener('click', function() {
     moveCameraToFrontOfCockpit();
 });
 
-showPage('loginPage');
-
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
         if (icon.id === 'graphicsIcon1' && gameState.graphics != 'low') {

@@ -1,3 +1,5 @@
+import { moveCameraToBackOfCockpit } from "./signUpPage.js";
+
 export function showPage(pageId) {
     var pages = document.querySelectorAll('.page');
     pages.forEach(function(page) {
@@ -7,27 +9,24 @@ export function showPage(pageId) {
     // Show the selected page
     if (pageId == 'none')
         return;
+    history.pushState(pageId, null, null);
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
+    console.log("state", history);
 }
 
-// Find all anchor elements on the page
-var anchors = document.querySelectorAll('a');
-
-// Add event listener to each anchor element
-anchors.forEach(function(anchor) {
-    anchor.addEventListener('click', function(event) {
-        event.preventDefault();
-        // Prevent default link behavior
-        var id = anchor.getAttribute('button');
-        history.pushState(id, null, null);
-        showPage(id);
-    });
-});
-
+// Event listener for popstate to handle back/forward button
 window.addEventListener('popstate', function(event) {
+    if (!event.state)
+        return;
     showPage(event.state);
+    if (event.state == 'loginPage')
+        moveCameraToBackOfCockpit();
 });
 
-history.replaceState('home', null, null);
+// Initial load handling
+window.addEventListener('DOMContentLoaded', function() {
+    showPage('loginPage');
+    history.replaceState('loginPage', null, null);
+});
