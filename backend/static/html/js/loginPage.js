@@ -8,17 +8,7 @@ export let oldLocation = null;
 export let currentLanguage = 'en';
 let languageFile;
 
-//if is empty
-window.location.hash = '#loginPage';
 
-
-export function setOldLocation(newLocation) {
-    oldLocation = newLocation;
-}
-
-export function getOldLocation() {
-    return oldLocation;
-}
 
 fetch('../../static/html/languages.json')
     .then(response => response.json())
@@ -53,20 +43,10 @@ let languageIcons = document.querySelectorAll('.languageIcon');
 let graphicsIcons = document.querySelectorAll('.graphicsIcon');
 const signupHereButton = document.querySelector('.actionCont');
 
-if (signupHereButton.addEventListener('click', function() {
+signupHereButton.addEventListener('click', function() {
     moveCameraToFrontOfCockpit();
     window.location.hash = '#signUpPage';  
-}));
-
-
-else if (addEventListener("hashchange", (event) => {
-    if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage' )
-    {
-        moveCameraToBackOfCockpit();   
-    }
-    setOldLocation(window.location.hash);
-}));
-showPage('loginPage');
+});
 
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {

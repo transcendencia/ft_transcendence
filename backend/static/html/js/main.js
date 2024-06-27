@@ -16,7 +16,6 @@ import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
 import { gameStarted, switchToGame } from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { mixer1, mixer2 } from './objs.js';
-import { oldLocation, setOldLocation, getOldLocation } from "./loginPage.js";
 
 
 let cubeLoader = new THREE.CubeTextureLoader();

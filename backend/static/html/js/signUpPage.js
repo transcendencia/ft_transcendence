@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { camera } from './main.js';
 import { showPage } from './showPages.js';
-import { oldLocation, setOldLocation, getOldLocation } from "./loginPage.js";
 export let inCockpit = false;
 
 export function moveCameraToFrontOfCockpit() {
@@ -30,32 +29,10 @@ export function moveCameraToBackOfCockpit() {
 
 const backToLoginButton = document.querySelector('.backButton');
 
-if (backToLoginButton.addEventListener('click', function() {
+backToLoginButton.addEventListener('click', function() {
     moveCameraToBackOfCockpit();
-    window.location.hash = '#loginPage';  
-}));
-
-else if (addEventListener("hashchange", (event) => {
-    if (window.location.hash == '#signUpPage' && oldLocation == '#loginPage')
-        moveCameraToFrontOfCockpit();
-    if (window.location.hash == '#galaxy')
-    {
-        console.log('SIGN UP catch #galaxy');
-        console.log(window.location.hash);
-        console.log('SIGN UP oldLocation');
-        console.log(oldLocation);
-    }
-    //When you are in galaxy 
-    if (window.location.hash == '#signUpPage' && oldLocation == '#galaxy')
-    {
-        console.log('SIGN UP catch #signUp');
-        console.log(window.location.hash);
-        console.log('SIGN UP oldLocation for signUp');
-        console.log(oldLocation);
-        showPage('signUpPage');
-        moveCameraToFrontOfCockpit();
-    }
-}));
+    window.location.hash = '#loginPage';
+});
 
 // // Add event listener to the sign-up form
 // const signupForm = document.getElementById('signupForm');

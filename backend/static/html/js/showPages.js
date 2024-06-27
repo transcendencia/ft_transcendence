@@ -1,3 +1,5 @@
+import { moveCameraToBackOfCockpit, moveCameraToFrontOfCockpit} from "./signUpPage.js";
+
 export function showPage(pageId) {
     var pages = document.querySelectorAll('.page');
     pages.forEach(function(page) {
@@ -12,16 +14,22 @@ export function showPage(pageId) {
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
 }
 
-// Find all anchor elements on the page
-var anchors = document.querySelectorAll('a');
+export let oldLocation = null;
 
-// Add event listener to each anchor element
-anchors.forEach(function(anchor) {
-    anchor.addEventListener('click', function(event) {
-        event.preventDefault();
-        // Prevent default link behavior
-        var id = anchor.getAttribute('button');
-        history.pushState(id, null, null);
-        showPage(id);
-    });
+//if is empty
+window.location.hash = '#loginPage';
+
+showPage('loginPage');
+
+addEventListener("hashchange", (event) => {
+    console.log("hash", window.location.hash, oldLocation);
+    if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage' )
+        moveCameraToBackOfCockpit();   
+    if (window.location.hash == '#signUpPage' && oldLocation == '#loginPage')
+        moveCameraToFrontOfCockpit();
+    if (window.location.hash == '#signUpPage' && oldLocation == '#galaxy') {
+        showPage('signUpPage');
+        moveCameraToFrontOfCockpit();
+    }
+    oldLocation = window.location.hash;
 });
