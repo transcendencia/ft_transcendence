@@ -3852,18 +3852,18 @@ function glitch(glitchEffect)
     }, 500);
 }
 
-// let fpsInterval = 1000 / 75; // 75 FPS
-// let stats = new Stats();
-// let lastUpdateTime = performance.now();
+let fpsInterval = 1000 / 75; // 75 FPS
+let stats = new Stats();
+let lastUpdateTime = performance.now();
 
 function animate()
 {
     requestAnimationFrame( animate );
     updateFpsCounter();
     let now = performance.now();
-    // let elapsed = now - lastUpdateTime;
-    // if (elapsed < fpsInterval) return; // Skip if too big FPS
-    // else
+    let elapsed = now - lastUpdateTime;
+    if (elapsed < fpsInterval) return; // Skip if too big FPS
+    else
     {
         gameState.monitorGameState();
         if (gameState.inLobby)
@@ -3888,9 +3888,9 @@ function animate()
         }
     }
 
-    // stats.update();
-    // lastUpdateTime = now - (elapsed % fpsInterval);
-    // stats.time = performance.now();
+    stats.update();
+    lastUpdateTime = now - (elapsed % fpsInterval);
+    stats.time = performance.now();
 }
 animate();
 
