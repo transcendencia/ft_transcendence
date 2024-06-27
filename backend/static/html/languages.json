@@ -100,7 +100,8 @@
         "validateDeleteAccountText": "All data will be permanently lost. Are you sure you want to delete your account?",
         "deleteAccountConfirmation": "Yes",
         "deleteAccountCancel": "No",
-        "RGPDPolicyInUserPage": "Privacy policy"
+        "RGPDPolicyInUserPage": "Privacy policy",
+        "infoBack" : "Back"
     },
     "es": {
         "login": "Usuario",
@@ -201,7 +202,8 @@
         "validateDeleteAccountText": "Todos los datos se perderán permanentemente. ¿Estás seguro de que quieres eliminar tu cuenta?",
         "deleteAccountConfirmation": "Si",
         "deleteAccountCancel": "No",
-        "RGPDPolicyInUserPage": "política de confidencialidad"
+        "RGPDPolicyInUserPage": "política de confidencialidad",
+        "infoBack" : "Volver"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -300,6 +302,7 @@
         "validateDeleteAccountText": "Toutes les données seront définitivement perdues. Êtes-vous sûr de vouloir supprimer votre compte ?",
         "deleteAccountConfirmation": "Oui",
         "deleteAccountCancel": "Non",
-        "RGPDPolicyInUserPage": "Politique de confidentialite"
+        "RGPDPolicyInUserPage": "Politique de confidentialite",
+        "infoBack" : "Retour"
     }
 }
