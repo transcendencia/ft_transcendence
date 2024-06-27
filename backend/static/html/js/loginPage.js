@@ -18,7 +18,7 @@ function addGlow(elementId, glow) {
 function removeGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-    element.classList.remove(glow);
+        element.classList.remove(glow);
 }
 
 let languageIcons = document.querySelectorAll('.languageIcon');
@@ -30,6 +30,7 @@ if (signupHereButton.addEventListener('click', function() {
 }));
 
 showPage('loginPage');
+
 
 graphicsIcons.forEach(function(icon) {
     icon.addEventListener('click', function () {
@@ -52,6 +53,19 @@ graphicsIcons.forEach(function(icon) {
         });
     });
 });
+
+
+function updateGraphicsIcon(mode) {
+    graphicsIcons.forEach(function(otherIcon) {
+        removeGlow(otherIcon.id, 'redGlow');
+    });
+    if (mode === "low")
+    addGlow("graphicsIcon1", 'redGlow');
+    else if (mode === "medium")
+        addGlow("graphicsIcon2", 'redGlow');
+    else if (mode === "high")
+        addGlow("graphicsIcon3", 'redGlow');
+}
 
  export function getCookie(name) {
     let cookieValue = null;
@@ -180,8 +194,10 @@ export async function handleLogin(formData) {
                     TranslateAllTexts();
                     getGameInfo();
                     changeGraphics(data.graphic_mode);
+                    updateGraphicsIcon(data.graphic_mode);
                     showPage('none');
                     startAnimation();
+            // }
                 } else {
                     guest_token = data.token;
                 }
@@ -254,7 +270,7 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
     historyContainer.appendChild(matchBlock);
 }
 
-function getGameInfo() {
+export function getGameInfo() {
 	const token = localStorage.getItem('host_auth_token');
 		fetch('get_game_user/', {
 		    method: 'GET',
@@ -322,8 +338,9 @@ function resetHTMLelements(){
 function handleLogout(userId, token) {
     // Disconnect all the guest
     if (userId === localStorage.getItem('host_id')) {
-        console.log(guestLoggedIn.length);
+        // console.log(guestLoggedIn);
         guestLoggedIn.forEach(user => {
+            console.log(user);
             updateUserStatus('offline', user[1]);
         });
     }

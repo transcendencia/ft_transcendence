@@ -6,6 +6,7 @@
     <link rel="icon" type="image/svg+xml" href="{%static 'game/assets/favicon.ico' %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Transcendencia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static '../static/html/css/style.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/loginPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/rsContainer.css' %}">
@@ -17,6 +18,7 @@
     <link rel="stylesheet" href="{% static '../static/html/css/userPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/rgpdPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/modifyPage.css' %}">
+    <link rel="stylesheet" href="{% static '../static/html/css/tiles.css' %}">
     <link rel="stylesheet" href="{% static '../static/game/style/style.css' %}">
     <link rel="stylesheet" href="{% static '../static/tournament/css/style.css' %}">
     <link rel="stylesheet" href="{% static '../static/tournament/css/bracket.css' %}">
@@ -31,12 +33,12 @@
 </head>
 <body>
   <!-- LOGIN PAGE -->
-    <div class="loginPage page invisible">
+    <div class="loginPage page d-flex flex-column justify-content-around align-items-center">
     <div class="title">
       TRANSCENDENCIIA
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
     </div>
-    <div class="inputContainer">
+    <div class="inputContainer d-flex flex-column justify-content-center align-items-center">
       <form id="loginForm" method="post" action="login_page/">
         {% csrf_token %}
         <div class="titleText" id="loginText">
@@ -45,7 +47,7 @@
             <input class="text-input" name="username" spellcheck="false"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
-          <div class="littleMsgCont">
+          <div class="littleMsgCont d-flex justify-content-center align-items-center">
             <div class="newToTheGame">New to the game ?
               <div class="actionCont tinyBlueShadowfilter">Sign Up Here</div>
             </div>
@@ -58,7 +60,7 @@
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
         </div>
-        <div id= "messageContainer" class="loginMessageCont"></div>
+        <div id= "messageContainer" class="loginMessageCont d-flex justify-content-center align-items-center"></div>
         <button type="submit" style="display: none;"></button>
       </form>
     </div>
@@ -83,7 +85,7 @@
   </div>
 
   <!-- SIGN UP PAGE -->
-  <form id="signupForm" class="signUpPage page invisible">
+  <form id="signupForm" class="signUpPage page d-flex flex-column justify-content-around align-items-center">
     <div class="perspective">
         <!-- <form id="signupForm" method="post" action="signup/"> -->
           {% csrf_token %}
@@ -166,7 +168,7 @@ confidentiality policy
     </div>
 
     <!-- PLANET INFOS & MAP -->
-    <div id="rsCont" class="rightSideContainer">
+    <div id="rsCont" class="rightSideContainer d-flex flex-column align-items-center">
       <div id="minimapContainer"></div>
       <div id="planetInfoLine0" class="planetInfoText tinyRedShadowfilter" style="text-align: center;border: none;font-size: 30px;"> CODEX </div>
       <div id="planetInfoContainer">
@@ -178,7 +180,7 @@ confidentiality policy
       </div>
     </div>
 
-    <div id="lsCont" class="leftSideContainer">
+    <div id="lsCont" class="leftSideContainer d-flex flex-column align-items-start justify-content-start">
       <div class="tinyRedShadowfilter">
         Players Connected
       </div>
@@ -299,7 +301,7 @@ confidentiality policy
                     <div class="nameImgBlock" id="profile_info">
                       <div class="imgFrame"><img id="profile_pic" src="" alt="Photo de profil"></div> <!-- Photo de profil-->
                       <div class="mail-pseudo-info">
-                        <div id="username" style="color: rgb(255, 255, 255); "></div> <!-- Username -->
+                        <div id="username" class="text-white"></div> <!-- Username -->
                         <div id="alias" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
                       </div>
                       <div class="pencilImg">
@@ -329,10 +331,54 @@ confidentiality policy
                   </div>
                 </div>
               </div>
-              <div class="statsBlock">
+              <div id="statsBlock1" class="statsBlock">
+
                 <canvas id="winLostStat"></canvas>
+                <canvas id="accuracyStat"></canvas>
               </div>
+              <div id="statsBlock2" class="statsBlock" style="display:none;">
+                <canvas id="gameModeStat"></canvas>
+                <canvas id="mapStat"></canvas>
               </div>
+              <div id="statsBlock3" class="statsBlockNoGraphs" style="display:none;">
+                <div class="statColumn">
+                  <div class="statItem">
+                    <span class="statName">Current Winstreak:</span>
+                    <span class="statValue" id="currentWinstreak">100</span>
+                  </div>
+                  <div class="statItem">
+                    <span class="statName">Highest Winstreak:</span>
+                    <span class="statValue" id="highestWinstreak">50</span>
+                  </div>
+                  <div class="statItem">
+                    <span class="statName">Number of dashes:</span>
+                    <span class="statValue" id="dashNumber">10</span>
+                  </div>
+                  <div class="statItem">
+                    <span class="statName">Number of power ups:</span>
+                    <span class="statValue" id="powerUpsNumber">2000</span>
+                  </div>
+                </div>
+                <div class="statColumn">
+                  <div class="statItem">
+                    <span class="statName">Nemesis:</span>
+                    <span class="statValue" id="nemesis">1</span>
+                </div>
+                  <div class="statItem">
+                    <span class="statName">Number of friends:</span>
+                    <span class="statValue" id="friendsNumber">0</span>
+                  </div>
+                  <div class="statItem">
+                    <span class="statName">Time played:</span>
+                    <span class="statValue" id="timePlayed">1</span>
+                  </div>
+                  <div class="statItem">
+                    <span class="statName">Date of creation:</span>
+                    <span class="statValue" id="dateOfCreation">24/06/2024</span>
+                  </div>
+                </div>
+              </div>
+            </div>
               <div id="searchedUserPage" class="rightColumn" style="width: 100%; flex-shrink: 0">
                 <div class="aboveStatsBlock">
                   <div class="leftBlock">
@@ -340,7 +386,7 @@ confidentiality policy
                       <div class="nameImgBlock" id="profile_info">
                         <div class="imgFrame"><img id="profile_pic2"></div> <!-- Photo de profil-->
                         <div class="mail-pseudo-info">
-                          <div id="username2" style="color: rgb(255, 255, 255); "></div> <!-- Username -->
+                          <div id="username2" class="text-white"></div> <!-- Username -->
                           <div id="alias2" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
                         </div>
                       </div>
@@ -417,8 +463,8 @@ confidentiality policy
                 <div class="validateDeleteButton" id="deleteAccountCancel">No</div>
               </div>
             </div>
-            <div class="leftColumn" style="width: 22%; height: 100%; justify-content: space-between; flex-shrink: 0; align-items: flex-start;">
-              <div class="titleContainer" style="width: 100%; display: flex; justify-content: center;">
+            <div class="leftColumn justify-content-between align-items-start;" style="width: 22%; height: 100%; flex-shrink: 0;">
+              <div class="titleContainer justify-content-center d-flex" style="width: 100%;">
                   <div id="friendListText" style="font-size: 20px; font-family: 'space'; color: white; text-align: center;"> Friends List </div>
               </div>
               <div class="friendSearchBar" style="width: 95%;">
@@ -804,7 +850,7 @@ confidentiality policy
           <div class="profilePic">
             <img id= pp1 src="{% static 'html/assets/icons/ES_NU.png' %}">
           </div>
-          <div id="username1Text" style="color: rgb(255, 255, 255); ">AtomiK</div>
+          <div id="username1Text" class="text-white">AtomiK</div>
         </div>
       </div>
     </div>
@@ -814,7 +860,7 @@ confidentiality policy
           <div class="profilePic">
             <img id = pp2 src="{% static 'html/assets/icons/BR_NU.png' %}" style="transform: scaleX(-1);">
           </div>
-            <div id="username2Text" style="color: rgb(255, 255, 255); transform: scaleX(-1); ">TonDaron</div>
+            <div id="username2Text" class="text-white" style="transform: scaleX(-1);">TonDaron</div>
         </div>
       </div>
     </div>
@@ -823,7 +869,7 @@ confidentiality policy
           <div class="profilePic">
             <img id= pp3 src="{% static 'html/assets/icons/FR_NU.png' %}">
           </div>
-          <div id="username3Text" style="color: rgb(255, 255, 255); ">TonDaron</div>
+          <div id="username3Text" class="text-white">TonDaron</div>
         </div>
     </div>
     <div class="winning-screen">
@@ -846,7 +892,7 @@ confidentiality policy
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/7/Stats.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-shadow@0.0.2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script type="module" src="{% static 'html/js/main.js' %}"></script>

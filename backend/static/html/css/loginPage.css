@@ -4,10 +4,6 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(1); /* Scale up by 2 times */
-    display: flex;
-    flex-direction: column; /* Display children vertically */
-    justify-content: space-around;
-    align-items: center;
     overflow: hidden; /* Ensure text input doesn't overflow */
     border-radius: 5px;
     width :80%;
@@ -21,10 +17,6 @@
 
 .inputContainer {
     margin-top: -40px;
-    display: flex;
-    flex-direction: column; /* Display children vertically */
-    justify-content: center;
-    align-items: center;
     height: 40%;
     transform: scale(1.5);
 }
@@ -51,9 +43,6 @@
 }
 
 .littleMsgCont {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-size: 12px;
     font-family: "Space";
     text-shadow: none;
@@ -73,10 +62,7 @@
     pointer-events: none;
     /* position: absolute; */
     margin-top: -10px;
-    display: flex;
-    justify-content: center;
     text-align: center;
-    align-items: center;
     font-size: 10px; /* Set font size */
     font-family: 'Space'; /* Set font family */
     color: red;

@@ -41,7 +41,7 @@ USER_STATUS = '${DJANGO_USER_STATUS:-"online"}'
 
 if not User.objects.filter(username=USER_USERNAME).exists():
     user = User.objects.create_user(username=USER_USERNAME, password=USER_PASSWORD, status=USER_STATUS)
-    user.profile_picture = "botLogo.jpg"
+    user.profile_picture = "botLogo.png"
     user.save()
 EOF
 

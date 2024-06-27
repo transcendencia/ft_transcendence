@@ -8,7 +8,6 @@ import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
-import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js'
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
@@ -19,6 +18,7 @@ import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
 
 
+
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
 const renderer = new THREE.WebGLRenderer({
@@ -26,7 +26,20 @@ const renderer = new THREE.WebGLRenderer({
     antialias: true,
     toneMapping: THREE.ReinhardToneMapping
 });
+
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.autoUpdate = true;
+
 const scene = new THREE.Scene();
+
+scene.traverse(obj => {
+    if (obj instanceof THREE.Mesh) {
+      obj.castShadow = true;
+      obj.receiveShadow = true;
+    }
+  });
+
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 camera.position.set(0, 1, -495);
@@ -35,6 +48,23 @@ const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 export function toggleLobbyStart() {
     lobbyStart = !lobbyStart;
 }
+
+    // LIGHTING
+    const pointLight = new THREE.PointLight(0xffffff, 1)
+    pointLight.castShadow = true;
+    pointLight.position.copy(sun.position);
+    pointLight.scale.set(10, 10, 10);
+    
+    const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
+    pointLight2.castShadow = true;
+    pointLight2.position.set(0,5,-1300);
+    
+    const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
+    spaceShipPointLight.castShadow = true;
+    const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
+    const lightHelper = new THREE.PointLightHelper(pointLight);
+    scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
+
 
 class LobbyVisuals
 {
@@ -56,9 +86,9 @@ class LobbyVisuals
         ]);
         this.scene.background = this.spaceCubeMapTexture;
 
-        this.bloomPass.threshold = 0.1;
+        this.bloomPass.threshold = 0.2;
         this.bloomPass.strength = 0.3;
-        this.bloomPass.radius = 0.2;
+        this.bloomPass.radius = 0.8;
         this.stars = [];
         this.addStars(1000);
     }
@@ -220,7 +250,7 @@ import { guestLoggedIn } from "./arenaPage.js";
 function disconnectLoggedGuest(userInfoCont, user, token) {
     lsCont.removeChild(userInfoCont);
     updateUserStatus('offline', token);
-    console.log("before logout:", guestLoggedIn);
+    // console.log("before logout:", guestLoggedIn);
 
     for (let i = 0; i < guestLoggedIn.length; i++) {
         if (guestLoggedIn[i][0].id === user.id) {
@@ -228,7 +258,7 @@ function disconnectLoggedGuest(userInfoCont, user, token) {
         }
     }
 
-    console.log("after logout:", guestLoggedIn);
+    // console.log("after logout:", guestLoggedIn);
 }
 
 export function displayUsersLogged(user, token) {
@@ -319,21 +349,7 @@ export const outlinePass = new OutlinePass(
     export let cameraDirection = new THREE.Vector3();
     camera.getWorldDirection(cameraDirection);
     
-    // LIGHTING
-    const pointLight = new THREE.PointLight(0xffffff, 1)
-    pointLight.castShadow = true;
-    pointLight.position.copy(sun.position);
-    pointLight.scale.set(10, 10, 10);
-    
-    const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
-    pointLight2.castShadow = true;
-    pointLight2.position.set(0,5,-1300);
-    
-    const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
-    spaceShipPointLight.castShadow = true;
-    const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
-    const lightHelper = new THREE.PointLightHelper(pointLight);
-    scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
+
     
 
 function planetMovement() {
@@ -442,6 +458,8 @@ export function togglePause() {
 
 import { getUserStatus } from './userManagement.js';
 
+let firstPauseTriggered = false;
+
 document.addEventListener('keydown', (event) => {
     if (event.target.tagName === 'INPUT')
         return;
@@ -457,7 +475,14 @@ document.addEventListener('keydown', (event) => {
     }
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
-    if (event.key == 'Escape') {
+    if (event.key === 'Escape') {
+        if (gameState.inGame)
+        {
+            toggleEscapeContainerVisibility();
+            toggleBlurDisplay(false);
+            pauseGame ? pauseGame = false : pauseGame = true;
+            return;
+        }
         if (landedOnPlanet) {
             togglePlanet();
             returnToHost();
@@ -468,6 +493,7 @@ document.addEventListener('keydown', (event) => {
             return;
         }
         if (lobbyStart) {
+            console.log("coucou");
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();
@@ -475,9 +501,6 @@ document.addEventListener('keydown', (event) => {
             pauseGame ? pauseGame = false : pauseGame = true;
         }
         console.log("ON APPUIE SUR  ECHAPPE");
-    }
-    if (event.key === 'l') {
-        switchToGame();
     }
 });
 
@@ -558,4 +581,4 @@ const checkModelsLoaded = setInterval(() => {
     }
 }, 100);
 
-export {scene, THREE, camera, spaceShip, spaceShipPointLight, landedOnPlanet, planetCam}
+export {scene, camera, spaceShip, spaceShipPointLight, landedOnPlanet, planetCam}

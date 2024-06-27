@@ -35,6 +35,8 @@ class User(AbstractUser):
     return {'id': self.id, 
     'username': self.username, 
     'alias': self.alias, 
+    'status': self.status,
+    'is_host': self.is_host,
     'profile_picture': self.profile_picture.url, 
     'nbr_match': self.nbr_match, 
     'nbr_match_win': self.nbr_match_win,

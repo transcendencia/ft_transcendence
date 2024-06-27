@@ -60,6 +60,12 @@ def get_stats(request, userId):
 
     efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
 
+    # Total points taken
+    totalPointsTaken = allGames.aggregate(totalPointsTaken=Sum('pointsTaken'))['totalPointsTaken'] or 0
+
+    # Total balls bounced
+    totalBounces = allGames.aggregate(totalBounces=Sum('nbBounces'))['totalBounces'] or 0
+
     # Current streak
     maxStreak = 0
     currentStreak = 0
@@ -97,7 +103,7 @@ def get_stats(request, userId):
       print("mode game", game.modeGame)
       if game.modeGame == "CLASSIC":
         classicMode += 1
-      elif game.modeGame == "SPINONLY":
+      elif game.modeGame == "SPIN ONLY":
         spinOnlyMode += 1
       elif game.modeGame == "POWERLESS":
         powerlessMode += 1
@@ -151,7 +157,9 @@ def get_stats(request, userId):
       'currentStreak': currentStreak,
       'mapPercentages': mapPercentages,
       'modePercentages' : modePercentages,
-      'efficiency' : efficiency
+      'efficiency' : efficiency,
+      'totalPointsTaken': totalPointsTaken,
+      'totalBounces': totalBounces
     })
 
   except User.DoesNotExist:

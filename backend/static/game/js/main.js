@@ -263,9 +263,6 @@ class LoadingScreen {
                         this.composer.addPass(this.afterimagePass);
                     this.starSpeed = 1;
                 })
-                .onComplete(() => {
-                    this.arena.gameState.switchLoadingToGame();
-                });
                 
             // FADE OUT LOADING SCREEN FADE IN GAME
             const tween4 = new TWEEN.Tween({ opacity: 0 })
@@ -277,6 +274,7 @@ class LoadingScreen {
                     document.getElementById('c1').style.display = 'inline';
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
+                    console.log("allo");
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
@@ -816,6 +814,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
+            this.game.startingTime = Date.now();
             scoreUI[0].style.opacity = 1;
             if (this.game.user2.isBot)
                 this.bot.activateBot();
@@ -1096,6 +1095,7 @@ class Arena extends THREE.Mesh {
             this.ball.bounceCount = 0;
             this.isBeingReset = false;
             this.game.isPlaying = false;
+            this.game.gameTime = Date.now() - this.game.startingTime;
             this.game.isOver = false;
             swapToFullScreen();
             if (this.game.thirdPlayer)
@@ -3562,6 +3562,8 @@ class Game {
         this.thirdPlayer = false;
         this.hasToBeInitialized = false;
         this.tournamentGame = false;
+        this.startingTime = 0;
+        this.gameTime = 0;
         // next variables are all to be inputed in string format
         this.user1Username = document.getElementById('username1Text');
         this.user2Username = document.getElementById('username2Text');
@@ -3852,12 +3854,14 @@ function animate()
     // if (elapsed < fpsInterval) return; // Skip if too big FPS
     // else
     {
+        // console.log("pause = ", gameState.paused);
         gameState.monitorGameState();
         if (gameState.inLobby)
             return ;
         TWEEN.update();
         if (gameState.inGame && !gameState.paused)
         {
+            console.log("playing");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();
