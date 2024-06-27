@@ -102,7 +102,8 @@
         "deleteAccountCancel": "No",
         "RGPDPolicyInUserPage": "Privacy policy",
         "infoBack" : "Back",
-        "textAnonymous": "When you activate anonymous mode you have a randon username and default profil picture"
+        "textAnonymous": "When you activate anonymous mode you have a randon username and default profil picture",
+        "changeBioInput": "Bio"
     },
     "es": {
         "login": "Usuario",
@@ -205,7 +206,8 @@
         "deleteAccountCancel": "No",
         "RGPDPolicyInUserPage": "politica de confidencialidad",
         "infoBack" : "Volver",
-        "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada"
+        "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada",
+        "changeBioInput": "Bio"
         
     },
     "fr": {
@@ -307,6 +309,7 @@
         "deleteAccountCancel": "Non",
         "RGPDPolicyInUserPage": "Politique de confidentialite",
         "infoBack" : "Retour",
-        "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut"
+        "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut",
+        "changeBioInput": "Bio"
     }
 }

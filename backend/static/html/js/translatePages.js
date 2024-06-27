@@ -160,6 +160,7 @@ const statisticsText = document.getElementById('statisticsText');
 const statisticsText2 = document.getElementById('statisticsText2');
 const backButton = document.getElementById('userBackButton');
 
+
 function translateUserPageTexts() {
     friendlistText.textContent = getTranslatedText('friendlist');
     historyText.textContent = getTranslatedText('history');
@@ -185,6 +186,7 @@ const deleteAccountCancel = document.getElementById('deleteAccountCancel');
 const RGPDPolicyInUserPage = document.getElementById('RGPDPolicyInUserPage');
 const infoBack = document.getElementById('infoBack');
 const textAnonymous = document.getElementById('textAnonymous');
+const changeBioInput = document.getElementById('changeBioInput');
 
 function translateModifyPageTexts(){
     changeInfoText.textContent = getTranslatedText('changeInfoText');
@@ -200,7 +202,8 @@ function translateModifyPageTexts(){
     deleteAccountCancel.textContent = getTranslatedText('deleteAccountCancel');
     RGPDPolicyInUserPage.textContent = getTranslatedText('RGPDPolicyInUserPage');
     infoBack.textContent = getTranslatedText('infoBack');
-    textAnonymous.textContent = getTranslatedText('textAnonymous');   
+    textAnonymous.textContent = getTranslatedText('textAnonymous');
+    changeBioInput.placeholder =  getTranslatedText('changeBioInput');   
 }
 
 export function TranslateAllTexts() {
