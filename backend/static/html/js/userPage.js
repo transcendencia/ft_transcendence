@@ -79,6 +79,7 @@ export function initUserPlanet() {
       searchedUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";    
       hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
       pageDisplayed = "hostProfile";
+      chooseStats(1);
     }
     else if (pageDisplayed === "modifyPage") {
       hostUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
@@ -343,6 +344,7 @@ function createUserTile(user, type, reqId) {
       fillSearchedUserPage(user, type);
       if (reqId !== undefined)
         requestId = reqId;
+        chooseStats(4);
     }, 125);
   });
 

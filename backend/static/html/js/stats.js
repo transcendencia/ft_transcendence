@@ -126,10 +126,17 @@ export function chooseStats(stat) {
     const stat1 = document.getElementById('statsBlock1');
     const stat2 = document.getElementById('statsBlock2');
     const stat3 = document.getElementById('statsBlock3');
+	const stat4 = document.getElementById('statsBlock4');
+	const stat5 = document.getElementById('statsBlock5');
+	const stat6 = document.getElementById('statsBlock6');
+
     removeClasses(stat1);
     removeClasses(stat2);
     removeClasses(stat3);
-
+	removeClasses(stat4);
+	removeClasses(stat5);
+	removeClasses(stat6);
+	
     if (stat === 1) {
         if (stat2.style.display === 'flex') {
             stat2.classList.add('slideOutRight');
@@ -188,6 +195,21 @@ export function chooseStats(stat) {
             }, 250);
         }
     }
+	else if (stat === 4) {
+		stat5.style.display = 'none';
+		stat6.style.display = 'none';
+		stat4.style.display = 'flex';
+	}
+	else if (stat === 5) {
+		stat4.style.display = 'none';
+		stat6.style.display = 'none';
+		stat5.style.display = 'flex';
+	}
+	else if (stat === 6) {
+		stat4.style.display = 'none';
+		stat5.style.display = 'none';
+		stat6.style.display = 'flex';
+	}
 }
 
 function convertTime(time) {
@@ -200,29 +222,32 @@ function convertTime(time) {
 
 function updateStats3(data)
 {
-	const currentWinstreak = document.getElementById('currentWinstreak');
-	const highestWinstreak = document.getElementById('highestWinstreak');
-	const dashNumber = document.getElementById('dashNumber');
-	const powerUpsNumber = document.getElementById('powerUpsNumber');
-	const nemesis = document.getElementById('nemesis');
-	const friendsNumber = document.getElementById('friendsNumber');
-	const timePlayed = document.getElementById('timePlayed');
-	const dateOfCreation = document.getElementById('dateOfCreation');
+	const statValues = document.querySelectorAll('.statValue');
 
-	currentWinstreak.textContent = data.currentStreak;
-	highestWinstreak.textContent = data.maxStreak;
-	dashNumber.textContent = data.totalDashes;
-	powerUpsNumber.textContent = data.totalPowerUpsUsed;
-	nemesis.textContent = 'le bocal';
-	friendsNumber.textContent = '0';
-	timePlayed.textContent = convertTime(data.totalGameTime);
-	dateOfCreation.textContent = '2021-06-01';
+	const values = [
+		data.currentStreak,
+		data.maxStreak,
+		data.totalDashes,
+		data.totalPowerUpsUsed,
+		'le bocal',
+		'0',
+		convertTime(data.totalGameTime),
+		'2021-06-01'
+	]		
+
+	statValues.forEach((stat, index) => {
+		stat.textContent = values[index % 8];
+	});
 }
 
 const winLostChart = new DoughnutGraph('winLostStat', 'Win%', ['#5dffa990', '#ff5d5d90']);
 const mapChart = new DoughnutGraph('mapStat', 'Maps played', ['#ff5f02bb', '#1f15efbb', '#ccfbfbbb', '#000030bb']);
 const modeChart = new DoughnutGraph('gameModeStat', 'Modes played', ['#5dffa990', '#ff5d5d90', '#ff5f02bb']);
 const accuracy = new DoughnutGraph('accuracyStat', 'Accuracy', ['#5dffa990', '#ff5d5d90']);
+const winLostChart2 = new DoughnutGraph('winLostStat2', 'Win%', ['#5dffa990', '#ff5d5d90']);
+const mapChart2 = new DoughnutGraph('mapStat2', 'Maps played', ['#ff5f02bb', '#1f15efbb', '#ccfbfbbb', '#000030bb']);
+const modeChart2 = new DoughnutGraph('gameModeStat2', 'Modes played', ['#5dffa990', '#ff5d5d90', '#ff5f02bb']);
+const accuracy2 = new DoughnutGraph('accuracyStat2', 'Accuracy', ['#5dffa990', '#ff5d5d90']);
 
 export function getUserStats(userId) {
   const token = localStorage.getItem('host_auth_token');
@@ -242,9 +267,12 @@ export function getUserStats(userId) {
   .then(data => {
     mapChart.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
 	modeChart.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
-	console.log("data", data);
     winLostChart.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);
 	accuracy.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
+    mapChart2.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
+	modeChart2.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
+    winLostChart2.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);
+	accuracy2.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
 	updateStats3(data);
   })
   .catch(error => {

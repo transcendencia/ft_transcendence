@@ -215,7 +215,7 @@ class LoadingScreen {
             this.isAnimatingCamera = false;
             this.iterations = 0;
             this.loadingCompleted = true;
-            const duration = 500;
+            const duration = 2000;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;

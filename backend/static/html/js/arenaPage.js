@@ -278,6 +278,7 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
       else
         gameState.arena.game.thirdPlayer = false;
       gameState.arena.game.tournamentGame = isTournament;
+      gameState.arena.loadingScreen.loadingComplete();
     }, 250);
   }
 
