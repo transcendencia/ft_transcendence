@@ -188,8 +188,7 @@ const enterPasswordText = document.getElementById('enterPasswordText');
 const enterPasswordInput = document.getElementById('enterPasswordInput');
 const arenaBackLogInButton = document.getElementById('arenaBackLogInButton');
 const arenaLogInButton = document.getElementById('arenaLogInButton');
-const enterAliasText = document.getElementById('enterAliasText');
-const enterAliasInput = document.getElementById('enterAliasInput');
+const showAliasText = document.getElementById('showAliasText');
 const aliasBackLogInButton = document.getElementById('aliasBackLogInButton');
 const aliasLogInButton = document.getElementById('aliasLogInButton');
 
@@ -199,8 +198,7 @@ function translatePopupWindow(){
     arenaBackLogInButton.textContent = getTranslatedText('arenaBackLogInButton');
     arenaLogInButton.textContent = getTranslatedText('arenaLogInButton');
     
-    enterAliasText.textContent = getTranslatedText('enterAliasText');
-    enterAliasInput.placeholder = getTranslatedText('enterAliasInput');
+    showAliasText.textContent = getTranslatedText('showAliasText');
     aliasBackLogInButton.textContent = getTranslatedText('aliasBackLogInButton');
     aliasLogInButton.textContent = getTranslatedText('aliasLogInButton');
 }

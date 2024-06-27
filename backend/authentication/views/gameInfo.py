@@ -16,7 +16,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
-from ..models import User, Game
+from ..models import User, Game, UserStat
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer, GameListSerializer
 
 import json
@@ -79,6 +79,7 @@ def add_game(request):
     scorePlayer2 = data['scorePlayer2']
     gameplayMode = data['gameplayMode']
     modeGame = data['modeGame']
+    mapGame = data['mapGame']
 
     player1 = User.objects.get(id=player1_id)
     player2 = User.objects.get(id=player2_id)
@@ -91,7 +92,40 @@ def add_game(request):
         scorePlayer2=scorePlayer2,
         gameplayMode=gameplayMode,
         modeGame=modeGame,
+        mapGame=mapGame,
     )
     game.save()
+    
+    createUserStat(player1, game, data['user1'])
+    # user1 = data['user1']
+    # user2 = data['user2']
+    # user3 = data.get('user3', None)
+    # print("user1", user1)
+    # print("user2", user2)
     return JsonResponse({'status': 'success', 'game_id': game.id})
   return JsonResponse({'status': 'fail'}, status=400)
+
+def createUserStat(user, game, userStat):
+  user.nbr_match += 1
+  if userStat.get('isWinner', False):
+    user.nbr_match_win += 1
+  else:
+    user.nbr_match_lost += 1
+  user.nbr_goals += userStat['pointsScored']
+  user.save()
+
+  new_stat = UserStat(
+    player=user, 
+    game=game,
+    isWinner=userStat['isWinner'],
+    pointsScored=userStat['pointsScored'],
+    pointsTaken=userStat['pointsTaken'],
+    nbDashes=userStat['nbDashes'],
+    nbPoweredUsed=userStat['nbPowerUsed'],
+    nbBounces=userStat['nbBounces'],
+    modeGame=game.modeGame,
+    mapGame=game.mapGame)
+    
+  new_stat.save()
+
+  return JsonResponse({'status': 'success'})

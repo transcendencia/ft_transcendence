@@ -25,7 +25,7 @@ function addGlow(elementId, glow) {
 function removeGlow(elementId, glow) {
     var element = document.getElementById(elementId);
     if (element)
-    element.classList.remove(glow);
+        element.classList.remove(glow);
 }
 
 let languageIcons = document.querySelectorAll('.languageIcon');
@@ -58,6 +58,19 @@ graphicsIcons.forEach(function(icon) {
         });
     });
 });
+
+
+function updateGraphicsIcon(mode) {
+    graphicsIcons.forEach(function(otherIcon) {
+        removeGlow(otherIcon.id, 'redGlow');
+    });
+    if (mode === "low")
+    addGlow("graphicsIcon1", 'redGlow');
+    else if (mode === "medium")
+        addGlow("graphicsIcon2", 'redGlow');
+    else if (mode === "high")
+        addGlow("graphicsIcon3", 'redGlow');
+}
 
  export function getCookie(name) {
     let cookieValue = null;
@@ -147,31 +160,39 @@ function setEscapeLanguageVisual() {
 }
 
 // if (localStorage.getItem("hostLoggedIn") === null) {
-    //     localStorage.setItem('hostLoggedIn', 'false');
-    // }
-// Add event listener to the loginForm
-const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', handleLogin);
+//     console.log()
+//     localStorage.setItem('hostLoggedIn', 'false');
+// }
 
 // Handle form submission
-function handleLogin(event) {
-    event.preventDefault();
+export function handleLogin(formData) {
+    console.log("Je suis dans handle login");
+    if (localStorage.getItem("hostLoggedIn") === null) {
+        localStorage.setItem('hostLoggedIn', 'false');
+    }
 
-    const formData = new FormData(this);
-    formData.append('language', currentLanguage);
-    formData.append('languageClicked', languageIconsClicked);
-    formData.append('hostLoggedIn', localStorage.getItem("hostLoggedIn"));
+    const hostLoggedIn = localStorage.getItem("hostLoggedIn");
+
+    if (hostLoggedIn === 'false') {
+        formData.append('language', currentLanguage);
+        formData.append('languageClicked', languageIconsClicked);
+    }
+
     setlanguageIconsClicked(false);
+
     fetch('login_page/', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
-        
+        console.log(data.status);
         if (data.status == "succes") {
             // if (localStorage.getItem("hostLoggedIn") === "false") {
-                localStorage.setItem('hostLoggedIn', 'true');
+                console.log(hostLoggedIn);
+
+            // if (hostLoggedIn === 'false') {
+                localStorage.setItem("hostLoggedIn", 'true');
                 localStorage.setItem("host_auth_token", data.token);
                 localStorage.setItem("host_id", data.id);
                 setCurrentLanguage(data.language);
@@ -181,16 +202,55 @@ function handleLogin(event) {
                 TranslateAllTexts();
                 getGameInfo();
                 changeGraphics(data.graphic_mode);
+                updateGraphicsIcon(data.graphic_mode);
                 showPage('none');
                 startAnimation();
             // }
-        } else 
-            document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+        //     } else {
+        //         return "SUCCESS";
+        //     }
+        // } else {
+        //     document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+        //     return "FAILURE";
+        }
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
 }
+
+// Add event listener to the loginForm
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', handleLoginSubmit);
+
+function handleLoginSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    handleLogin(formData);
+}
+
+
+// export function handleLoginGuest(user) {
+//     var passwordInput = document.getElementById('enterPasswordInput');
+//     var formData = new FormData();
+//     formData.append('username', user.username);
+//     formData.append('password', passwordInput.value);
+    
+//     fetch('logGuest/', {
+//         method: 'POST',
+//         body: formData
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+       
+//     })
+//     .catch(error => {
+//         console.error('Erreur :', error);
+//     });
+
+//     console.log(user);
+// }
 
 export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
 
@@ -248,7 +308,7 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
     historyContainer.appendChild(matchBlock);
 }
 
-function getGameInfo() {
+export function getGameInfo() {
 	const token = localStorage.getItem('host_auth_token');
 		fetch('get_game_user/', {
 		    method: 'GET',
@@ -322,6 +382,12 @@ function handleLogout() {
     .catch(error => {
         console.error('Erreur :', error);
     });
+    const hostLoggedIn = localStorage.getItem("hostLoggedIn")
+    console.log(hostLoggedIn)
+    if (hostLoggedIn === 'true') {
+        localStorage.setItem('hostLoggedIn', 'false')
+        console.log(localStorage.getItem("hostLoggedIn"));
+    }
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
@@ -341,3 +407,4 @@ function handleLogout() {
     }, 50);
     // localStorage.setItem('hostLoggedIn', 'false');
 };
+

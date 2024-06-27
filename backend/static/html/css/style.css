@@ -11,6 +11,10 @@ body {
     height: 100vh; /* Use viewport height for container */
 }
 
+*, ::after, ::before {
+    box-sizing: content -box;
+}
+
 #c1 {
     width: 100%; /* Each canvas takes up 50% of the window width */
     height: 100%; /* Each canvas fills the entire window height */

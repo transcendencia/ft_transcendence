@@ -25,33 +25,32 @@ def index(request):
 def login_page(request):
   try:
     username = request.POST.get("username")
+    username_lower = username.lower()
     password = request.POST.get("password")
-    new_language = request.POST.get("language")
-    languageClicked = request.POST.get("languageClicked") == 'true'
     hostLoggedIn = request.POST.get("hostLoggedIn") == 'true'
+    if hostLoggedIn:
+      new_language = request.POST.get("language")
+      languageClicked = request.POST.get("languageClicked") == 'true'
 
-    user = authenticate(username=username, password=password)
+    print(username_lower, password)
+    user = authenticate(username=username_lower, password=password)
     if user is not None:
-      # if user.status != 'online':
-        # if not hostLoggedIn:
-        print("je suis le host")
-        token, created = Token.objects.get_or_create(user=user)
-        user.is_host = True
-        if languageClicked and new_language != user.language:
-            user.language = new_language
+      # if user.status is not 'online':
         user.last_login_date = timezone.now()
         user.status = 'online'
+        print("je suis le host")
+        token, created = Token.objects.get_or_create(user=user)
+        if hostLoggedIn:
+          user.is_host = True
+          if languageClicked and new_language != user.language:
+            user.language = new_language
         user.save()
-        # ATTENTION -> le token a pas return si c'est pas un host
         return  Response({'status': "succes", 'token': token.key, 'msg_code': "loginSuccessful", 'language': user.language, 'id': user.id, 'graphic_mode': user.graphic_mode})
-      # else:
-        # return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"})
     else:
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
   except Exception as e:
       print(str(e))
       return Response({'status': "error", 'message': str(e)})
-
 
 @api_view(['POST']) 
 @permission_classes([AllowAny])  
@@ -64,11 +63,10 @@ def signup(request):
     user = User(username=user_data['username'], language=new_language)
     user.set_password(user_data['password'])
     user.save()
-    users = User.objects.all().order_by('id')
-
+    # users = User.objects.all().order_by('id')
     # Imprimer l'id et le username de chaque utilisateur
-    for user in users:
-      print(f"ID: {user.id}, Username: {user.username}")
+    # for user in users:
+    #   print(f"ID: {user.id}, Username: {user.username}")
     return Response({'status': "success", "msg_code": "successfulSignup"}, status=status.HTTP_200_OK)
   first_error = next(iter(serializer.errors.values()))[0]
   first_error_code = first_error.code 

@@ -96,10 +96,9 @@
         "enterPasswordInput": "Password",
         "arenaBackLogInButton": "Back",
         "arenaLogInButton": "Log in",
-        "enterAliasText": "Enter your alias for the tournament",
-        "enterAliasInput": "Alias",
+        "showAliasText": "This is your alias for the tournament:",
         "aliasBackLogInButton": "Back",
-        "aliasLogInButton": "Validate"
+        "aliasLogInButton": "Ok"
     },
     "es": {
         "login": "Usuario",
@@ -196,10 +195,9 @@
         "enterPasswordInput": "Contrasena",
         "arenaBackLogInButton": "Atras",
         "arenaLogInButton": "Acceso",
-        "enterAliasText": "Introduce tu alias para el torneo",
-        "enterAliasInput": "Alias",
+        "showAliasText": "Este es tu alias para el torneo:",
         "aliasBackLogInButton": "Atras",
-        "aliasLogInButton": "Validar"
+        "aliasLogInButton": "De acuerdo"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -294,9 +292,8 @@
         "enterPasswordInput": "Mot de passe",
         "arenaBackLogInButton": "Retour",
         "arenaLogInButton": "Connection",
-        "enterAliasText": "Entrer votre alias pour le tournoi",
-        "enterAliasInput": "Alias",
+        "showAliasText": "Voici votre alias pour le tournoi:",
         "aliasBackLogInButton": "Retour",
-        "aliasLogInButton": "Valider"
+        "aliasLogInButton": "D'accord"
     }
 }
