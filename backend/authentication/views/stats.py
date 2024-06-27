@@ -32,15 +32,16 @@ def get_stats(request, userId):
     percentageGameLost = round(100 - percentageGameWon, 1)
 
     # Dashes / PoweredUsed
-    sums = allGames.aggregate(totalDashes=Sum('nbDashes'), totalPoweredUsed=Sum('nbPoweredUsed'))
+    sums = allGames.aggregate(totalDashes=Sum('nbDashes'), totalPoweredUsed=Sum('nbPoweredUsed'), totalGameTime=Sum('gameTime'))
 
+    totalGameTime = sums['totalGameTime'] or 0
     totalDashes = sums['totalDashes'] or 0
-    totalPoweredUsed = sums['totalPoweredUsed'] or 0
+    totalPowerUpsUsed = sums['totalPoweredUsed'] or 0
 
-    total = totalDashes + totalPoweredUsed
+    total = totalDashes + totalPowerUpsUsed
     if total > 0:
       dashesPercentage = (totalDashes / total) * 100
-      poweredUsedPercentage = (totalPoweredUsed / total) * 100
+      poweredUsedPercentage = (totalPowerUpsUsed / total) * 100
     else:
       dashesPercentage = 0
       poweredUsedPercentage = 0
@@ -150,16 +151,20 @@ def get_stats(request, userId):
     return Response({
       'percentageGameWon': percentageGameWon, 
       'percentageGameLost': percentageGameLost,
+      'totalDashes': totalDashes,
+      'totalPowerUpsUsed': totalPowerUpsUsed,
       'dashesPercentage': dashesPercentage,
       'poweredUsedPercentage': poweredUsedPercentage,
       'efficiencyRatios': efficiencyRatios,
       'nbrGames': nbrGames,
+      'maxStreak': maxStreak,
       'currentStreak': currentStreak,
       'mapPercentages': mapPercentages,
       'modePercentages' : modePercentages,
       'efficiency' : efficiency,
       'totalPointsTaken': totalPointsTaken,
-      'totalBounces': totalBounces
+      'totalBounces': totalBounces,
+      'totalGameTime': totalGameTime
     })
 
   except User.DoesNotExist:
