@@ -816,6 +816,7 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
+            this.game.startingTime = Date.now();
             scoreUI[0].style.opacity = 1;
             if (this.game.user2.isBot)
                 this.bot.activateBot();
@@ -1096,6 +1097,7 @@ class Arena extends THREE.Mesh {
             this.ball.bounceCount = 0;
             this.isBeingReset = false;
             this.game.isPlaying = false;
+            this.game.gameTime = Date.now() - this.game.startingTime;
             this.game.isOver = false;
             swapToFullScreen();
             if (this.game.thirdPlayer)
@@ -3496,7 +3498,6 @@ class Bot {
 
 class UserStats {
     constructor(isThirdPlayer, usernameElement, ppElement) {
-    
         this.isThirdPlayer = isThirdPlayer;
         this.isWinner = false;
         this.usernameElement = usernameElement;
@@ -3535,6 +3536,18 @@ class UserStats {
         this.usernameElement.textContent = username;
         this.ppElement.src = profilePicture;
     }
+    toJson() {
+        return {
+            isThirdPlayer: this.isThirdPlayer,
+            isWinner: this.isWinner,
+            pointsScored: this.pointsScored,
+            pointsTaken: this.pointsTaken,
+            nbDashes: this.nbDashes,
+            nbPowerUsed: this.nbPowerUsed,
+            nbBounces: this.nbBounces,
+            isBot: this.isBot,
+        };
+    }
 }
 
 class Game {
@@ -3551,6 +3564,8 @@ class Game {
         this.thirdPlayer = false;
         this.hasToBeInitialized = false;
         this.tournamentGame = false;
+        this.startingTime = 0;
+        this.gameTime = 0;
         // next variables are all to be inputed in string format
         this.user1Username = document.getElementById('username1Text');
         this.user2Username = document.getElementById('username2Text');
@@ -3593,6 +3608,7 @@ class GameState {
         this.loading = false;
         this.arenaCreated = false;
         this.inGame = false;
+        this.paused = false;
         this.inLobby = true;
         this.graphicsNeedToChange = false; 
         this.graphics = 'medium'; // (options = 'low', 'medium', 'high') (loginPage.js)
@@ -3627,6 +3643,9 @@ class GameState {
             this.arena.graphics = this.graphics;   
         }
         updateUserGraphicMode(this.graphics);
+    }
+    togglePause() {
+        this.paused = !this.paused;
     }
 }
 
@@ -3841,7 +3860,7 @@ function animate()
         if (gameState.inLobby)
             return ;
         TWEEN.update();
-        if (gameState.inGame)
+        if (gameState.inGame && !gameState.paused)
         {
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();

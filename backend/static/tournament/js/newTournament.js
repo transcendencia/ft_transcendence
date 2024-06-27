@@ -93,10 +93,15 @@ buttonHeaders.forEach((buttonHeader, index) => {
 
 export function RenderUserTournament(user) {
     const usernameElement = document.getElementById('player1TournamentUsername');
-    usernameElement.textContent = user.username;
+    let username;
+    if (user.alias === null)
+      username = user.username;
+    else
+      username = user.alias;
+    usernameElement.textContent = username;
     const pictureElement = document.getElementById('player1TournamentPicture');
     pictureElement.src = user.profile_picture;
-    addUserToTournament(user.id, user.username, user.profile_picture);
+    addUserToTournament(user.id, username, user.profile_picture);
   }
 
 let plusButtonsTournament = document.querySelectorAll(".plusPlayerTournament");
@@ -114,7 +119,7 @@ export async function RenderAllUsersTournament() {
         createUserTile(obj.user, 'Friend', userListBackground, userTilesTournament)
     });
     users.user_not_friend.forEach(user => {
-        createUserTile(user, '', userListBackground, userTilesTournament);
+        createUserTile(user, 'Default', userListBackground, userTilesTournament);
     });
     addEventListenerToTilesTournament();
 }
@@ -134,30 +139,29 @@ export function resetTournament() {
   document.querySelectorAll('.before-launch').forEach(function(el) {
     el.style.display = 'flex';
   });
-  launchMatchElement.style.display = "none";
   bracketElement.style.display = "none";
-  nextMatchElement.style.display = "none";
-  matchElement.style.display = "none";
+  nextMatchElement.textContent = getTranslatedText('nextMatch');
+  nextMatchElement.style.display = "block";
   bottomTournamentElement.style.display = "none";
   midColumn.style.width = '80%';
-  profileAddedToTournament = [];
   playerNb = 0;
   tournamentState = 0;
-  tournamentPlayer.length = 0;
   gamemodeCounterTournament = 0;
   mapCounterTournament = 0;
   botDifficultyTournament = 1;
   round = 1;
   thirdPlayerMode = false;
   plusClickedTournament = false;
-  getProfileInfo();
-  resetPlusButton();
   resetBracket();
-  plusButtonsTournament = document.querySelectorAll(".plusPlayerTournament");
-  plusButtonsTournament.forEach(function(otherPlusButton) {
-    otherPlusButton.style.pointerEvents = 'auto';
-  });
-  addEventListenersToPlusButtons();
+  // profileAddedToTournament = [];
+  // tournamentPlayer.length = 0;
+  // getProfileInfo();
+  // resetPlusButton();
+  // plusButtonsTournament = document.querySelectorAll(".plusPlayerTournament");
+  // plusButtonsTournament.forEach(function(otherPlusButton) {
+  //   otherPlusButton.style.pointerEvents = 'auto';
+  // });
+  // addEventListenersToPlusButtons();
 }
 
 //add user to tournaments
@@ -171,35 +175,22 @@ let playerNb = 0;
 export let tournamentState = 0;
 
 function GlowTournament() {
-  userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-  userlist.style.borderColor = '#ffb30eff';
-  userlist.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
-  userTilesTournament.forEach((tile, i) => {
-      if (profileAddedToTournament[i])
-          return;
-      const tileChildren = tile.HTMLelement.querySelectorAll(":scope > *");
-      tileChildren.forEach(function(element) {
-          element.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-          element.style.borderColor = '#ffb30eff';
-          element.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
-      });
-  });
+  userlist.classList.add('whiteGlowing');
+    userTilesTournament.forEach((tile, i) => {
+        if (profileAddedToTournament[i])
+            return;
+        const tileChildren = tile.HTMLelement.querySelectorAll(":scope > *");
+        tileChildren.forEach(child => child.classList.add('whiteGlowing'))
+    });
 }
 
 export function resetGlowTournament() {
-  userlist.style.borderColor = blue;
-  userlist.style.animation = '';
+  userlist.classList.remove('whiteGlowing')
   userTilesTournament.forEach((child, i) => {
       const children = child.HTMLelement.querySelectorAll(":scope > *");
       children.forEach(element => {
-          element.style.borderColor = blue;
-          element.style.animation = '';
+          element.classList.remove('whiteGlowing')
       });
-      if (i === botID) {
-          children.forEach(element => {
-              element.style.borderColor = purple;
-          });
-      }
   });
 }
 
@@ -308,6 +299,13 @@ function addEventListenerToTilesTournament() {
   function askForAlias(){
     pwWindow.classList.remove("showRectangle");
     aliasWindow.classList.toggle("showRectangle");
+    const i = tempTileIndexTournament;
+    const tile = userTilesTournament[i];
+    aliasText = document.getElementById('aliasText');
+    if (tile.user.alias === null)
+      aliasText.textContent = tile.user.username;
+    else
+      aliasText.textContent = tile.user.alias;
   }
 
   function returnToPassword(){
@@ -326,7 +324,10 @@ function addEventListenerToTilesTournament() {
       profileAddedToTournament[i] = true;
       playerNb++;
       const newObj = createUserInfoObject(tile, i);
-      addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
+      if (tile.user.alias === null)
+        addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
+      else
+        addUserToTournament(tile.user.id, tile.user.alias, tile.user.profile_picture);
       const oldObj = plusButtonsTournament[plusClickedTournament - 1];
       oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
       resetGlowTournament();
@@ -360,15 +361,6 @@ function addEventListenerToTilesTournament() {
 
   validateAliasButton.addEventListener('click', function() {
     putUserInTournament();
-    const inputElement = document.getElementById('enterAliasInput');
-    if (inputElement) {
-      const inputValue = inputElement.value;
-      if (inputValue === "")
-        return ;
-      if (tournamentPlayer.some(player=> player.username === inputValue))
-        return ;
-      return ;
-    }
   });
 
   backAliasButton.addEventListener('click', function() {
@@ -605,7 +597,7 @@ function addEventListenerToTilesTournament() {
       winner_name = currentMatch[nbMatch][1].myRef.username;
       currentMatch[nbMatch][0].myRef.round ++;
     }
-    updateBracket(winner_name, currentMatch, nbMatch, round);
+    updateBracket(tournamentPlayer, winner_name, currentMatch, nbMatch, round);
     nextMatch();
     if (gameState.arenaCreated) //if the game has never been launch
       gameState.arena.game.resetUsers();

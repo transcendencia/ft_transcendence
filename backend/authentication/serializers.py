@@ -7,7 +7,7 @@ import logging
 class UserSerializer(serializers.ModelSerializer):
 	class Meta():
 		model = User
-		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'bio', 'is_host']
+		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'alias', 'is_host']
 
 error_codes = {
     "length_exceeded": "Username must contain 12 characters maximum.",
@@ -26,10 +26,13 @@ class SignupSerializer(serializers.ModelSerializer):
 			field.error_messages['blank'] = "All fields must be completed."
 	
 	def validate_username(self, value):
+		value = value.lower()
 		if len(value) > 13:
 			raise serializers.ValidationError(error_codes["length_exceeded"], code="length_exceeded")
 		if value == 'bot':
 			raise serializers.ValidationError(error_codes["unique"], code="unique")
+		if User.objects.filter(username=value).exists():
+			raise serializers.ValidationError("Username already exist")
 		return value
 
 	def validate_confirmation_password(self, value):
@@ -47,22 +50,27 @@ class SignupSerializer(serializers.ModelSerializer):
 	# 		raise PasswordValidationError(detail=e.error_list[0])
 	# 	return value
 
+
 class UpdateInfoSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True, required=False)
 	class Meta():
 		model = User
-		fields = ['username', 'password', 'bio', 'profile_picture', 'confirmation_password']
+		fields = ['username', 'password', 'alias', 'profile_picture', 'confirmation_password']
 		extra_kwargs = {
 			'password': {'write_only': True, 'required': False},
 			'username': {'required': False},
-			'bio': {'required': False},
+			'alias': {'required': False},
 			'profile_picture': {'required': False}
 		}
 
 	def	validate_username(self, value):
 		if value:
+			value = value.lower()
 			if len(value) > 13:
 				raise serializers.ValidationError("Username must contains 12 characters maximum.")
+			current_user = self.instance
+			if current_user and current_user.username == value:
+				return value 
 			if User.objects.filter(username=value).exists():
 				raise serializers.ValidationError("Username already exist")
 		return value
@@ -75,10 +83,10 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 				raise PasswordValidationError(detail=e.error_list[0])
 		return value
 
-	def validate_bio(self, value):
+	def validate_alias(self, value):
 		if value:
 			if len(value) > 28:
-				raise serializers.ValidationError("Bio must contains 28 characters maximum.")
+				raise serializers.ValidationError("Alias must contains 28 characters maximum.")
 		return value
 
 	def validate(self, data):
@@ -111,7 +119,7 @@ class PasswordValidationError(serializers.ValidationError):
 class UserListSerializer(serializers.ModelSerializer):
 	class Meta():
 		model = User
-		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'bio', 'is_host']
+		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'alias', 'is_host']
 
 
 class GameListSerializer(serializers.ModelSerializer):

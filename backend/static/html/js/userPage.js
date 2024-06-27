@@ -1,10 +1,10 @@
 import { togglePlanet } from './enterPlanet.js';
-import {  getCookie, createMatchBlock} from './loginPage.js';
-import { get_friends_list, send_request, accept_friend_request, delete_friend_request } from './userManagement.js';
+import {  getCookie, createMatchBlock, getGameInfo} from './loginPage.js';
+import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
+import { getUserStats, chooseStats } from './stats.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
-const statsScreen = document.querySelector('.statsBlock');
 const colorClicked = '#5d75ff47';
 
 statsButtons.forEach((button, index) => {
@@ -16,6 +16,8 @@ statsButtons.forEach((button, index) => {
         for (let i = 3; i < 6; i++)
           statsButtons[i].style.backgroundColor = 'transparent';
       button.style.backgroundColor = colorClicked;
+      chooseStats(index + 1);
+      getUserStats(localStorage.getItem("host_id"));
     });
 });
 
@@ -39,13 +41,18 @@ export let checkEach5Sec;
 
 export function initUserPlanet() {
   renderFriendList();
-  const basicStats = document.getElementById('winLoseTexts1');
-  basicStats.innerHTML = `
-      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
-      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
-      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
-      <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
-  `;
+  getProfileInfo();
+  // getGameInfo();
+  //delay the animation of stats while page is opening
+  setTimeout(() => {
+    getUserStats(localStorage.getItem("host_id"));
+  }, 1750);
+  // basicStats.innerHTML = `
+  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
+  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
+  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
+  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
+  // `;
   checkEach5Sec = setInterval(async function() {
     if (await isListsChanged()) {
       if (inputElement.value === '')
@@ -53,7 +60,7 @@ export function initUserPlanet() {
       else await RenderUsersSearched(inputElement.value);
     }
     console.log("Checking...");
-  }, 5000);
+  }, 20000);
 }
 
 // Sample user data
@@ -125,7 +132,7 @@ export function initUserPlanet() {
   const userListBackground = document.getElementById('userlistUserPage');
   const profilePic = document.getElementById('profile_pic2');
   const username = document.getElementById('username2');
-  const bio = document.getElementById('bio2');
+  const alias = document.getElementById('alias2');
   const friendActionCont = document.querySelector('.friendActionCont');
   const checkMarkImg = friendActionCont.querySelectorAll('img')[0];
   const redCrossImg = friendActionCont.querySelectorAll('img')[1];
@@ -148,12 +155,13 @@ export function initUserPlanet() {
 
   checkMarkImg.addEventListener('click', async () => {
     resetProfile();
-    displayFriendProfile();
+    displayFriendProfile(displayedUserOnSearchPage);
+    console.log(displayedUserOnSearchPage);
     try {
       await accept_friend_request(requestId);
       await RenderUsersSearched(inputElement.value);
     } catch (error) {
-      console.error('Error deleting friend request:', error);
+      console.error('Error validating friend request:', error);
     }
   });
 
@@ -172,10 +180,12 @@ export function initUserPlanet() {
   }
 
   function resetProfile() {
-    friendActionCont.classList.remove("friendTile");
-    friendActionCont.classList.remove("requestTile");
-    profilePic.parentNode.classList.remove("friendTile");
-    profilePic.parentNode.classList.remove("requestTile");
+    friendActionCont.classList.remove("OnlineFriendTile");
+    friendActionCont.classList.remove("RequestTile");
+    friendActionCont.classList.remove("OfflineFriendTile");
+    profilePic.parentNode.classList.remove("OnlineFriendTile");
+    profilePic.parentNode.classList.remove("RequestTile");
+    profilePic.parentNode.classList.remove("OfflineFriendTile");
     friendActionCont.style.justifyContent = 'center';
     checkMarkImg.style.display = "none";
     redCrossImg.style.display = "none";
@@ -183,14 +193,20 @@ export function initUserPlanet() {
     bluePlusImg.style.display = "block";
   }
 
-  function displayFriendProfile() {
+  function displayFriendProfile(user) {
     bluePlusImg.style.display = "none";
     checkMarkImg.style.display = "none";
     requestSentElem.style.display = 'none';
     redCrossImg.style.display = "block";
     friendActionCont.style.justifyContent = 'center';
-    friendActionCont.classList.add("friendTile");
-    profilePic.parentNode.classList.add("friendTile");
+    if (user.status === 'Online' || user.status === 'InGame') {
+      profilePic.parentNode.classList.add("OnlineFriendTile");
+      friendActionCont.classList.add("OnlineFriendTile");
+    }
+    else if (user.status === 'Offline'){
+      profilePic.parentNode.classList.add("OfflineFriendTile");
+      friendActionCont.classList.add("OfflineFriendTile")
+    }
   }
 
   function displayFriendRequestProfile() {
@@ -199,25 +215,26 @@ export function initUserPlanet() {
     checkMarkImg.style.display = "block";
     redCrossImg.style.display = "block";
     friendActionCont.style.justifyContent = 'space-evenly';
-    friendActionCont.classList.add("requestTile");
-    profilePic.parentNode.classList.add("requestTile");
+    friendActionCont.classList.add("RequestTile");
+    profilePic.parentNode.classList.add("RequestTile");
   }
 
   async function fillSearchedUserPage(user, type) {
     displayedUserOnSearchPage = user;
     resetProfile();
     const newData = await get_friends_list();
-    if (newData.sent_request_list.some(requestUser => requestUser.id === user.id))
+    console.log(type);
+    if (newData.sent_request_list.some(requestUser => requestUser.id === user.id) && type === 'default')
       displayRequestSent();
-    else if (type === 'request')
+    else if (type === 'Request')
       displayFriendRequestProfile();
-    else if (type === 'friend')
-      displayFriendProfile();
+    else if (type === 'Friend')
+      displayFriendProfile(user);
 
     // Update the DOM elements with user information
     profilePic.src = user.profile_picture;
     username.textContent = user.username;
-    bio.textContent = user.bio;
+    alias.textContent = user.alias;
 
     document.getElementById('searchedUserHistory').innerHTML = '';
     
@@ -290,41 +307,65 @@ function getHistoryMatchPlayer2(user) {
   });
 }
 
+function createStatusPellet(status) {
+  const statusPelletElement = document.createElement('div');
+  statusPelletElement.classList.add('redPellet');
+  if (status === 'InGame' || status === 'Online')
+    statusPelletElement.classList.add('OnlineFriendTile');
+    else statusPelletElement.classList.add('OfflineFriendTile');
+  if (status !== 'Offline')
+    statusPelletElement.classList.add(status);
+  return statusPelletElement;
+}
+
 function createUserTile(user, type, reqId) {
   if (user.isHost)
     return;
-    const userTile = document.createElement('div');
+  console.log("status:", user.status);
+  
+  const userTile = document.createElement('div');
   userTile.classList.add('userTile');
   
   const imgContainer = document.createElement('div');
   imgContainer.classList.add('imgContainer');
-  imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
+  imgContainer.innerHTML += `<img src="${user.profile_picture}">`;
   
   const textContainer = document.createElement('div');
   textContainer.classList.add('textContainer');
   textContainer.textContent = user.username;
 
   const loupeContainer = document.createElement('div');
-  loupeContainer.classList.add('loupeImg');
   loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
+  loupeContainer.classList.add('loupeImg');
   loupeContainer.addEventListener('click', () => {
     slideAnimations(loupeContainer);
     setTimeout(() => {
+      fillSearchedUserPage(user, type);
       if (reqId !== undefined)
         requestId = reqId;
-      fillSearchedUserPage(user, type);
     }, 125);
   });
 
-  imgContainer.classList.add(`${type}Tile`);
-  textContainer.classList.add(`${type}Tile`);
-  loupeContainer.classList.add(`loupe${type.charAt(0).toUpperCase() + type.slice(1)}Tile`);
+  //status : 'offline', 'online', or '' to fit css classes names.
+  const status = (type === 'Friend') ? (user.status === 'Online' || user.status === 'InGame' ? 'Online' : 'Offline') : '';
+  const colorClass = `${status}${type}Tile`;
+
+  imgContainer.classList.add(`dark${colorClass}`);
+  textContainer.classList.add(colorClass);
+  loupeContainer.classList.add(colorClass);
+  loupeContainer.classList.add('hovered');
+  if (type === 'Friend')
+    userTile.appendChild(createStatusPellet(user.status));
 
   userTile.appendChild(imgContainer);
   userTile.appendChild(textContainer);
   userTile.appendChild(loupeContainer);
-  
   userListBackground.appendChild(userTile);
+}
+
+function assignRandomStatus(user) {
+  const statuses = ['Offline', 'Online', 'InGame'];
+  user.status = statuses[Math.floor(Math.random() * statuses.length)];
 }
 
 async function RenderUsersSearched(query) {
@@ -334,37 +375,51 @@ async function RenderUsersSearched(query) {
     renderFriendList();
     return;
   }
-  const data = await get_friends_list();
-  if (!data)
-    return ;
-  let requestList = [];
-  let friendList = [];
-  let otherList = [];
 
-  if (data.received_request_list.length > 0)  
-    requestList = data.received_request_list.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()));
-  if (data.friends.length > 0)
-    friendList = data.friends.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()));
-  if (data.other_user_list.length)
-    otherList = data.other_user_list.filter(obj => obj.username.toLowerCase().includes(query.toLowerCase()));
-  
-  previousReqFriendList = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.username)).concat(data.friends.sort((a, b) => a.user.username.localeCompare(b.username)));
+  try {
+    const data = await get_friends_list();
+    if (!data) return;
 
-  const filteredRequestList = requestList.sort((a, b) => a.user.username.localeCompare(b.username));
-  const filteredFriendList = friendList.sort((a, b) => a.user.username.localeCompare(b.username));
-  const filteredOthers = otherList.sort((a, b) => a.username.localeCompare(b.username));
+    // Filter and sort the lists based on the query
+    const requestList = data.received_request_list
+      .filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
+      .sort((a, b) => a.user.username.localeCompare(b.user.username));
+    
+    const friendList = data.friends
+      .filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
+      .sort((a, b) => {
+        // Define status order
+        const statusOrder = { 'Online': 0, 'InGame': 1, 'Offline': 2 };
+        // Compare status first, then by username
+        if (a.user.status !== b.user.status) {
+          return statusOrder[a.user.status] - statusOrder[b.user.status];
+        }
+        return a.user.username.localeCompare(b.user.username);
+      });
+    
+    const otherList = data.other_user_list
+      .filter(user => user.username.toLowerCase().includes(query.toLowerCase()))
+      .sort((a, b) => a.username.localeCompare(b.username));
 
-  filteredRequestList.forEach(obj => createUserTile(obj.user, 'request', obj.request_id));
-  filteredFriendList.forEach(obj => createUserTile(obj.user, 'friend', obj.request_id));
-  filteredOthers.forEach(user => createUserTile(user, '', undefined));
+    // Assign random status to each user
+    requestList.forEach(obj => assignRandomStatus(obj.user));
+    friendList.forEach(obj => assignRandomStatus(obj.user));
+    otherList.forEach(user => assignRandomStatus(user));
+
+    // Clear and concatenate previous lists for consistent sorting
+    previousReqFriendList = data.received_request_list.concat(data.friends);
+
+    // Render tiles based on filtered and sorted lists
+    requestList.forEach(obj => createUserTile(obj.user, 'Request', obj.request_id));
+    friendList.forEach(obj => createUserTile(obj.user, 'Friend', obj.request_id));
+    otherList.forEach(user => createUserTile(user, 'Default', undefined));
+  } catch (error) {
+    console.error('Error in rendering searched users:', error);
+  }
 }
+
+
   
-inputElement.addEventListener('input', function(event) {
-  const searchQuery = this.value.trim();
-  if (searchQuery.length === 0)
-    renderFriendList();
-  else RenderUsersSearched(searchQuery);
-});
 
 export async function renderFriendList() {
   userListBackground.innerHTML = ''; // Clear existing user tiles
@@ -372,13 +427,41 @@ export async function renderFriendList() {
   try {
       const data = await get_friends_list();
       const sortedRequests = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
-      const sortedFriends = data.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
+      
+      sortedRequests.forEach(obj => assignRandomStatus(obj.user));
+      data.friends.forEach(friend => assignRandomStatus(friend.user));
 
+      const sortedFriends = data.friends.sort((a, b) => {
+          const statusOrder = { 'Online': 0, 'InGame': 1, 'Offline': 2 };
+          if (statusOrder[a.user.status] !== statusOrder[b.user.status]) {
+              return statusOrder[a.user.status] - statusOrder[b.user.status];
+          }
+          return a.user.username.localeCompare(b.user.username);
+      });
+      
       previousReqFriendList = sortedRequests.concat(sortedFriends);
-
-      sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'request', userSendingRq.request_id));
-      sortedFriends.forEach(user => createUserTile(user.user, 'friend', user.request_id));
-  } catch (error) {
+      
+      sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'Request', userSendingRq.request_id));
+      sortedFriends.forEach(friend => createUserTile(friend.user, 'Friend', friend.request_id));
+    } catch (error) {
       console.error('Error in rendering friend list:', error);
+    }
   }
-} 
+
+  let searchTimeout;
+
+  inputElement.addEventListener('input', function(event) {
+      const searchQuery = this.value.trim();
+  
+      // Clear previous timeout
+      clearTimeout(searchTimeout);
+  
+      // Set new timeout to execute RenderUsersSearched after 300ms of user inactivity
+      searchTimeout = setTimeout(() => {
+          if (searchQuery.length === 0) {
+              renderFriendList();
+          } else {
+              RenderUsersSearched(searchQuery);
+          }
+      }, 300); // Adjust the debounce delay as needed
+  });

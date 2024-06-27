@@ -1,5 +1,6 @@
-import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
-import { scene, THREE} from "./main.js";
+import * as THREE from "three"
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { scene } from "./main.js";
 import { setupPlanets } from "./planets.js";
 
 
