@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { showPage } from './showPages.js';
-import {spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
+import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
@@ -12,11 +12,10 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
+import { gameStarted, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-
 
 
 let cubeLoader = new THREE.CubeTextureLoader();
@@ -42,7 +41,6 @@ scene.traverse(obj => {
 
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
-camera.position.set(0, 1, -495);
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
 export function toggleLobbyStart() {
@@ -189,15 +187,15 @@ const minimapHeight = 200;
 
 // Create an orthographic camera for the minimap
 const minimapCamera = new THREE.OrthographicCamera(
-    minimapWidth * 12,  // left
-    -minimapWidth * 12,   // right
-    -minimapHeight * 12,  // top
-    minimapHeight * 12, // bottom
+    minimapWidth * 8,  // left
+    -minimapWidth * 8,   // right
+    -minimapHeight * 8,  // top
+    minimapHeight * 8, // bottom
     1,                // near
     4000              // far
     );
      
-    minimapCamera.position.set(sun.position.x + 200, sun.position.y + 500, sun.position.z);
+    minimapCamera.position.set(sun.position.x, sun.position.y + 500, sun.position.z);
     
     const minimapRenderer = new THREE.WebGLRenderer();
     minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
@@ -211,27 +209,21 @@ const minimapCamera = new THREE.OrthographicCamera(
     const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
     const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000045 }); 
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
-    minimapBG.position.set(-200, -600, 0); 
+    minimapBG.position.set(0, -600, 0);
     minimapBG.lookAt(minimapCamera.position); // Make the plane face the camera
     scene.add(minimapBG);
 
     minimapBG.layers.set(1);
     minimapCamera.layers.enable(1);
     camera.layers.enable(2);
-    const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
-    const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const playerMarker = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    playerMarker.scale.set(20,20,20);
-    scene.add(playerMarker);
-    // const camera1Helper = new THREE.CameraHelper(minimapCamera);
-
+    minimapCamera.lookAt(sun.position);
+    
 function renderMinimap() {
     if (!spaceShip)
         return;
-    playerMarker.position.x = spaceShip.position.x;
-    playerMarker.position.z = spaceShip.position.z;
-    playerMarker.position.y = 500;
-    minimapCamera.lookAt(sun.position);
+    marker.position.x = spaceShip.position.x;
+    marker.position.z = spaceShip.position.z;
+    marker.quaternion.copy(spaceShip.quaternion);
     minimapRenderer.render(scene, minimapCamera);
 }
 
@@ -425,6 +417,8 @@ import { getUserStatus } from './userManagement.js';
 let firstPauseTriggered = false;
 
 document.addEventListener('keydown', (event) => {
+    if (event.key === 'p')
+        console.log(camera.position);
     if (event.target.tagName === 'INPUT')
         return;
     if (event.key === 'e' && !lobbyStart) {
