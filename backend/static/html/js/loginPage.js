@@ -149,6 +149,7 @@ export async function handleLogin(formData) {
 
     const hostLoggedIn = localStorage.getItem("hostLoggedIn");
 
+    formData.append('hostLoggedIn', hostLoggedIn);
     if (hostLoggedIn === 'false') {
         formData.append('language', currentLanguage);
         formData.append('languageClicked', languageIconsClicked);
@@ -326,12 +327,16 @@ function handleLogout(userId, token) {
             updateUserStatus('offline', user[1]);
         });
     }
+    guestLoggedIn.splice(0, guestLoggedIn.length);
+    const lsCont = document.getElementById('lsCont');
+    lsCont.innerHTML = `
+        <div class="tinyRedShadowfilter">
+            Players Connected
+        </div>
+    `;
 
     // Disconnect the host
     updateUserStatus('offline', token)
-    .then(() => {
-        return get_user_list();
-    })
     .then(() => {
         localStorage.clear();
     })

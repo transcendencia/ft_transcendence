@@ -475,6 +475,7 @@ export let guestLoggedIn = [];
 validatePasswordButton.addEventListener('click', async function() {
     if (guestLoggedIn.length < 7) {
         // console.log(guestLoggedIn.length);
+        console.log("je log un guest");
         let guest = userTiles[tempTileIndex].user;
         const password = document.getElementById("enterPasswordInput");
         const formData = new FormData();
@@ -497,7 +498,7 @@ validatePasswordButton.addEventListener('click', async function() {
         putUserInMatch();
     }
     else
-    console.log("Too many guest");
+        console.log("Too many guest");
 });
 
 backPasswordButton.addEventListener('click', function() {
