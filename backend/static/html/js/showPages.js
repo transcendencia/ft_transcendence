@@ -1,3 +1,5 @@
+import { moveCameraToBackOfCockpit, moveCameraToFrontOfCockpit} from "./signUpPage.js";
+
 export function showPage(pageId) {
     var pages = document.querySelectorAll('.page');
     pages.forEach(function(page) {
@@ -7,27 +9,31 @@ export function showPage(pageId) {
     // Show the selected page
     if (pageId == 'none')
         return;
+    window.location.hash = `#${pageId}`;
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
 }
 
-// Find all anchor elements on the page
-var anchors = document.querySelectorAll('a');
+let oldLocation = window.location.hash || '#loginPage';
 
-// Add event listener to each anchor element
-anchors.forEach(function(anchor) {
-    anchor.addEventListener('click', function(event) {
-        event.preventDefault();
-        // Prevent default link behavior
-        var id = anchor.getAttribute('button');
-        history.pushState(id, null, null);
-        showPage(id);
-    });
+if (!window.location.hash) {
+    window.location.hash = '#loginPage';
+    oldLocation = '#loginPage';
+} else {
+    showPage(window.location.hash.substring(1)); // Show the current page based on the hash
+}
+
+showPage('loginPage');
+
+addEventListener("hashchange", (event) => {
+    if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage' )
+        moveCameraToBackOfCockpit();   
+    if (window.location.hash == '#signUpPage' && oldLocation == '#loginPage')
+        moveCameraToFrontOfCockpit();
+    if (window.location.hash == '#signUpPage' && oldLocation == '#galaxy') {
+        showPage('signUpPage');
+        moveCameraToFrontOfCockpit();
+    }
+    oldLocation = window.location.hash;
 });
-
-window.addEventListener('popstate', function(event) {
-    showPage(event.state);
-});
-
-history.replaceState('home', null, null);
