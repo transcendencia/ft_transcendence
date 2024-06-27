@@ -218,50 +218,71 @@ body {
     }
     50% {
         width: 40%;
-        left: 28%;
+        left: 50%;
         opacity: 1;
     }
     100% {
-        left: -28%;
         width: 150%;
     }
 }
 
 @keyframes slideOutAndShrink {
     0% {
+        left: 50%;
         width: 150%;
-        left: -28%;
         opacity: 1;
     }
     50% {
+        left: 50%;
         width: 40%;
-        left: 28%;
         opacity: 1;
     }
     100% {
         width: 40%;
-        left: -100%;
-        /* opacity: 0; */
+        left: 200%;
     }
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes textSlideIn {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+
 }
 
 .startScreen {
     padding: 20px;
-    background: rgba(58, 115, 255, 0.1);
+    background: linear-gradient(90deg, rgba(63,94,251,0.5) 0%, rgba(54,236,63,0.5) 11%, rgba(68,246,241,0.5) 23%, rgba(225,69,248,0.5) 47%, rgba(245,246,145,0.5) 69%, rgba(247,84,84,0.5) 86%, rgba(70,252,244,0.5) 100%);
+    background-size: 300% 300%;
+    background-position: 0% 50%;
     border-radius: 15px;
-    border: 4px solid #3777ff;
-    height: auto;
-    position: absolute;
-    top: 35%;
+    border: 10px solid #ffffff;
+    width: 70%;
+    height: 20%;
+    position: fixed;
+    top: 50%;
     left: 50%;
-    transform: translateY(50%);
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     color: white;
-    box-shadow: 0 0 20px rgba(0, 0, 255, 0.5);
-    background-image: radial-gradient(circle, rgba(58, 115, 255, 0.5), rgba(58, 115, 255, 0.2));
     cursor: url('../assets/cursor/default.cur'), auto;
     
     /* Animation properties */
@@ -270,25 +291,40 @@ body {
     transition: visibility 0s 0.5s;
 }
 
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 .startScreen.visible {
-    animation: slideInAndExpand 1.5s forwards;
+    animation: slideInAndExpand 1.5s forwards,
+    gradientShift 10s ease infinite;
     visibility: visible;
     opacity: 1;
     transition: visibility 0s 0s;
 }
 
 .startScreen.hidden {
-    animation: slideOutAndShrink 1.5s forwards;
+    animation: slideOutAndShrink 1.5s forwards,
+    gradientShift 10s ease infinite;
     visibility: hidden;
     opacity: 0;
     transition: visibility 0s 1.5s;
 }
 
 #startGameText {
+    position: absolute;
     font-size: 50px;
     font-family: 'space';
     color: white;
-    animation: fadeIn 2s ease-out forwards;
+    animation: pulse 2s ease infinite;
 }
 
 #winningText {
@@ -325,17 +361,7 @@ body {
     color: white;
 }
 
-@keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
+
 
 #backToLobbyButton {
     padding: 10px 20px;

@@ -136,7 +136,7 @@ export function chooseStats(stat) {
 	removeClasses(stat4);
 	removeClasses(stat5);
 	removeClasses(stat6);
-	
+
     if (stat === 1) {
         if (stat2.style.display === 'flex') {
             stat2.classList.add('slideOutRight');
