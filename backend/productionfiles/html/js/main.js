@@ -459,7 +459,6 @@ document.addEventListener('keydown', (event) => {
             return;
         }
         if (lobbyStart) {
-            console.log("coucou");
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();

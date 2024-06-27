@@ -413,7 +413,7 @@ function addEventListenerToTilesTournament() {
 
   function makeMatchup() {
     const ul = document.getElementById("match");
-    ul.innerHTML = "";
+    // ul.innerHTML = "";
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
     let j = 0;
     nbMatch = 0;
@@ -433,9 +433,7 @@ function addEventListenerToTilesTournament() {
           player.position = 1;
       })
       nextMatchElement.style.display = "none";
-      const li = document.createElement("p");
-      li.textContent = playersInTournament[0].username + " has won the tournament!";
-      ul.appendChild(li);
+      ul.textContent = playersInTournament[0].username + " has won the tournament!";
       launchMatchElement.style.display = "none";
       return ;
     }
@@ -478,12 +476,10 @@ function addEventListenerToTilesTournament() {
       }
       j ++;
     }
-    const li = document.createElement("p");
     if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
-      li.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
+      ul.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
     else if (currentMatch[nbMatch][0])
-      li.textContent = currentMatch[nbMatch][0].myRef.username;
-    ul.appendChild(li);
+      ul.textContent = currentMatch[nbMatch][0].myRef.username;
     if (round > 1){
       for (let i = 0; i < currentMatch.length; i ++) {
         if (thirdPlayerMode){
@@ -514,7 +510,6 @@ function addEventListenerToTilesTournament() {
   const launchMatchElement = document.getElementById("launchMatch");
   const bracketElement = document.getElementById("bracket");
   const bottomTournamentElement = document.getElementById("bottomTournament");
-  const matchElement = document.getElementById("match");
   const nextMatchElement = document.getElementById("next-match");
   const midColumn = document.getElementById("midColumn");
 
@@ -571,17 +566,15 @@ function addEventListenerToTilesTournament() {
   function nextMatch() {
     nbMatch ++;
     let ul = document.getElementById("match");
-    ul.innerHTML = "";
-    let li = document.createElement("p");
+    // ul.innerHTML = "";
     if (nbMatch >= currentMatch.length){
       makeMatchup();
       return ; 
     }
     else if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
-      li.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
+      ul.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
     else if (currentMatch[nbMatch][0])
-      li.textContent = currentMatch[nbMatch][0].myRef.username;
-    ul.appendChild(li);
+      ul.textContent = currentMatch[nbMatch][0].myRef.username;
   }
 
   export function  afterGameTournament(leftScore, rightScore) {
