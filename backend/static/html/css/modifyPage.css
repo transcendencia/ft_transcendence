@@ -187,8 +187,8 @@
     align-items: center;
     justify-content: space-evenly;
     flex-direction: column;
-    height: 30%;
-    width: 60%;
+    height: 90%;
+    width: 90%;
     overflow: hidden;
     flex-shrink: 0;
     position: absolute;
