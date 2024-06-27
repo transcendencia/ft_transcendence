@@ -111,6 +111,7 @@ def return_friends_list(request):
     all_users = User.objects.exclude(id__in=user_in_list).exclude(id=request.user.id).exclude(username="bot")
     other_user_list = UserListSerializer(all_users, many=True).data
     user_not_friend = other_user_list + received_request_list
+    # Scuriser si il toruve pas le bot
     bot = UserSerializer(User.objects.get(username="bot")).data
     
     return Response({

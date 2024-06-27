@@ -16,3 +16,4 @@ backend/authentication/migrations/
 backend/migrations/
 backend/authentication/migrations/0001_initial.py
 
+backend/debug.log
