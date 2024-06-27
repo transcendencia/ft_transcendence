@@ -80,7 +80,7 @@ class DoughnutGraph {
 			  shadowOffsetX: 15,
 			  shadowOffsetY: 15,
 			  shadowBlur: 10,
-			  shadowColor: 'rgba(0, 0, 0, 1)',
+			  shadowColor: 'rgba(1, 0, 0, 1)',
 			  shadowOpacity: 1
 			}
 		  },
