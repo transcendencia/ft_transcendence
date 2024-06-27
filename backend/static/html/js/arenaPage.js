@@ -559,8 +559,11 @@ export async function RenderAllUsersInList() {
     userListBackground.innerHTML = '';
     const users = await get_friends_list();
 
+    users.friends.sort((a, b) => a.username.localeCompare(b.username));
+    users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+
     createUserTile(users.bot, 'Bot', userListBackground, userTiles);
-    users.friends.forEach(obj => {createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
+    users.friends.forEach(obj => {/*if !online sur autre ordi*/createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
     users.user_not_friend.forEach(user => {createUserTile(user, 'Default', userListBackground, userTiles)});
     addEventListenerToTiles();
 }

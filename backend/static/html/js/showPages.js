@@ -1,4 +1,4 @@
-import { moveCameraToBackOfCockpit } from "./signUpPage.js";
+import { moveCameraToBackOfCockpit, moveCameraToFrontOfCockpit} from "./signUpPage.js";
 
 export function showPage(pageId) {
     var pages = document.querySelectorAll('.page');
@@ -9,24 +9,31 @@ export function showPage(pageId) {
     // Show the selected page
     if (pageId == 'none')
         return;
-    history.pushState(pageId, null, null);
+    window.location.hash = `#${pageId}`;
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
-    console.log("state", history);
 }
 
-// Event listener for popstate to handle back/forward button
-window.addEventListener('popstate', function(event) {
-    if (!event.state)
-        return;
-    showPage(event.state);
-    if (event.state == 'loginPage')
-        moveCameraToBackOfCockpit();
-});
+let oldLocation = window.location.hash || '#loginPage';
 
-// Initial load handling
-window.addEventListener('DOMContentLoaded', function() {
-    showPage('loginPage');
-    history.replaceState('loginPage', null, null);
+if (!window.location.hash) {
+    window.location.hash = '#loginPage';
+    oldLocation = '#loginPage';
+} else {
+    showPage(window.location.hash.substring(1)); // Show the current page based on the hash
+}
+
+showPage('loginPage');
+
+addEventListener("hashchange", (event) => {
+    if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage' )
+        moveCameraToBackOfCockpit();   
+    if (window.location.hash == '#signUpPage' && oldLocation == '#loginPage')
+        moveCameraToFrontOfCockpit();
+    if (window.location.hash == '#signUpPage' && oldLocation == '#galaxy') {
+        showPage('signUpPage');
+        moveCameraToFrontOfCockpit();
+    }
+    oldLocation = window.location.hash;
 });

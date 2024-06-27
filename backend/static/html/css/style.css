@@ -12,7 +12,7 @@ body {
 }
 
 *, ::after, ::before {
-    box-sizing: content -box;
+    box-sizing: content-box;
 }
 
 #c1 {
