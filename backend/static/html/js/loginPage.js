@@ -166,7 +166,6 @@ function setEscapeLanguageVisual() {
 
 // Handle form submission
 export function handleLogin(formData) {
-    console.log("Je suis dans handle login");
     if (localStorage.getItem("hostLoggedIn") === null) {
         localStorage.setItem('hostLoggedIn', 'false');
     }
@@ -195,7 +194,7 @@ export function handleLogin(formData) {
                 localStorage.setItem("hostLoggedIn", 'true');
                 localStorage.setItem("host_auth_token", data.token);
                 localStorage.setItem("host_id", data.id);
-                setCurrentLanguage(data.language);
+                setCurrentLanguage(data.language.slice(0, 2));
                 setEscapeLanguageVisual();
                 get_friends_list();
                 getProfileInfo();
