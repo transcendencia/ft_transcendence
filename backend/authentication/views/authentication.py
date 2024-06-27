@@ -31,6 +31,7 @@ def rgpd(request):
 @permission_classes([AllowAny])  
 def login_page(request):
   try:
+    print(request.data)
     username = request.POST.get("username")
     usernameLower = username.lower()
     password = request.POST.get("password")
@@ -38,6 +39,9 @@ def login_page(request):
     if isHostLoggedIn == False:
       newLanguage = request.POST.get("language")
       isLanguageClicked = request.POST.get("languageClicked") == 'true'
+    else:
+      isLanguageClicked = 'false'
+      newLanguage = None
 
     logger.debug(f'Username received: {usernameLower}, Host logged in: {isHostLoggedIn}')
 
@@ -68,11 +72,14 @@ def login_page(request):
 def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
     user.last_login_date = timezone.now()
     user.status = 'online'
+    logger.debug(f'IsHostLoggedIn: {isHostLoggedIn}')
     if isHostLoggedIn == False:
         user.is_host = True
         if isLanguageClicked and newLanguage != user.language:
             user.language = newLanguage
     user.save()
+    logger.debug(f'{user.username} status is {user.status} is host {user.is_host}')
+
 
 @api_view(['POST']) 
 @permission_classes([AllowAny])  

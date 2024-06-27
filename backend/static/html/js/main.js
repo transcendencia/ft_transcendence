@@ -232,6 +232,7 @@ function disconnectLoggedGuest(userInfoCont, user, token) {
 }
 
 export function displayUsersLogged(user, token) {
+    
     // guestLoggedIn.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
