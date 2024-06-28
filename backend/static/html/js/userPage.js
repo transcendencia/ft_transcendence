@@ -6,18 +6,23 @@ import { getUserStats, chooseStats } from './stats.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
 const colorClicked = '#5d75ff47';
-
+let currentUser;
 statsButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
-      if (index < 3)
-        for (let i = 0; i < 3; i++)
-            statsButtons[i].style.backgroundColor = 'transparent';
-      else
-        for (let i = 3; i < 6; i++)
+    if (index < 3)
+    {
+      for (let i = 0; i < 3; i++)
           statsButtons[i].style.backgroundColor = 'transparent';
-      button.style.backgroundColor = colorClicked;
-      chooseStats(index + 1);
       getUserStats(localStorage.getItem("host_id"));
+    }
+    else
+    {
+      for (let i = 3; i < 6; i++)
+        statsButtons[i].style.backgroundColor = 'transparent';
+      getUserStats(localStorage.getItem(currentUser.id));
+    }
+    button.style.backgroundColor = colorClicked;
+    chooseStats(index + 1);
     });
 });
 
@@ -153,7 +158,6 @@ export function initUserPlanet() {
     }
   });
   
-
   checkMarkImg.addEventListener('click', async () => {
     resetProfile();
     displayFriendProfile(displayedUserOnSearchPage);
@@ -344,7 +348,9 @@ function createUserTile(user, type, reqId) {
       fillSearchedUserPage(user, type);
       if (reqId !== undefined)
         requestId = reqId;
-        chooseStats(4);
+      currentUser = user;
+      getUserStats(user.id);
+      chooseStats(4);
     }, 125);
   });
 
@@ -419,9 +425,6 @@ async function RenderUsersSearched(query) {
     console.error('Error in rendering searched users:', error);
   }
 }
-
-
-  
 
 export async function renderFriendList() {
   userListBackground.innerHTML = ''; // Clear existing user tiles
