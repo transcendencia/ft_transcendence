@@ -73,7 +73,7 @@
 
         "friendlist": "Friend List",
         "history": "History",
-        "searchInput": "Search...",
+        "searchInput": "Search users...",
         "profileTitle": "Profile",
         "winLoseText1": "Matches",
         "winLoseText2": "Wins",
@@ -116,7 +116,7 @@
         "invalid":"Contraseña no idéntica",
 
         
-        "settingsPlanetInfo1": "[Nombre] Ajustes",
+        "settingsPlanetInfo1": "[Nombre] Perfil",
         "settingsPlanetInfo2": "[ID] SO-0911",
         "settingsPlanetInfo3": "[temperatura] +127°C",
         "tournamentPlanetInfo1": "[Nombre] Copa Galaxia",
@@ -126,7 +126,7 @@
         "arenaPlanetInfo2": "[ID] PA-0667",
         "arenaPlanetInfo3": "[Temperatura] -269°C",
 
-        "settingsPlanetName": "Ajustes",
+        "settingsPlanetName": "Perfil",
         "arenaPlanetName": "Pong arena",
         "tournamentPlanetName": "Copa Galaxia",
 
@@ -150,7 +150,7 @@
         "gamemodeNameText2": "Sin Poderes",
         "gamemodeNameText3": "Curvatura",
         "maps": "Mapas",
-        "botDifficulty": "Nivel del robot",
+        "botDifficulty": "Nivel robot",
         "botDifficultyEasy": "Facil",
         "botDifficultyMedium": "Medio",
         "botDifficultyHard": "Dura",
@@ -165,7 +165,7 @@
         
         "friendlist": "Lista de amigos",
         "history": "Historial",
-        "searchInput": "Buscar...",
+        "searchInput": "Buscar usuarios...",
         "profileTitle": "Perfil",
         "winLoseText1": "Partidos",
         "winLoseText2": "Victorias",
@@ -206,7 +206,7 @@
         "password_too_common":"Ce mot de passe est trop courant.",
         "invalid":"Mot de passe non identique",
 
-        "settingsPlanetInfo1": "[Nom]: Reglages",
+        "settingsPlanetInfo1": "[Nom]: Profil",
         "settingsPlanetInfo2": "[ID]: SO-0911",
         "settingsPlanetInfo3": "[Temperature]: +127°C",
         "tournamentPlanetInfo1": "[Nom]: Coupe Galaxie",
@@ -216,7 +216,7 @@
         "arenaPlanetInfo2": "[ID]: PA-0667",
         "arenaPlanetInfo3": "[Temperature]: -269°C",
 
-        "settingsPlanetName": "Reglages",
+        "settingsPlanetName": "Profil",
         "arenaPlanetName": "Arene pong",
         "tournamentPlanetName": "Coupe Galaxie",
 

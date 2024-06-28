@@ -185,7 +185,7 @@ export function handleLogin(formData) {
                 localStorage.setItem("hostLoggedIn", 'true');
                 localStorage.setItem("host_auth_token", data.token);
                 localStorage.setItem("host_id", data.id);
-                setCurrentLanguage(data.language);
+                setCurrentLanguage(data.language.slice(0, 2));
                 setEscapeLanguageVisual();
                 get_friends_list();
                 getProfileInfo();
