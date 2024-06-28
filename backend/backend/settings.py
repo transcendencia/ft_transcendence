@@ -184,17 +184,17 @@ LOGGING = {
     },
     'root': {
         'handlers': ['file'],
-        'level': 'DEBUG',  # Niveau minimum de log à capturer par le root logger
+        'level': 'DEBUG',
     },
     'loggers': {
         'django': {
             'handlers': ['file'],
-            'level': 'INFO',  # Niveau minimum de log pour les logs Django
+            'level': 'INFO',
             'propagate': True,
         },
-        'myapp': {  # Remplacez 'myapp' par le nom de votre application
+        'myapp': {
             'handlers': ['file'],
-            'level': 'DEBUG',  # Niveau minimum de log pour votre application
+            'level': 'DEBUG',
             'propagate': False,
         },
     },
