@@ -265,6 +265,9 @@ class LoadingScreen {
                 })
                 .onComplete(() => {
                     this.arena.gameState.switchLoadingToGame();
+                    const startScreen = document.getElementById('startScreen');
+                    startScreen.classList.remove('hidden');
+                    startScreen.classList.add('visible');
                 });
                 
             // FADE OUT LOADING SCREEN FADE IN GAME
@@ -280,6 +283,9 @@ class LoadingScreen {
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
+                })
+                .onComplete(() => {
+
                 });
 
             // Chain the tweens together
@@ -643,7 +649,7 @@ class Arena extends THREE.Mesh {
     idleCameraAnimation()
     {
         if (!this.isAnimatingCamera)
-        {
+        {   
             this.isAnimatingCamera = true;
             const duration = 5000;
             // Create tweens for each property
@@ -818,6 +824,9 @@ class Arena extends THREE.Mesh {
             this.paddleRight.particles.isActive = true;
             this.game.startingTime = Date.now();
             scoreUI[0].style.opacity = 1;
+            const startScreen = document.getElementById('startScreen');
+            startScreen.classList.remove('visible');
+            startScreen.classList.add('hidden');
             if (this.game.user2.isBot)
                 this.bot.activateBot();
             this.game.isPlaying = true;
