@@ -1,5 +1,5 @@
-import { togglePlanet } from './enterPlanet.js';
-import {  getCookie, createMatchBlock, getGameInfo} from './loginPage.js';
+import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
+import {  getCookie, createMatchBlock} from './loginPage.js';
 import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 import { getUserStats, chooseStats } from './stats.js';
@@ -22,7 +22,7 @@ statsButtons.forEach((button, index) => {
 });
 
 
-let previousReqFriendList = [];
+let previousFriendList = [];
 
 async function isListsChanged() {
   const newData = await get_friends_list();
@@ -30,37 +30,29 @@ async function isListsChanged() {
   const sortedNewRequests = newData.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
   const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
   const concatenatedNewList = sortedNewRequests.concat(sortedNewFriends);
-  const listsChanged = JSON.stringify(concatenatedNewList) !== JSON.stringify(previousReqFriendList);
+  const listsChanged = JSON.stringify(concatenatedNewList) !== JSON.stringify(previousFriendList);
   
-  if (listsChanged)
-    previousReqFriendList = concatenatedNewList;
   return listsChanged;
 }
-
-export let checkEach5Sec;
 
 export function initUserPlanet() {
   renderFriendList();
   getProfileInfo();
   // getGameInfo();
   //delay the animation of stats while page is opening
-  setTimeout(() => {
-    getUserStats(localStorage.getItem("host_id"));
-  }, 1750);
-  // basicStats.innerHTML = `
-  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
-  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
-  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
-  //     <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
-  // `;
-  checkEach5Sec = setInterval(async function() {
-    if (await isListsChanged()) {
-      if (inputElement.value === '')
-        await renderFriendList();
-      else await RenderUsersSearched(inputElement.value);
-    }
-    console.log("Checking...");
-  }, 20000);
+  setTimeout(getUserStats(localStorage.getItem("host_id"), 1750));
+  setCheckerToInterval(setInterval( async() => {
+  if (await isListsChanged())
+    refreshUserFriendList();
+  //if respectively changed, refresh basic and complex stats, history, name, alias, image and status(friend, request, nothing)
+  }, 5000));
+}
+
+async function refreshUserFriendList() {
+    if (inputElement.value === '')
+      await renderFriendList();
+    else await RenderUsersSearched(inputElement.value);
+  console.log("Checking...");
 }
 
 // Sample user data
@@ -293,7 +285,7 @@ function getHistoryMatchPlayer2(user) {
         player1Score = game.scorePlayer2;
         player1Picture = game.player2_profilePicture;
         player2 = game.player1_username;
-        player2Score = game.scorePlayer1;
+        player2Score = game.scorePlayer1
         player2Picture = game.player1_profilePicture;
         if (game.scorePlayer2 > game.scorePlayer1) {
           winner = true;
@@ -308,7 +300,6 @@ function getHistoryMatchPlayer2(user) {
 }
 
 function createStatusPellet(status) {
-  console.log("status:", status);
   const statusPelletElement = document.createElement('div');
   statusPelletElement.classList.add('redPellet');
   if (status === 'in_game' || status === 'online')
@@ -322,7 +313,6 @@ function createStatusPellet(status) {
 function createUserTile(user, type, reqId) {
   if (user.isHost)
     return;
-  console.log("status:", user.status);
   
   const userTile = document.createElement('div');
   userTile.classList.add('userTile');
@@ -408,7 +398,7 @@ async function RenderUsersSearched(query) {
     otherList.forEach(user => assignRandomStatus(user));
 
     // Clear and concatenate previous lists for consistent sorting
-    previousReqFriendList = data.received_request_list.concat(data.friends);
+    previousFriendList = data.received_request_list.concat(data.friends);
 
     // Render tiles based on filtered and sorted lists
     requestList.forEach(obj => createUserTile(obj.user, 'Request', obj.request_id));
@@ -425,28 +415,24 @@ async function RenderUsersSearched(query) {
 export async function renderFriendList() {
   userListBackground.innerHTML = ''; // Clear existing user tiles
 
-  try {
-      const data = await get_friends_list();
-      const sortedRequests = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
-      
-      // sortedRequests.forEach(obj => assignRandomStatus(obj.user));
-      // data.friends.forEach(friend => assignRandomStatus(friend.user));
+    const data = await get_friends_list();
+    const sortedRequests = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
+    
+    // sortedRequests.forEach(obj => assignRandomStatus(obj.user));
+    // data.friends.forEach(friend => assignRandomStatus(friend.user));
 
-      const sortedFriends = data.friends.sort((a, b) => {
-          const statusOrder = { 'online': 0, 'in_game': 1, 'offline': 2 };
-          if (statusOrder[a.user.status] !== statusOrder[b.user.status]) {
-              return statusOrder[a.user.status] - statusOrder[b.user.status];
-          }
-          return a.user.username.localeCompare(b.user.username);
-      });
-      
-      previousReqFriendList = sortedRequests.concat(sortedFriends);
-      
-      sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'Request', userSendingRq.request_id));
-      sortedFriends.forEach(friend => createUserTile(friend.user, 'Friend', friend.request_id));
-    } catch (error) {
-      console.error('Error in rendering friend list:', error);
-    }
+    const sortedFriends = data.friends.sort((a, b) => {
+        const statusOrder = { 'online': 0, 'in_game': 1, 'offline': 2 };
+        if (statusOrder[a.user.status] !== statusOrder[b.user.status]) {
+            return statusOrder[a.user.status] - statusOrder[b.user.status];
+        }
+        return a.user.username.localeCompare(b.user.username);
+    });
+    
+    previousFriendList = sortedRequests.concat(sortedFriends);
+    
+    sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'Request', userSendingRq.request_id));
+    sortedFriends.forEach(friend => createUserTile(friend.user, 'Friend', friend.request_id));
   }
 
   let searchTimeout;
