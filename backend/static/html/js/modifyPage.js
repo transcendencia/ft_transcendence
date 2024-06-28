@@ -52,6 +52,13 @@ const deleteAccountButton = document.querySelector(".deleteAccountButton");
 deleteAccountButton.addEventListener("click", deleteAccount);
 const blockingPanel = document.getElementById('blockingPanel');
 
+
+document.getElementById('profile-pic').addEventListener('change', function() {
+  var fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
+  console.log("On chercher une photo");
+  document.getElementById('LinkPicture').textContent = fileName;
+});
+
 function deleteAccount() {
     // rediriger vers la page d'acceuil
     // deconnecter tout les guest
@@ -106,7 +113,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
       if (this.classList.contains('active')) {
         anonymousStatus = true;
         getRandomUsername();
-
       }
       else anonymousStatus = false;
   });
