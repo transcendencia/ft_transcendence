@@ -216,7 +216,7 @@ body {
         left: -100%;
         opacity: 0;
     }
-    50% {
+    80% {
         width: 40%;
         left: 50%;
         opacity: 1;
@@ -316,7 +316,7 @@ body {
 }
 
 .startScreen.visible {
-    animation: slideInAndExpand 1.5s forwards,
+    animation: slideInAndExpand 1s forwards,
     gradientShift 10s ease infinite;
     visibility: visible;
     opacity: 1;

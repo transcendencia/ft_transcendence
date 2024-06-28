@@ -33,6 +33,11 @@
     width: 100%;
 }
 
+.statButton img {
+    width: 50%;
+    height: auto;
+    max-height: 50%;
+}
 @keyframes slideUserPage {
     from {transform: translateX(0);}
     to {transform: translateX(-100%);}

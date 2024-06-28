@@ -3728,8 +3728,8 @@ class Particle {
                 );
             } else {
                 velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 6,
-                    (Math.random() - 0.5) * 6,
+                    (Math.random() - 0.5) * 3,
+                    (Math.random() - 0.5) * 3,
                     (Math.random() - 0.5) * 0
                 );
             }
