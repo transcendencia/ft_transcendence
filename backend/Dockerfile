@@ -27,6 +27,8 @@ RUN pip install django-password-validators
 
 RUN python -m pip install Pillow
 
-
+RUN apt-get install -y cron && touch /var/log/cron.log
+RUN mkdir /cron
+RUN touch /cron/django_cron.log
 
 CMD ["bash", "run_server.sh"]
