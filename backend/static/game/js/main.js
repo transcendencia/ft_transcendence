@@ -283,9 +283,6 @@ class LoadingScreen {
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
-                })
-                .onComplete(() => {
-
                 });
 
             // Chain the tweens together

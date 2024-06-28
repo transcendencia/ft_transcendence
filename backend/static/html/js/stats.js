@@ -10,6 +10,11 @@ class DoughnutGraph {
 	  this.position = 'bottom';
 	  if (title === 'Modes played' || title === 'Maps played')
 		cutoutPercentage = '0%';
+	  if (title === 'Win%')
+		{
+			if (this.dataStats[0] + this.dataStats[1] === 0)
+				this.dataStats = [0, 0];
+		}
 	  this.data = {
 		labels: ['Label 1', 'Label 2'],
 		datasets: [{
@@ -32,8 +37,13 @@ class DoughnutGraph {
 		  ctx.textAlign = 'center';
 		  ctx.textBaseline = 'middle';
 		  if (title === 'Accuracy') {
-			const result = (this.dataStats[0] / (this.dataStats[0] + this.dataStats[1]) * 100).toFixed(1);
-			ctx.fillText(result + '%', left + width / 2, top + height / 2);
+			if (this.dataStats[0] + this.dataStats[1] === 0)
+				ctx.fillText('0%', left + width / 2, top + height / 2);
+			else
+			{
+				const result = (this.dataStats[0] / (this.dataStats[0] + this.dataStats[1]) * 100).toFixed(1);
+				ctx.fillText(result + '%', left + width / 2, top + height / 2);
+			}
 		  }
 		  else if (title === 'Modes played' || title === 'Maps played')
 			ctx.fillText('', left + width / 2, top + height / 2);
