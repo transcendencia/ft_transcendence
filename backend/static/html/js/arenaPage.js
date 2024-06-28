@@ -1,6 +1,6 @@
 import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { togglePlanet } from "./enterPlanet.js";
+import { togglePlanet, setCheckerToInterval} from "./enterPlanet.js";
 import { afterGameTournament, botDifficultyTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament } from "../../tournament/js/newTournament.js";
@@ -589,18 +589,6 @@ export function createUserTile(user, type, userListBackground, userTilesTemp) {
 
 export const userTiles = [];  // Array to store the user tiles
 
-export async function RenderAllUsersInList() {
-    const userListBackground = document.getElementById('userlistArenaPage');
-    
-    userListBackground.innerHTML = '';
-    const users = await get_friends_list();
-
-    createUserTile(users.bot, 'Bot', userListBackground, userTiles);
-    users.friends.forEach(obj => {createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
-    users.user_not_friend.forEach(user => {createUserTile(user, 'Default', userListBackground, userTiles)});
-    addEventListenerToTiles();
-}
-
 export function RenderHostMatch(user) {
     const usernameElement = document.getElementById('player1MatchUsername');
     usernameElement.textContent = user.username;
@@ -621,6 +609,42 @@ backButtonArenaPage.forEach((button, index) => {
     }
 });
 
-export function initArenaPlanet() {
-    RenderAllUsersInList();
+let previousUserList = [];
+
+  async function isListsChanged() {
+    const newData = await get_friends_list();
+    
+    const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
+    const sortedNewUserNotFriend = newData.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+    const concatenatedNewList = sortedNewFriends.concat(sortedNewUserNotFriend);
+    const listsChanged = JSON.stringify(concatenatedNewList) !== JSON.stringify(previousUserList);
+    return listsChanged;
   }
+
+  export function initArenaPlanet() {
+    RenderAllUsersInList();
+    setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
+  }
+  
+  async function refreshUserListIfChanged() {
+    if (await isListsChanged())
+      await RenderAllUsersInList();
+    console.log("Checking...");
+  }
+  
+
+  export async function RenderAllUsersInList() {
+    const userListBackground = document.getElementById('userlistArenaPage');
+    
+    userListBackground.innerHTML = '';
+    const users = await get_friends_list();
+
+    const sortedNewFriends = users.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
+    const sortedNewUserNotFriend = users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+
+    createUserTile(users.bot, 'Bot', userListBackground, userTiles);
+    users.friends.forEach(obj => {/*si user pas online sur autre ordi*/ createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
+    users.user_not_friend.forEach(user => {/*si user pas online sur autre ordi*/ createUserTile(user, 'Default', userListBackground, userTiles)});
+    addEventListenerToTiles();
+    previousUserList = sortedNewFriends.concat(sortedNewUserNotFriend);
+}

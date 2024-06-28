@@ -15,7 +15,6 @@ export function showPage(pageId) {
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.remove('invisible');
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
-    console.log("state", history);
 }
 
 // Event listener for popstate to handle back/forward button
