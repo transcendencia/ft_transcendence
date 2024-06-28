@@ -172,11 +172,13 @@ function translateUserPageTexts() {
     backButton.textContent = getTranslatedText('backButton');   
 }
 
-const changeInfoText = document.getElementById('changeInfo');
+const changeInfo = document.getElementById('changeInfo');
 const changeUsernameInput = document.getElementById('changeUsernameInput');
+const changeBioInput = document.getElementById('changeBioInput');
 const changePasswordInput = document.getElementById('changePasswordInput');
 const changeConfirmPasswordInput = document.getElementById('changeConfirmPasswordInput');
 const changeProfilePicture = document.getElementById('changeProfilePicture');
+const AnonymousMode = document.getElementById('AnonymousMode');
 const chooseProfilePic = document.getElementById('chooseProfilePic');
 const deleteAccountButton = document.getElementById('deleteAccountButton');
 const submitInfoButton = document.getElementById('submitInfoButton');
@@ -186,14 +188,16 @@ const deleteAccountCancel = document.getElementById('deleteAccountCancel');
 const RGPDPolicyInUserPage = document.getElementById('RGPDPolicyInUserPage');
 const infoBack = document.getElementById('infoBack');
 const textAnonymous = document.getElementById('textAnonymous');
-const changeBioInput = document.getElementById('changeBioInput');
+
 
 function translateModifyPageTexts(){
-    changeInfoText.textContent = getTranslatedText('changeInfoText');
-    changeUsernameInput.textContent = getTranslatedText('changeUsernameInput');
-    changePasswordInput.textContent = getTranslatedText('password');
-    changeConfirmPasswordInput.textContent = getTranslatedText('confimPassword');
+    changeInfo.textContent = getTranslatedText('changeInfo');
+    changeUsernameInput.placeholder = getTranslatedText('changeUsernameInput');
+    changeBioInput.placeholder =  getTranslatedText('changeBioInput');  
+    changePasswordInput.placeholder = getTranslatedText('changePasswordInput');
+    changeConfirmPasswordInput.placeholder = getTranslatedText('changeConfirmPasswordInput');
     changeProfilePicture.textContent = getTranslatedText('changeProfilePicture');
+    AnonymousMode.textContent = getTranslatedText('AnonymousMode');
     chooseProfilePic.textContent = getTranslatedText('chooseProfilePic');
     deleteAccountButton.textContent = getTranslatedText('deleteAccountButton');
     submitInfoButton.textContent = getTranslatedText('submitInfoButton');
@@ -203,7 +207,7 @@ function translateModifyPageTexts(){
     RGPDPolicyInUserPage.textContent = getTranslatedText('RGPDPolicyInUserPage');
     infoBack.textContent = getTranslatedText('infoBack');
     textAnonymous.textContent = getTranslatedText('textAnonymous');
-    changeBioInput.placeholder =  getTranslatedText('changeBioInput');   
+     
 }
 
 export function TranslateAllTexts() {

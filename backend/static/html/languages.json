@@ -91,8 +91,12 @@
         "statisticsText": "Statistics",
         "backButton": "Back",
 
-        "changeInfoText": "Only fill in information you want to change",
+        "changeInfo": "Only fill in information you want to change",
         "changeUsernameInput": "Username",
+        "changeBioInput": "Bio",
+        "AnonymousMode": "Anonymous mode",
+        "changePasswordInput": "Password",
+        "changeConfirmPasswordInput": "Confirm password",
         "changeProfilePicture": "Profile picture",
         "chooseProfilePic": "Choose file",
         "deleteAccountButton": "Delete Account",
@@ -102,8 +106,8 @@
         "deleteAccountCancel": "No",
         "RGPDPolicyInUserPage": "Privacy policy",
         "infoBack" : "Back",
-        "textAnonymous": "When you activate anonymous mode you have a randon username and default profil picture",
-        "changeBioInput": "Bio"
+        "textAnonymous": "When you activate anonymous mode you have a randon username and default profil picture"
+        
     },
     "es": {
         "login": "Usuario",
@@ -195,8 +199,12 @@
         "statisticsText": "Estadisticas",
         "backButton": "volver",
 
-        "changeInfoText": "Complete solo la informacion que desea cambiar",
+        "changeInfo": "Complete solo la informacion que desea cambiar",
         "changeUsernameInput": "Nombre de usuario",
+        "changeBioInput": "Bio",
+        "AnonymousMode": "Modo anonimo",
+        "changePasswordInput": "Contrasena",
+        "changeConfirmPasswordInput": "Confirma la contrasena",
         "changeProfilePicture": "Foto de perfil",
         "chooseProfilePic": "Elija el archivo",
         "deleteAccountButton": "Borrar cuenta",
@@ -206,9 +214,7 @@
         "deleteAccountCancel": "No",
         "RGPDPolicyInUserPage": "politica de confidencialidad",
         "infoBack" : "Volver",
-        "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada",
-        "changeBioInput": "Bio"
-        
+        "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -298,8 +304,12 @@
         "statisticsText": "Statistiques",
         "backButton": "Retour",
 
-        "changeInfoText": "Remplissez uniquement les informations que vous souhaitez modifier",
+        "changeInfo": "Remplissez uniquement les informations que vous souhaitez modifier",
         "changeUsernameInput": "Nom d'utilisateur",
+        "changeBioInput": "Bio",
+        "AnonymousMode": "Mode anonyme",
+        "changePasswordInput": "Mot de passe",
+        "changeConfirmPasswordInput": "Confirme le mot de passe",
         "changeProfilePicture": "Phote de profil",
         "chooseProfilePic": "Choisir le fichier",
         "deleteAccountButton": "Supprimer le compte",
@@ -309,7 +319,6 @@
         "deleteAccountCancel": "Non",
         "RGPDPolicyInUserPage": "Politique de confidentialite",
         "infoBack" : "Retour",
-        "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut",
-        "changeBioInput": "Bio"
+        "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut"
     }
 }
