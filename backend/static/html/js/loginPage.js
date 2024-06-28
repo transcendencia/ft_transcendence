@@ -386,13 +386,15 @@ function handleLogout(userId, token) {
     }, 50);
 };
 
-// window.addEventListener('beforeunload', function (event) {
+window.addEventListener('beforeunload', function (event) {
     // event.preventDefault();
 
-    // handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
+    const token = localStorage.getItem('host_auth_token');
+    if (token)
+        handleLogout(localStorage.getItem('host_id'), token);
     
     // event.returnValue = '';
-// });
+});
 
 // window.addEventListener('unload', function (event) {
 //     handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
