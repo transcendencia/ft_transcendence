@@ -1,6 +1,5 @@
 
 .rgpdPage {
-    border: 2px solid white;
     width: 99%;
     height: 99%;
     top: 50%;
@@ -28,7 +27,7 @@
     width:  30%;
     border-radius: 12px;
     background-color: rgba(0, 0, 255, 0.5);    
-    color: rgb(235, 240, 244);
+    color: rgb(255, 255, 255);
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -63,7 +62,7 @@
 .structure {
     font-family: "Space";
     font-size: 50px;
-    color: white;
+    color: rgb(243, 245, 241);
     position: fixed;
     top: -100%;
     left: 50%;
