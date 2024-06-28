@@ -25,10 +25,10 @@ def index(request):
 
 #to move 
 def rgpd(request):
-  return render(request, 'rgpd.html')  
+  return render(request, 'rgpd.html')
 
 @api_view(['POST'])
-@permission_classes([AllowAny])  
+@permission_classes([AllowAny])
 def login_page(request):
   try:
     print(request.data)

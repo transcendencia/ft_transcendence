@@ -184,9 +184,12 @@ export async function handleLogin(formData) {
                 console.log("hostLoggedIn", hostLoggedIn);
 
                 if (hostLoggedIn === 'false') {
+                    //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
+
                     localStorage.setItem("hostLoggedIn", 'true');
                     localStorage.setItem("host_auth_token", data.token);
                     localStorage.setItem("host_id", data.id);
+                    
                     setCurrentLanguage(data.language);
                     setEscapeLanguageVisual();
                     get_friends_list();
@@ -388,7 +391,6 @@ function handleLogout(userId, token) {
 
 window.addEventListener('beforeunload', function (event) {
     // event.preventDefault();
-
     const token = localStorage.getItem('host_auth_token');
     if (token)
         handleLogout(localStorage.getItem('host_id'), token);

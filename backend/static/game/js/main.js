@@ -3854,7 +3854,6 @@ function animate()
     // if (elapsed < fpsInterval) return; // Skip if too big FPS
     // else
     {
-        // console.log("pause = ", gameState.paused);
         gameState.monitorGameState();
         if (gameState.inLobby)
             return ;
