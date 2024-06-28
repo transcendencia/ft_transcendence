@@ -125,7 +125,6 @@ def createUserStat(user, game, userStat):
     nbBounces=userStat['nbBounces'],
     modeGame=game.modeGame,
     mapGame=game.mapGame)
-    
   new_stat.save()
 
   return JsonResponse({'status': 'success'})

@@ -193,12 +193,12 @@ export function endGame(isTournament) {
         user3 = gameState.arena.game.user3.id
     if (isTournament){
         planetPanel[2].style.visibility = 'visible';
-        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.game.gameTime);
+        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
         afterGameTournament(gameState.arena.game.leftScore, gameState.arena.game.rightScore);
     }
     else{
         planetPanel[0].style.visibility = 'visible';
-        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.game.gameTime);
+        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
     }
     rsContainer.style.visibility = 'visible';
     gameUI.style.visibility = 'hidden';
@@ -213,7 +213,7 @@ export function rematchGame() {
 
     if (gameState.arena.game.thirdPlayer)
         user3 = gameState.arena.game.user3.id  
-    createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3);
+    createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
     gameState.arena.game.resetUsers();
 }
 
@@ -413,13 +413,7 @@ function addEventListenerToTiles() {
         profileAdded[i] = false;
         tile.HTMLelement.addEventListener('click', function() {
             if (plusClicked && !profileAdded[i]) {
-                console.log("stauts:", tile.user.status, "is_host:", tile.user.is_host);
-                if (isBot(i) || (tile.user.status === 'online' && !tile.user.is_host)) {
-                    tempTileIndex = i;
-                    putUserInMatch();
-                    return;
-                }
-                else if (tile.user.status === 'online' && !tile.user.is_host && isGuest(tile.user.id)) {
+                if (isBot(i) || (tile.user.status === 'online' && !tile.user.is_host && isGuest(tile.user.id))) {
                     tempTileIndex = i;
                     putUserInMatch();
                     return;
@@ -434,10 +428,10 @@ function addEventListenerToTiles() {
     });
 }
 
+//Checker que le host_id est le bon
 function isGuest(userId) {
     console.log("length of guestLoggedIn:", guestLoggedIn);
     for (let i = 0; i < guestLoggedIn.length; i++) {
-        console.log("guestLoggedIn id:", guestLoggedIn[i][0].id, "userID:", userId);
         if (guestLoggedIn[i][0].id === userId)
             return true;
     }
