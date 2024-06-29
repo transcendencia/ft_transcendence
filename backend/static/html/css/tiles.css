@@ -181,13 +181,13 @@
     }
 }
 
-.Online {
+.online {
     background: linear-gradient(135deg, rgb(31, 83, 1)35%, rgb(104, 197, 91), rgb(31, 83, 1) 65%);
     background-size: 500% 500%;
     animation: moveGradient 3s linear infinite;
 }
 
-.InGame {
+.in_game {
     background: linear-gradient(135deg, rgb(98, 7, 7)35%,  rgb(255, 0, 0), rgb(98, 7, 7) 65%);
     background-size: 500% 500%;
     animation: moveGradient 3s linear infinite;

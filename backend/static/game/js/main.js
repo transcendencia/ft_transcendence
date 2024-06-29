@@ -280,6 +280,7 @@ class LoadingScreen {
                     document.getElementById('c1').style.display = 'inline';
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
+                    console.log("allo");
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
@@ -3868,6 +3869,7 @@ function animate()
         TWEEN.update();
         if (gameState.inGame && !gameState.paused)
         {
+            console.log("playing");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();
