@@ -215,7 +215,7 @@ class LoadingScreen {
             this.isAnimatingCamera = false;
             this.iterations = 0;
             this.loadingCompleted = true;
-            const duration = 500;
+            const duration = 2000;
     
             // Ship recall before going in the ball
             const targetZ = this.spaceShip.position.z + 1;
@@ -265,6 +265,9 @@ class LoadingScreen {
                 })
                 .onComplete(() => {
                     this.arena.gameState.switchLoadingToGame();
+                    const startScreen = document.getElementById('startScreen');
+                    startScreen.classList.remove('hidden');
+                    startScreen.classList.add('visible');
                 });
                 
             // FADE OUT LOADING SCREEN FADE IN GAME
@@ -277,6 +280,7 @@ class LoadingScreen {
                     document.getElementById('c1').style.display = 'inline';
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
+                    console.log("allo");
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
@@ -643,7 +647,7 @@ class Arena extends THREE.Mesh {
     idleCameraAnimation()
     {
         if (!this.isAnimatingCamera)
-        {
+        {   
             this.isAnimatingCamera = true;
             const duration = 5000;
             // Create tweens for each property
@@ -816,7 +820,11 @@ class Arena extends THREE.Mesh {
             cameraLeft.position.x += this.length * 3;
             this.paddleLeft.particles.isActive = true;
             this.paddleRight.particles.isActive = true;
+            this.game.startingTime = Date.now();
             scoreUI[0].style.opacity = 1;
+            const startScreen = document.getElementById('startScreen');
+            startScreen.classList.remove('visible');
+            startScreen.classList.add('hidden');
             if (this.game.user2.isBot)
                 this.bot.activateBot();
             this.game.isPlaying = true;
@@ -1096,6 +1104,7 @@ class Arena extends THREE.Mesh {
             this.ball.bounceCount = 0;
             this.isBeingReset = false;
             this.game.isPlaying = false;
+            this.game.gameTime = Date.now() - this.game.startingTime;
             this.game.isOver = false;
             swapToFullScreen();
             if (this.game.thirdPlayer)
@@ -3562,6 +3571,8 @@ class Game {
         this.thirdPlayer = false;
         this.hasToBeInitialized = false;
         this.tournamentGame = false;
+        this.startingTime = 0;
+        this.gameTime = 0;
         // next variables are all to be inputed in string format
         this.user1Username = document.getElementById('username1Text');
         this.user2Username = document.getElementById('username2Text');
@@ -3715,8 +3726,8 @@ class Particle {
                 );
             } else {
                 velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 6,
-                    (Math.random() - 0.5) * 6,
+                    (Math.random() - 0.5) * 3,
+                    (Math.random() - 0.5) * 3,
                     (Math.random() - 0.5) * 0
                 );
             }
@@ -3839,18 +3850,18 @@ function glitch(glitchEffect)
     }, 500);
 }
 
-// let fpsInterval = 1000 / 75; // 75 FPS
-// let stats = new Stats();
-// let lastUpdateTime = performance.now();
+let fpsInterval = 1000 / 75; // 75 FPS
+let stats = new Stats();
+let lastUpdateTime = performance.now();
 
 function animate()
 {
     requestAnimationFrame( animate );
     updateFpsCounter();
     let now = performance.now();
-    // let elapsed = now - lastUpdateTime;
-    // if (elapsed < fpsInterval) return; // Skip if too big FPS
-    // else
+    let elapsed = now - lastUpdateTime;
+    if (elapsed < fpsInterval) return; // Skip if too big FPS
+    else
     {
         gameState.monitorGameState();
         if (gameState.inLobby)
@@ -3858,6 +3869,7 @@ function animate()
         TWEEN.update();
         if (gameState.inGame && !gameState.paused)
         {
+            console.log("playing");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();
@@ -3875,9 +3887,9 @@ function animate()
         }
     }
 
-    // stats.update();
-    // lastUpdateTime = now - (elapsed % fpsInterval);
-    // stats.time = performance.now();
+    stats.update();
+    lastUpdateTime = now - (elapsed % fpsInterval);
+    stats.time = performance.now();
 }
 animate();
 
