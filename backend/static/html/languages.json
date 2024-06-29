@@ -23,7 +23,7 @@
 
 
         "RGPDTitle" : "Privacy Policy",
-        "RGPDTexte": "The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. Your data is automatically deleted one year after your last connection. For any reclamation you can go to the CNIL website.",
+        "RGPDTexte": "The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. For any reclamation you can go to the CNIL website.",
         "RGPDCreate": "By making you accept the",
         "RGPDPolicy" : "privacy policy",
         "RGPDBack" : "Back",
@@ -91,15 +91,23 @@
         "statisticsText": "Statistics",
         "backButton": "Back",
 
-        "changeInfoText": "Only fill in information you want to change",
+        "changeInfo": "Only fill in information you want to change",
         "changeUsernameInput": "Username",
+        "changeAliasInput": "alias",
+        "AnonymousMode": "Anonymous mode",
+        "changePasswordInput": "Password",
+        "changeConfirmPasswordInput": "Confirm password",
         "changeProfilePicture": "Profile picture",
         "chooseProfilePic": "Choose file",
         "deleteAccountButton": "Delete Account",
         "submitInfoButton": "Submit",
         "validateDeleteAccountText": "All data will be permanently lost. Are you sure you want to delete your account?",
         "deleteAccountConfirmation": "Yes",
-        "deleteAccountCancel": "No"
+        "deleteAccountCancel": "No",
+        "RGPDPolicyInUserPage": "Privacy policy",
+        "infoBack" : "Back",
+        "textAnonymous": "When you activate anonymous mode you have a randon username and default profil picture"
+        
     },
     "es": {
         "login": "Usuario",
@@ -125,7 +133,7 @@
         "invalid":"Contraseña no idéntica",
 
         "RGPDTitle" : "Politica de privacidad",
-        "RGPDTexte" : "La organizacion ft_transcendance solo recoge los datos necesarios para el buen funcionamiento de los torneos y no los comunica a ningún otro organismo. La base legal del tratamiento de datos y el consentimiento de los usuarios. Puede editar sus datos, eliminar su perfil en cualquier momento en el camino en el planeta perfil. Sus datos se eliminan automaticamente un ano despues de su ultima conexion. Para cualquier consulta puede visitar el sitio web de la CNIL.",
+        "RGPDTexte" : "La organizacion ft_transcendance solo recoge los datos necesarios para el buen funcionamiento de los torneos y no los comunica a ningún otro organismo. La base legal del tratamiento de datos y el consentimiento de los usuarios. Puede editar sus datos, eliminar su perfil en cualquier momento en el camino en el planeta perfil. Para cualquier consulta puede visitar el sitio web de la CNIL.",
         "RGPDCreate": "Al aceptarte a ti mismo la",
         "RGPDPolicy" : "política de confidencialidad",
         "RGPDBack" : "Volver", 
@@ -191,15 +199,22 @@
         "statisticsText": "Estadisticas",
         "backButton": "volver",
 
-        "changeInfoText": "Complete solo la información que desea cambiar",
+        "changeInfo": "Complete solo la informacion que desea cambiar",
         "changeUsernameInput": "Nombre de usuario",
+        "changeAliasInput": "alias",
+        "AnonymousMode": "Modo anonimo",
+        "changePasswordInput": "Contrasena",
+        "changeConfirmPasswordInput": "Confirma la contrasena",
         "changeProfilePicture": "Foto de perfil",
         "chooseProfilePic": "Elija el archivo",
         "deleteAccountButton": "Borrar cuenta",
         "submitInfoButton": "Entregar",
-        "validateDeleteAccountText": "Todos los datos se perderán permanentemente. ¿Estás seguro de que quieres eliminar tu cuenta?",
+        "validateDeleteAccountText": "Todos los datos se perderan permanentemente. ¿Estas seguro de que quieres eliminar tu cuenta?",
         "deleteAccountConfirmation": "Si",
-        "deleteAccountCancel": "No"
+        "deleteAccountCancel": "No",
+        "RGPDPolicyInUserPage": "politica de confidencialidad",
+        "infoBack" : "Volver",
+        "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -216,7 +231,7 @@
         "confirmPassword": "confirmer mot de passe",
         "backToLogin": "Retour",
         "RGPDTitle" : "Politique de confidentialite",
-        "RGPDTexte" : "L'organisation ft_transcendance ne collecte que les donnees necessaires au bon fonctionnement des tournois et ne les communique a aucun autre organisme. La base legale du traitement des donnees et le consentement des utilisateurs. Vous pouvez modifier vos donnees, supprimer votre profile a tout moment dans allant dans la planete profile. Vos donnees sont automatiquement supprimes un an apres votre derniere connexion. Pour toute reclamation vous pouvez aller sur le site de la CNIL.",
+        "RGPDTexte" : "L'organisation ft_transcendance ne collecte que les donnees necessaires au bon fonctionnement des tournois et ne les communique a aucun autre organisme. La base legale du traitement des donnees et le consentement des utilisateurs. Vous pouvez modifier vos donnees, supprimer votre profile a tout moment dans allant dans la planete profile. Pour toute reclamation vous pouvez aller sur le site de la CNIL.",
         "RGPDCreate": "En vous iscrivant vous accepter la",
         "RGPDPolicy": "politique de confidentialite",
         "RGPDBack" : "Retour",
@@ -290,14 +305,21 @@
         "statisticsText": "Statistiques",
         "backButton": "Retour",
 
-        "changeInfoText": "Remplissez uniquement les informations que vous souhaitez modifier",
+        "changeInfo": "Remplissez uniquement les informations que vous souhaitez modifier",
         "changeUsernameInput": "Nom d'utilisateur",
+        "changeAliasInput": "alias",
+        "AnonymousMode": "Mode anonyme",
+        "changePasswordInput": "Mot de passe",
+        "changeConfirmPasswordInput": "Confirme le mot de passe",
         "changeProfilePicture": "Phote de profil",
         "chooseProfilePic": "Choisir le fichier",
         "deleteAccountButton": "Supprimer le compte",
         "submitInfoButton": "Soumettre",
-        "validateDeleteAccountText": "Toutes les données seront définitivement perdues. Êtes-vous sûr de vouloir supprimer votre compte ?",
+        "validateDeleteAccountText": "Toutes les donnees seront definitivement perdues. Etes-vous sûr de vouloir supprimer votre compte ?",
         "deleteAccountConfirmation": "Oui",
-        "deleteAccountCancel": "Non"
+        "deleteAccountCancel": "Non",
+        "RGPDPolicyInUserPage": "Politique de confidentialite",
+        "infoBack" : "Retour",
+        "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut"
     }
 }

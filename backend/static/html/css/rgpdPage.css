@@ -1,6 +1,5 @@
 
 .rgpdPage {
-    border: 2px solid white;
     width: 99%;
     height: 99%;
     top: 50%;
@@ -11,6 +10,7 @@
     flex-direction: column;
     justify-content: top;
     align-items: center;
+    z-index: 5;
 }
 
 .rgpdFrame {
@@ -26,8 +26,8 @@
     height: 45%;
     width:  30%;
     border-radius: 12px;
-    background-color: rgba(0, 0, 255, 0.333);    
-    color: rgb(235, 240, 244);
+    background-color: rgba(0, 0, 255, 0.5);    
+    color: rgb(255, 255, 255);
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -43,9 +43,8 @@
 }
 
 .text-content {
-    margin-top: 10px;
-    padding-top: 60px;
-    flex: 1;
+    margin-top: 20%;
+    margin-bottom: 5%;
 }
 
 .rgpdFrame img {
@@ -63,7 +62,7 @@
 .structure {
     font-family: "Space";
     font-size: 50px;
-    color: white;
+    color: rgb(243, 245, 241);
     position: fixed;
     top: -100%;
     left: 50%;

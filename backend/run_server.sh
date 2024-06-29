@@ -11,19 +11,10 @@ then
     echo "PostgreSQL started"
 fi
 
-#openssl genpkey -algorithm RSA -out privkey.pem -aes256
-#openssl req -new -key privkey.pem -out cert.csr
-#openssl x509 -req -days 365 -in cert.csr -signkey privkey.pem -out fullchain.pem
-
-
-# python manage.py makemigrations
 python manage.py makemigrations
 python manage.py makemigrations authentication
 python manage.py migrate
 python manage.py collectstatic --noinput
-
-#uvicorn backend.asgi:application --host 0.0.0.0 --port 8000  --port 443 --ssl-keyfile privkey.pem --ssl-certfile fullchain.pem
-
 
 USER_USERNAME=${DJANGO_USER_USERNAME:-"bot"}
 USER_PASSWORD=${DJANGO_USER_PASSWORD:-"bot1234"}
@@ -44,5 +35,19 @@ if not User.objects.filter(username=USER_USERNAME).exists():
     user.profile_picture = "botLogo.png"
     user.save()
 EOF
+
+
+#mkdir /cert
+#openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /cert/key.pem -out /cert/cert.pem -subj "/CN=localhost"
+#uvicorn backend.asgi:application --host 0.0.0.0 --port 8000 --ssl-keyfile /cert/key.pem --ssl-certfile /cert/cert.pem
+
+# Ajouter les tâches cron
+python manage.py crontab add
+
+# Démarrer le service cron
+service cron start
+
+# Afficher les tâches cron pour confirmation
+python manage.py crontab show
 
 python manage.py runserver 0.0.0.0:8000
