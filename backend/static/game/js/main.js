@@ -120,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
     buttons.forEach(function(button) {
         button.style.cursor = "url('../static/game/assets/cursor/pointer.cur'), pointer";
     });
+    
 });
 // LOADING SCREEN
 class LoadingScreen {
