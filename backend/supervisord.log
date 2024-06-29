@@ -1,0 +1,321 @@
+2024-06-29 15:23:26,314 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-06-29 15:23:26,315 INFO supervisord started with pid 8
+2024-06-29 15:23:27,318 INFO spawned: 'cron' with pid 9
+2024-06-29 15:23:27,320 INFO spawned: 'django' with pid 10
+2024-06-29 15:23:29,115 INFO success: cron entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:23:29,115 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:23:34,306 INFO exited: django (exit status 0; expected)
+2024-06-29 15:23:35,316 INFO spawned: 'django' with pid 25
+2024-06-29 15:23:37,109 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:23:41,290 INFO exited: django (exit status 0; expected)
+2024-06-29 15:23:42,293 INFO spawned: 'django' with pid 40
+2024-06-29 15:23:44,043 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:23:48,241 INFO exited: django (exit status 0; expected)
+2024-06-29 15:23:49,244 INFO spawned: 'django' with pid 55
+2024-06-29 15:23:50,988 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:23:55,158 INFO exited: django (exit status 0; expected)
+2024-06-29 15:23:56,161 INFO spawned: 'django' with pid 70
+2024-06-29 15:23:57,935 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:24:02,154 INFO exited: django (exit status 0; expected)
+2024-06-29 15:24:03,157 INFO spawned: 'django' with pid 85
+2024-06-29 15:24:04,939 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:24:09,193 INFO exited: django (exit status 0; expected)
+2024-06-29 15:24:10,196 INFO spawned: 'django' with pid 100
+2024-06-29 15:24:11,980 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:24:16,177 INFO exited: django (exit status 0; expected)
+2024-06-29 15:24:17,180 INFO spawned: 'django' with pid 115
+2024-06-29 15:24:19,043 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:24:23,552 INFO exited: django (exit status 0; expected)
+2024-06-29 15:24:24,555 INFO spawned: 'django' with pid 130
+2024-06-29 15:24:26,360 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:24:30,560 INFO exited: django (exit status 0; expected)
+2024-06-29 15:24:31,563 INFO spawned: 'django' with pid 145
+2024-06-29 15:24:33,317 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:24:37,559 INFO exited: django (exit status 0; expected)
+2024-06-29 15:24:38,562 INFO spawned: 'django' with pid 160
+2024-06-29 15:24:40,377 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:24:44,527 INFO exited: django (exit status 0; expected)
+2024-06-29 15:24:45,530 INFO spawned: 'django' with pid 175
+2024-06-29 15:24:47,378 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:24:51,785 INFO exited: django (exit status 0; expected)
+2024-06-29 15:24:52,788 INFO spawned: 'django' with pid 190
+2024-06-29 15:24:54,538 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:24:58,694 INFO exited: django (exit status 0; expected)
+2024-06-29 15:24:59,698 INFO spawned: 'django' with pid 205
+2024-06-29 15:25:01,449 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:25:05,628 INFO exited: django (exit status 0; expected)
+2024-06-29 15:25:06,631 INFO spawned: 'django' with pid 220
+2024-06-29 15:25:08,404 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:25:12,663 INFO exited: django (exit status 0; expected)
+2024-06-29 15:25:13,666 INFO spawned: 'django' with pid 235
+2024-06-29 15:25:15,524 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:25:19,932 INFO exited: django (exit status 0; expected)
+2024-06-29 15:25:20,935 INFO spawned: 'django' with pid 250
+2024-06-29 15:25:22,770 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:25:27,113 INFO exited: django (exit status 0; expected)
+2024-06-29 15:25:28,116 INFO spawned: 'django' with pid 265
+2024-06-29 15:25:30,002 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:25:34,471 INFO exited: django (exit status 0; expected)
+2024-06-29 15:25:35,474 INFO spawned: 'django' with pid 280
+2024-06-29 15:25:37,248 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:25:41,669 INFO exited: django (exit status 0; expected)
+2024-06-29 15:25:42,672 INFO spawned: 'django' with pid 295
+2024-06-29 15:25:44,541 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:25:48,740 INFO exited: django (exit status 0; expected)
+2024-06-29 15:25:49,743 INFO spawned: 'django' with pid 310
+2024-06-29 15:25:51,493 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:25:55,681 INFO exited: django (exit status 0; expected)
+2024-06-29 15:25:56,684 INFO spawned: 'django' with pid 325
+2024-06-29 15:25:58,448 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:26:02,784 INFO exited: django (exit status 0; expected)
+2024-06-29 15:26:03,787 INFO spawned: 'django' with pid 340
+2024-06-29 15:26:05,688 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:26:10,208 INFO exited: django (exit status 0; expected)
+2024-06-29 15:26:11,211 INFO spawned: 'django' with pid 355
+2024-06-29 15:26:13,063 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:26:17,411 INFO exited: django (exit status 0; expected)
+2024-06-29 15:26:18,414 INFO spawned: 'django' with pid 370
+2024-06-29 15:26:20,241 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:26:24,812 INFO exited: django (exit status 0; expected)
+2024-06-29 15:26:25,814 INFO spawned: 'django' with pid 385
+2024-06-29 15:26:27,689 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:26:32,202 INFO exited: django (exit status 0; expected)
+2024-06-29 15:26:33,205 INFO spawned: 'django' with pid 400
+2024-06-29 15:26:35,071 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:26:39,391 INFO exited: django (exit status 0; expected)
+2024-06-29 15:26:40,394 INFO spawned: 'django' with pid 415
+2024-06-29 15:26:42,234 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:26:46,483 INFO exited: django (exit status 0; expected)
+2024-06-29 15:26:47,485 INFO spawned: 'django' with pid 430
+2024-06-29 15:26:49,358 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:26:53,644 INFO exited: django (exit status 0; expected)
+2024-06-29 15:26:54,647 INFO spawned: 'django' with pid 445
+2024-06-29 15:26:56,448 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:27:00,758 INFO exited: django (exit status 0; expected)
+2024-06-29 15:27:01,761 INFO spawned: 'django' with pid 460
+2024-06-29 15:27:03,618 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:27:08,101 INFO exited: django (exit status 0; expected)
+2024-06-29 15:27:09,104 INFO spawned: 'django' with pid 475
+2024-06-29 15:27:10,963 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:27:15,423 INFO exited: django (exit status 0; expected)
+2024-06-29 15:27:16,426 INFO spawned: 'django' with pid 490
+2024-06-29 15:27:18,207 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:27:22,502 INFO exited: django (exit status 0; expected)
+2024-06-29 15:27:23,505 INFO spawned: 'django' with pid 505
+2024-06-29 15:27:25,292 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:27:29,570 INFO exited: django (exit status 0; expected)
+2024-06-29 15:27:30,574 INFO spawned: 'django' with pid 520
+2024-06-29 15:27:32,342 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:27:37,169 INFO exited: django (exit status 0; expected)
+2024-06-29 15:27:38,172 INFO spawned: 'django' with pid 535
+2024-06-29 15:27:39,180 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:27:45,596 INFO exited: django (exit status 0; expected)
+2024-06-29 15:27:46,598 INFO spawned: 'django' with pid 550
+2024-06-29 15:27:48,572 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:27:53,743 INFO exited: django (exit status 0; expected)
+2024-06-29 15:27:54,746 INFO spawned: 'django' with pid 565
+2024-06-29 15:27:56,714 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:28:01,489 INFO exited: django (exit status 0; expected)
+2024-06-29 15:28:02,492 INFO spawned: 'django' with pid 580
+2024-06-29 15:28:04,393 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:28:09,076 INFO exited: django (exit status 0; expected)
+2024-06-29 15:28:10,079 INFO spawned: 'django' with pid 595
+2024-06-29 15:28:12,024 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:28:16,697 INFO exited: django (exit status 0; expected)
+2024-06-29 15:28:17,700 INFO spawned: 'django' with pid 610
+2024-06-29 15:28:19,636 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:28:24,935 INFO exited: django (exit status 0; expected)
+2024-06-29 15:28:25,938 INFO spawned: 'django' with pid 625
+2024-06-29 15:28:27,910 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:28:32,998 INFO exited: django (exit status 0; expected)
+2024-06-29 15:28:34,001 INFO spawned: 'django' with pid 640
+2024-06-29 15:28:35,864 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:28:40,129 INFO exited: django (exit status 0; expected)
+2024-06-29 15:28:41,133 INFO spawned: 'django' with pid 655
+2024-06-29 15:28:42,969 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:28:47,152 INFO exited: django (exit status 0; expected)
+2024-06-29 15:28:48,155 INFO spawned: 'django' with pid 670
+2024-06-29 15:28:50,001 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:28:54,583 INFO exited: django (exit status 0; expected)
+2024-06-29 15:28:55,585 INFO spawned: 'django' with pid 685
+2024-06-29 15:28:57,493 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:29:02,054 INFO exited: django (exit status 0; expected)
+2024-06-29 15:29:03,057 INFO spawned: 'django' with pid 700
+2024-06-29 15:29:04,933 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:29:09,324 INFO exited: django (exit status 0; expected)
+2024-06-29 15:29:10,327 INFO spawned: 'django' with pid 715
+2024-06-29 15:29:12,169 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:29:16,612 INFO exited: django (exit status 0; expected)
+2024-06-29 15:29:17,616 INFO spawned: 'django' with pid 730
+2024-06-29 15:29:19,464 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:29:23,910 INFO exited: django (exit status 0; expected)
+2024-06-29 15:29:24,913 INFO spawned: 'django' with pid 745
+2024-06-29 15:29:26,773 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:29:31,169 INFO exited: django (exit status 0; expected)
+2024-06-29 15:29:32,172 INFO spawned: 'django' with pid 760
+2024-06-29 15:29:34,079 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:29:38,410 INFO exited: django (exit status 0; expected)
+2024-06-29 15:29:39,413 INFO spawned: 'django' with pid 775
+2024-06-29 15:29:41,216 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:29:45,442 INFO exited: django (exit status 0; expected)
+2024-06-29 15:29:46,445 INFO spawned: 'django' with pid 790
+2024-06-29 15:29:48,224 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:29:52,587 INFO exited: django (exit status 0; expected)
+2024-06-29 15:29:53,590 INFO spawned: 'django' with pid 805
+2024-06-29 15:29:55,411 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:29:59,871 INFO exited: django (exit status 0; expected)
+2024-06-29 15:30:00,874 INFO spawned: 'django' with pid 820
+2024-06-29 15:30:02,711 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:30:07,471 INFO exited: django (exit status 0; expected)
+2024-06-29 15:30:08,475 INFO spawned: 'django' with pid 835
+2024-06-29 15:30:10,365 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:30:14,980 INFO exited: django (exit status 0; expected)
+2024-06-29 15:30:15,984 INFO spawned: 'django' with pid 850
+2024-06-29 15:30:17,888 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:30:22,441 INFO exited: django (exit status 0; expected)
+2024-06-29 15:30:23,444 INFO spawned: 'django' with pid 865
+2024-06-29 15:30:25,330 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:30:29,833 INFO exited: django (exit status 0; expected)
+2024-06-29 15:30:30,837 INFO spawned: 'django' with pid 880
+2024-06-29 15:30:32,741 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:30:37,313 INFO exited: django (exit status 0; expected)
+2024-06-29 15:30:38,316 INFO spawned: 'django' with pid 895
+2024-06-29 15:30:40,215 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:30:44,837 INFO exited: django (exit status 0; expected)
+2024-06-29 15:30:45,840 INFO spawned: 'django' with pid 910
+2024-06-29 15:30:47,781 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:30:52,346 INFO exited: django (exit status 0; expected)
+2024-06-29 15:30:53,349 INFO spawned: 'django' with pid 925
+2024-06-29 15:30:55,257 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:31:00,084 INFO exited: django (exit status 0; expected)
+2024-06-29 15:31:01,087 INFO spawned: 'django' with pid 940
+2024-06-29 15:31:02,990 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:31:07,723 INFO exited: django (exit status 0; expected)
+2024-06-29 15:31:08,727 INFO spawned: 'django' with pid 955
+2024-06-29 15:31:10,689 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:31:15,186 INFO exited: django (exit status 0; expected)
+2024-06-29 15:31:16,189 INFO spawned: 'django' with pid 970
+2024-06-29 15:31:18,006 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:31:22,451 INFO exited: django (exit status 0; expected)
+2024-06-29 15:31:23,454 INFO spawned: 'django' with pid 985
+2024-06-29 15:31:25,285 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:31:29,599 INFO exited: django (exit status 0; expected)
+2024-06-29 15:31:30,602 INFO spawned: 'django' with pid 1000
+2024-06-29 15:31:32,371 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:31:36,687 INFO exited: django (exit status 0; expected)
+2024-06-29 15:31:37,690 INFO spawned: 'django' with pid 1015
+2024-06-29 15:31:39,645 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:31:44,357 INFO exited: django (exit status 0; expected)
+2024-06-29 15:31:45,360 INFO spawned: 'django' with pid 1030
+2024-06-29 15:31:47,234 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:31:51,664 INFO exited: django (exit status 0; expected)
+2024-06-29 15:31:52,667 INFO spawned: 'django' with pid 1045
+2024-06-29 15:31:54,558 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:31:58,837 INFO exited: django (exit status 0; expected)
+2024-06-29 15:31:59,840 INFO spawned: 'django' with pid 1060
+2024-06-29 15:32:01,657 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:32:05,896 INFO exited: django (exit status 0; expected)
+2024-06-29 15:32:06,899 INFO spawned: 'django' with pid 1075
+2024-06-29 15:32:08,705 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:32:13,038 INFO exited: django (exit status 0; expected)
+2024-06-29 15:32:14,041 INFO spawned: 'django' with pid 1090
+2024-06-29 15:32:15,846 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:32:20,131 INFO exited: django (exit status 0; expected)
+2024-06-29 15:32:21,134 INFO spawned: 'django' with pid 1105
+2024-06-29 15:32:22,915 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:32:27,224 INFO exited: django (exit status 0; expected)
+2024-06-29 15:32:28,227 INFO spawned: 'django' with pid 1120
+2024-06-29 15:32:30,042 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:32:34,391 INFO exited: django (exit status 0; expected)
+2024-06-29 15:32:35,394 INFO spawned: 'django' with pid 1135
+2024-06-29 15:32:37,323 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:32:41,931 INFO exited: django (exit status 0; expected)
+2024-06-29 15:32:42,934 INFO spawned: 'django' with pid 1150
+2024-06-29 15:32:44,824 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:32:49,229 INFO exited: django (exit status 0; expected)
+2024-06-29 15:32:50,232 INFO spawned: 'django' with pid 1165
+2024-06-29 15:32:52,026 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:32:56,364 INFO exited: django (exit status 0; expected)
+2024-06-29 15:32:57,366 INFO spawned: 'django' with pid 1180
+2024-06-29 15:32:59,167 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:33:03,437 INFO exited: django (exit status 0; expected)
+2024-06-29 15:33:04,440 INFO spawned: 'django' with pid 1195
+2024-06-29 15:33:06,262 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:33:10,758 INFO exited: django (exit status 0; expected)
+2024-06-29 15:33:11,761 INFO spawned: 'django' with pid 1210
+2024-06-29 15:33:13,663 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:33:18,120 INFO exited: django (exit status 0; expected)
+2024-06-29 15:33:19,124 INFO spawned: 'django' with pid 1225
+2024-06-29 15:33:20,966 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:33:25,327 INFO exited: django (exit status 0; expected)
+2024-06-29 15:33:26,330 INFO spawned: 'django' with pid 1240
+2024-06-29 15:33:28,120 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:36:56,512 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-06-29 15:36:56,513 INFO supervisord started with pid 1
+2024-06-29 15:36:57,516 INFO spawned: 'cron' with pid 7
+2024-06-29 15:36:57,520 INFO spawned: 'django' with pid 8
+2024-06-29 15:36:59,352 INFO success: cron entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:36:59,352 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:37:03,499 INFO reaped unknown pid 16 (exit status 1)
+2024-06-29 15:37:04,501 INFO reaped unknown pid 21 (exit status 0)
+2024-06-29 15:40:03,322 INFO reaped unknown pid 29 (exit status 0)
+2024-06-29 15:55:46,930 WARN received SIGTERM indicating exit request
+2024-06-29 15:55:46,931 INFO waiting for cron, django to die
+2024-06-29 15:55:46,997 INFO stopped: django (exit status 0)
+2024-06-29 15:55:46,998 WARN stopped: cron (terminated by SIGTERM)
+2024-06-29 15:57:15,438 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-06-29 15:57:15,439 INFO supervisord started with pid 1
+2024-06-29 15:57:16,442 INFO spawned: 'cron' with pid 7
+2024-06-29 15:57:16,443 INFO spawned: 'django' with pid 8
+2024-06-29 15:57:18,265 INFO success: cron entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:57:18,265 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 15:57:22,425 INFO reaped unknown pid 16 (exit status 1)
+2024-06-29 15:57:23,426 INFO reaped unknown pid 21 (exit status 0)
+2024-06-29 15:58:03,096 INFO reaped unknown pid 29 (exit status 0)
+2024-06-29 15:59:02,166 INFO reaped unknown pid 42 (exit status 0)
+2024-06-29 16:00:03,238 INFO reaped unknown pid 49 (exit status 0)
+2024-06-29 16:01:02,312 INFO reaped unknown pid 77 (exit status 0)
+2024-06-29 16:02:02,385 INFO reaped unknown pid 84 (exit status 0)
+2024-06-29 16:03:02,113 INFO reaped unknown pid 98 (exit status 0)
+2024-06-29 16:04:03,187 INFO reaped unknown pid 105 (exit status 0)
+2024-06-29 16:05:02,257 INFO reaped unknown pid 112 (exit status 0)
+2024-06-29 16:05:25,283 WARN received SIGTERM indicating exit request
+2024-06-29 16:05:25,283 INFO waiting for cron, django to die
+2024-06-29 16:05:25,330 INFO stopped: django (exit status 0)
+2024-06-29 16:05:25,331 WARN stopped: cron (terminated by SIGTERM)
+2024-06-29 16:06:53,320 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-06-29 16:06:53,322 INFO supervisord started with pid 1
+2024-06-29 16:06:54,325 INFO spawned: 'cron' with pid 7
+2024-06-29 16:06:54,327 INFO spawned: 'django' with pid 8
+2024-06-29 16:06:56,118 INFO success: cron entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 16:06:56,118 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 16:07:00,210 INFO reaped unknown pid 16 (exit status 1)
+2024-06-29 16:07:01,213 INFO reaped unknown pid 21 (exit status 0)
+2024-06-29 16:07:02,801 INFO reaped unknown pid 29 (exit status 0)
+2024-06-29 16:08:01,879 INFO reaped unknown pid 36 (exit status 0)
+2024-06-29 16:09:02,956 INFO reaped unknown pid 43 (exit status 0)
+2024-06-29 16:10:02,024 INFO reaped unknown pid 50 (exit status 0)
+2024-06-29 16:11:02,095 INFO reaped unknown pid 57 (exit status 0)
+2024-06-29 16:12:02,167 INFO reaped unknown pid 64 (exit status 0)
+2024-06-29 16:12:02,167 WARN received SIGTERM indicating exit request
+2024-06-29 16:12:02,167 INFO waiting for cron, django to die
+2024-06-29 16:12:02,214 INFO stopped: django (exit status 0)
+2024-06-29 16:12:02,215 WARN stopped: cron (terminated by SIGTERM)
+2024-06-29 16:18:54,056 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-06-29 16:18:54,059 INFO supervisord started with pid 1
+2024-06-29 16:18:55,062 INFO spawned: 'cron' with pid 7
+2024-06-29 16:18:55,064 INFO spawned: 'django' with pid 8
+2024-06-29 16:18:56,930 INFO success: cron entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 16:18:56,931 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-29 16:19:01,119 INFO reaped unknown pid 16 (exit status 0)
+2024-06-29 16:19:02,018 INFO reaped unknown pid 29 (exit status 0)
+2024-06-29 16:19:02,158 INFO reaped unknown pid 34 (exit status 0)
+2024-06-29 16:20:02,303 INFO reaped unknown pid 46 (exit status 0)
+2024-06-29 16:21:02,379 INFO reaped unknown pid 58 (exit status 0)
+2024-06-29 16:22:02,455 INFO reaped unknown pid 70 (exit status 0)
+2024-06-29 16:23:02,528 INFO reaped unknown pid 82 (exit status 0)
+2024-06-29 16:24:02,603 INFO reaped unknown pid 94 (exit status 0)
+2024-06-29 16:24:07,610 WARN received SIGTERM indicating exit request
+2024-06-29 16:24:07,610 INFO waiting for cron, django to die
+2024-06-29 16:24:07,653 INFO stopped: django (exit status 0)
+2024-06-29 16:24:07,654 WARN stopped: cron (terminated by SIGTERM)

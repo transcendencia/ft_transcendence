@@ -24,7 +24,6 @@ USE_TZ = True
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'django_crontab',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -32,6 +31,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'authentication',
+    'django_crontab',
 ]
 
 CORS_ALLOWED_ORIGINS = ['http://localhost:8000']
@@ -48,7 +48,7 @@ MIDDLEWARE = [
 ]
 
 CRONJOBS = [
-    ('*/1 * * * *', 'authentication.views.delete_inactive_users.deleteInactiveUser'),
+    ('* * * * *', 'authentication.management.commands.delete_inactive_users.Command.handle')
 ]
 
 ROOT_URLCONF = 'backend.urls'
