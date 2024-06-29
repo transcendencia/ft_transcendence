@@ -1,6 +1,5 @@
 
 .rgpdPage {
-    border: 2px solid white;
     width: 99%;
     height: 99%;
     top: 50%;
@@ -9,8 +8,10 @@
     position: fixed;
     display: flex;
     flex-direction: column;
-    justify-content: top;
     align-items: center;
+    transition: opacity 1s, visibility 0s 1s;
+    opacity: 0;
+    visibility: hidden;
 }
 
 .rgpdFrame {

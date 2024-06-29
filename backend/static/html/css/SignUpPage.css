@@ -7,14 +7,22 @@
     border-radius: 5px;
     width: 80%;
     height: 99%;
-    transition: opacity 0.5s 0.75s;
+    transition: opacity 1s, visibility 0s 1s;
     opacity: 0;
-    visibility: hidden; /* Hide the element */
+    visibility: hidden;
 }
 
 .show {
     visibility: visible !important; /* Show the element */
     opacity: 1 !important;
+}
+
+.show.default {
+    transition: opacity 1s, visibility 0s !important;
+}
+
+.show.signUp {
+    transition: opacity 1s 0.75s, visibility 0s !important;
 }
 
 .signUpHeader {
