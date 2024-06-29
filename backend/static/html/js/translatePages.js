@@ -160,6 +160,7 @@ const statisticsText = document.getElementById('statisticsText');
 const statisticsText2 = document.getElementById('statisticsText2');
 const backButton = document.getElementById('userBackButton');
 
+
 function translateUserPageTexts() {
     friendlistText.textContent = getTranslatedText('friendlist');
     historyText.textContent = getTranslatedText('history');
@@ -171,30 +172,42 @@ function translateUserPageTexts() {
     backButton.textContent = getTranslatedText('backButton');   
 }
 
-const changeInfoText = document.getElementById('changeInfo');
+const changeInfo = document.getElementById('changeInfo');
 const changeUsernameInput = document.getElementById('changeUsernameInput');
+const changeAliasInput = document.getElementById('changeAliasInput');
 const changePasswordInput = document.getElementById('changePasswordInput');
 const changeConfirmPasswordInput = document.getElementById('changeConfirmPasswordInput');
 const changeProfilePicture = document.getElementById('changeProfilePicture');
+const AnonymousMode = document.getElementById('AnonymousMode');
 const chooseProfilePic = document.getElementById('chooseProfilePic');
 const deleteAccountButton = document.getElementById('deleteAccountButton');
 const submitInfoButton = document.getElementById('submitInfoButton');
 const validateDeleteAccountText = document.getElementById('validateDeleteAccountText');
 const deleteAccountConfirmation = document.getElementById('deleteAccountConfirmation');
 const deleteAccountCancel = document.getElementById('deleteAccountCancel');
+const RGPDPolicyInUserPage = document.getElementById('RGPDPolicyInUserPage');
+const infoBack = document.getElementById('infoBack');
+const textAnonymous = document.getElementById('textAnonymous');
+
 
 function translateModifyPageTexts(){
-    changeInfoText.textContent = getTranslatedText('changeInfoText');
-    changeUsernameInput.textContent = getTranslatedText('changeUsernameInput');
-    changePasswordInput.textContent = getTranslatedText('password');
-    changeConfirmPasswordInput.textContent = getTranslatedText('confimPassword');
+    changeInfo.textContent = getTranslatedText('changeInfo');
+    changeUsernameInput.placeholder = getTranslatedText('changeUsernameInput');
+    changeAliasInput.placeholder =  getTranslatedText('changeAliasInput');  
+    changePasswordInput.placeholder = getTranslatedText('changePasswordInput');
+    changeConfirmPasswordInput.placeholder = getTranslatedText('changeConfirmPasswordInput');
     changeProfilePicture.textContent = getTranslatedText('changeProfilePicture');
+    AnonymousMode.textContent = getTranslatedText('AnonymousMode');
     chooseProfilePic.textContent = getTranslatedText('chooseProfilePic');
     deleteAccountButton.textContent = getTranslatedText('deleteAccountButton');
     submitInfoButton.textContent = getTranslatedText('submitInfoButton');
     validateDeleteAccountText.textContent = getTranslatedText('validateDeleteAccountText');
     deleteAccountConfirmation.textContent = getTranslatedText('deleteAccountConfirmation');
     deleteAccountCancel.textContent = getTranslatedText('deleteAccountCancel');
+    RGPDPolicyInUserPage.textContent = getTranslatedText('RGPDPolicyInUserPage');
+    infoBack.textContent = getTranslatedText('infoBack');
+    textAnonymous.textContent = getTranslatedText('textAnonymous');
+     
 }
 
 export function TranslateAllTexts() {

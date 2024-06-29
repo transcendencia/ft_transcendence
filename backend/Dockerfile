@@ -26,20 +26,12 @@ RUN pip install djangorestframework
 RUN pip install django-password-validators
 
 RUN python -m pip install Pillow
-#RUN pip install django
 
-#RUN pip install whitenoise
+# Create necessary directories and log files
+RUN mkdir -p /var/log /cron
+RUN touch /var/log/cron.log /cron/django_cron.log
 
-#RUN pip install python-dotenv
-
-#RUN pip install psycopg2
+# Ensure the crontab is added for the root user
+RUN echo "* * * * * root /usr/bin/python /backend/manage.py crontab run >> /cron/django_cron.log 2>&1" >> /etc/crontab
 
 CMD ["bash", "run_server.sh"]
-
-# # Copy the HTML files to the application directory inside the container
-# COPY html /usr/share/nginx/html/.
-
-#Install python on my docker 
-#RUN apt-get install netcat-traditional
-
-# SERVER A CHOISIR 
