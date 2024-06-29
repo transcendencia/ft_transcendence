@@ -202,7 +202,11 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
-                document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+                console.log("failed login", data);
+                if (hostLoggedIn === 'false')
+                    document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+                else if (hostLoggedIn === 'true')
+                    document.getElementById('errorLogGuest').innerText = getTranslatedText(data.msg_code);
                 resolve(null);
             }
         })
