@@ -24,6 +24,7 @@ USE_TZ = True
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django_crontab',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -44,6 +45,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+]
+
+CRONJOBS = [
+    ('*/1 * * * *', 'authentication.views.delete_inactive_users.deleteInactiveUser'),
 ]
 
 ROOT_URLCONF = 'backend.urls'

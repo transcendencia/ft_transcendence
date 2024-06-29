@@ -136,23 +136,6 @@
     </div>
   </form>
 
-<!-- 
-Es : Al aceptarte a ti mismo la
-política de confidencialidad
-Fr : En vous iscrivant vous accepter la
-politique de confidentialite
-En : By making you accept the
-confidentiality policy       
- <div id="RGPDCreate" class="newToTheGame" >
-          By creating an account you accept
- </div> 
- <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter">
-          our privacy policy 
-  </div>  
--->
-
-
-
   <!-- CANVAS -->
   <div id="a">
       <canvas id="c4"></canvas>
@@ -482,12 +465,18 @@ confidentiality policy
               <form id="userInfoForm" class="modifyPage"> <!--Je modifie les info ici-->
                 <div id="changeInfo" style="font-size: 13px; font-family: 'space'; color: white">Only fill in information you want to change</div>
                <div  class="toggle-container">
-                  <span class= "changeProfilePicture">Anonymous mode:</span>
+                  <span id="AnonymousMode" class="changeProfilePicture">Anonymous mode:</span>
                   <div class="switch" id="toggleSwitch">
                     <div class="slider"></div>
                   </div>
-                  <img class="info-icon" src="../static/html/assets/icons/info.png" alt="Information" />
+                  <img id="infoButton" class="info-icon" src="../static/html/assets/icons/info_3.png" alt="Information" />
                 </div>
+                <div id="displayAnonymousMode" class="anonymousInfos" style="font-size: 13px; text-align: center; font-family: 'space'; color: white; margin-top: 10px;">
+                  <div id="textAnonymous" class="testAnonymous" >When you activate anonymous mode you have a randon username and default profil picture </div>
+                  <div id="infoBack" class="actionCont tinyBlueShadowfilter" style="font-size: 13px; margin-top: 5px;">
+                      Back
+                  </div>
+                </div> 
                   <div class="changeInfoBar">
                       <input id="changeUsernameInput" name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
                     </div>
@@ -500,19 +489,23 @@ confidentiality policy
                     <div class="changeInfoBar">
                       <input id="changeConfirmPasswordInput" name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password"></input>
                     </div>
+                    <div id="RGPDPolicyInUserPage" class="actionCont tinyBlueShadowfilter" style="font-size: 20px; font-family: 'space'">
+                      PRIVACY POLICY
+                    </div> 
                    <div class="profilePicContainer">
                       <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
                       <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
                     </div>
+                    <div id="LinkPicture" style="font-size:10px;" class="changeInfoMessage"></div>
                     <div id= "changeInfoMessage" class="changeInfoMessage"></div>
                     <div class="buttonContainer">
-                      <div id="deleteAccountButton"class="deleteAccountButton">Delete Account</div>
+                      <div id="deleteAccountButton" class="deleteAccountButton">Delete Account</div>
                       <div id="submitInfoButton" class="submitChangeButton">Submit</div>
                     </div>
                 </form>
             </div>
-            <div class="validateDelete">
+            <div id="validateDelete" class="validateDelete">
               <div id="validateDeleteAccountText" class="validateDeleteText">All data will be permanently lost. Are you sure you want to delete your account?</div>
               <div class="buttonContainer">
                 <div class="validateDeleteButton" id="deleteAccountConfirmation">Yes</div>
@@ -861,6 +854,7 @@ confidentiality policy
     </div>
     <!-- RGPD PAGE -->          
   </div>
+  
   <div class="rgpdPage page invisible" >
     <div id="RGPDTitle" class="title" style="font-size : 70px;">
       PRIVACY POLICY
@@ -871,9 +865,7 @@ confidentiality policy
        <div id="RGPDTexte" class="text-content">
         The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. Your data is automatically deleted one year after your last connection. For any reclamation you can go to the CNIL website. 
         </div>
-        <div id="RGPDBack" class="actionCont tinyBlueShadowfilter">
-          Back
-        </div>
+        <div id="RGPDBack" class="tinyBlueShadowfilter" style="margin-bottom: 20%;     cursor:url('../static/game/assets/cursor/pointer.cur'), pointer;">Back</div>
       </div>
       <img src="{% static 'game/assets/scoreUI.png' %}">
     </div>

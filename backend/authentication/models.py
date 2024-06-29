@@ -13,6 +13,7 @@ class User(AbstractUser):
   ]
   language = models.CharField(max_length=10, choices=language_choices, default='en')
   last_login_date = models.DateField(null=True, blank=True)
+  created_at = models.DateTimeField(auto_now_add=True)
 
   status_choices = [
     ('online', 'online'),
