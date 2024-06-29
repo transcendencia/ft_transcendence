@@ -24,6 +24,8 @@ if (!window.location.hash) {
     showPage(window.location.hash.substring(1)); // Show the current page based on the hash
 }
 
+showPage('loginPage');
+
 addEventListener("hashchange", (event) => {
     if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage' )
         moveCameraToBackOfCockpit();   
@@ -35,5 +37,3 @@ addEventListener("hashchange", (event) => {
     }
     oldLocation = window.location.hash;
 });
-
-showPage('loginPage');
