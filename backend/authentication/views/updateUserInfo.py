@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, F, FloatField, ExpressionWrapper, Case, When
 
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
@@ -13,6 +14,9 @@ from rest_framework.response import Response
 from ..models import User, UserStat
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
 
+from .words import colors, items
+
+import random
 #--------------------LANGUAGE--------------------
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -31,31 +35,26 @@ def change_language(request):
   else:
     return Response(status=405)
 
-# adapter avec un id pour que se soit applicable au user non host
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def update_status(request):
-  if request.method == 'POST':
-    if request.data.get('status') == 'offline': #a checker
-      request.user.is_host = False
-    request.user.status = request.data.get('status')
-    request.user.save()
-    print(request.user.username, request.user.status) #LOG
-    return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
-  else:
-    return Response(status=405)
+class UserStatusView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_status(request, userId):
-  try:
-    print(userId)
-    user = User.objects.get(id=userId)
-    return Response({'user_status': user.status}, status=200)
-  except User.DoesNotExist:
-    return Response({'user_status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
+    def post(self, request):
+        print(request.user.username, " status before changed:", request.user.status)
+        if request.data.get('status') == 'offline':  # a checker
+            request.user.is_host = False
+        request.user.status = request.data.get('status')
+        request.user.save()
+        print("user status after changed:", request.user.status)
+        return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
+      
+    def get(self, request, userId):
+        try:
+            print(userId)
+            user = User.objects.get(id=userId)
+            return Response({'user_status': user.status}, status=200)
+        except User.DoesNotExist:
+            return Response({'user_status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -76,21 +75,22 @@ def get_profile_info(request):
 @permission_classes([IsAuthenticated])
 def change_profile_info(request):
     if request.method == 'POST':
-        print(request.data)
-        # copier data dans un nouveau truc pour pouvoir changer  les valeurs (bien changer les endroit ou est appeler request.data par le nom de la nouvele variables)
-        # checker request.data.get('anonymousStatus') == 'true'
         anonymousStatus = request.data.get('anonymousStatus') == 'true'
-        print(anonymousStatus)
-        
-        serializer = UpdateInfoSerializer(instance=request.user, data=request.data)
-        if 'profile-pic' in request.FILES:
+        if anonymousStatus:
+            request.user.profile_picture = 'default.png'
+            request.user.save()
+        data = request.data.copy()
+        data.pop('anonymousStatus')
+        serializer = UpdateInfoSerializer(instance=request.user, data=data)
+        if 'profile-pic' in request.FILES and not anonymousStatus:
             print(request.user.profile_picture.name)
             if request.user.profile_picture.name != 'default.png':
               request.user.profile_picture.delete()
             uploaded_file = request.FILES['profile-pic']
+            print(uploaded_file)
             request.user.profile_picture = uploaded_file
             request.user.save()
-            print("picture changed") #LOG
+            print("picture changed") 
         if serializer.is_valid():
             serializer.save()
             return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=200)
@@ -98,8 +98,26 @@ def change_profile_info(request):
         print(first_error)
         return Response({'status': "failure", "message": first_error}, status=400)
 
-def user_list(request):
-  return render(request, 'user_list.html')
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def generate_unique_username(request):
+    random_color = random.choice(colors)
+    random_item = random.choice(items)
+    username = random_color + random_item
+    nbrUser = User.objects.all().count()
+    for i in range(nbrUser + 1):
+        if not User.objects.filter(username=username).exists():
+            return Response({'username': username}, status=200)
+        else:
+            random_color = random.choice(colors)
+            random_item = random.choice(items)
+            username = random_color + random_item
+    for i in range(nbrUser + 1):
+        username = f"anonymous{i}"
+        if not User.objects.filter(username=username).exists():
+            return Response({'username': username}, status=200)
+    return Response(status=400)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -130,4 +148,3 @@ def change_graphic_mode(request):
 def delete_account(request):
   request.user.delete()
   return Response({'status' : "success"})
-

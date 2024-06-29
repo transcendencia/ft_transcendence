@@ -1,6 +1,6 @@
 import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { togglePlanet } from "./enterPlanet.js";
+import { togglePlanet, setCheckerToInterval} from "./enterPlanet.js";
 import { afterGameTournament, botDifficultyTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament } from "../../tournament/js/newTournament.js";
@@ -414,7 +414,7 @@ function addEventListenerToTiles() {
         profileAdded[i] = false;
         tile.HTMLelement.addEventListener('click', function() {
             if (plusClicked && !profileAdded[i]) {
-                if (isBot(i) /*|| playerAlreadyLogged*/) {
+                if (isBot(i) || (tile.user.status === 'online' && !tile.user.is_host && isGuest(tile.user.id))) {
                     tempTileIndex = i;
                     putUserInMatch();
                     return;
@@ -427,6 +427,16 @@ function addEventListenerToTiles() {
             }
         });
     });
+}
+
+//Checker que le host_id est le bon
+function isGuest(userId) {
+    console.log("length of guestLoggedIn:", guestLoggedIn);
+    for (let i = 0; i < guestLoggedIn.length; i++) {
+        if (guestLoggedIn[i][0].id === userId)
+            return true;
+    }
+    return false;
 }
 
 function putUserInMatch() {
@@ -472,22 +482,42 @@ function putUserInMatch() {
 }
 
 import { handleLogin } from './loginPage.js';
+import { displayUsersLogged} from './main.js';
 
-let guestLoggedIn = []
-validatePasswordButton.addEventListener('click', function() {
-    // // console.log(userTiles[tempTileIndex]);
-    // if (guestLoggedIn.length < 7) {
-    //     // handleLoginHost(userTiles[tempTileIndex].user);
-    //     console.log(guestLoggedIn.length);
-    //     const password = document.getElementById("enterPasswordInput");
-    //     const formData = new FormData();
-    //     formData.append("username", userTiles[tempTileIndex].user.username);
-    //     formData.append("password", password.value);
-    //     console.log(handleLogin(formData));
-    // }
-    // else
-    //     console.log("Too many guest");
-    putUserInMatch();
+export let guestLoggedIn = [];
+
+// let guestLoggedIn =  {
+//     user: "nom_utilisateur",
+//     token: "token_utilisateur"
+// };
+
+validatePasswordButton.addEventListener('click', async function() {
+    if (guestLoggedIn.length < 7) {
+        // console.log(guestLoggedIn.length);
+        // console.log("je log un guest");
+        let guest = userTiles[tempTileIndex].user;
+        const password = document.getElementById("enterPasswordInput");
+        const formData = new FormData();
+        formData.append("username", guest.username);
+        formData.append("password", password.value);
+    
+        try {
+            let guestToken = await handleLogin(formData);
+            
+            if (guestToken) {
+                guestLoggedIn.push([guest, guestToken]);
+                // console.log("Contenu actuel de guestLoggedIn :", guestLoggedIn);
+                displayUsersLogged(guest, guestToken);
+            } else {
+                console.log("Erreur dans le login");
+            }
+        } catch (error) {
+            console.error('Erreur lors de la connexion :', error);
+        }
+        putUserInMatch();
+    }
+    else
+        console.log("Too many guest");
 });
 
 backPasswordButton.addEventListener('click', function() {
@@ -554,21 +584,6 @@ export function createUserTile(user, type, userListBackground, userTilesTemp) {
 
 export const userTiles = [];  // Array to store the user tiles
 
-export async function RenderAllUsersInList() {
-    const userListBackground = document.getElementById('userlistArenaPage');
-    
-    userListBackground.innerHTML = '';
-    const users = await get_friends_list();
-
-    users.friends.sort((a, b) => a.username.localeCompare(b.username));
-    users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
-
-    createUserTile(users.bot, 'Bot', userListBackground, userTiles);
-    users.friends.forEach(obj => {/*if !online sur autre ordi*/createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
-    users.user_not_friend.forEach(user => {createUserTile(user, 'Default', userListBackground, userTiles)});
-    addEventListenerToTiles();
-}
-
 export function RenderHostMatch(user) {
     const usernameElement = document.getElementById('player1MatchUsername');
     usernameElement.textContent = user.username;
@@ -589,6 +604,42 @@ backButtonArenaPage.forEach((button, index) => {
     }
 });
 
-export function initArenaPlanet() {
-    RenderAllUsersInList();
+let previousUserList = [];
+
+  async function isListsChanged() {
+    const newData = await get_friends_list();
+    
+    const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
+    const sortedNewUserNotFriend = newData.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+    const concatenatedNewList = sortedNewFriends.concat(sortedNewUserNotFriend);
+    const listsChanged = JSON.stringify(concatenatedNewList) !== JSON.stringify(previousUserList);
+    return listsChanged;
   }
+
+  export function initArenaPlanet() {
+    RenderAllUsersInList();
+    setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
+  }
+  
+  async function refreshUserListIfChanged() {
+    if (await isListsChanged())
+      await RenderAllUsersInList();
+    console.log("Checking...");
+  }
+  
+
+  export async function RenderAllUsersInList() {
+    const userListBackground = document.getElementById('userlistArenaPage');
+    
+    userListBackground.innerHTML = '';
+    const users = await get_friends_list();
+
+    const sortedNewFriends = users.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
+    const sortedNewUserNotFriend = users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+
+    createUserTile(users.bot, 'Bot', userListBackground, userTiles);
+    users.friends.forEach(obj => {/*si user pas online sur autre ordi*/ createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
+    users.user_not_friend.forEach(user => {/*si user pas online sur autre ordi*/ createUserTile(user, 'Default', userListBackground, userTiles)});
+    addEventListenerToTiles();
+    previousUserList = sortedNewFriends.concat(sortedNewUserNotFriend);
+}

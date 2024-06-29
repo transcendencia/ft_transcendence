@@ -18,6 +18,7 @@ from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer
 @permission_classes([IsAuthenticated])
 def get_stats(request, userId):
   try:
+    # est ce que c ok ???? get_or_404
     user = get_object_or_404(User, id=userId)
     gameWon = UserStat.objects.filter(player=user, isWinner=True)
     nbrGameWon = gameWon.count()
@@ -59,7 +60,8 @@ def get_stats(request, userId):
       )
     )
 
-    efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
+    # efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
+    # totalEficiency = allGames_annotated.aggregate(totalEfficiency=Sum('efficiency_ratio'))
 
     # Total points taken
     totalPointsTaken = allGames.aggregate(totalPointsTaken=Sum('pointsTaken'))['totalPointsTaken'] or 0
@@ -90,7 +92,6 @@ def get_stats(request, userId):
     for game in allGames:
       
       # Map counter
-      print("map game", game.mapGame)
       if game.mapGame == "oceanMap":
         oceanMap += 1 
       elif game.mapGame == "spaceMap":
@@ -101,7 +102,6 @@ def get_stats(request, userId):
           skyMap += 1
       
       # Mode counter
-      print("mode game", game.modeGame)
       if game.modeGame == "CLASSIC":
         classicMode += 1
       elif game.modeGame == "SPIN ONLY":
@@ -138,8 +138,6 @@ def get_stats(request, userId):
 
     totalBounces = sums['totalBounces']
     totalPointsTaken = sums['totalPointsTaken']
-    print(totalBounces)
-    print(totalPointsTaken)
     if totalBounces is not None and totalPointsTaken is not None:
       if totalPointsTaken != 0:
         efficiency = round((totalBounces / totalPointsTaken), 1)
@@ -155,7 +153,6 @@ def get_stats(request, userId):
       'totalPowerUpsUsed': totalPowerUpsUsed,
       'dashesPercentage': dashesPercentage,
       'poweredUsedPercentage': poweredUsedPercentage,
-      'efficiencyRatios': efficiencyRatios,
       'nbrGames': nbrGames,
       'maxStreak': maxStreak,
       'currentStreak': currentStreak,
@@ -164,7 +161,11 @@ def get_stats(request, userId):
       'efficiency' : efficiency,
       'totalPointsTaken': totalPointsTaken,
       'totalBounces': totalBounces,
-      'totalGameTime': totalGameTime
+      'totalGameTime': totalGameTime,
+      'nbrGoal': user.nbr_goals,
+      'nbrWin': user.nbr_match_win,
+      'nbrLose': user.nbr_match_lost,
+      'nbrMatch': user.nbr_match
     })
 
   except User.DoesNotExist:
