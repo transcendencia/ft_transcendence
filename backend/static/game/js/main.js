@@ -476,6 +476,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const rematchButton = document.getElementById('rematchButton');
 
     rematchButton.addEventListener('click', () => {
+        if (gameState.arena.game.tournamentGame)
+            return;
         rematchGame();
         keyDown['e'] = true;
         gameState.arena.resetUIForRematch();

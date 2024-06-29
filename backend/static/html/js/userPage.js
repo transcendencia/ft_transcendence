@@ -7,6 +7,7 @@ import { getUserStats, chooseStats } from './stats.js';
 const statsButtons = document.querySelectorAll('.statButton');
 const colorClicked = '#5d75ff47';
 let currentUser;
+
 statsButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
     if (index < 3)
@@ -19,6 +20,8 @@ statsButtons.forEach((button, index) => {
     {
       for (let i = 3; i < 6; i++)
         statsButtons[i].style.backgroundColor = 'transparent';
+      console.log("fetching stats with id: ", currentUser.id);
+
       getUserStats(localStorage.getItem(currentUser.id));
     }
     button.style.backgroundColor = colorClicked;
@@ -340,6 +343,7 @@ function createUserTile(user, type, reqId) {
       if (reqId !== undefined)
         requestId = reqId;
       currentUser = user;
+      console.log("fetching stats with id: ", user.id);
       getUserStats(user.id);
       chooseStats(4);
     }, 125);
