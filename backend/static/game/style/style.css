@@ -239,11 +239,19 @@ body {
     0% {
         left: 50%;
         width: 150%;
+        height: 20%;
         opacity: 1;
     }
-    50% {
+    33% {
         left: 50%;
         width: 40%;
+        height: 20%;
+        opacity: 1;
+    }
+    66% {
+        left: 50%;
+        width: 40%;
+        height: 1%;
         opacity: 1;
     }
     100% {
