@@ -20,9 +20,8 @@ statsButtons.forEach((button, index) => {
     {
       for (let i = 3; i < 6; i++)
         statsButtons[i].style.backgroundColor = 'transparent';
-      console.log("fetching stats with id: ", currentUser.id);
 
-      getUserStats(localStorage.getItem(currentUser.id));
+      getUserStats(currentUser.id);
     }
     button.style.backgroundColor = colorClicked;
     chooseStats(index + 1);
@@ -343,7 +342,6 @@ function createUserTile(user, type, reqId) {
       if (reqId !== undefined)
         requestId = reqId;
       currentUser = user;
-      console.log("fetching stats with id: ", user.id);
       getUserStats(user.id);
       chooseStats(4);
     }, 125);
