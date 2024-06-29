@@ -456,8 +456,6 @@ export function togglePause() {
     pauseGame ? pauseGame = false : pauseGame = true;
 }
 
-import { getUserStatus } from './userManagement.js';
-
 let firstPauseTriggered = false;
 
 document.addEventListener('keydown', (event) => {
