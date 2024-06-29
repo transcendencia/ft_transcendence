@@ -583,6 +583,21 @@ export function createUserTile(user, type, userListBackground, userTilesTemp) {
 
 export const userTiles = [];  // Array to store the user tiles
 
+export async function RenderAllUsersInList() {
+    const userListBackground = document.getElementById('userlistArenaPage');
+    
+    userListBackground.innerHTML = '';
+    const users = await get_friends_list();
+
+    users.friends.sort((a, b) => a.username.localeCompare(b.username));
+    users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+
+    createUserTile(users.bot, 'Bot', userListBackground, userTiles);
+    users.friends.forEach(obj => {/*if !online sur autre ordi*/createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
+    users.user_not_friend.forEach(user => {createUserTile(user, 'Default', userListBackground, userTiles)});
+    addEventListenerToTiles();
+}
+
 export function RenderHostMatch(user) {
     const usernameElement = document.getElementById('player1MatchUsername');
     usernameElement.textContent = user.username;

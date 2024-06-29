@@ -85,9 +85,9 @@
     max-width: 45%;
     max-height: 100%;
 }
-
 .statsBlockNoGraphs {
     border-radius: 10px;
+    /* background-color: rgba(30, 30, 60, 0.8);  */
     background-color: #5d75ff47;
     border: 4px solid #3777ff;
     display: flex;
@@ -98,6 +98,11 @@
     width: 98%;
     padding: 10px;
     box-sizing: border-box;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.statsBlockNoGraphs:hover {
+    box-shadow: 0 0 20px #3777ff; /* Subtle glow on hover */
 }
 
 .statColumn {
@@ -111,29 +116,112 @@
 }
 
 .statItem {
-    color: white;
+    color: #ffffff;
     font-size: 16px;
     font-family: 'Space';
     margin-bottom: 10px;
-    background-color: #3d4fff; /* Box background color */
-    border: 2px solid #3777ff; /* Box border color */
-    padding: 10px; /* Padding inside the box */
-    border-radius: 5px; /* Rounded corners */
-    width: 100%; /* Ensure the box takes full width */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    display: flex; /* Use flexbox to align items */
-    justify-content: space-between; /* Distribute space between elements */
-    align-items: center; /* Center items vertically */
-    transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition for scaling and shadow */
+    background-color: rgb(7 7 130 / 80%); /* Darker background for stat boxes */
+    border: 2px solid #3777ff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .statItem:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 25px #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ffffff; /* Subtle glow effect on hover */
 }
 
 .statValue {
     color: #ffb30e; /* Different color for the stat value */
+    font-size: 25px;
+    font-family: 'Computer';
+}
+
+/* Add subtle animations */
+@keyframes slideInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutLeft {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slideOutRight {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.statsBlockNoGraphs {
+    animation: slideInRight 0.25s ease-in-out;
+}
+
+.statsBlockNoGraphs.slideOutLeft {
+    animation: slideOutLeft 0.25s ease-in-out;
+}
+
+.statsBlockNoGraphs.slideOutRight {
+    animation: slideOutRight 0.25s ease-in-out;
+}
+
+.statsBlock {
+    animation: slideInRight 0.25s ease-in-out;
+}
+
+.statsBlock.slideOutLeft {
+    animation: slideOutLeft 0.25s ease-in-out;
+}
+
+.statsBlock.slideOutRight {
+    animation: slideOutRight 0.25s ease-in-out;
+}
+
+.statsBlock.slideInRight {
+    animation: slideInRight 0.25s ease-in-out;
+}
+
+.statsBlock.slideInLeft {
+    animation: slideInLeft 0.25s ease-in-out;
+}
+
+.statItem {
+    animation: fadeIn 0.25s ease-in-out;
 }
 
 @keyframes switchStats {
