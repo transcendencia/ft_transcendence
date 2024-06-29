@@ -15,7 +15,7 @@ export function moveCameraToFrontOfCockpit() {1
         .to(backPosition, duration) // Set the target position and duration
         .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
         .start(); // Start the animation
-    showPage('signUpPage');
+    showPage('signUpPage', 'signUp');
     inCockpit = true;
 }
 

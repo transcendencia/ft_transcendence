@@ -1,18 +1,22 @@
 import { moveCameraToBackOfCockpit, moveCameraToFrontOfCockpit} from "./signUpPage.js";
 
-export function showPage(pageId) {
+export function showPage(pageId, transition = 'default') {
     var pages = document.querySelectorAll('.page');
     pages.forEach(function(page) {
         page.classList.remove('show'); // Remove the 'show' class from all pages
+        //remove transitions
+        page.classList.remove('default');
+        page.classList.remove('signUp');
     });
-
     // Show the selected page
+    console.log(pageId);
     if (pageId == 'none')
         return;
     window.location.hash = `#${pageId}`;
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
+    selectedPage.classList.add(transition);
 }
 
 let oldLocation = window.location.hash || '#loginPage';
@@ -27,13 +31,15 @@ if (!window.location.hash) {
 showPage('loginPage');
 
 addEventListener("hashchange", (event) => {
+    console.log(window.location.hash, oldLocation);
     if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage' )
         moveCameraToBackOfCockpit();   
-    if (window.location.hash == '#signUpPage' && oldLocation == '#loginPage')
+    else if (window.location.hash == '#signUpPage' && oldLocation == '#loginPage')
         moveCameraToFrontOfCockpit();
-    if (window.location.hash == '#signUpPage' && oldLocation == '#galaxy') {
-        showPage('signUpPage');
-        moveCameraToFrontOfCockpit();
+    else if (window.location.hash == '#rgpdPage' && oldLocation == '#signUpPage')
+        showPage('rgpdPage');
+    else if (window.location.hash == '#signUpPage' && oldLocation == '#rgpdPage') {
+        showPage('signUpPage')
     }
     oldLocation = window.location.hash;
 });
