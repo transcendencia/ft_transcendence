@@ -72,6 +72,7 @@ class Game(models.Model):
   modeGame = models.CharField(max_length=255, default="test")
   mapGame = models.CharField(max_length=255, default="spaceMap")
   date = models.DateTimeField(default=timezone.now)
+  gameTime = models.IntegerField(default=0)
   
   def __str__(self):
     return f"{self.gameplayMode}"
@@ -88,3 +89,4 @@ class UserStat(models.Model):
   modeGame = models.CharField(max_length=255, default="test")
   mapGame = models.CharField(max_length=255, default="spaceMap")
   date = models.DateTimeField(default=timezone.now)
+  gameTime = models.IntegerField(default=0)

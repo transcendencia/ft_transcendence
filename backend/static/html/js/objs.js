@@ -24,6 +24,18 @@ objectLoader.load(
         console.error(error);
     }
 );
+
+export let marker;
+
+objectLoader.load(
+    '../static/html/assets/spaceShip/scene.gltf',
+    function(gltf) {
+        marker = gltf.scene;
+        marker.scale.set(10,10,10);
+        marker.position.set(0,400,0);
+        scene.add(marker);
+    },
+);
     
 let spaceShipInt;
 let spaceShipIntLoaded = false;

@@ -210,6 +210,94 @@ body {
     cursor: url('../assets/cursor/default.cur'), auto;
 }
 
+@keyframes slideInAndExpand {
+    0% {
+        width: 40%;
+        left: -100%;
+        opacity: 0;
+    }
+    50% {
+        width: 40%;
+        left: 28%;
+        opacity: 1;
+    }
+    100% {
+        left: -28%;
+        width: 150%;
+    }
+}
+
+@keyframes slideOutAndShrink {
+    0% {
+        width: 150%;
+        left: -28%;
+        opacity: 1;
+    }
+    50% {
+        width: 40%;
+        left: 28%;
+        opacity: 1;
+    }
+    100% {
+        width: 40%;
+        left: -100%;
+        /* opacity: 0; */
+    }
+}
+
+.startScreen {
+    padding: 20px;
+    background: rgba(58, 115, 255, 0.1);
+    border-radius: 15px;
+    border: 4px solid #3777ff;
+    height: auto;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateY(50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: 0 0 20px rgba(0, 0, 255, 0.5);
+    background-image: radial-gradient(circle, rgba(58, 115, 255, 0.5), rgba(58, 115, 255, 0.2));
+    cursor: url('../assets/cursor/default.cur'), auto;
+    
+    /* Animation properties */
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s 0.5s;
+}
+
+.startScreen.visible {
+    animation: slideInAndExpand 1.5s forwards;
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s 0s;
+}
+
+.startScreen.hidden {
+    animation: slideOutAndShrink 1.5s forwards;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 1.5s;
+}
+
+#startGameText {
+    font-size: 50px;
+    font-family: 'space';
+    color: white;
+    animation: fadeIn 2s ease-out forwards;
+}
+
+#winningText {
+    font-size: 50px;
+    font-family: 'space';
+    color: white;
+    animation: fadeIn 2s ease-out forwards;
+}
+
 .winning-screen.visible {
     visibility: visible;
     opacity: 1;
@@ -217,13 +305,7 @@ body {
     animation: slideInUp 0.5s ease-out forwards;
 }
 
-#winningText {
-    margin-top: 20px;
-    font-size: 50px;
-    font-family: 'space';
-    color: white;
-    animation: fadeIn 2s ease-out forwards;
-}
+
 
 #scoreText {
     font-size: 30px;

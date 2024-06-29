@@ -81,11 +81,11 @@
     text-align: center; /* Center align text */
     font-family: "Space";
     height: 15%;
-    width: 30%;
+    width: 40%;
 }
 
 .languageSettings {
-    width: 100%;
+    width: 75%;
     height: 80%;
     display: flex;
     justify-content: space-around;

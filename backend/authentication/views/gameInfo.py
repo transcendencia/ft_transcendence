@@ -80,7 +80,8 @@ def add_game(request):
     gameplayMode = data['gameplayMode']
     modeGame = data['modeGame']
     mapGame = data['mapGame']
-
+    gameTime = data['gameTime']
+    
     player1 = User.objects.get(id=player1_id)
     player2 = User.objects.get(id=player2_id)
     player3 = User.objects.get(id=player3_id) if player3_id else None
@@ -93,6 +94,7 @@ def add_game(request):
         gameplayMode=gameplayMode,
         modeGame=modeGame,
         mapGame=mapGame,
+        gameTime=gameTime
     )
     game.save()
     
@@ -124,7 +126,8 @@ def createUserStat(user, game, userStat):
     nbPoweredUsed=userStat['nbPowerUsed'],
     nbBounces=userStat['nbBounces'],
     modeGame=game.modeGame,
-    mapGame=game.mapGame)
+    mapGame=game.mapGame,
+    gameTime=game.gameTime)
   new_stat.save()
 
   return JsonResponse({'status': 'success'})
