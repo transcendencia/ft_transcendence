@@ -210,6 +210,133 @@ body {
     cursor: url('../assets/cursor/default.cur'), auto;
 }
 
+@keyframes slideInAndExpand {
+    0% {
+        width: 40%;
+        height: 1%;
+        left: -100%;
+        opacity: 0;
+    }
+    33% {
+        width: 40%;
+        height: 1%;
+        left: 50%;
+        opacity: 1;
+    }
+    66% {
+        width: 40%;
+        height: 20%;
+        left: 50%;
+        opacity: 1;
+    }
+    100% {
+        height: 20%;
+        width: 150%;
+    }
+}
+
+@keyframes slideOutAndShrink {
+    0% {
+        left: 50%;
+        width: 150%;
+        opacity: 1;
+    }
+    50% {
+        left: 50%;
+        width: 40%;
+        opacity: 1;
+    }
+    100% {
+        width: 40%;
+        left: 200%;
+    }
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.startScreen {
+    padding: 20px;
+    background: linear-gradient(990deg, rgba(63,94,251,0.5) 0%, rgba(54,236,63,0.5) 11%, rgba(68,246,241,0.5) 23%, rgba(225,69,248,0.5) 47%, rgba(245,246,145,0.5) 69%, rgba(247,84,84,0.5) 86%, rgba(70,252,244,0.5) 100%);
+    /* background: linear-gradient(90deg, rgba(0,227,30,0.5) 0%, rgba(220,230,6,0.5) 16%, rgba(223,0,0,0.5) 35%, rgba(232,24,227,0.5) 49%, rgba(0,255,252,0.5) 64%, rgba(230,2,225,0.5) 88%, rgba(0,5,255,0.5) 100%); */
+    /* background: linear-gradient(90deg, rgba(224,38,67,0.7) 0%, rgba(255,219,118,0.7) 15%, rgba(255,38,50,0.7) 25%, rgba(255,198,82,0.7) 35%, rgba(224,38,67,0.7) 45%, rgba(245,181,52,0.7) 55%, rgba(224,38,67,0.7) 65%, rgba(253,194,53,0.7) 75%, rgba(224,38,67,0.7) 85%, rgba(252,176,69,0.7) 92%, rgba(224,38,64,0.7) 100%); */
+    /* background: radial-gradient(circle,rgba(224,38,67,0.7) 14%, rgba(255,219,118,0.7) 15%, rgba(224,38,67,0.7) 17%, rgba(255,38,50,0.7) 32%, rgba(255,198,82,0.7) 35%, rgba(224,38,67,0.7) 38%, rgba(224,38,67,0.7) 52%, rgba(245,181,52,0.7) 55%, rgba(224,38,67,0.7) 73%, rgba(253,194,53,0.7) 75%, rgba(224,38,67,0.7) 78%, rgba(224,38,67,0.7) 89%, rgba(252,176,69,0.7) 92%, rgba(224,38,64,0.7) 94%); */
+    background-size: 300% 300%;
+    background-position: 0% 50%;
+    /* border-radius: 15px; */
+    border-top: 10px solid #ffffff;
+    border-bottom: 10px solid #ffffff;
+    width: 150%;
+    height: 20%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    cursor: url('../assets/cursor/default.cur'), auto;
+    
+    /* Animation properties */
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s 0.5s;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.startScreen.visible {
+    animation: slideInAndExpand 1.5s forwards,
+    gradientShift 10s ease infinite;
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s 0s;
+}
+
+.startScreen.hidden {
+    animation: slideOutAndShrink 1.5s forwards,
+    gradientShift 10s ease infinite;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 1.5s;
+}
+
+#startGameText {
+    position: absolute;
+    font-size: 50px;
+    font-family: 'space';
+    color: white;
+    animation: pulse 2s ease infinite;
+}
+
+#winningText {
+    font-size: 50px;
+    font-family: 'space';
+    color: white;
+    animation: fadeIn 2s ease-out forwards;
+}
+
 .winning-screen.visible {
     visibility: visible;
     opacity: 1;
@@ -217,13 +344,7 @@ body {
     animation: slideInUp 0.5s ease-out forwards;
 }
 
-#winningText {
-    margin-top: 20px;
-    font-size: 50px;
-    font-family: 'space';
-    color: white;
-    animation: fadeIn 2s ease-out forwards;
-}
+
 
 #scoreText {
     font-size: 30px;
@@ -243,17 +364,7 @@ body {
     color: white;
 }
 
-@keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
+
 
 #backToLobbyButton {
     padding: 10px 20px;

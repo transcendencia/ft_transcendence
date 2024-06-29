@@ -1,5 +1,6 @@
-import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
-import { scene, THREE} from "./main.js";
+import * as THREE from "three"
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { scene } from "./main.js";
 import { setupPlanets } from "./planets.js";
 
 
@@ -22,6 +23,18 @@ objectLoader.load(
     function (error) {
         console.error(error);
     }
+);
+
+export let marker;
+
+objectLoader.load(
+    '../static/html/assets/spaceShip/scene.gltf',
+    function(gltf) {
+        marker = gltf.scene;
+        marker.scale.set(10,10,10);
+        marker.position.set(0,400,0);
+        scene.add(marker);
+    },
 );
     
 let spaceShipInt;

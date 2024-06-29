@@ -33,6 +33,11 @@
     width: 100%;
 }
 
+.statButton img {
+    width: 50%;
+    height: auto;
+    max-height: 50%;
+}
 @keyframes slideUserPage {
     from {transform: translateX(0);}
     to {transform: translateX(-100%);}
@@ -74,10 +79,154 @@
     background-color: #5d75ff47;
     border: 4px solid #3777ff;
     display: flex;
-    justify-content: center;
-    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
     height: 55%;
     width: 98%;
+}
+
+.statsBlock canvas {
+    flex: 1;
+    max-width: 45%;
+    max-height: 100%;
+}
+.statsBlockNoGraphs {
+    border-radius: 10px;
+    /* background-color: rgba(30, 30, 60, 0.8);  */
+    background-color: #5d75ff47;
+    border: 4px solid #3777ff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* Center the columns */
+    align-items: flex-start;
+    height: 55%;
+    width: 98%;
+    padding: 10px;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.statsBlockNoGraphs:hover {
+    box-shadow: 0 0 20px #3777ff; /* Subtle glow on hover */
+}
+
+.statColumn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+    width: 45%;
+    height: 100%;
+    margin: 0 5%; /* Add margin to center columns */
+}
+
+.statItem {
+    color: #ffffff;
+    font-size: 16px;
+    font-family: 'Space';
+    margin-bottom: 10px;
+    background-color: rgb(7 7 130 / 80%); /* Darker background for stat boxes */
+    border: 2px solid #3777ff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.statItem:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ffffff; /* Subtle glow effect on hover */
+}
+
+.statValue {
+    color: #ffb30e; /* Different color for the stat value */
+    font-size: 25px;
+    font-family: 'Computer';
+}
+
+/* Add subtle animations */
+@keyframes slideInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutLeft {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slideOutRight {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.statsBlockNoGraphs {
+    animation: slideInRight 0.25s ease-in-out;
+}
+
+.statsBlockNoGraphs.slideOutLeft {
+    animation: slideOutLeft 0.25s ease-in-out;
+}
+
+.statsBlockNoGraphs.slideOutRight {
+    animation: slideOutRight 0.25s ease-in-out;
+}
+
+.statsBlock {
+    animation: slideInRight 0.25s ease-in-out;
+}
+
+.statsBlock.slideOutLeft {
+    animation: slideOutLeft 0.25s ease-in-out;
+}
+
+.statsBlock.slideOutRight {
+    animation: slideOutRight 0.25s ease-in-out;
+}
+
+.statsBlock.slideInRight {
+    animation: slideInRight 0.25s ease-in-out;
+}
+
+.statsBlock.slideInLeft {
+    animation: slideInLeft 0.25s ease-in-out;
+}
+
+.statItem {
+    animation: fadeIn 0.25s ease-in-out;
 }
 
 @keyframes switchStats {
@@ -346,87 +495,9 @@
     background-color: #000f61b2;
 }
 
-.requestTile {
-    color: #ffb30eff !important;
-    border-color: #ffb30eff !important;
-    background-color: rgba(255, 179, 14, 0.459) !important;
-    animation: shadowBlink 1s infinite alternate ease-in-out !important;
-}
-
-.friendTile {
-    color: rgb(14, 255, 110) !important;
-    border-color: rgb(14, 255, 110) !important;
-    background-color: rgba(14, 255, 110, 0.459) !important;
-}
-
-.arenaFriendTile {
-    color: rgb(14, 255, 26);
-    border-color: rgb(14, 255, 26);
-    background-color: rgba(14, 255, 26, 0.322);
-}
-
-.arenaFriendTile:hover {
-    background-color: rgba(14, 255, 26, 0.500);
-}
-
-.loupeFriendTile {
-    border-color: rgb(14, 255, 26) !important;
-    background-color: rgba(14, 255, 26, 0.459) !important;
-}
-
-.loupeFriendTile:hover {
-    background-color: rgba(2, 158, 10, 0.432) !important;
-}
-
-.loupeRequestTile {
-    border-color: #ffb30eff !important;
-    background-color: rgba(255, 179, 14, 0.459) !important;
-}
-
-.loupeRequestTile:hover {
-    background-color: rgba(155, 107, 2, 0.678) !important;
-}
-
-
-.userTileIcon{
-    width: 50px;
-    height: 50px;
-    font-family: 'Computer';
-    font-size: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.userTileIcon img{
-    width: 40px;
-    height: 40px;
-}
-
 .invisible{
     width: 30px;
     height: 30px;
-}
-
-.loupeImg {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 25%;
-    background-color: #5d75ff47;
-    border: 3px solid #3777ff;
-    border-radius: 5px;
-    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;}
-
-.loupeImg img {
-    height: auto;
-    width: 50px;
-    transform: rotate(-30deg);
-}
-
-.loupeImg:hover {
-    background-color: #000f61b2;
 }
 
 .imgFrame img {
@@ -502,7 +573,7 @@
 .text-input2 {
     position: absolute;
     width: 20%; /* Match the width of the container */
-    height: 30%; /* Automatically adjust height based on content */
+    height: 6%; /* Automatically adjust height based on content */
     background: none;
     border: none;
     color: white; /* Set text color to white */
@@ -521,3 +592,6 @@
     width: 40px;
     height: 40;
 }
+
+
+  

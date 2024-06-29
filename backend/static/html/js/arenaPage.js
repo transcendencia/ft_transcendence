@@ -1,6 +1,6 @@
 import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { togglePlanet } from "./enterPlanet.js";
+import { togglePlanet, setCheckerToInterval} from "./enterPlanet.js";
 import { afterGameTournament, botDifficultyTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament } from "../../tournament/js/newTournament.js";
@@ -19,25 +19,10 @@ let playerNb = 0;
 
 export const blue = '#3777ff';
 export const purple = 'rgb(164, 67, 255)'
+export const bgPurple = '#2d25a1'
 export const grey = '#141414';
 export const lightGrey = '#505050';
 export const green = 'rgb(14, 255, 26)';
-
-function Glow() {
-    userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-    userlist.style.borderColor = '#ffb30eff';
-    userlist.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
-    userTiles.forEach((tile, i) => {
-        if (profileAdded[i])
-            return;
-        const tileChildren = tile.HTMLelement.querySelectorAll(":scope > *");
-        tileChildren.forEach(function(element) {
-            element.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-            element.style.borderColor = '#ffb30eff';
-            element.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
-        });
-    });
-}
 
 let gamemodeCounter = 0;
 let mapCounter = 0;
@@ -83,6 +68,26 @@ function handleMaps(buttonHeader, imgIndex) {
         buttonHeader.parentNode.querySelector('.buttonCont').textContent = 'Dragon Pit';
 }
 
+// function handleBotDifficulty(buttonHeader, imgIndex) {
+//     if (imgIndex === 0){
+//         botDifficulty--;
+//         if (botDifficulty === -1)
+//             botDifficulty = 2;
+//     }
+//     else {
+//         botDifficulty++;    
+//         if (botDifficulty === 2)
+//             botDifficulty = 0;
+//     }
+//     if (botDifficulty === 0)
+//         buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyEasy');
+//     else if (botDifficulty === 1)
+//         buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyMedium');
+//     else if (botDifficulty === 2)
+//         buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyHard');
+// }
+
+
 function handleBotDifficulty(buttonHeader, imgIndex) {
     if (imgIndex === 0){
         botDifficulty--;
@@ -91,16 +96,16 @@ function handleBotDifficulty(buttonHeader, imgIndex) {
     }
     else {
         botDifficulty++;    
-        if (botDifficulty === 2)
+        if (botDifficulty === 3)
             botDifficulty = 0;
     }
     if (botDifficulty === 0)
-        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyEasy');
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('botDifficultyEasy');
     else if (botDifficulty === 1)
-        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyMedium');
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('botDifficultyMedium');
     else if (botDifficulty === 2)
-        buttonHeader.parentNode.querySelector('.buttonContVert').textContent = getTranslatedText('botDifficultyHard');
-}
+        buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('botDifficultyHard');
+  }
 
 const buttonHeaders = document.querySelectorAll('.buttonTitle');
 buttonHeaders.forEach((buttonHeader, index) => {
@@ -124,19 +129,22 @@ buttonHeaders.forEach((buttonHeader, index) => {
     });
 });
 
+function Glow() {
+userlist.classList.add('whiteGlowing');
+    userTiles.forEach((tile, i) => {
+        if (profileAdded[i])
+            return;
+        const tileChildren = tile.HTMLelement.querySelectorAll(":scope > *");
+        tileChildren.forEach(child => child.classList.add('whiteGlowing'))
+    });
+}
 
 function resetGlow() {
-    userlist.style.borderColor = blue;
-    userlist.style.animation = '';
+    userlist.classList.remove('whiteGlowing')
     userTiles.forEach((child, i) => {
         const children = child.HTMLelement.querySelectorAll(":scope > *");
         children.forEach(element => {
-            element.style.borderColor = blue;
-            element.style.animation = '';
-            if (isBot(i))
-                element.style.borderColor = purple;
-            else if (child.type === 'Friend')
-                element.style.borderColor = green;
+            element.classList.remove('whiteGlowing')
         });
         
     });
@@ -149,7 +157,7 @@ function resetAddingMode() {
         otherPlusButton.style.pointerEvents = 'auto';
     });
     profileAdded[botID] = false;
-    userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'none';});
+    userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").classList.remove('hovered')});
 }
 
 function setAddingMode(plusButton, i) {
@@ -157,11 +165,11 @@ function setAddingMode(plusButton, i) {
     if (i === 0) {
         plusClicked = 1;
         profileAdded[botID] = true;
-        userTiles.forEach((tile, index) => {if(!isBot(index)) tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'auto';});
+        userTiles.forEach((tile, index) => {if(!isBot(index)) tile.HTMLelement.querySelector(".textContainer").classList.add('hovered')});
     }
     else {
         plusClicked = 2;
-        userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").style.pointerEvents = 'auto';});
+        userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").classList.add('hovered')});
     }
     plusButtons.forEach(function(otherPlusButton) {
         if (otherPlusButton !== plusButton) {
@@ -185,12 +193,12 @@ export function endGame(isTournament) {
         user3 = gameState.arena.game.user3.id
     if (isTournament){
         planetPanel[2].style.visibility = 'visible';
-        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3);
+        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
         afterGameTournament(gameState.arena.game.leftScore, gameState.arena.game.rightScore);
     }
     else{
         planetPanel[0].style.visibility = 'visible';
-        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3);
+        createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
     }
     rsContainer.style.visibility = 'visible';
     gameUI.style.visibility = 'hidden';
@@ -205,7 +213,7 @@ export function rematchGame() {
 
     if (gameState.arena.game.thirdPlayer)
         user3 = gameState.arena.game.user3.id  
-    createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode);
+    createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
     gameState.arena.game.resetUsers();
 }
 
@@ -270,6 +278,7 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
       else
         gameState.arena.game.thirdPlayer = false;
       gameState.arena.game.tournamentGame = isTournament;
+      gameState.arena.loadingScreen.loadingComplete();
     }, 250);
   }
 
@@ -387,7 +396,9 @@ export function createUserInfoObject(tile, i) {
     userInfoCont.appendChild(textNode);
     if (isBot(i)) {
         userInfoCont.style.borderColor = purple;
+        userInfoCont.style.backgroundColor = bgPurple;
         profilePic.style.borderColor = purple;
+        profilePic.style.backgroundColor = bgPurple;
     }
     return {userInfoCont, clonedImg, profilePic, tileText};
 }
@@ -403,7 +414,7 @@ function addEventListenerToTiles() {
         profileAdded[i] = false;
         tile.HTMLelement.addEventListener('click', function() {
             if (plusClicked && !profileAdded[i]) {
-                if (isBot(i) /*|| playerAlreadyLogged*/) {
+                if (isBot(i) || (tile.user.status === 'online' && !tile.user.is_host && isGuest(tile.user.id))) {
                     tempTileIndex = i;
                     putUserInMatch();
                     return;
@@ -416,6 +427,16 @@ function addEventListenerToTiles() {
             }
         });
     });
+}
+
+//Checker que le host_id est le bon
+function isGuest(userId) {
+    console.log("length of guestLoggedIn:", guestLoggedIn);
+    for (let i = 0; i < guestLoggedIn.length; i++) {
+        if (guestLoggedIn[i][0].id === userId)
+            return true;
+    }
+    return false;
 }
 
 function putUserInMatch() {
@@ -452,18 +473,51 @@ function putUserInMatch() {
             playerNb--;
             removeUserFromMatch(tile.user.id);
         });
-        if (tile.type === 'Friend') {
-            console.log("oui");
+        if (tile.type === 'Friend')
             textCont.classList.add('friendBg');
-        }
         else if (tile.type === 'Bot')
             textCont.classList.add('botBg');
         else textCont.classList.add('defaultBg');
     }
 }
 
-validatePasswordButton.addEventListener('click', function() {
-    putUserInMatch();
+import { handleLogin } from './loginPage.js';
+import { displayUsersLogged} from './main.js';
+
+export let guestLoggedIn = [];
+
+// let guestLoggedIn =  {
+//     user: "nom_utilisateur",
+//     token: "token_utilisateur"
+// };
+
+validatePasswordButton.addEventListener('click', async function() {
+    if (guestLoggedIn.length < 7) {
+        // console.log(guestLoggedIn.length);
+        // console.log("je log un guest");
+        let guest = userTiles[tempTileIndex].user;
+        const password = document.getElementById("enterPasswordInput");
+        const formData = new FormData();
+        formData.append("username", guest.username);
+        formData.append("password", password.value);
+    
+        try {
+            let guestToken = await handleLogin(formData);
+            
+            if (guestToken) {
+                guestLoggedIn.push([guest, guestToken]);
+                // console.log("Contenu actuel de guestLoggedIn :", guestLoggedIn);
+                displayUsersLogged(guest, guestToken);
+            } else {
+                console.log("Erreur dans le login");
+            }
+        } catch (error) {
+            console.error('Erreur lors de la connexion :', error);
+        }
+        putUserInMatch();
+    }
+    else
+        console.log("Too many guest");
 });
 
 backPasswordButton.addEventListener('click', function() {
@@ -506,9 +560,15 @@ export function createUserTile(user, type, userListBackground, userTilesTemp) {
     const textContainer = document.createElement('div');
     textContainer.classList.add('textContainer');
     textContainer.textContent = user.username;
-    
-    imgContainer.classList.add(`arena${type}Tile`);
-    textContainer.classList.add(`arena${type}Tile`);
+    textContainer.style.width = '85%';
+    if (type === 'Friend') {
+        imgContainer.classList.add(`Online${type}Tile`);
+        textContainer.classList.add(`Online${type}Tile`);
+    }
+    else {
+        imgContainer.classList.add(`${type}Tile`);
+        textContainer.classList.add(`${type}Tile`);    
+    }
 
     userTile.appendChild(imgContainer);
     userTile.appendChild(textContainer);
@@ -523,18 +583,6 @@ export function createUserTile(user, type, userListBackground, userTilesTemp) {
 }
 
 export const userTiles = [];  // Array to store the user tiles
-
-export async function RenderAllUsersInList() {
-    const userListBackground = document.getElementById('userlistArenaPage');
-    
-    userListBackground.innerHTML = '';
-    const users = await get_friends_list();
-
-    createUserTile(users.bot, 'Bot', userListBackground, userTiles);
-    users.friends.forEach(obj => {createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
-    users.user_not_friend.forEach(user => {createUserTile(user, '', userListBackground, userTiles)});
-    addEventListenerToTiles();
-}
 
 export function RenderHostMatch(user) {
     const usernameElement = document.getElementById('player1MatchUsername');
@@ -556,6 +604,42 @@ backButtonArenaPage.forEach((button, index) => {
     }
 });
 
-export function initArenaPlanet() {
-    RenderAllUsersInList();
+let previousUserList = [];
+
+  async function isListsChanged() {
+    const newData = await get_friends_list();
+    
+    const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
+    const sortedNewUserNotFriend = newData.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+    const concatenatedNewList = sortedNewFriends.concat(sortedNewUserNotFriend);
+    const listsChanged = JSON.stringify(concatenatedNewList) !== JSON.stringify(previousUserList);
+    return listsChanged;
   }
+
+  export function initArenaPlanet() {
+    RenderAllUsersInList();
+    setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
+  }
+  
+  async function refreshUserListIfChanged() {
+    if (await isListsChanged())
+      await RenderAllUsersInList();
+    console.log("Checking...");
+  }
+  
+
+  export async function RenderAllUsersInList() {
+    const userListBackground = document.getElementById('userlistArenaPage');
+    
+    userListBackground.innerHTML = '';
+    const users = await get_friends_list();
+
+    const sortedNewFriends = users.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
+    const sortedNewUserNotFriend = users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+
+    createUserTile(users.bot, 'Bot', userListBackground, userTiles);
+    users.friends.forEach(obj => {/*si user pas online sur autre ordi*/ createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
+    users.user_not_friend.forEach(user => {/*si user pas online sur autre ordi*/ createUserTile(user, 'Default', userListBackground, userTiles)});
+    addEventListenerToTiles();
+    previousUserList = sortedNewFriends.concat(sortedNewUserNotFriend);
+}

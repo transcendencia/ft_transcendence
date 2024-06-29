@@ -1,4 +1,5 @@
-import { THREE, spaceShip, camera, spaceShipPointLight, landedOnPlanet, lobbyStart } from "./main.js";
+import * as THREE from "three";
+import { spaceShip, camera, spaceShipPointLight, landedOnPlanet, lobbyStart } from "./main.js";
 import {planetInRange} from "./planetIntersection.js";
 import { lobbyVisuals } from "./main.js";
 

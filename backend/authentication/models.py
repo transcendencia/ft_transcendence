@@ -21,7 +21,7 @@ class User(AbstractUser):
   ]
   status = models.CharField(max_length=10, choices=status_choices, default='offline')
   profile_picture = models.ImageField(default='default.png')
-  bio = models.TextField(max_length=28, null=True, blank=True)
+  alias = models.TextField(max_length=28, null=True, blank=True)
   is_host = models.BooleanField(default=False)
   friends = models.ManyToManyField("self", through="FriendRequest", symmetrical=False, related_name='related_friends', blank=True)
   graphic_mode = models.CharField(max_length=10, default='medium')
@@ -34,7 +34,9 @@ class User(AbstractUser):
   def get_profile_info(self):
     return {'id': self.id, 
     'username': self.username, 
-    'bio': self.bio, 
+    'alias': self.alias, 
+    'status': self.status,
+    'is_host': self.is_host,
     'profile_picture': self.profile_picture.url, 
     'nbr_match': self.nbr_match, 
     'nbr_match_win': self.nbr_match_win,
@@ -68,10 +70,13 @@ class Game(models.Model):
   scorePlayer2 = models.IntegerField(default=-1)
   gameplayMode = models.CharField(max_length=255)
   modeGame = models.CharField(max_length=255, default="test")
+  mapGame = models.CharField(max_length=255, default="spaceMap")
   date = models.DateTimeField(default=timezone.now)
+  gameTime = models.IntegerField(default=0)
   
   def __str__(self):
     return f"{self.gameplayMode}"
+
 class UserStat(models.Model):
   player = models.ForeignKey(User, on_delete=models.CASCADE)
   game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='user_stats')
@@ -81,4 +86,7 @@ class UserStat(models.Model):
   nbDashes = models.IntegerField(default=-1)
   nbPoweredUsed = models.IntegerField(default=-1)
   nbBounces = models.IntegerField(default=-1)
+  modeGame = models.CharField(max_length=255, default="test")
+  mapGame = models.CharField(max_length=255, default="spaceMap")
   date = models.DateTimeField(default=timezone.now)
+  gameTime = models.IntegerField(default=0)
