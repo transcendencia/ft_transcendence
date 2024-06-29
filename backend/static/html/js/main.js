@@ -477,6 +477,10 @@ document.addEventListener('keydown', (event) => {
         }
         if (landedOnPlanet) {
             togglePlanet();
+            toggleEscapeContainerVisibility();
+            blockingPanel.style.visibility = 'hidden';
+            showPage('none');
+            togglePause();
             returnToHost();
             return;
         }
@@ -492,7 +496,6 @@ document.addEventListener('keydown', (event) => {
             resetOutlineAndText();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
-        console.log("ON APPUIE SUR  ECHAPPE");
     }
 });
 
