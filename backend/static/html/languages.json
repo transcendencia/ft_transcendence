@@ -93,7 +93,7 @@
 
         "changeInfo": "Only fill in information you want to change",
         "changeUsernameInput": "Username",
-        "changeBioInput": "Bio",
+        "changeAliasInput": "alias",
         "AnonymousMode": "Anonymous mode",
         "changePasswordInput": "Password",
         "changeConfirmPasswordInput": "Confirm password",
@@ -201,7 +201,7 @@
 
         "changeInfo": "Complete solo la informacion que desea cambiar",
         "changeUsernameInput": "Nombre de usuario",
-        "changeBioInput": "Bio",
+        "changeAliasInput": "alias",
         "AnonymousMode": "Modo anonimo",
         "changePasswordInput": "Contrasena",
         "changeConfirmPasswordInput": "Confirma la contrasena",
@@ -307,7 +307,7 @@
 
         "changeInfo": "Remplissez uniquement les informations que vous souhaitez modifier",
         "changeUsernameInput": "Nom d'utilisateur",
-        "changeBioInput": "Bio",
+        "changeAliasInput": "alias",
         "AnonymousMode": "Mode anonyme",
         "changePasswordInput": "Mot de passe",
         "changeConfirmPasswordInput": "Confirme le mot de passe",

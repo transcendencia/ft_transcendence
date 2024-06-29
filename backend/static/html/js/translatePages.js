@@ -174,7 +174,7 @@ function translateUserPageTexts() {
 
 const changeInfo = document.getElementById('changeInfo');
 const changeUsernameInput = document.getElementById('changeUsernameInput');
-const changeBioInput = document.getElementById('changeBioInput');
+const changeAliasInput = document.getElementById('changeAliasInput');
 const changePasswordInput = document.getElementById('changePasswordInput');
 const changeConfirmPasswordInput = document.getElementById('changeConfirmPasswordInput');
 const changeProfilePicture = document.getElementById('changeProfilePicture');
@@ -193,7 +193,7 @@ const textAnonymous = document.getElementById('textAnonymous');
 function translateModifyPageTexts(){
     changeInfo.textContent = getTranslatedText('changeInfo');
     changeUsernameInput.placeholder = getTranslatedText('changeUsernameInput');
-    changeBioInput.placeholder =  getTranslatedText('changeBioInput');  
+    changeAliasInput.placeholder =  getTranslatedText('changeAliasInput');  
     changePasswordInput.placeholder = getTranslatedText('changePasswordInput');
     changeConfirmPasswordInput.placeholder = getTranslatedText('changeConfirmPasswordInput');
     changeProfilePicture.textContent = getTranslatedText('changeProfilePicture');
