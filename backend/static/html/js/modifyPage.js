@@ -105,7 +105,7 @@ function deleteAccount() {
 
 }
 
-document.addEventListener('DOMContentLoaded', (event) => {
+// document.addEventListener('DOMContentLoaded', (event) => {
   const toggleSwitch = document.getElementById('toggleSwitch');
 
   toggleSwitch.addEventListener('click', function() {
@@ -116,15 +116,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
       }
       else anonymousStatus = false;
   });
-});
+// });
 
-document.addEventListener('DOMContentLoaded', (event) => {
+// document.addEventListener('DOMContentLoaded', (event) => {
   const thirdPlayerToggleSwitch = document.getElementById('thirdPlayertoggleSwitch');
   thirdPlayerToggleSwitch.addEventListener('click', function() {
       this.classList.toggle('active');
       toggleThirdPlayerMode();
   });
-});
+// });
 
 export function getRandomUsername() {
   const token = localStorage.getItem('host_auth_token');

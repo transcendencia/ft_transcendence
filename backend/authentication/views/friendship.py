@@ -16,9 +16,6 @@ from rest_framework.response import Response
 from ..models import User, FriendRequest
 from ..serializers import UserSerializer, SignupSerializer, UserListSerializer
 
-# User = get_user_model() #J'en ai vrmt besoin??
-
-
 #verifier qu'une friend request n'existe pas deja entre ces 2 user 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -114,6 +111,7 @@ def return_friends_list(request):
     all_users = User.objects.exclude(id__in=user_in_list).exclude(id=request.user.id).exclude(username="bot")
     other_user_list = UserListSerializer(all_users, many=True).data
     user_not_friend = other_user_list + received_request_list
+    # Scuriser si il toruve pas le bot
     bot = UserSerializer(User.objects.get(username="bot")).data
     
     return Response({

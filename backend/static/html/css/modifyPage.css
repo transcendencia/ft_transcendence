@@ -250,6 +250,8 @@
     align-items: center;
     gap: 10px;
     vertical-align: middle;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+
 }
 
 .switch {
@@ -261,6 +263,8 @@
     border-radius: 20px;
     cursor: pointer;
     transition: .4s;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+
 }
 
 .slider {
@@ -272,6 +276,8 @@
     background-color: white;
     transition: .4s;
     border-radius: 50%;
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+
 }
 
 .switch.active {

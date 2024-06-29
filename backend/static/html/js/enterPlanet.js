@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
-import { checkEach5Sec, initUserPlanet } from './userPage.js';
+import { initUserPlanet } from './userPage.js';
 import { resetTournament, tournamentState, addEventListenersToPlusButtons } from '../../tournament/js/newTournament.js';
 import { initArenaPlanet } from './arenaPage.js';
 import { initTournamentPlanet } from '../../tournament/js/newTournament.js';
@@ -14,6 +14,11 @@ let imagesUser = planetPanel[1].querySelectorAll("img");
 let imagesTournament = planetPanel[2].querySelectorAll("img");
 let anim;
 
+export let checkEach5Sec;
+
+export function setCheckerToInterval(intervalObj) {
+  checkEach5Sec = intervalObj;
+}
 
 export function togglePanelDisplay() {
     if (anim)
@@ -89,7 +94,7 @@ export function cancelLanding()
 }
 
 export function togglePlanet() {
-    if (planetInRange.name === "settings")
+    if (planetInRange)
         clearInterval(checkEach5Sec);
     if (!landedOnPlanet)
         landedOnPlanet = true;
