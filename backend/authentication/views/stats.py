@@ -65,7 +65,6 @@ def get_stats(request, userId):
 
     # Total points taken
     totalPointsTaken = allGames.aggregate(totalPointsTaken=Sum('pointsTaken'))['totalPointsTaken'] or 0
-    totalPointsScored = allGames.aggregate(totalPointsScored=Sum('pointsScored'))['totalPointsScored'] or 0
 
     # Total balls bounced
     totalBounces = allGames.aggregate(totalBounces=Sum('nbBounces'))['totalBounces'] or 0
@@ -161,7 +160,6 @@ def get_stats(request, userId):
       'modePercentages' : modePercentages,
       'efficiency' : efficiency,
       'totalPointsTaken': totalPointsTaken,
-      'totalPointsScored': totalPointsScored,
       'totalBounces': totalBounces,
       'totalGameTime': totalGameTime,
       'nbrGoal': user.nbr_goals,
