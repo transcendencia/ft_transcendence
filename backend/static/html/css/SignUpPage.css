@@ -3,20 +3,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(1); /* Scale up by 2 times */
-    display: flex;
-    flex-direction: column; /* Display children vertically */
-    justify-content: space-around;
-    align-items: center;
     overflow: hidden; /* Ensure text input doesn't overflow */
     border-radius: 5px;
     width: 80%;
     height: 99%;
     transition: opacity 0.5s 0.75s;
-}
-
-.invisible {
-    visibility: hidden;
     opacity: 0;
+    visibility: hidden; /* Hide the element */
 }
 
 .show {
@@ -34,7 +27,6 @@
     align-items: center;
     flex-direction: row;
     overflow: hidden; /* Ensure text input doesn't overflow */
-
 }
 
 .perspective {
