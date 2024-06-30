@@ -319,3 +319,71 @@
 2024-06-29 16:24:07,610 INFO waiting for cron, django to die
 2024-06-29 16:24:07,653 INFO stopped: django (exit status 0)
 2024-06-29 16:24:07,654 WARN stopped: cron (terminated by SIGTERM)
+2024-06-30 12:54:26,885 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-06-30 12:54:26,888 INFO supervisord started with pid 1
+2024-06-30 12:54:27,894 INFO spawned: 'cron' with pid 7
+2024-06-30 12:54:27,899 INFO spawned: 'django' with pid 8
+2024-06-30 12:54:28,920 INFO success: cron entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-30 12:54:28,920 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-30 12:54:38,028 INFO reaped unknown pid 16 (exit status 0)
+2024-06-30 12:54:39,190 INFO reaped unknown pid 21 (exit status 0)
+2024-06-30 12:55:04,114 INFO reaped unknown pid 34 (exit status 0)
+2024-06-30 12:56:03,196 INFO reaped unknown pid 46 (exit status 0)
+2024-06-30 12:57:03,281 INFO reaped unknown pid 58 (exit status 0)
+2024-06-30 12:58:03,360 INFO reaped unknown pid 70 (exit status 0)
+2024-06-30 12:59:03,439 INFO reaped unknown pid 82 (exit status 0)
+2024-06-30 13:00:03,521 INFO reaped unknown pid 94 (exit status 0)
+2024-06-30 13:01:03,603 INFO reaped unknown pid 106 (exit status 0)
+2024-06-30 13:02:02,686 INFO reaped unknown pid 118 (exit status 0)
+2024-06-30 13:03:02,762 INFO reaped unknown pid 130 (exit status 0)
+2024-06-30 13:04:02,841 INFO reaped unknown pid 142 (exit status 0)
+2024-06-30 13:05:02,919 INFO reaped unknown pid 154 (exit status 0)
+2024-06-30 13:05:46,978 WARN received SIGTERM indicating exit request
+2024-06-30 13:05:46,979 INFO waiting for cron, django to die
+2024-06-30 13:05:47,094 INFO stopped: django (exit status 0)
+2024-06-30 13:05:47,096 WARN stopped: cron (terminated by SIGTERM)
+2024-06-30 13:09:40,541 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-06-30 13:09:40,543 INFO supervisord started with pid 1
+2024-06-30 13:09:41,546 INFO spawned: 'cron' with pid 8
+2024-06-30 13:09:41,549 INFO spawned: 'django' with pid 9
+2024-06-30 13:09:42,567 INFO success: cron entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-30 13:09:42,567 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-30 13:09:52,100 INFO reaped unknown pid 17 (exit status 0)
+2024-06-30 13:09:53,258 INFO reaped unknown pid 22 (exit status 0)
+2024-06-30 13:10:04,300 INFO reaped unknown pid 33 (exit status 0)
+2024-06-30 13:10:48,361 WARN received SIGTERM indicating exit request
+2024-06-30 13:10:48,362 INFO waiting for cron, django to die
+2024-06-30 13:10:48,456 INFO stopped: django (exit status 0)
+2024-06-30 13:10:48,457 WARN stopped: cron (terminated by SIGTERM)
+2024-06-30 13:24:51,197 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-06-30 13:24:51,202 INFO supervisord started with pid 1
+2024-06-30 13:24:52,205 INFO spawned: 'cron' with pid 7
+2024-06-30 13:24:52,207 INFO spawned: 'django' with pid 8
+2024-06-30 13:24:53,229 INFO success: cron entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-30 13:24:53,229 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-30 13:25:02,431 INFO reaped unknown pid 19 (exit status 0)
+2024-06-30 13:25:03,129 INFO reaped unknown pid 24 (exit status 0)
+2024-06-30 13:26:03,476 INFO reaped unknown pid 41 (exit status 0)
+2024-06-30 13:27:03,561 INFO reaped unknown pid 51 (exit status 0)
+2024-06-30 13:28:02,642 INFO reaped unknown pid 67 (exit status 0)
+2024-06-30 13:29:02,722 INFO reaped unknown pid 77 (exit status 0)
+2024-06-30 13:30:02,801 INFO reaped unknown pid 87 (exit status 0)
+2024-06-30 13:31:02,883 INFO reaped unknown pid 97 (exit status 0)
+2024-06-30 13:32:02,963 INFO reaped unknown pid 107 (exit status 0)
+2024-06-30 13:33:03,046 INFO reaped unknown pid 117 (exit status 0)
+2024-06-30 13:33:04,047 WARN received SIGTERM indicating exit request
+2024-06-30 13:33:04,048 INFO waiting for cron, django to die
+2024-06-30 13:33:04,127 INFO stopped: django (exit status 0)
+2024-06-30 13:33:04,128 WARN stopped: cron (terminated by SIGTERM)
+2024-06-30 13:34:56,787 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-06-30 13:34:56,790 INFO supervisord started with pid 1
+2024-06-30 13:34:57,793 INFO spawned: 'cron' with pid 7
+2024-06-30 13:34:57,795 INFO spawned: 'django' with pid 8
+2024-06-30 13:34:58,810 INFO success: cron entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-30 13:34:58,810 INFO success: django entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-06-30 13:35:05,013 INFO reaped unknown pid 19 (exit status 0)
+2024-06-30 13:35:05,931 INFO reaped unknown pid 24 (exit status 0)
+2024-06-30 13:35:26,223 WARN received SIGTERM indicating exit request
+2024-06-30 13:35:26,223 INFO waiting for cron, django to die
+2024-06-30 13:35:26,308 INFO stopped: django (exit status 0)
+2024-06-30 13:35:26,309 WARN stopped: cron (terminated by SIGTERM)
