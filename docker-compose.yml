@@ -23,7 +23,7 @@ services:
     networks:
       - ft_transcendence
     build:
-      context: ./backend
+      context: ./server
       dockerfile: Dockerfile
     env_file: .env
     restart: on-failure
@@ -32,6 +32,20 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    volumes:
+      - ./backend/:/backend
+
+  cron:
+    container_name: cron
+    networks:
+      - ft_transcendence
+    build:
+      context: ./cron
+      dockerfile: Dockerfile
+    env_file: .env
+    restart: on-failure
+    depends_on:
+      - server
     volumes:
       - ./backend/:/backend
 
