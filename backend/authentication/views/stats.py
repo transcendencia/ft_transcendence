@@ -4,13 +4,14 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, F, FloatField, ExpressionWrapper, Case, When
+from django.db.models import Q
 
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 
-from ..models import User, UserStat
+from ..models import User, UserStat, FriendRequest
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
 
 @api_view(['GET'])
@@ -115,17 +116,17 @@ def get_stats(request, userId):
     dragonMapPercentage = round((dragonMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
     skyMapPercentage = round((skyMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
 
-    # Mode percantage
-    classicModePercentage = round((classicMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    spinOnlyModePercentage = round((spinOnlyMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    powerlessModePercentage = round((powerlessMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-
     mapPercentages = {
       "oceanMap": oceanMapPercentage,
       "spaceMap": spaceMapPercentage,
       "dragonMap": dragonMapPercentage,
       "skyMap": skyMapPercentage
     }
+
+    # Mode percantage
+    classicModePercentage = round((classicMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    spinOnlyModePercentage = round((spinOnlyMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    powerlessModePercentage = round((powerlessMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
 
     modePercentages = {
       "classicMode": classicModePercentage,
@@ -146,6 +147,11 @@ def get_stats(request, userId):
     else:
       efficiency = -1
 
+    # Number of friends
+    friends = FriendRequest.objects.filter((Q(receiver=request.user) | Q(sender=request.user)) & Q(status="accepted"))
+    nbrFriends = friends.count()
+    print(nbrFriends)
+    
     return Response({
       'percentageGameWon': percentageGameWon, 
       'percentageGameLost': percentageGameLost,
@@ -165,7 +171,8 @@ def get_stats(request, userId):
       'nbrGoal': user.nbr_goals,
       'nbrWin': user.nbr_match_win,
       'nbrLose': user.nbr_match_lost,
-      'nbrMatch': user.nbr_match
+      'nbrMatch': user.nbr_match,
+      'nbrFriends' : nbrFriends,
     })
 
   except User.DoesNotExist:

@@ -114,6 +114,8 @@ def return_friends_list(request):
     # Scuriser si il toruve pas le bot
     bot = UserSerializer(User.objects.get(username="bot")).data
     
+    # print(received_request_list)
+    # print(sent_request_list)
     return Response({
         'received_request_list': received_request_list, 
         'friends': friends, 
