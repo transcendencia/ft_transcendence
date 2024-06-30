@@ -20,7 +20,6 @@ statsButtons.forEach((button, index) => {
     {
       for (let i = 3; i < 6; i++)
         statsButtons[i].style.backgroundColor = 'transparent';
-
       getUserStats(currentUser.id);
     }
     button.style.backgroundColor = colorClicked;
