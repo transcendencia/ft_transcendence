@@ -453,6 +453,10 @@ let firstPauseTriggered = false;
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
+    if (event.key === 'Enter') {
+        if (window.location.hash === "#signUpPage")
+            document.getElementById("submitSignUp").click();
+    }
     if (event.target.tagName === 'INPUT')
         return;
     if (event.key === 'e' && !lobbyStart) {

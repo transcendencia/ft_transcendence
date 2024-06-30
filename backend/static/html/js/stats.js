@@ -279,7 +279,7 @@ const modeChart2 = new DoughnutGraph('gameModeStat2', 'Modes played', ['#5dffa99
 const accuracy2 = new DoughnutGraph('accuracyStat2', 'Accuracy', ['#5dffa990', '#ff5d5d90']);
 
 export function getUserStats(userId) {
-  const token = localStorage.getItem('host_auth_token');
+  const token = sessionStorage.getItem('host_auth_token');
   fetch(`get_stats/${userId}`, {
     method: 'GET',
     headers: {
