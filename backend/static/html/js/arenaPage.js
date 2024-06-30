@@ -501,7 +501,6 @@ validatePasswordButton.addEventListener('click', async function() {
             
             if (guestToken) {
                 guestLoggedIn.push([guest, guestToken]);
-                // console.log("Contenu actuel de guestLoggedIn :", guestLoggedIn);
                 putUserInMatch();
                 displayUsersLogged(guest, guestToken);
             } else {
@@ -518,6 +517,8 @@ validatePasswordButton.addEventListener('click', async function() {
 backPasswordButton.addEventListener('click', function() {
     pwWindow.classList.remove("showRectangle");
     blockingPanel.style.visibility = 'hidden';
+    document.getElementById('enterPasswordInput').value = '';
+    document.getElementById('errorLogGuest').innerText = '';
 });
 
 const matchPlayer = [];

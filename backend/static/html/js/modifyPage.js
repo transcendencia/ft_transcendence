@@ -4,7 +4,7 @@ import { resetOutline } from './planetIntersection.js';
 import { toggleBlurDisplay, toggleLobbyStart } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
-import { getCookie } from './loginPage.js';
+import { getCookie, resetModifyPageField } from './loginPage.js';
 import { getProfileInfo } from './userManagement.js';
 
 
@@ -22,7 +22,7 @@ function handleChangeInfoForm(event) {
   var formData = new FormData(form);
   formData.append('anonymousStatus', anonymousStatus)
 
-  const token = localStorage.getItem('host_auth_token');
+  const token = sessionStorage.getItem('host_auth_token');
   fetch('change_profile_info/', {
     method: 'POST',
     headers: {
@@ -73,7 +73,7 @@ function deleteAccount() {
     })
 
     document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
-		  const token = localStorage.getItem('host_auth_token');
+		  const token = sessionStorage.getItem('host_auth_token');
 		  fetch('delete_account/', {
 		    method: 'POST',
 		    headers: {
@@ -127,7 +127,7 @@ function deleteAccount() {
 // });
 
 export function getRandomUsername() {
-  const token = localStorage.getItem('host_auth_token');
+  const token = sessionStorage.getItem('host_auth_token');
   fetch('generate_unique_username/', {
       method: 'GET',
       headers: {
@@ -174,5 +174,5 @@ document.addEventListener('keydown', (event) => {
         isInfosShow = false;
         document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
       }
-    }  
+    }
 });

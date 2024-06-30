@@ -13,13 +13,13 @@ statsButtons.forEach((button, index) => {
     {
       for (let i = 0; i < 3; i++)
           statsButtons[i].style.backgroundColor = 'transparent';
-      getUserStats(localStorage.getItem("host_id"));
+      getUserStats(sessionStorage.getItem("host_id"));
     }
     else
     {
       for (let i = 3; i < 6; i++)
         statsButtons[i].style.backgroundColor = 'transparent';
-      getUserStats(localStorage.getItem(currentUser.id));
+      getUserStats(currentUser.id);
     }
     button.style.backgroundColor = colorClicked;
     chooseStats(index + 1);
@@ -45,7 +45,7 @@ export function initUserPlanet() {
   getProfileInfo();
   // getGameInfo();
   //delay the animation of stats while page is opening
-  setTimeout(getUserStats(localStorage.getItem("host_id"), 1750));
+  setTimeout(getUserStats(sessionStorage.getItem("host_id"), 1750));
   setCheckerToInterval(setInterval( async() => {
   if (await isListsChanged())
     refreshUserFriendList();
@@ -247,7 +247,7 @@ async function refreshUserFriendList() {
 }
 
 function getHistoryMatchPlayer2(user) {
-  const token = localStorage.getItem('host_auth_token');
+  const token = sessionStorage.getItem('host_auth_token');
   const csrftoken = getCookie('csrftoken');
   
   fetch('get_game_player2/', {
