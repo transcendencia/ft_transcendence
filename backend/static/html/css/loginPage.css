@@ -62,12 +62,14 @@
 
 .loginMessageCont {
     pointer-events: none;
-    /* position: absolute; */
+    position: absolute;
     margin-top: -10px;
-    text-align: center;
+    /* text-align: center; */
     font-size: 10px; /* Set font size */
     font-family: 'Space'; /* Set font family */
     color: red;
+    /* height: ; */
+    /* width: 60%;  */
 }
 
 .languageColumn {
