@@ -110,7 +110,7 @@ languageIcons.forEach(function(icon) {
         });
         
         // Send POST request to change user language in the back if user is logged in
-        const token = localStorage.getItem('host_auth_token');
+        const token = sessionStorage.getItem('host_auth_token');
         if (token && currentLanguage !== icon.id) {
             updateUserLanguage(icon.id);
         }
@@ -153,11 +153,11 @@ function handleLoginSubmit(event) {
 
 // Handle form submission
 export async function handleLogin(formData) {
-    if (localStorage.getItem("hostLoggedIn") === null) {
-        localStorage.setItem("hostLoggedIn", 'false');
+    if (sessionStorage.getItem("hostLoggedIn") === null) {
+        sessionStorage.setItem("hostLoggedIn", 'false');
     }
 
-    const hostLoggedIn = localStorage.getItem("hostLoggedIn");
+    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn");
 
     formData.append('hostLoggedIn', hostLoggedIn);
     if (hostLoggedIn === 'false') {
@@ -182,9 +182,9 @@ export async function handleLogin(formData) {
                 if (hostLoggedIn === 'false') {
                     //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
 
-                    localStorage.setItem("hostLoggedIn", 'true');
-                    localStorage.setItem("host_auth_token", data.token);
-                    localStorage.setItem("host_id", data.id);
+                    sessionStorage.setItem("hostLoggedIn", 'true');
+                    sessionStorage.setItem("host_auth_token", data.token);
+                    sessionStorage.setItem("host_id", data.id);
                     
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
@@ -196,13 +196,17 @@ export async function handleLogin(formData) {
                     updateGraphicsIcon(data.graphic_mode);
                     showPage('none');
                     startAnimation();
-            // }
+                    emptyLoginField();
                 } else {
                     guest_token = data.token;
                 }
                 resolve(guest_token);
             } else {
-                document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+                console.log("failed login", data);
+                if (hostLoggedIn === 'false')
+                    document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+                else if (hostLoggedIn === 'true')
+                    document.getElementById('errorLogGuest').innerText = getTranslatedText(data.msg_code);
                 resolve(null);
             }
         })
@@ -270,7 +274,7 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
 }
 
 export function getGameInfo() {
-	const token = localStorage.getItem('host_auth_token');
+	const token = sessionStorage.getItem('host_auth_token');
 		fetch('get_game_user/', {
 		    method: 'GET',
 			headers: {
@@ -323,7 +327,7 @@ export function getGameInfo() {
 // Logout
 var disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
-    handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token')); 
+    handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
 });
 
 function resetHTMLelements(){
@@ -336,7 +340,7 @@ function resetHTMLelements(){
 
 function handleLogout(userId, token) {
     // Disconnect all the guest
-    if (userId === localStorage.getItem('host_id')) {
+    if (userId === sessionStorage.getItem('host_id')) {
         // console.log(guestLoggedIn);
         guestLoggedIn.forEach(user => {
             console.log(user);
@@ -354,7 +358,7 @@ function handleLogout(userId, token) {
     // Disconnect the host
     updateUserStatus('offline', token)
     .then(() => {
-        localStorage.clear();
+        sessionStorage.clear();
     })
     .catch(error => {
         console.error('Erreur :', error);
@@ -385,21 +389,31 @@ function handleLogout(userId, token) {
     }, 50);
 };
 
-window.addEventListener('beforeunload', function (event) {
+window.addEventListener('beforeunload', function () {
     // event.preventDefault();
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     if (token)
-        handleLogout(localStorage.getItem('host_id'), token);
-    
+        handleLogout(sessionStorage.getItem('host_id'), token);
     // event.returnValue = '';
+
+    // const errors = console.error.logs || [];
+    // localStorage.setItem('savedErrors', JSON.stringify(errors));
 });
 
-// window.addEventListener('unload', function (event) {
-//     handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
-// });
+export function emptyLoginField() {
+    document.getElementById('messageContainer').innerText = '';
+    document.getElementById('usernameLoginInput').value = '';
+    document.getElementById('passwordLoginInput').value = '';
+}
 
-// document.onvisibilitychange = function() {
-//     if (document.visibilityState === 'hidden') {
-//         handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
-//     }
-// };
+export function resetModifyPageField() {
+    // document.getElementById('changeUsernameInput').value = '';
+    // document.getElementById('changeAliasInput').value = '';
+    document.getElementById('changePasswordInput').value = '';
+    document.getElementById('changeConfirmPasswordInput').value = '';
+    document.getElementById('changeInfoMessage').innerText = '';
+    document.getElementById('profile-pic').value = '';
+    const toggleSwitch = document.getElementById('toggleSwitch');
+    toggleSwitch.classList.remove('active');
+    //vider input nom de la photo
+}
