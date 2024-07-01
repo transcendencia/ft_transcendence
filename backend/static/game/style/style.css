@@ -1,27 +1,27 @@
 body {
-    margin: 0; /* Remove default body margin */
-    overflow: hidden; /* Hide overflow to prevent scrollbars */
+    margin: 0;
+    overflow: hidden;
 }
 
 #a {
     display: flex;
     flex-direction: row;
-    width: 100vw; /* Use viewport width for container */
-    height: 100vh; /* Use viewport height for container */
+    width: 100vw;
+    height: 100vh;
 }
 
 #c1, #c2 {
-    width: 100%; /* Each canvas takes up 50% of the window width */
-    height: 100%; /* Each canvas fills the entire window height */
-    cursor: none; /* Hide the cursor */
+    width: 100%;
+    height: 100%;
+    cursor: none;
 }
 
 #c1 {
-    order: 1; /* Set the order of #c1 to 1 (display on the left) */
+    order: 1;
 }
 
 #c2 {
-    order: 2; /* Set the order of #c2 to 2 (display on the right) */
+    order: 2;
 }
 
 .centerRectangle {
@@ -459,4 +459,70 @@ body {
 #rematchButton:hover {
     box-shadow: 0 0 20px rgba(0, 0, 255, 1);
     transform: scale(1.1);
+}
+
+.leftControlsUI {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    top: 40%;
+    left: 2%;
+    opacity: 0.3;
+}
+
+.rightControlsUI {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    top: 40%;
+    right: 2%;
+    opacity: 0.3;
+}
+
+.topControlsUI {
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    bottom: 6%;
+    left: 62%;
+    transform: translate(-50%, 0);
+    opacity: 0.3;
+    gap: 30px; /* Adds space between each .topControl */
+}
+
+.topControl {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.control {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.control img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px; /* Adjust margin to control space between image and text */
+}
+
+.topControl img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.control span {
+    color: white;
+    font-size: 16px;
+}
+
+.topControl span {
+    color: white;
+    font-size: 16px;
 }
