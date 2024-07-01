@@ -450,6 +450,25 @@ export function togglePause() {
 
 let firstPauseTriggered = false;
 
+// handle window resize
+window.addEventListener('resize', () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    composer.setSize(width, height);
+    composer.setPixelRatio(window.devicePixelRatio);
+    composer.render();
+    minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
+    minimapCamera.left = -minimapWidth * 8;
+    minimapCamera.right = minimapWidth * 8;
+    minimapCamera.top = minimapHeight * 8;
+    minimapCamera.bottom = -minimapHeight * 8;
+    minimapCamera.updateProjectionMatrix();
+    composer.render();
+});
+
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);

@@ -1,6 +1,6 @@
 import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
 import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks } from './loginPage.js';
-import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo } from './userManagement.js';
+import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo, updateUserStatus } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 import { getUserStats, chooseStats } from './stats.js';
 
@@ -81,6 +81,7 @@ async function refreshUserFriendList() {
       hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
       pageDisplayed = "hostProfile";
       chooseStats(1);
+      setTimeout(getUserStats(sessionStorage.getItem("host_id"), 500));
     }
     else if (pageDisplayed === "modifyPage") {
       hostUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
