@@ -176,3 +176,12 @@ document.addEventListener('keydown', (event) => {
       }
     }  
 });
+
+const downloadButton = document.getElementById("downloadButton");
+downloadButton.addEventListener("click", downloadFile);
+
+function downloadFile() {
+  console.log("==========");
+  console.log("[ON CLICK]");
+  console.log("==========");
+}

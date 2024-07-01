@@ -19,6 +19,11 @@
     color: white;
 }
 
+.downloadButton{
+    font-size: 15px;
+    font-family: 'space';
+    color: rgb(242, 239, 244);   
+}
 
 .deleteAccountButton {
     border: 4px solid #ff3737;
@@ -223,7 +228,7 @@
     justify-content: center;
     text-align: center;
     align-items: center;
-    font-size: 40px; /* Set font size */
+    font-size: 20px; /* Set font size */
     font-family: 'Space'; /* Set font family */
 }
 
@@ -286,5 +291,9 @@
 }
 
 .info-icon:hover {
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
+.downloadButton:hover {
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
