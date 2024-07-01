@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { camera, landedOnPlanet } from './main.js';
 import { showPage } from './showPages.js';
 import { currentLanguage, getTranslatedText } from './translatePages.js';
-
+import { emptyLoginField } from './loginPage.js';
 
 export let inCockpit = false;
 
@@ -16,6 +16,7 @@ export function moveCameraToFrontOfCockpit() {1
         .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
         .start(); // Start the animation
     showPage('signUpPage', 'signUp');
+    emptyLoginField();
     inCockpit = true;
 }
 
@@ -28,6 +29,7 @@ export function moveCameraToBackOfCockpit() {
     .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
     .start(); // Start the animation
     showPage('loginPage');
+    emptySignUpField();
     inCockpit = false;
 }
 
@@ -58,7 +60,7 @@ const RGPDBack = document.getElementById('RGPDBack');
 RGPDBack.addEventListener('click', function() {
     if (landedOnPlanet) {
         blockingPanel.classList.remove('show');
-        blockingPanel.style.visibility = 'hidden';
+        blockingPanel.classList.remove('show');
         showPage('none');
     }
     else {showPage('signUpPage');}
@@ -97,4 +99,11 @@ function handleSignup(event) {
     .catch(error => {
         console.error('There was a problem with the sign-up:', error);
     });
+}
+
+export function emptySignUpField() {
+    document.getElementById('usernameSignUpInput').value = '';
+    document.getElementById('passwordSignUpInput').value = '';
+    document.getElementById('confirmPasswordSignUpInput').value = '';
+    document.getElementById('messageContainerSignup').innerText = '';
 }

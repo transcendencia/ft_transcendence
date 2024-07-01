@@ -236,22 +236,7 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
     userInfoCont.childNodes[1].textContent = user.username;
 }
 
-import { updateUserStatus } from "./userManagement.js";
-import { guestLoggedIn } from "./arenaPage.js";
-
-function disconnectLoggedGuest(userInfoCont, user, token) {
-    lsCont.removeChild(userInfoCont);
-    updateUserStatus('offline', token);
-    // console.log("before logout:", guestLoggedIn);
-
-    for (let i = 0; i < guestLoggedIn.length; i++) {
-        if (guestLoggedIn[i][0].id === user.id) {
-            guestLoggedIn.splice(i, 1);
-        }
-    }
-
-    // console.log("after logout:", guestLoggedIn);
-}
+import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
 
 export function displayUsersLogged(user, token) {
     
@@ -457,20 +442,10 @@ const deleteWindow = document.getElementById("validateDelete");
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
-    if (event.target.tagName === 'INPUT')
-        return;
-    if (event.key === 'e' && !lobbyStart) {
-        // const token = localStorage.getItem('host_auth_token');
-        // console.log(token);
-        // if (token) {
-            showPage('none');
-            startAnimation();
-            // displayUsersLogged();
-        // }
-        // localStorage.clear();
+    if (event.key === 'Enter') {
+        if (window.location.hash === "#signUpPage") 
+            document.getElementById("submitSignUp").click();
     }
-    if (event.key === 'e' && inRange && !gameStarted)
-        togglePlanet();
     if (event.key === 'Escape') {
         if (gameState.inGame)
         {
@@ -500,6 +475,10 @@ document.addEventListener('keydown', (event) => {
             pauseGame ? pauseGame = false : pauseGame = true;
         }
     }
+    if (event.target.tagName === 'INPUT')
+        return;
+    if (event.key === 'e' && inRange && !gameStarted)
+        togglePlanet();
 });
 
 let targetBlur = 0;
@@ -553,9 +532,17 @@ function update() {
 return;
 }
 
+let fpsInterval = 1000 / 75; // 75 FPS
+let stats = new Stats();
+let lastUpdateTime = performance.now();
+
+
 function animate()
 {
     requestAnimationFrame( animate )
+    let now = performance.now();
+    let elapsed = now - lastUpdateTime;
+    if (elapsed < fpsInterval) return; // Skip if too big FPS
     if (gameStarted)
         return;
     TWEEN.update();
@@ -568,6 +555,10 @@ function animate()
     mixer2.update(0.025);
     mixer3.update(0.025);
     // renderer.render(scene, camera);
+
+    stats.update();
+    lastUpdateTime = now - (elapsed % fpsInterval);
+    stats.time = performance.now();
 }
 
 const checkModelsLoaded = setInterval(() => {

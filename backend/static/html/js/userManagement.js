@@ -4,7 +4,7 @@ import { RenderHostMatch, RenderAllUsersInList} from "./arenaPage.js";
 import { RenderUserTournament, RenderAllUsersTournament } from '../../tournament/js/newTournament.js';
 
 export function updateUserGraphicMode(graphicMode) {
-	const token = localStorage.getItem('host_auth_token');
+	const token = sessionStorage.getItem('host_auth_token');
     return fetch('change_graphic_mode/', {
         method: 'POST',
         headers: {
@@ -25,7 +25,7 @@ export function updateUserGraphicMode(graphicMode) {
 }
 
 export function updateUserLanguage(new_language) {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     fetch('change_language/', {
         method: 'POST',
         headers: {
@@ -81,7 +81,7 @@ export async function updateUserStatus(status, token) {
 // }
 
 export function getUserStatus(userId) {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     return fetch(`/user/status/${userId}/`, {
         method: 'GET',
         headers: {
@@ -106,7 +106,7 @@ export function getUserStatus(userId) {
 }
 
 export async function get_friends_list() {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     
     try {
         const response = await fetch('return_friends_list/', {
@@ -128,7 +128,7 @@ export async function get_friends_list() {
 }
 
 export function get_user_list() {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     // console.log(token);
     fetch('get_user_list/', {
         method: 'GET',
@@ -148,7 +148,7 @@ export function get_user_list() {
 };
 
 export function getProfileInfo() {
-	const token = localStorage.getItem('host_auth_token');
+	const token = sessionStorage.getItem('host_auth_token');
 		fetch('get_profile_info/', {
 		    method: 'GET',
 			headers: {
@@ -183,7 +183,7 @@ export function getProfileInfo() {
 
 export function send_request(username) {
 
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     fetch('send_friend_request/', {
         method: 'POST',
         headers: {
@@ -204,7 +204,7 @@ export function send_request(username) {
 }
 
 export async function accept_friend_request(id) {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     console.log("id", id);
     await fetch('accept_friend_request/', {
         method: 'POST',
@@ -226,7 +226,7 @@ export async function accept_friend_request(id) {
   }
 
 export async function delete_friend_request(id) {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     await fetch('reject_friend_request/', {
         method: 'POST',
         headers: {

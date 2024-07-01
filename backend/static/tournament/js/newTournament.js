@@ -270,7 +270,7 @@ function addEventListenerToTilesTournament() {
                   return;
               }
               pwWindow.classList.toggle("showRectangle");
-              blockingPanel.style.visibility = 'visible';
+              blockingPanel.classList.add('show');
               tempTileIndexTournament = i;
               const newObj = createUserInfoObject(tile, i);
               pwWindow.replaceChild(newObj.userInfoCont, pwWindow.querySelector('.userInfoCont'));
@@ -286,7 +286,7 @@ function addEventListenerToTilesTournament() {
       const textCont = tile.HTMLelement.querySelector(".textContainer");
 
       pwWindow.classList.remove("showRectangle");
-      blockingPanel.style.visibility = 'hidden';
+      blockingPanel.classList.remove('show');
       profileAddedToTournament[i] = true;
       playerNb++;
       const newObj = createUserInfoObject(tile, i);
@@ -323,7 +323,7 @@ function addEventListenerToTilesTournament() {
 
   backPasswordButton.addEventListener('click', function() {
     pwWindow.classList.remove("showRectangle");
-    blockingPanel.style.visibility = 'hidden';
+    blockingPanel.classList.remove('show');
   });
 
   const tournamentPlayer = [];
