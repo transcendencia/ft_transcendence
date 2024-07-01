@@ -16,7 +16,8 @@ import { gameStarted, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-
+import { updateUserStatus } from "./userManagement.js";
+import { guestLoggedIn } from "./arenaPage.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -236,8 +237,7 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
     userInfoCont.childNodes[1].textContent = user.username;
 }
 
-import { updateUserStatus } from "./userManagement.js";
-import { guestLoggedIn } from "./arenaPage.js";
+
 
 function disconnectLoggedGuest(userInfoCont, user, token) {
     lsCont.removeChild(userInfoCont);
@@ -498,6 +498,7 @@ document.addEventListener('keydown', (event) => {
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();
             resetOutlineAndText();
+            togglePause();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
     }
@@ -507,10 +508,10 @@ let targetBlur = 0;
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);
 const verticalBlur = new ShaderPass(VerticalBlurShader);
-horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-horizontalBlur.renderToScreen = true; // Render to a texture
-verticalBlur.renderToScreen = true; // Render to the screen
+horizontalBlur.uniforms['tDiffuse'].value = null;
+verticalBlur.uniforms['tDiffuse'].value = null;
+horizontalBlur.renderToScreen = true;
+verticalBlur.renderToScreen = true;
 horizontalBlur.uniforms.h.value = targetBlur;
 verticalBlur.uniforms.v.value = targetBlur;
 composer.addPass(horizontalBlur);

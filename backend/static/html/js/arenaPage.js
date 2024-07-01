@@ -413,6 +413,7 @@ function addEventListenerToTiles() {
     userTiles.forEach((tile, i) => {
         profileAdded[i] = false;
         tile.HTMLelement.addEventListener('click', function() {
+        console.log("i = ", i);
             if (plusClicked && !profileAdded[i]) {
                 if (isBot(i) || (tile.user.status === 'online' && !tile.user.is_host && isGuest(tile.user.id))) {
                     tempTileIndex = i;
