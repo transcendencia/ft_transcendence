@@ -179,25 +179,38 @@ document.addEventListener('keydown', (event) => {
 
 const downloadButton = document.getElementById("downloadButton");
 downloadButton.addEventListener("click", downloadFile);
-
 function downloadFile() {
-  console.log("==========");
-  console.log("[ON CLICK]");
-  console.log("==========");
-    const token = localStorage.getItem('host_auth_token');
-      return fetch('generateDataFile/', {
-          method: 'GET',
-          headers: {
-              'Authorization': `Token ${token}`,
-              'X-CSRFToken': getCookie('csrftoken')
-          },
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Erreur lors du changement graphique');
-          }
-      })
-      .catch(error => {
-          console.error('Erreur :', error);
-      });
+  console.log("Initiating file download");
+  const token = localStorage.getItem('host_auth_token');
+  fetch('generateDataFile/', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Token ${token}`,
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.blob();
+  })
+  .then(blob => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    // Utilisez le nom de fichier fourni par le serveur s'il est disponible
+    const filename = response.headers.get('Content-Disposition')?.split('filename=')[1]?.replace(/"/g, '') || 'user_data.txt';
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    console.log("File download initiated");
+  })
+  .catch(error => {
+    console.error('Error during file download:', error);
+    alert('Une erreur est survenue lors du téléchargement du fichier. Veuillez réessayer.');
+  });
 }
