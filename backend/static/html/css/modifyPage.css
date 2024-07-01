@@ -237,7 +237,7 @@
     justify-content: center;
     text-align: center;
     align-items: center;
-    font-size: 20px; /* Set font size */
+    font-size: 40px; /* Set font size */
     font-family: 'Space'; /* Set font family */
 }
 
@@ -248,10 +248,8 @@
 .toggle-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 40px;
     vertical-align: middle;
-    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
-
 }
 
 .switch {
@@ -292,8 +290,8 @@
 .modifyPage .toggle-container,
 .modifyPage .changeInfoBar,
 .modifyPage .profilePicContainer {
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin-bottom: 4px;
+    margin-top: 4px;
 }
 
 
