@@ -80,14 +80,14 @@ async function refreshUserFriendList() {
       searchedUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";    
       hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
       pageDisplayed = "hostProfile";
-      chooseStats(1);
-      setTimeout(getUserStats(sessionStorage.getItem("host_id"), 500));
     }
     else if (pageDisplayed === "modifyPage") {
       hostUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
       modifyUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
       pageDisplayed = "hostProfile";
     }
+    chooseStats(1);
+    setTimeout(getUserStats(sessionStorage.getItem("host_id"), 500));
   }
 
   backButtonUserPage.addEventListener('click', () => {

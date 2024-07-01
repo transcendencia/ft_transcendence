@@ -434,34 +434,42 @@ let doubleKeyPress = {
 };
 
 // Event listener for key presses and releases
-
 document.addEventListener('keydown', (event) => {
-    if (keyDown.hasOwnProperty(event.key)) {
-        if (gameState != undefined && gameState.arena != undefined && gameState.arena.bot != undefined && gameState.arena.bot.isPlaying)
-        {
-            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown')
+    let key = event.key;
+    if (key.length === 1) { // If it's a single character, convert to lowercase
+        key = key.toLowerCase();
+    }
+
+    if (keyDown.hasOwnProperty(key)) {
+        if (gameState != undefined && gameState.arena != undefined && gameState.arena.bot != undefined && gameState.arena.bot.isPlaying) {
+            if (key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowUp' || key === 'ArrowDown')
                 return;
         }
-        keyDown[event.key] = true;
+        keyDown[key] = true;
 
-        if (doubleKeyPress.hasOwnProperty(event.key)) {
-            if (lastKeyPressTime[event.key] && Date.now() - lastKeyPressTime[event.key] < 200 && Date.now() - lastKeyUpTime[event.key] < 200) 
-                doubleKeyPress[event.key] = true;
+        if (doubleKeyPress.hasOwnProperty(key)) {
+            if (lastKeyPressTime[key] && Date.now() - lastKeyPressTime[key] < 200 && Date.now() - lastKeyUpTime[key] < 200) 
+                doubleKeyPress[key] = true;
             else
-                doubleKeyPress[event.key] = false;
-            lastKeyPressTime[event.key] = Date.now();
+                doubleKeyPress[key] = false;
+            lastKeyPressTime[key] = Date.now();
         }
     }
 });
 
-
 document.addEventListener('keyup', (event) => {
-    if (keyDown.hasOwnProperty(event.key)) {
-        keyDown[event.key] = false;
-        lastKeyUpTime[event.key] = Date.now();
-        doubleKeyPress[event.key] = false;
+    let key = event.key;
+    if (key.length === 1) { // If it's a single character, convert to lowercase
+        key = key.toLowerCase();
+    }
+
+    if (keyDown.hasOwnProperty(key)) {
+        keyDown[key] = false;
+        lastKeyUpTime[key] = Date.now();
+        doubleKeyPress[key] = false;
     }
 });
+
 
 const scorePoints = document.getElementsByClassName("parallelogram");
 const blueBar = document.getElementsByClassName("bluebar");
@@ -3872,7 +3880,6 @@ function animate()
         TWEEN.update();
         if (gameState.inGame && !gameState.paused)
         {
-            console.log("playing");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();
