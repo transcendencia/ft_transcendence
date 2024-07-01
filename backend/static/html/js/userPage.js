@@ -169,7 +169,7 @@ async function refreshUserFriendList() {
   bluePlusImg.addEventListener('click', () => {
     resetProfile();
     displayRequestSent();
-    send_request(displayedUserOnSearchPage.username);
+    send_request(displayedUserOnSearchPage.id);
   });
 
 
