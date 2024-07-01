@@ -273,6 +273,13 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
     historyContainer.appendChild(matchBlock);
 }
 
+export function clearMatchBlocks() {
+    const hostHistory = document.getElementById('hostHistory');
+    const searchedUserHistory = document.getElementById('searchedUserHistory');
+    hostHistory.innerHTML = '';
+    searchedUserHistory.innerHTML = '';
+}
+
 export function getGameInfo() {
 	const token = sessionStorage.getItem('host_auth_token');
 		fetch('get_game_user/', {

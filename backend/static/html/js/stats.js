@@ -258,7 +258,7 @@ function updateStats3(data)
 		data.maxStreak,
 		data.totalDashes,
 		data.totalPowerUpsUsed,
-		data.nbrGoal / data.totalPointsTaken,
+		(data.nbrGoal / data.totalPointsTaken).toFixed(2),
 		'todo',
 		convertTime(data.totalGameTime),
 		'todo'
