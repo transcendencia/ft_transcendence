@@ -43,9 +43,10 @@ class UserStatusView(APIView):
         print(request.user.username, " status before changed:", request.user.status)
         if request.data.get('status') == 'offline':  # a checker
             request.user.is_host = False
+        print(request.data.get('status'))
         request.user.status = request.data.get('status')
         request.user.save()
-        print("user status after changed:", request.user.status)
+        print(request.user.username, "status after changed:", request.user.status)
         return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
       
     def get(self, request, userId):
@@ -83,14 +84,11 @@ def change_profile_info(request):
         data.pop('anonymousStatus')
         serializer = UpdateInfoSerializer(instance=request.user, data=data)
         if 'profile-pic' in request.FILES and not anonymousStatus:
-            print(request.user.profile_picture.name)
             if request.user.profile_picture.name != 'default.png':
               request.user.profile_picture.delete()
             uploaded_file = request.FILES['profile-pic']
-            print(uploaded_file)
             request.user.profile_picture = uploaded_file
             request.user.save()
-            print("picture changed") 
         if serializer.is_valid():
             serializer.save()
             return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=200)

@@ -1,5 +1,5 @@
 import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
-import {  getCookie, createMatchBlock} from './loginPage.js';
+import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks } from './loginPage.js';
 import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 import { getUserStats, chooseStats } from './stats.js';
@@ -7,19 +7,20 @@ import { getUserStats, chooseStats } from './stats.js';
 const statsButtons = document.querySelectorAll('.statButton');
 const colorClicked = '#5d75ff47';
 let currentUser;
+
 statsButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
     if (index < 3)
     {
       for (let i = 0; i < 3; i++)
           statsButtons[i].style.backgroundColor = 'transparent';
-      getUserStats(localStorage.getItem("host_id"));
+      getUserStats(sessionStorage.getItem("host_id"));
     }
     else
     {
       for (let i = 3; i < 6; i++)
         statsButtons[i].style.backgroundColor = 'transparent';
-      getUserStats(localStorage.getItem(currentUser.id));
+      getUserStats(currentUser.id);
     }
     button.style.backgroundColor = colorClicked;
     chooseStats(index + 1);
@@ -31,6 +32,7 @@ let previousFriendList = [];
 
 async function isListsChanged() {
   const newData = await get_friends_list();
+  console.log("je suis dans render friend list", newData);
   
   const sortedNewRequests = newData.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
   const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
@@ -43,9 +45,12 @@ async function isListsChanged() {
 export function initUserPlanet() {
   renderFriendList();
   getProfileInfo();
-  // getGameInfo();
+  const searchBar = document.getElementById('searchInput');
+  searchBar.value = '';
+  clearMatchBlocks();
+  getGameInfo();
   //delay the animation of stats while page is opening
-  setTimeout(getUserStats(localStorage.getItem("host_id"), 1750));
+  setTimeout(getUserStats(sessionStorage.getItem("host_id"), 1750));
   setCheckerToInterval(setInterval( async() => {
   if (await isListsChanged())
     refreshUserFriendList();
@@ -247,7 +252,7 @@ async function refreshUserFriendList() {
 }
 
 function getHistoryMatchPlayer2(user) {
-  const token = localStorage.getItem('host_auth_token');
+  const token = sessionStorage.getItem('host_auth_token');
   const csrftoken = getCookie('csrftoken');
   
   fetch('get_game_player2/', {
@@ -319,6 +324,7 @@ function createUserTile(user, type, reqId) {
   if (user.isHost)
     return;
   
+  console.log("statuuuus:", user.status);
   const userTile = document.createElement('div');
   userTile.classList.add('userTile');
   
@@ -400,11 +406,6 @@ async function RenderUsersSearched(query) {
       .filter(user => user.username.toLowerCase().includes(query.toLowerCase()))
       .sort((a, b) => a.username.localeCompare(b.username));
 
-    // Assign random status to each user
-    requestList.forEach(obj => assignRandomStatus(obj.user));
-    friendList.forEach(obj => assignRandomStatus(obj.user));
-    otherList.forEach(user => assignRandomStatus(user));
-
     // Clear and concatenate previous lists for consistent sorting
     previousFriendList = data.received_request_list.concat(data.friends);
 
@@ -434,8 +435,7 @@ export async function renderFriendList() {
         return a.user.username.localeCompare(b.user.username);
     });
     
-    previousFriendList = sortedRequests.concat(sortedFriends);
-    
+    previousFriendList = sortedRequests.concat(sortedFriends);    
     sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'Request', userSendingRq.request_id));
     sortedFriends.forEach(friend => createUserTile(friend.user, 'Friend', friend.request_id));
   }

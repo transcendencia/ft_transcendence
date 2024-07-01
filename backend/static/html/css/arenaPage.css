@@ -269,7 +269,7 @@
     align-items: center;
     justify-content: space-evenly;
     flex-direction: column; /* Stack elements vertically */
-    height: 30%;
+    height: 40%;
     width: 60%;
     overflow: hidden;
     flex-shrink: 0;

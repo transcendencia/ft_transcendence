@@ -23,10 +23,6 @@ logger = logging.getLogger(__name__)
 def index(request):
   return render(request, 'index.html')
 
-#to move 
-def rgpd(request):
-  return render(request, 'rgpd.html')
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_page(request):

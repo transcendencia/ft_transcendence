@@ -120,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
     buttons.forEach(function(button) {
         button.style.cursor = "url('../static/game/assets/cursor/pointer.cur'), pointer";
     });
+    
 });
 // LOADING SCREEN
 class LoadingScreen {
@@ -476,6 +477,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const rematchButton = document.getElementById('rematchButton');
 
     rematchButton.addEventListener('click', () => {
+        if (gameState.arena.game.tournamentGame)
+            return;
         rematchGame();
         keyDown['e'] = true;
         gameState.arena.resetUIForRematch();
@@ -3869,7 +3872,6 @@ function animate()
         TWEEN.update();
         if (gameState.inGame && !gameState.paused)
         {
-            console.log("playing");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();
