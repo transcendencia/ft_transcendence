@@ -23,16 +23,16 @@ from ..serializers import UserSerializer, SignupSerializer, UserListSerializer
 def send_friend_request(request):
     if request.method == 'POST':
         sender = request.user
-        receiver_name = request.data.get('receiver_name')
+        receiver_id = request.data.get('receiver_id')
         try:
-            receiver = User.objects.get(username=receiver_name)
+            receiver = User.objects.get(id=receiver_id)
         except User.DoesNotExist:
             raise ValidationError("Receiver user does not exist")
 
         if receiver == sender:
             raise ValidationError("Cannot send friend request to yourself")
 
-        print(sender.username, receiver.username)
+        # print(sender.username, receiver.)
         friend_request, created = FriendRequest.objects.get_or_create(sender=sender, receiver=receiver)
 
         if created:

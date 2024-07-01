@@ -414,12 +414,14 @@ export function emptyLoginField() {
 }
 
 export function resetModifyPageField() {
+    // Pas vider les username et le alias mais le mettre a la derniere valeur
     // document.getElementById('changeUsernameInput').value = '';
     // document.getElementById('changeAliasInput').value = '';
     document.getElementById('changePasswordInput').value = '';
     document.getElementById('changeConfirmPasswordInput').value = '';
     document.getElementById('changeInfoMessage').innerText = '';
     document.getElementById('profile-pic').value = '';
+    document.getElementById('changeInfoMessage').innerText = '';
     const toggleSwitch = document.getElementById('toggleSwitch');
     toggleSwitch.classList.remove('active');
     //vider input nom de la photo
