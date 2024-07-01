@@ -61,9 +61,6 @@ def get_stats(request, userId):
       )
     )
 
-    # efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
-    # totalEficiency = allGames_annotated.aggregate(totalEfficiency=Sum('efficiency_ratio'))
-
     # Total points taken
     totalPointsTaken = allGames.aggregate(totalPointsTaken=Sum('pointsTaken'))['totalPointsTaken'] or 0
 
@@ -148,11 +145,17 @@ def get_stats(request, userId):
       efficiency = -1
 
     # Number of friends
-    friends = FriendRequest.objects.filter((Q(receiver=request.user) | Q(sender=request.user)) & Q(status="accepted"))
+    friends = FriendRequest.objects.filter((Q(receiver=user) | Q(sender=user)) & Q(status="accepted"))
     nbrFriends = friends.count()
-    print(nbrFriends)
-    
+
+    userInfo = {
+      'username': user.username,
+      'alias': user.alias,
+      'profilePicture': user.profile_picture.url,
+    }
+
     return Response({
+      'userInfo': userInfo,
       'percentageGameWon': percentageGameWon, 
       'percentageGameLost': percentageGameLost,
       'totalDashes': totalDashes,
