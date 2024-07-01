@@ -413,8 +413,9 @@ function addEventListenerToTiles() {
     userTiles.forEach((tile, i) => {
         profileAdded[i] = false;
         tile.HTMLelement.addEventListener('click', function() {
+            console.log("user.status:", tile.user.status);
             if (plusClicked && !profileAdded[i]) {
-                if (isBot(i) || (tile.user.status === 'online' && !tile.user.is_host && isGuest(tile.user.id))) {
+                if (isBot(i) || (tile.user.status === 'online' && !tile.user.isO_host && isGuest(tile.user.id))) {
                     tempTileIndex = i;
                     putUserInMatch();
                     return;
@@ -430,14 +431,17 @@ function addEventListenerToTiles() {
 }
 
 //Checker que le host_id est le bon
-function isGuest(userId) {
-    console.log("length of guestLoggedIn:", guestLoggedIn);
-    for (let i = 0; i < guestLoggedIn.length; i++) {
-        if (guestLoggedIn[i][0].id === userId)
-            return true;
-    }
-    return false;
-}
+// function isGuest(userId) {
+//     console.log("length of guestLoggedIn:", guestLoggedIn);
+//     for (let i = 0; i < guestLoggedIn.length; i++) {
+//         if (guestLoggedIn[i][0].id === userId) {
+//             console.log("isGuest: true");
+//             return true;
+//         }
+//     }
+//     console.log("isGuest: false");
+//     return false;
+// }
 
 function putUserInMatch() {
     if (plusClicked && !profileAdded[tempTileIndex]) {
@@ -634,8 +638,34 @@ let previousUserList = [];
     const sortedNewUserNotFriend = users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
 
     createUserTile(users.bot, 'Bot', userListBackground, userTiles);
-    users.friends.forEach(obj => {/*si user pas online sur autre ordi*/ createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
-    users.user_not_friend.forEach(user => {/*si user pas online sur autre ordi*/ createUserTile(user, 'Default', userListBackground, userTiles)});
+    users.friends.forEach(obj => { 
+        if (isLoggedOnSession(obj)) 
+            createUserTile(obj.user, 'Friend', userListBackground, userTiles);
+        });
+    users.user_not_friend.forEach(user => {
+        if (isLoggedOnSession(user)) 
+            createUserTile(user, 'Default', userListBackground, userTiles);
+        });
     addEventListenerToTiles();
     previousUserList = sortedNewFriends.concat(sortedNewUserNotFriend);
+}
+
+
+function isLoggedOnSession(user) {
+    if (user.status === 'online') {
+        if (user.is_host === true)
+            return false;
+        else if (user.is_host === false && !isGuest(user.id))
+            return false;
+    }
+    console.log("isLoggedOnSession: true");
+    return true;
+}
+
+function isGuest(userId) {
+    for (let i = 0; i < guestLoggedIn.length; i++) {
+        if (guestLoggedIn[i][0].id === userId)
+            return true;
+    }
+    return false;
 }
