@@ -259,9 +259,9 @@ function updateStats3(data)
 		data.totalDashes,
 		data.totalPowerUpsUsed,
 		(data.nbrGoal / data.totalPointsTaken).toFixed(2),
-		'todo',
+		data.nbrFriends,
 		convertTime(data.totalGameTime),
-		'todo'
+		data.userInfo.created_at.split('T')[0]
 	]		
 
 	statValues.forEach((stat, index) => {
