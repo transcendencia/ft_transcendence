@@ -554,9 +554,17 @@ function update() {
 return;
 }
 
+let fpsInterval = 1000 / 75; // 75 FPS
+let stats = new Stats();
+let lastUpdateTime = performance.now();
+
+
 function animate()
 {
     requestAnimationFrame( animate )
+    let now = performance.now();
+    let elapsed = now - lastUpdateTime;
+    if (elapsed < fpsInterval) return; // Skip if too big FPS
     if (gameStarted)
         return;
     TWEEN.update();
@@ -569,6 +577,10 @@ function animate()
     mixer2.update(0.025);
     mixer3.update(0.025);
     // renderer.render(scene, camera);
+
+    stats.update();
+    lastUpdateTime = now - (elapsed % fpsInterval);
+    stats.time = performance.now();
 }
 
 const checkModelsLoaded = setInterval(() => {
