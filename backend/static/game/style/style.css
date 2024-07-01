@@ -187,6 +187,24 @@ body {
     }
 }
 
+@keyframes fadeInText {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOutText {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 .winning-screen {
     padding: 20px;
     background: rgba(58, 115, 255, 0.3);
@@ -209,7 +227,6 @@ body {
     background-image: radial-gradient(circle, rgba(58, 115, 255, 0.5), rgba(58, 115, 255, 0.2));
     cursor: url('../assets/cursor/default.cur'), auto;
 }
-
 @keyframes slideInAndExpand {
     0% {
         width: 40%;
@@ -239,11 +256,19 @@ body {
     0% {
         left: 50%;
         width: 150%;
+        height: 20%;
         opacity: 1;
     }
-    50% {
+    33% {
         left: 50%;
         width: 40%;
+        height: 20%;
+        opacity: 1;
+    }
+    66% {
+        left: 50%;
+        width: 40%;
+        height: 1%;
         opacity: 1;
     }
     100% {
@@ -267,14 +292,12 @@ body {
 .startScreen {
     padding: 20px;
     background: linear-gradient(990deg, rgba(63,94,251,0.5) 0%, rgba(54,236,63,0.5) 11%, rgba(68,246,241,0.5) 23%, rgba(225,69,248,0.5) 47%, rgba(245,246,145,0.5) 69%, rgba(247,84,84,0.5) 86%, rgba(70,252,244,0.5) 100%);
-    /* background: linear-gradient(90deg, rgba(0,227,30,0.5) 0%, rgba(220,230,6,0.5) 16%, rgba(223,0,0,0.5) 35%, rgba(232,24,227,0.5) 49%, rgba(0,255,252,0.5) 64%, rgba(230,2,225,0.5) 88%, rgba(0,5,255,0.5) 100%); */
-    /* background: linear-gradient(90deg, rgba(224,38,67,0.7) 0%, rgba(255,219,118,0.7) 15%, rgba(255,38,50,0.7) 25%, rgba(255,198,82,0.7) 35%, rgba(224,38,67,0.7) 45%, rgba(245,181,52,0.7) 55%, rgba(224,38,67,0.7) 65%, rgba(253,194,53,0.7) 75%, rgba(224,38,67,0.7) 85%, rgba(252,176,69,0.7) 92%, rgba(224,38,64,0.7) 100%); */
-    /* background: radial-gradient(circle,rgba(224,38,67,0.7) 14%, rgba(255,219,118,0.7) 15%, rgba(224,38,67,0.7) 17%, rgba(255,38,50,0.7) 32%, rgba(255,198,82,0.7) 35%, rgba(224,38,67,0.7) 38%, rgba(224,38,67,0.7) 52%, rgba(245,181,52,0.7) 55%, rgba(224,38,67,0.7) 73%, rgba(253,194,53,0.7) 75%, rgba(224,38,67,0.7) 78%, rgba(224,38,67,0.7) 89%, rgba(252,176,69,0.7) 92%, rgba(224,38,64,0.7) 94%); */
     background-size: 300% 300%;
     background-position: 0% 50%;
-    /* border-radius: 15px; */
-    border-top: 10px solid #ffffff;
-    border-bottom: 10px solid #ffffff;
+    border: 10px solid #ffffff;
+    border-radius: 15px;
+    /* border-top: 10px solid #ffffff;
+    border-bottom: 10px solid #ffffff; */
     width: 150%;
     height: 20%;
     position: fixed;
@@ -328,6 +351,40 @@ body {
     font-family: 'space';
     color: white;
     animation: pulse 2s ease infinite;
+    opacity: 0;
+}
+
+.startScreen.visible #startGameText {
+    animation: 
+        fadeInText 1s ease-in forwards 1.5s,
+        pulse 2s ease infinite 2.5s;
+}
+
+.startScreen.hidden #startGameText {
+    animation: fadeOutText 0.5s ease-out forwards;
+}
+
+.startPlayerText {
+    position: fixed;
+    font-size: 50px;
+    font-family: 'space';
+    color: white;
+}
+
+#startPlayer1Text {
+    left: 75%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: fadeIn 5s ease-out forwards;
+}
+
+#startPlayer2Text {
+    right: 75%;
+    top: 50%;
+    transform: translate(50%, -50%);
+    opacity: 0;
+    animation: fadeIn 5s ease-out forwards;
 }
 
 #winningText {
@@ -343,7 +400,6 @@ body {
     transform: translate(-50%, -50%);
     animation: slideInUp 0.5s ease-out forwards;
 }
-
 
 
 #scoreText {
@@ -363,8 +419,6 @@ body {
     font-family: 'space';
     color: white;
 }
-
-
 
 #backToLobbyButton {
     padding: 10px 20px;

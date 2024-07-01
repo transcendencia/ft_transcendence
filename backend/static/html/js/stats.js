@@ -1,4 +1,6 @@
 import { getCookie } from './loginPage.js';
+import { getTranslatedText } from './translatePages.js';
+
 
 class DoughnutGraph {
 	constructor(chartId, title, backgroundColors, cutoutPercentage = '50%') {
@@ -230,6 +232,23 @@ function convertTime(time) {
 	return `${hours}hrs ${minutes}min ${seconds}sec`;
 }
 
+function updateBasicStats(data) {
+	const basicStats = document.getElementById('winLoseTexts1');
+	basicStats.innerHTML = `
+	<div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.nbrMatch}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.nbrWin}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.nbrLose}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.nbrGoal}</div>
+	`;
+	const basicStats2 = document.getElementById('winLoseTexts2');
+	basicStats2.innerHTML = `
+	<div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.nbrMatch}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.nbrWin}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.nbrLose}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.nbrGoal}</div>
+	`;
+}
+
 function updateStats3(data)
 {
 	const statValues = document.querySelectorAll('.statValue');
@@ -239,10 +258,10 @@ function updateStats3(data)
 		data.maxStreak,
 		data.totalDashes,
 		data.totalPowerUpsUsed,
-		'le bocal',
-		'0',
+		data.nbrGoal / data.totalPointsTaken,
+		'todo',
 		convertTime(data.totalGameTime),
-		'2021-06-01'
+		'todo'
 	]		
 
 	statValues.forEach((stat, index) => {
@@ -284,6 +303,8 @@ export function getUserStats(userId) {
     winLostChart2.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);
 	accuracy2.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
 	updateStats3(data);
+	updateBasicStats(data);
+	console.log(data);
   })
   .catch(error => {
     console.error('Error fetching user stats:', error);

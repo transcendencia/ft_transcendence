@@ -7,6 +7,7 @@ import { getUserStats, chooseStats } from './stats.js';
 const statsButtons = document.querySelectorAll('.statButton');
 const colorClicked = '#5d75ff47';
 let currentUser;
+
 statsButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
     if (index < 3)
