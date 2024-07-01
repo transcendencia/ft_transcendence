@@ -184,4 +184,20 @@ function downloadFile() {
   console.log("==========");
   console.log("[ON CLICK]");
   console.log("==========");
+    const token = localStorage.getItem('host_auth_token');
+      return fetch('generateDataFile/', {
+          method: 'GET',
+          headers: {
+              'Authorization': `Token ${token}`,
+              'X-CSRFToken': getCookie('csrftoken')
+          },
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Erreur lors du changement graphique');
+          }
+      })
+      .catch(error => {
+          console.error('Erreur :', error);
+      });
 }
