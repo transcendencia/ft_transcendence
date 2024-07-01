@@ -3,7 +3,7 @@ import { showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
-import {cancelLanding, landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
+import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
@@ -449,6 +449,10 @@ export function togglePause() {
 }
 
 let firstPauseTriggered = false;
+const blockingPanel = document.getElementById('blockingPanel');
+const pwWindow = document.querySelector(".enterPasswordWindow");
+const deleteWindow = document.getElementById("validateDelete");
+
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
@@ -477,22 +481,24 @@ document.addEventListener('keydown', (event) => {
         }
         if (landedOnPlanet) {
             togglePlanet();
+            blockingPanel.classList.remove('show');
+            pwWindow.classList.remove('showRectangle')
+            deleteWindow.classList.remove('showRectangle')
+            showPage('none');
             returnToHost();
             return;
         }
-        else if (inCockpit) {
+        if (inCockpit) {
             moveCameraToBackOfCockpit();
             return;
         }
         if (lobbyStart) {
-            console.log("coucou");
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();
             resetOutlineAndText();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
-        console.log("ON APPUIE SUR  ECHAPPE");
     }
 });
 

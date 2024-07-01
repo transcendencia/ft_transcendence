@@ -109,7 +109,6 @@ function handleBotDifficulty(buttonHeader, imgIndex) {
 
 const buttonHeaders = document.querySelectorAll('.buttonTitle');
 buttonHeaders.forEach((buttonHeader, index) => {
-    
     const images = buttonHeader.querySelectorAll('img');
     images.forEach((image, imgIndex) => {
         image.addEventListener('mouseenter', function () {
@@ -420,7 +419,7 @@ function addEventListenerToTiles() {
                     return;
                 }
                 pwWindow.classList.toggle("showRectangle");
-                blockingPanel.style.visibility = 'visible';
+                blockingPanel.classList.add("show");
                 tempTileIndex = i;
                 const newObj = createUserInfoObject(tile, i);
                 pwWindow.replaceChild(newObj.userInfoCont, pwWindow.querySelector('.userInfoCont'));
@@ -595,9 +594,10 @@ export function RenderHostMatch(user) {
 import { get_friends_list } from "./userManagement.js";
 
 const backButtonArenaPage = document.querySelectorAll(".planetBackButton");
+const backButtonRGPDPage = document.getElementById("RGPDBack");
 
 backButtonArenaPage.forEach((button, index) => {
-    if (index !== 1) {
+    if (index !== 1 && button !== backButtonRGPDPage) {
         button.addEventListener('click', () => {
             togglePlanet();
         });
@@ -636,6 +636,7 @@ let previousUserList = [];
 
     const sortedNewFriends = users.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
     const sortedNewUserNotFriend = users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+    userTiles.length = 0;
 
     createUserTile(users.bot, 'Bot', userListBackground, userTiles);
     users.friends.forEach(obj => {/*si user pas online sur autre ordi*/ createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
