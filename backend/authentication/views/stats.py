@@ -152,6 +152,7 @@ def get_stats(request, userId):
       'username': user.username,
       'alias': user.alias,
       'profilePicture': user.profile_picture.url,
+      'created_at': user.created_at,
     }
 
     return Response({
