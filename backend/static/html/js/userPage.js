@@ -1,5 +1,5 @@
 import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
-import {  getCookie, createMatchBlock} from './loginPage.js';
+import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks } from './loginPage.js';
 import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 import { getUserStats, chooseStats } from './stats.js';
@@ -44,7 +44,10 @@ async function isListsChanged() {
 export function initUserPlanet() {
   renderFriendList();
   getProfileInfo();
-  // getGameInfo();
+  const searchBar = document.getElementById('searchInput');
+  searchBar.value = '';
+  clearMatchBlocks();
+  getGameInfo();
   //delay the animation of stats while page is opening
   setTimeout(getUserStats(sessionStorage.getItem("host_id"), 1750));
   setCheckerToInterval(setInterval( async() => {
