@@ -55,8 +55,8 @@ function handleChangeInfoForm(event) {
 
 const deleteAccountButton = document.querySelector(".deleteAccountButton");
 deleteAccountButton.addEventListener("click", deleteAccount);
-const blockingPanel = document.getElementById('deleteBlockingPanel');
-
+const deleteBlockingPanel = document.getElementById('deleteBlockingPanel');
+const blockingPanel = document.getElementById('blockingPanel');
 
 document.getElementById('profile-pic').addEventListener('change', function() {
   let fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
@@ -69,11 +69,11 @@ function deleteAccount() {
     // delete account dans la db
     console.log("je suis dans delete account");
     document.getElementById("validateDelete").classList.toggle("showRectangle");
-    blockingPanel.classList.add('show');
+    deleteBlockingPanel.classList.add('show');
 
     document.getElementById('deleteAccountCancel').addEventListener("click", function() {
 		  document.getElementById("validateDelete").classList.remove("showRectangle");
-		  blockingPanel.classList.remove('show');
+		  deleteBlockingPanel.classList.remove('show');
     })
 
     document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
@@ -86,7 +86,7 @@ function deleteAccount() {
 		    },
 		  })
 		  .then(response => {
-		    blockingPanel.classList.remove('show');
+		    deleteBlockingPanel.classList.remove('show');
 		    return response.json();
 		  })
 		  .catch(error => {
