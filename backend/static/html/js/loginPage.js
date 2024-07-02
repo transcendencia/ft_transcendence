@@ -175,9 +175,7 @@ export async function handleLogin(formData) {
         .then(response => response.json())
         .then(data => {
             let guest_token = null;
-            console.log(data.status);
             if (data.status === "succes") {
-                console.log("hostLoggedIn", hostLoggedIn);
 
                 if (hostLoggedIn === 'false') {
                     //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
@@ -202,7 +200,6 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
-                console.log("failed login", data);
                 if (hostLoggedIn === 'false')
                     document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
                 else if (hostLoggedIn === 'true')
@@ -350,7 +347,6 @@ function handleLogout(userId, token) {
     if (userId === sessionStorage.getItem('host_id')) {
         // console.log(guestLoggedIn);
         guestLoggedIn.forEach(user => {
-            console.log(user);
             updateUserStatus('offline', user[1]);
         });
     }
@@ -396,15 +392,11 @@ function handleLogout(userId, token) {
     }, 50);
 };
 
-window.addEventListener('beforeunload', function () {
+window.addEventListener('beforeunload', function (event) {
     // event.preventDefault();
     const token = sessionStorage.getItem('host_auth_token');
     if (token)
         handleLogout(sessionStorage.getItem('host_id'), token);
-    // event.returnValue = '';
-
-    // const errors = console.error.logs || [];
-    // localStorage.setItem('savedErrors', JSON.stringify(errors));
 });
 
 export function emptyLoginField() {

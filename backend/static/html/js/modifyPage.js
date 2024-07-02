@@ -5,8 +5,9 @@ import { toggleBlurDisplay, toggleLobbyStart } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie, resetModifyPageField } from './loginPage.js';
-import { getProfileInfo } from './userManagement.js';
+import { getProfileInfo, updateUserStatus } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
+import { guestLoggedIn } from './arenaPage.js';
 
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
@@ -89,6 +90,22 @@ function deleteAccount() {
 		    console.error('There was a problem with the delete_account:', error);
 		});
     // resetting ui to loginPage
+    
+    if (guestLoggedIn.length > 0) {
+      guestLoggedIn.forEach(user => {
+          updateUserStatus('offline', user[1]);
+      });
+    }
+    guestLoggedIn.splice(0, guestLoggedIn.length);
+    const lsCont = document.getElementById('lsCont');
+    lsCont.innerHTML = `
+        <div class="tinyRedShadowfilter">
+            Players Connected
+        </div>
+    `;
+    sessionStorage.clear();
+
+    
     document.getElementById("validateDelete").classList.toggle("showRectangle");
     togglePlanet();
     returnToHost();

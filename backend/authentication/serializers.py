@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 error_codes = {
     "length_exceeded_username": "Username must contain 13 characters maximum.",
-    "unique_username": "A user with that username already exists.",
+    "unique": "A user with that username already exists.",
 	"length_exceeded_alias": "Alias must contain 13 characters maximum.",
 	"unique_alias": "A user with that alias already exists.",
 }
@@ -29,12 +29,14 @@ class SignupSerializer(serializers.ModelSerializer):
 	
 	def validate_username(self, value):
 		value = value.lower()
+		# logger.debug("validateUsername serializer")
 		if len(value) > 13:
 			raise serializers.ValidationError(error_codes["length_exceeded_username"], code="length_exceeded_username")
 		if value == 'bot':
-			raise serializers.ValidationError(error_codes["unique_username"], code="unique_username")
-		if User.objects.filter(username=value).exists():
-			raise serializers.ValidationError(error_codes["unique_username"], code="unique_username")
+			raise serializers.ValidationError(error_codes["unique"], code="unique")
+		# if User.objects.filter(username=value).exists():
+		# 	raise serializers.ValidationError(error_codes["unique_username"], code="unique_username")
+		# logger.debug("je return la value du username")
 		return value
 
 	def validate_confirmation_password(self, value):
@@ -74,7 +76,7 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 			if current_user and current_user.username == value:
 				return value 
 			if User.objects.filter(username=value).exists():
-				raise serializers.ValidationError(error_codes["unique_username"], code="unique_username")
+				raise serializers.ValidationError(error_codes["unique"], code="unique")
 		return value
 
 	def validate_password(self, value):
@@ -87,6 +89,7 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 
 	def validate_alias(self, value):
 		if value:
+			value = value.lower()
 			if len(value) > 13:
 				raise serializers.ValidationError(error_codes["length_exceeded_alias"], code="length_exceeded_alias")
 			current_user = self.instance
