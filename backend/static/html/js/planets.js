@@ -96,7 +96,6 @@ const atmosphereFragmentShader = `
     }
 `;
 
-	// Atmosphere material
 const atmosphereMaterial = new THREE.ShaderMaterial({
 	uniforms: {
 		glowColor: { value: new THREE.Color(0xffaa33) },

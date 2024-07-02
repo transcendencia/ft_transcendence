@@ -55,12 +55,11 @@ function handleChangeInfoForm(event) {
 
 const deleteAccountButton = document.querySelector(".deleteAccountButton");
 deleteAccountButton.addEventListener("click", deleteAccount);
-const blockingPanel = document.getElementById('blockingPanel');
+const blockingPanel = document.getElementById('deleteBlockingPanel');
 
 
 document.getElementById('profile-pic').addEventListener('change', function() {
-  var fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
-  console.log("On chercher une photo");
+  let fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
   document.getElementById('LinkPicture').textContent = fileName;
 });
 
@@ -70,10 +69,10 @@ function deleteAccount() {
     // delete account dans la db
     console.log("je suis dans delete account");
     document.getElementById("validateDelete").classList.toggle("showRectangle");
-    blockingPanel.classList.remove('show');
+    blockingPanel.classList.add('show');
 
     document.getElementById('deleteAccountCancel').addEventListener("click", function() {
-		  document.getElementById("validateDelete").classList.toggle("showRectangle");
+		  document.getElementById("validateDelete").classList.remove("showRectangle");
 		  blockingPanel.classList.remove('show');
     })
 

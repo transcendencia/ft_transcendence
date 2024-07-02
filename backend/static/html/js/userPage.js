@@ -32,7 +32,6 @@ let previousFriendList = [];
 
 async function isListsChanged() {
   const newData = await get_friends_list();
-  console.log("je suis dans render friend list", newData);
   
   const sortedNewRequests = newData.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
   const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
