@@ -1,7 +1,7 @@
 import logging
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-
+from ...models import User
 logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
@@ -15,7 +15,9 @@ class Command(BaseCommand):
             
             with open('/backend/logs/cron_execution.log', 'a') as f:
                 f.write(message + '\n')
-            
+            users = User.objects.all()
+            for user in users:
+                print(f'Utilisateur: {user.username}')
             # Votre logique ici
             # Par exemple :
             # User.objects.filter(last_login__lt=timezone.now() - timedelta(days=30)).delete()
