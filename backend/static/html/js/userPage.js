@@ -1,6 +1,6 @@
 import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
 import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks } from './loginPage.js';
-import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo } from './userManagement.js';
+import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo, populateProfileInfo } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 import { getUserStats, chooseStats } from './stats.js';
 
@@ -44,7 +44,13 @@ async function isListsChanged() {
 
 export function initUserPlanet() {
   renderFriendList();
-  getProfileInfo();
+  getProfileInfo()
+  .then(data => {
+      populateProfileInfo(data);
+  })
+  .catch(error => {
+      console.error('Failed to retrieve profile info:', error);
+  });
   const searchBar = document.getElementById('searchInput');
   searchBar.value = '';
   clearMatchBlocks();
@@ -366,11 +372,6 @@ function createUserTile(user, type, reqId) {
   userTile.appendChild(textContainer);
   userTile.appendChild(loupeContainer);
   userListBackground.appendChild(userTile);
-}
-
-function assignRandomStatus(user) {
-  const statuses = ['Offline', 'Online', 'in_game'];
-  user.status = statuses[Math.floor(Math.random() * statuses.length)];
 }
 
 async function RenderUsersSearched(query) {

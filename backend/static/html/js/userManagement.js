@@ -147,39 +147,44 @@ export function get_user_list() {
     });
 };
 
-export function getProfileInfo() {
-	const token = sessionStorage.getItem('host_auth_token');
-		fetch('get_profile_info/', {
-		    method: 'GET',
-			headers: {
-				'Authorization': `Token ${token}`,
-			}
-		})
-		.then(response => {
-			if (!response.ok)
-				throw new Error('Error lors de la recuperation des donne');
-				return response.json();
-		})
-		.then(data=> {
-			document.getElementById('username').textContent = data.profile_info.username;
-			document.getElementById('alias').textContent = data.profile_info.alias;
-			document.getElementById('profile_pic').src = data.profile_info.profile_picture;
-            document.getElementById('changeUsernameInput').value = data.profile_info.username;
-            document.getElementById('changeAliasInput').value = data.profile_info.alias;
-            const basicStats = document.getElementById('winLoseTexts1');
-            basicStats.innerHTML = `
-                <div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.profile_info.nbr_match}</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.profile_info.nbr_match_win}</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
-            `;
-            RenderHostMatch(data.profile_info);
-            RenderUserTournament(data.profile_info);
-		})
-		.catch(error => {
-			console.error('Erreur :', error);
-		});
+export function populateProfileInfo(data) {
+    document.getElementById('username').textContent = data.profile_info.username;
+    document.getElementById('alias').textContent = data.profile_info.alias;
+    document.getElementById('profile_pic').src = data.profile_info.profile_picture;
+    document.getElementById('changeUsernameInput').value = data.profile_info.username;
+    document.getElementById('changeAliasInput').value = data.profile_info.alias;
+
+    const basicStats = document.getElementById('winLoseTexts1');
+    basicStats.innerHTML = `
+        <div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.profile_info.nbr_match}</div>
+        <div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.profile_info.nbr_match_win}</div>
+        <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
+        <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
+    `;
+    RenderHostMatch(data.profile_info);
+    RenderUserTournament(data.profile_info);
 }
+
+export function getProfileInfo() {
+    const token = sessionStorage.getItem('host_auth_token');
+    return fetch('get_profile_info/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}`,
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error lors de la recuperation des donnees');
+        }
+        return response.json();
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+        throw error;  
+    });
+}
+
 
 export function send_request(username) {
 

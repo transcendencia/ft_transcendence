@@ -843,9 +843,9 @@
   </div>
     <div class="loggedAs">
       Currently logged as :
-      <div class="userInfoCont">
+      <div id="escapeUserContainer" class="userInfoCont">
         <div class="profilePic">
-          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+          <img id="escapeProfileImg" src="{% static 'html/assets/icons/ES_NU.png' %}">
         </div>
         AtomiK
       </div>
@@ -857,17 +857,15 @@
 
   <!-- RGPD PAGE -->          
   <div class="rgpdPage page">
-    <div id="RGPDTitle" class="title" style="font-size : 70px;">
-      PRIVACY POLICY
-    </div>
-    <div class="rgpdFrame">
       <div class="backgroundRGPDText">
+      <div id="RGPDTitle" class="title" style="font-size : 50px;">
+        PRIVACY POLICY
+      </div>
        <div id="RGPDText">
         The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. Your data is automatically deleted one year after your last connection. For any reclamation you can go to the CNIL website. 
         </div>
         <div id="RGPDBack" class="planetBackButton" style="height: 15%; width: 40%;">Back</div>
       </div>
-    </div>
   </div>
     
     <!-- GAME STUFF -->

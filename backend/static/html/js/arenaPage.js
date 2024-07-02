@@ -627,7 +627,7 @@ let previousUserList = [];
 
   async function isListsChanged() {
     const newData = await get_friends_list();
-    
+
     const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
     const sortedNewUserNotFriend = newData.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
     const concatenatedNewList = sortedNewFriends.concat(sortedNewUserNotFriend);

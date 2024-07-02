@@ -36,8 +36,11 @@ addEventListener("hashchange", (event) => {
         moveCameraToBackOfCockpit();   
     else if (window.location.hash == '#signUpPage' && oldLocation == '#loginPage')
         moveCameraToFrontOfCockpit();
-    else if (window.location.hash == '#rgpdPage' && oldLocation == '#signUpPage')
+    else if (window.location.hash == '#rgpdPage' && oldLocation == '#signUpPage'){
         showPage('rgpdPage');
+        const RGPDPage = document.querySelector(".rgpdPage");
+        RGPDPage.classList.add("perspectived");
+    }
     else if (window.location.hash == '#signUpPage' && oldLocation == '#rgpdPage') {
         showPage('signUpPage')
     }
