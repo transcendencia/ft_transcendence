@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets } from "./planets.js";
+import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
@@ -353,6 +353,7 @@ function planetMovement() {
             planet.orbitMesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
+        sun.rotation.y += 0.001;
     });
 }
 
@@ -557,6 +558,7 @@ function animate()
     if (gameStarted)
         return;
     TWEEN.update();
+    atmosphere.material.uniforms.time.value += 0.01;
     if (!landedOnPlanet)
         renderMinimap();
     update();
