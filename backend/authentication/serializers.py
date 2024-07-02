@@ -10,8 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
 		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'alias', 'is_host']
 
 error_codes = {
-    "length_exceeded": "Username must contain 12 characters maximum.",
-    "unique": "A user with that username already exists."
+    "length_exceeded_username": "Username must contain 13 characters maximum.",
+    "unique_username": "A user with that username already exists.",
+	"length_exceeded_alias": "Alias must contain 13 characters maximum.",
+	"unique_alias": "A user with that alias already exists.",
 }
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -28,11 +30,11 @@ class SignupSerializer(serializers.ModelSerializer):
 	def validate_username(self, value):
 		value = value.lower()
 		if len(value) > 13:
-			raise serializers.ValidationError(error_codes["length_exceeded"], code="length_exceeded")
+			raise serializers.ValidationError(error_codes["length_exceeded_username"], code="length_exceeded_username")
 		if value == 'bot':
-			raise serializers.ValidationError(error_codes["unique"], code="unique")
+			raise serializers.ValidationError(error_codes["unique_username"], code="unique_username")
 		if User.objects.filter(username=value).exists():
-			raise serializers.ValidationError("Username already exist")
+			raise serializers.ValidationError(error_codes["unique_username"], code="unique_username")
 		return value
 
 	def validate_confirmation_password(self, value):
@@ -67,12 +69,12 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 		if value:
 			value = value.lower()
 			if len(value) > 13:
-				raise serializers.ValidationError("Username must contains 12 characters maximum.")
+				raise serializers.ValidationError(error_codes["length_exceeded_username"], code="length_exceeded_username")
 			current_user = self.instance
 			if current_user and current_user.username == value:
 				return value 
 			if User.objects.filter(username=value).exists():
-				raise serializers.ValidationError("Username already exist")
+				raise serializers.ValidationError(error_codes["unique_username"], code="unique_username")
 		return value
 
 	def validate_password(self, value):
@@ -85,8 +87,13 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 
 	def validate_alias(self, value):
 		if value:
-			if len(value) > 28:
-				raise serializers.ValidationError("Alias must contains 28 characters maximum.")
+			if len(value) > 13:
+				raise serializers.ValidationError(error_codes["length_exceeded_alias"], code="length_exceeded_alias")
+			current_user = self.instance
+			if current_user and current_user.alias == value:
+				return value 
+			if User.objects.filter(alias=value).exists():
+				raise serializers.ValidationError(error_codes["unique_alias"], code="unique_alias")
 		return value
 
 	def validate(self, data):
@@ -97,7 +104,7 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 			if not confirmation_password:
 				raise serializers.ValidationError("You need to confirm your password.")
 			if password != confirmation_password:
-				raise serializers.ValidationError("Password not identical")
+				raise PasswordValidationError(detail="Password not identical")
 		return data
 	
 	def update(self, instance, validated_data):

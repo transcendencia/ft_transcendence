@@ -1,11 +1,10 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
-import { moveCameraToBackOfCockpit }  from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
+import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart, bluelight, createUserBadge, scene} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfo} from "./userManagement.js";
 import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
 
@@ -203,6 +202,8 @@ export async function handleLogin(formData) {
                     showPage('none');
                     startAnimation();
                     emptyLoginField();
+                    getProfileInfo().then(data => createUserBadge(data, "playersConnHostBadge"))
+                    .catch(error => console.error('Failed to retrieve profile info:', error));    
                 } else {
                     guest_token = data.token;
                 }
@@ -363,11 +364,14 @@ function handleLogout(userId, token) {
     guestLoggedIn.splice(0, guestLoggedIn.length);
     const lsCont = document.getElementById('lsCont');
     lsCont.innerHTML = `
-        <div class="tinyRedShadowfilter">
-            Players Connected
+    <div class="d-flex row justify-content-center align-items-center tinyRedShadowfilter" style="margin-left: 10px;">
+    Players Connected
+    </div>
+        <div id="playersConnHostBadge" class="userInfoCont tinyRedShadowfilter" style="transform: scale(0.7); margin-left: -20px">
         </div>
+    </div>
     `;
-
+    
     // Disconnect the host
     updateUserStatus('offline', token)
     .then(() => {
@@ -376,19 +380,13 @@ function handleLogout(userId, token) {
     .catch(error => {
         console.error('Erreur :', error);
     });
-    // const hostLoggedIn = localStorage.getItem("hostLoggedIn")
-    // console.log(hostLoggedIn)
-    // if (hostLoggedIn === 'true') {
-    //     // localStorage.setItem('hostLoggedIn', 'false');
-    //     localStorage.clear();
-    //     console.log(localStorage.getItem("hostLoggedIn"));
-    // }
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
         toggleGameStarted();
         resetHTMLelements();
     }
+    togglePause();
     spaceShip.rotation.set(0, 0, 0);
     spaceShip.position.set(0, 0, -1293.5);
     setTimeout(() => {
@@ -398,6 +396,7 @@ function handleLogout(userId, token) {
         spaceShipInt.visible = true;
         showPage('loginPage');
         toggleLobbyStart();
+        scene.add(bluelight);
     }, 50);
 };
 
@@ -419,12 +418,14 @@ export function emptyLoginField() {
 }
 
 export function resetModifyPageField() {
+    // Pas vider les username et le alias mais le mettre a la derniere valeur
     // document.getElementById('changeUsernameInput').value = '';
     // document.getElementById('changeAliasInput').value = '';
     document.getElementById('changePasswordInput').value = '';
     document.getElementById('changeConfirmPasswordInput').value = '';
     document.getElementById('changeInfoMessage').innerText = '';
     document.getElementById('profile-pic').value = '';
+    document.getElementById('changeInfoMessage').innerText = '';
     const toggleSwitch = document.getElementById('toggleSwitch');
     toggleSwitch.classList.remove('active');
     //vider input nom de la photo
