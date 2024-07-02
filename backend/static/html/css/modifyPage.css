@@ -45,7 +45,10 @@
     left: 50%;
     position: fixed;
     transform: translate(-50%, -50%);
-    background-color: rgba(12, 0, 124, 0.489);
+    background-color: rgba(6, 0, 60, 0.6);
+    transition: opacity 1s, visibility 1s;
+    opacity: 0;
+    visibility: hidden;
 }
 
 .submitChangeButton {
@@ -176,7 +179,7 @@
     overflow: hidden;
     flex-shrink: 0;
     position: absolute;
-    z-index: 9999;
+    z-index: 5;
 }
 
 .anonymousInfos {
@@ -226,7 +229,8 @@
 }
 
 .showRectangle {
-    display: flex;
+    display: flex !important;
+    z-index: 5 !important;
 }
 
 .changeInfoMessage {

@@ -1,11 +1,11 @@
 import { togglePanelDisplay, togglePlanet, landedOnPlanet } from './enterPlanet.js';
 import { returnToHost } from './userPage.js';
 import { resetOutline } from './planetIntersection.js';
-import { toggleBlurDisplay, toggleLobbyStart } from './main.js';
+import { toggleBlurDisplay, toggleLobbyStart, toggleRSContainerVisibility } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie, resetModifyPageField } from './loginPage.js';
-import { getProfileInfo, updateUserStatus } from './userManagement.js';
+import { getProfileInfo, updateUserStatus, populateProfileInfo } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
 
@@ -39,9 +39,14 @@ function handleChangeInfoForm(event) {
   .then(data => {
     var changeInfoMessage = document.querySelector('.changeInfoMessage');
     if (data.status === "succes")
-      getProfileInfo();
-    else 
-      changeInfoMessage.classList.toggle("errorMessage");
+      getProfileInfo()
+        .then(data => {
+            populateProfileInfo(data);
+        })
+        .catch(error => {
+            console.error('Failed to retrieve profile info:', error);
+        });
+    else changeInfoMessage.classList.toggle("errorMessage");
     document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
   })
   .catch(error => {
@@ -51,12 +56,11 @@ function handleChangeInfoForm(event) {
 
 const deleteAccountButton = document.querySelector(".deleteAccountButton");
 deleteAccountButton.addEventListener("click", deleteAccount);
+const deleteBlockingPanel = document.getElementById('deleteBlockingPanel');
 const blockingPanel = document.getElementById('blockingPanel');
 
-
 document.getElementById('profile-pic').addEventListener('change', function() {
-  var fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
-  console.log("On chercher une photo");
+  let fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
   document.getElementById('LinkPicture').textContent = fileName;
 });
 
@@ -64,60 +68,59 @@ function deleteAccount() {
     // rediriger vers la page d'acceuil
     // deconnecter tout les guest
     // delete account dans la db
-    console.log("je suis dans delete account");
     document.getElementById("validateDelete").classList.toggle("showRectangle");
-    blockingPanel.style.visibility = 'hidden';
+    deleteBlockingPanel.classList.add('show');
 
     document.getElementById('deleteAccountCancel').addEventListener("click", function() {
-		  document.getElementById("validateDelete").classList.toggle("showRectangle");
-		  blockingPanel.style.visibility = 'hidden';
+		  document.getElementById("validateDelete").classList.remove("showRectangle");
+		  deleteBlockingPanel.classList.remove('show');
     })
 
     document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
-		  const token = sessionStorage.getItem('host_auth_token');
-		  fetch('delete_account/', {
-		    method: 'POST',
-		    headers: {
-			  'Authorization': `Token ${token}`,
-			  'X-CRSFToken': getCookie('crsftoken')
-		    },
-		  })
-		  .then(response => {
-		    blockingPanel.style.visibility = 'hidden';
-		    return response.json();
-		  })
-		  .catch(error => {
-		    console.error('There was a problem with the delete_account:', error);
-		});
-    // resetting ui to loginPage
-    
-    if (guestLoggedIn.length > 0) {
-      guestLoggedIn.forEach(user => {
-          updateUserStatus('offline', user[1]);
-      });
-    }
-    guestLoggedIn.splice(0, guestLoggedIn.length);
-    const lsCont = document.getElementById('lsCont');
-    lsCont.innerHTML = `
-        <div class="tinyRedShadowfilter">
-            Players Connected
-        </div>
-    `;
-    sessionStorage.clear();
+        const token = sessionStorage.getItem('host_auth_token');
+        document.getElementById("validateDelete").classList.remove("showRectangle");
 
-    
-    document.getElementById("validateDelete").classList.toggle("showRectangle");
-    togglePlanet();
-    returnToHost();
-    spaceShip.position.set(0, 0, -1293.5);
-    spaceShip.rotation.set(0, 0, 0);
+        fetch('delete_account/', {
+          method: 'POST',
+          headers: {
+          'Authorization': `Token ${token}`,
+          'X-CRSFToken': getCookie('crsftoken')
+          },
+        })
+        .then(response => {
+          deleteBlockingPanel.classList.remove('show');
+          if (guestLoggedIn.length > 0) {
+            guestLoggedIn.forEach(user => {
+                updateUserStatus('offline', user[1]);
+            });
+          }
+          guestLoggedIn.splice(0, guestLoggedIn.length);
+          const lsCont = document.getElementById('lsCont');
+          lsCont.innerHTML = `
+              <div class="tinyRedShadowfilter">
+                  Players Connected
+              </div>
+          `;
+          sessionStorage.clear();
+          return response.json();
+        })
+        .catch(error => {
+          console.error('There was a problem with the delete_account:', error);
+        });
+        // resetting ui to loginPage
 
-    setTimeout(() => {
-        resetOutline();
-        spaceShipInt.visible = true;
-        showPage('loginPage');
-        toggleLobbyStart();
-    }, 25);
+    document.getElementById("validateDelete").classList.remove("showRectangle");
+        togglePlanet(true);
+        returnToHost();
+        spaceShip.position.set(0, 0, -1293.5);
+        spaceShip.rotation.set(0, 0, 0);
+        
+        setTimeout(() => {
+          toggleLobbyStart(true);
+            // resetOutline();
+            spaceShipInt.visible = true;
+            showPage('loginPage');
+        }, 25);
     })
 
 }
@@ -162,9 +165,12 @@ export function getRandomUsername() {
   });
 };
 
+const RGPDPage = document.querySelector(".rgpdPage");
+
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
 RGPDPolicy.addEventListener('click', function() {
-  blockingPanel.style.visibility = 'visible';
+  blockingPanel.classList.add('show');
+  RGPDPage.classList.remove("perspectived");
   showPage('rgpdPage');
 });
 
@@ -185,11 +191,10 @@ function backInfosDisplay() {
 }
 
 document.addEventListener('keydown', (event) => {
-  if (event.key == 'Escape') {
-      if (isInfosShow == true)
-      {
-        isInfosShow = false;
-        document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
-      }
+  if (event.key !== 'Escape')
+    return;
+    if (isInfosShow == true) {
+      isInfosShow = false;
+      document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
     }
 });
