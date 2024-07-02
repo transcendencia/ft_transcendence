@@ -33,7 +33,7 @@ class DoughnutGraph {
 		  ctx.fillStyle = chart.config.options.plugins.centerText.fontColor;
 		  ctx.textAlign = 'center';
 		  ctx.textBaseline = 'middle';
-		  if (title === 'Accuracy') {
+		  if (title === 'Accuracy' || title === 'Win%') {
 			if (this.dataStats[0] + this.dataStats[1] === 0)
 				ctx.fillText('0%', left + width / 2, top + height / 2);
 			else
@@ -44,8 +44,6 @@ class DoughnutGraph {
 		  }
 		  else if (title === 'Modes played' || title === 'Maps played')
 			ctx.fillText('', left + width / 2, top + height / 2);
-		  else
-		  	ctx.fillText(this.dataStats[0] / (this.dataStats[0] + this.dataStats[1]) * 100 + '%', left + width / 2, top + height / 2);
 		}
 	  };
   
@@ -55,7 +53,7 @@ class DoughnutGraph {
 		options: {
 		  layout: {
 			padding: {
-			  top: 30, // Add padding to move the doughnut chart up
+			  top: 30,
 			  bottom: 10
 			}
 		  },
@@ -73,11 +71,11 @@ class DoughnutGraph {
 				family: 'Space'
 			  },
 			  padding: {
-				top: 0, // Remove top padding for title
-				bottom: 10 // Adjust bottom padding for title
+				top: 0,
+				bottom: 10
 			  },
 			  align: 'center',
-			  position: 'top', // Ensure the title is positioned at the top
+			  position: 'top',
 			},
 			legend: {
 			  display: true,
