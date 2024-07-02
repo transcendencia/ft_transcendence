@@ -456,6 +456,9 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         if (window.location.hash === "#signUpPage")
             document.getElementById("submitSignUp").click();
+        const pwWindow = document.querySelector(".enterPasswordWindow");
+        if (window.getComputedStyle(pwWindow).display === 'flex')
+        document.getElementById("arenaLogInButton").click()
     }
     if (event.target.tagName === 'INPUT')
         return;

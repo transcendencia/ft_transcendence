@@ -507,6 +507,8 @@ validatePasswordButton.addEventListener('click', async function() {
                 guestLoggedIn.push([guest, guestToken]);
                 putUserInMatch();
                 displayUsersLogged(guest, guestToken);
+                document.getElementById('enterPasswordInput').value = '';
+                document.getElementById('errorLogGuest').innerHTML = '';
             } else {
                 console.log("Erreur dans le login");
             }
