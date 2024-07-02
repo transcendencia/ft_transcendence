@@ -3589,11 +3589,13 @@ class Bot {
 }
 
 class UserStats {
-    constructor(isThirdPlayer, usernameElement, ppElement) {
+    constructor(isThirdPlayer, usernameElement, ppElement, startpp, startUser) {
         this.isThirdPlayer = isThirdPlayer;
         this.isWinner = false;
         this.usernameElement = usernameElement;
+        this.startUserElement = startUser;
         this.ppElement = ppElement;
+        this.startppElement = startpp
         this.pointsScored = 0;
         this.pointsTaken = 0;
         this.nbDashes = 0;
@@ -3627,6 +3629,11 @@ class UserStats {
         this.profilePicture = profilePicture;
         this.usernameElement.textContent = username;
         this.ppElement.src = profilePicture;
+        if (this.isThirdPlayer === false)
+        {
+            this.startppElement.src = profilePicture;
+            this.startUserElement.textContent = username;
+        }
     }
     toJson() {
         return {
@@ -3665,10 +3672,14 @@ class Game {
         this.user1ProfilePicture = document.getElementById('pp1');
         this.user2ProfilePicture = document.getElementById('pp2');
         this.user3ProfilePicture = document.getElementById('pp3');
+        this.startUser1ProfilePicture = document.getElementById('startpp1');
+        this.startUser2ProfilePicture = document.getElementById('startpp2');
+        this.startUser1Username = document.getElementById('startUsername1Text');
+        this.startUser2Username = document.getElementById('startUsername2Text');
 
-        this.user1 = new UserStats(false, this.user1Username, this.user1ProfilePicture); // User1 is the left paddle
-        this.user2 = new UserStats(false, this.user2Username, this.user2ProfilePicture); // User2 is the right paddle
-        this.user3 = new UserStats(true, this.user3Username, this.user3ProfilePicture); // User3 is the third player
+        this.user1 = new UserStats(false, this.user1Username, this.user1ProfilePicture, this.startUser1ProfilePicture, this.startUser1Username); // User1 is the left paddle
+        this.user2 = new UserStats(false, this.user2Username, this.user2ProfilePicture, this.startUser2ProfilePicture, this.startUser2Username); // User2 is the right paddle
+        this.user3 = new UserStats(true, this.user3Username, this.user3ProfilePicture, this.startUser1ProfilePicture, this.startUser2Username); // User3 is the third player
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
 
         // OUTPUT

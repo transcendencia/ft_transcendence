@@ -399,8 +399,8 @@ export function startAnimation() {
     }
 
     
-function createEscapeUserBadge(hostData) {
-    const escapeUserCont = document.getElementById("escapeUserContainer");
+export function createUserBadge(hostData, elementId) {
+    const escapeUserCont = document.getElementById(elementId);
     escapeUserCont.innerHTML = `
     <div class="profilePic">
       <img src="${hostData.profile_info.profile_picture}">
@@ -410,7 +410,7 @@ function createEscapeUserBadge(hostData) {
 }
 
 export function toggleEscapeContainerVisibility() {
-    getProfileInfo().then(data => createEscapeUserBadge(data))
+    getProfileInfo().then(data => createUserBadge(data, 'escapeUserContainer'))
     .catch(error => console.error('Failed to retrieve profile info:', error));    
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
