@@ -253,12 +253,18 @@ function updateStats3(data)
 {
 	const statValues = document.querySelectorAll('.statValue');
 
+	let scoreRatio;
+	if (data.totalPointsTaken === null)
+		scoreRatio = 0;
+	else
+		scoreRatio = (data.nbrGoal / data.totalPointsTaken).toFixed(2);
+
 	const values = [
 		data.currentStreak,
 		data.maxStreak,
 		data.totalDashes,
 		data.totalPowerUpsUsed,
-		(data.nbrGoal / data.totalPointsTaken).toFixed(2),
+		scoreRatio,
 		data.nbrFriends,
 		convertTime(data.totalGameTime),
 		data.userInfo.created_at.split('T')[0]
