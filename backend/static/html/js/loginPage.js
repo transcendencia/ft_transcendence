@@ -338,7 +338,7 @@ export function getGameInfo() {
 }
 
 // Logout
-var disconnectButton = document.getElementById("disconnectButton");
+const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
     handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
 });
@@ -389,6 +389,7 @@ function handleLogout(userId, token) {
         toggleGameStarted();
         resetHTMLelements();
     }
+    togglePause();
     spaceShip.rotation.set(0, 0, 0);
     spaceShip.position.set(0, 0, -1293.5);
     setTimeout(() => {
