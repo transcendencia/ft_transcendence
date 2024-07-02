@@ -5,7 +5,9 @@ import { toggleBlurDisplay, toggleLobbyStart, toggleRSContainerVisibility } from
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie, resetModifyPageField } from './loginPage.js';
-import { getProfileInfo, populateProfileInfo } from './userManagement.js';
+import { getProfileInfo, updateUserStatus, populateProfileInfo } from './userManagement.js';
+import { getTranslatedText } from "./translatePages.js";
+import { guestLoggedIn } from './arenaPage.js';
 
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
@@ -45,8 +47,7 @@ function handleChangeInfoForm(event) {
             console.error('Failed to retrieve profile info:', error);
         });
     else changeInfoMessage.classList.toggle("errorMessage");
-    document.getElementById('changeInfoMessage').innerText = data.message;
-    // document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
+    document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
   })
   .catch(error => {
     console.error('There was a problem with the change_profile_info:', error);
@@ -81,13 +82,25 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   })
   .then(response => {
       deleteBlockingPanel.classList.remove('show');
-      sessionStorage.setItem("hostLoggedIn", 'false');
       return response.json();
   })
   .catch(error => {
       console.error('There was a problem with the delete_account:', error);
   });
 
+  if (guestLoggedIn.length > 0) {
+    guestLoggedIn.forEach(user => {
+        updateUserStatus('offline', user[1]);
+    });
+  }
+  guestLoggedIn.splice(0, guestLoggedIn.length);
+  const lsCont = document.getElementById('lsCont');
+  lsCont.innerHTML = `
+      <div class="tinyRedShadowfilter">
+          Players Connected
+      </div>
+  `;
+  sessionStorage.clear();
   document.getElementById("validateDelete").classList.remove("showRectangle");
   togglePlanet(true);
   returnToHost();

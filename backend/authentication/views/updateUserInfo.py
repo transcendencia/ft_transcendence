@@ -91,10 +91,10 @@ def change_profile_info(request):
             request.user.save()
         if serializer.is_valid():
             serializer.save()
-            return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'message': "info changed"}, status=200)
+            return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=200)
         first_error = next(iter(serializer.errors.values()))[0]
-        print(first_error)
-        return Response({'status': "failure", "message": first_error}, status=400)
+        first_error_code = first_error.code 
+        return Response({'status': "failure", "msg_code": first_error_code})
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
