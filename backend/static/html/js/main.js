@@ -45,8 +45,11 @@ const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect rat
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
-export function toggleLobbyStart() {
-    lobbyStart = !lobbyStart;
+export function toggleLobbyStart(state = false) {
+    if (state === true)
+        lobbyStart = false;
+    else
+        lobbyStart = !lobbyStart;
 }
 
     // LIGHTING
