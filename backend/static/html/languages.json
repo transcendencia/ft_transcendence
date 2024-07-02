@@ -15,8 +15,10 @@
         "backToLogin": "Back to login",
         "successfulSignup": "User created You may now log in",
         "unique": "A user with that username already exists.",
+        "unique_alias": "A user with that alias already exists.",
         "blank":"All fields must be completed.",
-        "length_exceeded":"Username must contain 13 characters maximum.",
+        "length_exceeded_username":"Username must contain 13 characters maximum.",
+        "length_exceeded_alias":"Alias must contain 13 characters maximum.",
         "password_too_short":"This password is too short. It must contain at least 8 characters.",
         "password_too_common":"This password is too common.",
         "invalid":"Password not identical",
@@ -106,8 +108,8 @@
         "deleteAccountCancel": "No",
         "RGPDPolicyInUserPage": "Privacy policy",
         "infoBack" : "Back",
-        "textAnonymous": "When you activate anonymous mode you have a randon username and default profil picture"
-        
+        "textAnonymous": "When you activate anonymous mode you have a randon username and default profil picture",
+        "successfulModifyInfo": "Info changed"
     },
     "es": {
         "login": "Usuario",
@@ -126,8 +128,10 @@
         "backToLogin": "Volver",
         "successfulSignup": "Usario creado puedes conectarse ahora",
         "unique": "Ya existe un usuario con ese nombre de usuario.",
+        "unique_alias": "Ya existe un usuario con ese alias.",
         "blank":"Todos los campos deben ser completados.",
-        "length_exceeded":"El nombre de usuario debe contener 13 caracteres como máximo.",
+        "length_exceeded_username":"El nombre de usuario debe contener 13 caracteres como máximo.",
+        "length_exceeded_alias":"El alias debe contener 13 caracteres como máximo.",
         "password_too_short":"Esta contraseña es demasiado corta. Debe contener al menos 8 caracteres.",
         "password_too_common":"Esta contraseña es demasiado común.",
         "invalid":"Contraseña no idéntica",
@@ -214,7 +218,8 @@
         "deleteAccountCancel": "No",
         "RGPDPolicyInUserPage": "politica de confidencialidad",
         "infoBack" : "Volver",
-        "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada"
+        "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada",
+        "successfulModifyInfo": "información cambiada"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -241,8 +246,10 @@
         "gamemodeNameText3": "Balles Courbes",
         "successfulSignup": "Utilisateur cree vous pouvez vous connecter",
         "unique": "Un utilisateur avec ce nom existe deja.",
+        "unique_alias": "Un utilisateur avec cet alias existe deja.",
         "blank":"Tous les champs doivent etre remplie.",
-        "length_exceeded":"Le nom d'utilisateur doit contenir 13 caractères maximum.",
+        "length_exceeded_username":"Le nom d'utilisateur doit contenir 13 caractères maximum.",
+        "length_exceeded_alias":"L'alias doit contenir 13 caractères maximum.",
         "password_too_short":"Ce mot de passe est trop court. Il doit contenir au moins 8 caractères.",
         "password_too_common":"Ce mot de passe est trop courant.",
         "invalid":"Mot de passe non identique",
@@ -320,6 +327,7 @@
         "deleteAccountCancel": "Non",
         "RGPDPolicyInUserPage": "Politique de confidentialite",
         "infoBack" : "Retour",
-        "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut"
+        "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut",
+        "successfulModifyInfo": "Informations change"
     }
 }

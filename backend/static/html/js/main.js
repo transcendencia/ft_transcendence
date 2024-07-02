@@ -454,9 +454,14 @@ window.addEventListener('resize', () => {
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
+    if (event.key === 'm')
+        test_back();
     if (event.key === 'Enter') {
         if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();
+        const pwWindow = document.querySelector(".enterPasswordWindow");
+        if (window.getComputedStyle(pwWindow).display === 'flex')
+        document.getElementById("arenaLogInButton").click()
     }
     if (event.key === 'Escape') {
         if (gameState.inGame)
@@ -495,6 +500,20 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
 });
+
+function test_back() {
+    console.log("test back");
+    // SIGN UP
+    // document.getElementById('usernameLoginInput').value = 67890;
+    // document.getElementById('passwordLoginInput').value = 'q';
+    // document.getElementById('confirmPasswordSignUpInput').value = 'q';
+    // document.getElementById("submitSignUp").click();
+
+    // LOGIN
+    // document.getElementById('usernameLoginInput').value = 67890;
+    // document.getElementById('passwordLoginInput').value = 'q';
+    // document.getElementById("loginButton").click();
+}
 
 let targetBlur = 0;
 
