@@ -55,7 +55,6 @@ function handleChangeInfoForm(event) {
 }
 
 const deleteAccountButton = document.querySelector(".deleteAccountButton");
-deleteAccountButton.addEventListener("click", deleteAccount);
 const deleteBlockingPanel = document.getElementById('deleteBlockingPanel');
 const blockingPanel = document.getElementById('blockingPanel');
 
@@ -64,65 +63,65 @@ document.getElementById('profile-pic').addEventListener('change', function() {
   document.getElementById('LinkPicture').textContent = fileName;
 });
 
-function deleteAccount() {
-    // rediriger vers la page d'acceuil
-    // deconnecter tout les guest
-    // delete account dans la db
-    document.getElementById("validateDelete").classList.toggle("showRectangle");
-    deleteBlockingPanel.classList.add('show');
+// Add the event listeners for cancel and confirmation buttons once
+document.getElementById('deleteAccountCancel').addEventListener("click", function() {
+  document.getElementById("validateDelete").classList.remove("showRectangle");
+  deleteBlockingPanel.classList.remove('show');
+});
 
-    document.getElementById('deleteAccountCancel').addEventListener("click", function() {
-		  document.getElementById("validateDelete").classList.remove("showRectangle");
-		  deleteBlockingPanel.classList.remove('show');
-    })
+document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
+  const token = sessionStorage.getItem('host_auth_token');
+  document.getElementById("validateDelete").classList.remove("showRectangle");
 
-    document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
-        const token = sessionStorage.getItem('host_auth_token');
-        document.getElementById("validateDelete").classList.remove("showRectangle");
-
-        fetch('delete_account/', {
-          method: 'POST',
-          headers: {
+  fetch('delete_account/', {
+      method: 'POST',
+      headers: {
           'Authorization': `Token ${token}`,
           'X-CRSFToken': getCookie('crsftoken')
-          },
-        })
-        .then(response => {
-          deleteBlockingPanel.classList.remove('show');
-          if (guestLoggedIn.length > 0) {
-            guestLoggedIn.forEach(user => {
-                updateUserStatus('offline', user[1]);
-            });
-          }
-          guestLoggedIn.splice(0, guestLoggedIn.length);
-          const lsCont = document.getElementById('lsCont');
-          lsCont.innerHTML = `
-              <div class="tinyRedShadowfilter">
-                  Players Connected
-              </div>
-          `;
-          sessionStorage.clear();
-          return response.json();
-        })
-        .catch(error => {
-          console.error('There was a problem with the delete_account:', error);
+      },
+  })
+  .then(response => {
+      deleteBlockingPanel.classList.remove('show');
+      if (guestLoggedIn.length > 0) {
+        guestLoggedIn.forEach(user => {
+            updateUserStatus('offline', user[1]);
         });
-        // resetting ui to loginPage
+      }
+      guestLoggedIn.splice(0, guestLoggedIn.length);
+      const lsCont = document.getElementById('lsCont');
+      lsCont.innerHTML = `
+          <div class="tinyRedShadowfilter">
+              Players Connected
+          </div>
+      `;
+      sessionStorage.clear();
+      return response.json();
+  })
+  .catch(error => {
+      console.error('There was a problem with the delete_account:', error);
+  });
 
-    document.getElementById("validateDelete").classList.remove("showRectangle");
-        togglePlanet(true);
-        returnToHost();
-        spaceShip.position.set(0, 0, -1293.5);
-        spaceShip.rotation.set(0, 0, 0);
-        
-        setTimeout(() => {
-          toggleLobbyStart(true);
-            // resetOutline();
-            spaceShipInt.visible = true;
-            showPage('loginPage');
-        }, 25);
-    })
+  document.getElementById("validateDelete").classList.remove("showRectangle");
+  togglePlanet(true);
+  returnToHost();
+  spaceShip.position.set(0, 0, -1293.5);
+  spaceShip.rotation.set(0, 0, 0);
 
+  setTimeout(() => {
+      toggleLobbyStart(true);
+      spaceShipInt.visible = true;
+      showPage('loginPage');
+  }, 25);
+});
+
+deleteAccountButton.addEventListener("click", deleteAccount);
+
+function deleteAccount() {
+  // rediriger vers la page d'acceuil
+  // deconnecter tout les guest
+  // delete account dans la db
+  document.getElementById("validateDelete").classList.toggle("showRectangle");
+  deleteBlockingPanel.classList.add('show');
 }
 
 // document.addEventListener('DOMContentLoaded', (event) => {
