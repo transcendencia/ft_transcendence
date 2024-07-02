@@ -49,21 +49,21 @@ export function toggleLobbyStart() {
     lobbyStart = !lobbyStart;
 }
 
-    // LIGHTING
-    const pointLight = new THREE.PointLight(0xffffff, 1)
-    pointLight.castShadow = true;
-    pointLight.position.copy(sun.position);
-    pointLight.scale.set(10, 10, 10);
-    
-    const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
-    pointLight2.castShadow = true;
-    pointLight2.position.set(0,5,-1300);
-    
-    const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
-    spaceShipPointLight.castShadow = true;
-    const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
-    const lightHelper = new THREE.PointLightHelper(pointLight);
-    scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
+// LIGHTING
+const pointLight = new THREE.PointLight(0xffffff, 1)
+pointLight.castShadow = true;
+pointLight.position.copy(sun.position);
+pointLight.scale.set(10, 10, 10);
+
+export const bluelight = new THREE.PointLight(0x0000ff, 1.5)
+bluelight.castShadow = true;
+bluelight.position.set(0,5,-1300);
+
+const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
+spaceShipPointLight.castShadow = true;
+const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
+const lightHelper = new THREE.PointLightHelper(pointLight);
+scene.add(ambientLight, lightHelper, spaceShipPointLight, bluelight);
 
 
 class LobbyVisuals
@@ -287,7 +287,6 @@ export function toggleRSContainerVisibility() {
     if (rsContVisible) {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '-50%';
-
         rsContVisible = false;
     } else {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
@@ -327,8 +326,6 @@ export const outlinePass = new OutlinePass(
     
     export let cameraDirection = new THREE.Vector3();
     camera.getWorldDirection(cameraDirection);
-    
-
     
 
 function planetMovement() {
@@ -389,15 +386,15 @@ export function startAnimation() {
             lobbyStart = true;
             cancelLanding();
             toggleRSContainerVisibility();
+            scene.remove(bluelight);
         });
         anim1.chain(anim2, anim3);
         anim1.start();
     }
-
     
-function createEscapeUserBadge(hostData) {
-    const escapeUserCont = document.getElementById("escapeUserContainer");
-    escapeUserCont.innerHTML = `
+export function createUserBadge(hostData, elementId) {
+    const elem = document.getElementById(elementId);
+    elem.innerHTML = `
     <div class="profilePic">
       <img src="${hostData.profile_info.profile_picture}">
     </div>
@@ -406,7 +403,7 @@ function createEscapeUserBadge(hostData) {
 }
 
 export function toggleEscapeContainerVisibility() {
-    getProfileInfo().then(data => createEscapeUserBadge(data))
+    getProfileInfo().then(data => createUserBadge(data, "escapeUserContainer"))
     .catch(error => console.error('Failed to retrieve profile info:', error));    
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
@@ -528,7 +525,6 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
 // composer.addPass(bloomPass);
 
 function update() {
-    // displayRay();
     if (pauseGame)
         return;
     if (lobbyStart && !landedOnPlanet) 

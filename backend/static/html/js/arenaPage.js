@@ -517,7 +517,6 @@ validatePasswordButton.addEventListener('click', async function() {
         const formData = new FormData();
         formData.append("username", guest.username);
         formData.append("password", password.value);
-    
         try {
             let guestToken = await handleLogin(formData);
             
@@ -645,14 +644,12 @@ let previousUserList = [];
       await RenderAllUsersInList();
     console.log("Checking...");
   }
-  
 
   export async function RenderAllUsersInList() {
     const userListBackground = document.getElementById('userlistArenaPage');
     
     userListBackground.innerHTML = '';
     const users = await get_friends_list();
-
     const sortedNewFriends = users.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
     const sortedNewUserNotFriend = users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
     userTiles.length = 0;

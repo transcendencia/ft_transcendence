@@ -185,9 +185,7 @@ export function getProfileInfo() {
     });
 }
 
-
-export function send_request(username) {
-
+export function send_request(id) {
     const token = sessionStorage.getItem('host_auth_token');
     fetch('send_friend_request/', {
         method: 'POST',
@@ -196,7 +194,7 @@ export function send_request(username) {
             'Authorization': `Token ${token}`,
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({ receiver_name: username })
+        body: JSON.stringify({ receiver_id: id })
     })
     .then(response => {
         if (!response.ok) {
