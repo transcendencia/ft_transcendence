@@ -115,7 +115,7 @@ def return_friends_list(request):
     bot = UserSerializer(User.objects.get(username="bot")).data
     
     # print(received_request_list)
-    # print(sent_request_list)
+    print(friends)  
     return Response({
         'received_request_list': received_request_list, 
         'friends': friends, 

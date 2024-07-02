@@ -23,7 +23,7 @@
 
 
         "RGPDTitle" : "Privacy Policy",
-        "RGPDTexte": "The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. For any reclamation you can go to the CNIL website.",
+        "RGPDText": "The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing is user consent. You can modify your data, delete your profile at any time by going in the planete profile. For any reclamation you can go to the CNIL website.",
         "RGPDCreate": "By making you accept the",
         "RGPDPolicy" : "privacy policy",
         "RGPDBack" : "Back",
@@ -133,7 +133,7 @@
         "invalid":"Contraseña no idéntica",
 
         "RGPDTitle" : "Politica de privacidad",
-        "RGPDTexte" : "La organizacion ft_transcendance solo recoge los datos necesarios para el buen funcionamiento de los torneos y no los comunica a ningún otro organismo. La base legal del tratamiento de datos y el consentimiento de los usuarios. Puede editar sus datos, eliminar su perfil en cualquier momento en el camino en el planeta perfil. Para cualquier consulta puede visitar el sitio web de la CNIL.",
+        "RGPDText" : "La organizacion ft_transcendance solo recoge los datos necesarios para el buen funcionamiento de los torneos y no los comunica a ningún otro organismo. La base legal del tratamiento de datos es el consentimiento de los usuarios. Puede editar sus datos, eliminar su perfil en cualquier momento en la planeta perfil. Para cualquier consulta puede visitar el sitio web de la CNIL.",
         "RGPDCreate": "Al aceptarte a ti mismo la",
         "RGPDPolicy" : "política de confidencialidad",
         "RGPDBack" : "Volver", 
@@ -231,7 +231,7 @@
         "confirmPassword": "confirmer mot de passe",
         "backToLogin": "Retour",
         "RGPDTitle" : "Politique de confidentialite",
-        "RGPDTexte" : "L'organisation ft_transcendance ne collecte que les donnees necessaires au bon fonctionnement des tournois et ne les communique a aucun autre organisme. La base legale du traitement des donnees et le consentement des utilisateurs. Vous pouvez modifier vos donnees, supprimer votre profile a tout moment dans allant dans la planete profile. Pour toute reclamation vous pouvez aller sur le site de la CNIL.",
+        "RGPDText" : "L'organisation ft_transcendance ne collecte que les donnees necessaires au bon fonctionnement des tournois et ne les communique a aucun autre organisme. La base legale du traitement des donnees est le consentement des utilisateurs. Vous pouvez modifier vos donnees, supprimer votre profile a tout moment dans allant dans la planete profile. Pour toute reclamation vous pouvez aller sur le site de la CNIL.",
         "RGPDCreate": "En vous iscrivant vous accepter la",
         "RGPDPolicy": "politique de confidentialite",
         "RGPDBack" : "Retour",

@@ -48,7 +48,8 @@
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
           <div class="littleMsgCont d-flex justify-content-center align-items-center">
-            <div class="newToTheGame">New to the game ?
+            <div class="newToTheGame">
+              <div class="basicText" style="margin-right: 10px;"> New to the game ? </div>
               <div class="actionCont tinyBlueShadowfilter">Sign Up Here</div>
             </div>
           </div>
@@ -98,14 +99,14 @@
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
-      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
+      <div class="titleText" style="margin-top:-8px;transform: scale(1.2); font-size: 20px;" id="enterPassword">
           Password
         <div class="textBar">
           <input id= "passwordSignUpInput" class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
-      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
+      <div class="titleText" style="margin-top:-8px; transform: scale(1.2); font-size: 20px;" id="confirmPassword">
         confirm password
         <div class="textBar">
           <input id= "confirmPasswordSignUpInput" class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
@@ -115,10 +116,10 @@
       <!-- <div class="littleMsgCont">
       </div> -->
       <div>
-        <div id="RGPDCreate" class="newToTheGame" >
-          By making you accept the
+        <div id="RGPDCreate" class="newToTheGame" style="width: 100%; font-size: 20px;">
+          By registering, you accept the
         </div> 
-        <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter">
+        <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter" style="font-size: 25px;">
           privacy policy 
         </div> 
       </div>
@@ -812,7 +813,7 @@
   </div>
   <div class="escapeBG">
     <div class="settings">
-      <div class="languageColumn" id="graphicsText" style="width: 50%; height: 40%;">
+      <div class="languageColumn" id="graphicsText" style="width: 60%; height: 40%;">
             <div class="languageSettings">
             <div class="graphicsIcon" id="graphicsIcon1">Simple</div>
             <div class="graphicsIcon redGlow" id="graphicsIcon2">Classic</div>
@@ -821,7 +822,7 @@
             <div class="separator"></div>
             Graphics
           </div>
-          <div class="languageColumn" id="EscapeLanguageText" style="width: 50%; height: 40%;">
+          <div class="languageColumn" id="EscapeLanguageText" style="width: 55%; height: 40%;">
             <div class="languageSettings">
               <div class="languageIcon" id="es1">
                 <div class="icon" style="background-image: url('../static/html/assets/icons/mexicanAlienWhite.png');" ></div>
@@ -842,9 +843,9 @@
   </div>
     <div class="loggedAs">
       Currently logged as :
-      <div class="userInfoCont">
+      <div id="escapeUserContainer" class="userInfoCont">
         <div class="profilePic">
-          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+          <img id="escapeProfileImg" src="{% static 'html/assets/icons/ES_NU.png' %}">
         </div>
         AtomiK
       </div>
@@ -852,23 +853,19 @@
       <div class="redButton" id="disconnectButton" style="margin-top: -30px;width: 35%; height: 8%;">Disconnect</div>
     </div>
     </div>
-    <!-- RGPD PAGE -->          
   </div>
-  
-  <div class="rgpdPage page invisible" >
-    <div id="RGPDTitle" class="title" style="font-size : 70px;">
-      PRIVACY POLICY
-    </div>
-    <div class="rgpdFrame">
-      <img src="{% static 'game/assets/scoreUI.png' %}" style="transform: rotate(180deg);">
+
+  <!-- RGPD PAGE -->          
+  <div class="rgpdPage page">
       <div class="backgroundRGPDText">
-       <div id="RGPDTexte" class="text-content">
+      <div id="RGPDTitle" class="title" style="font-size : 50px;">
+        PRIVACY POLICY
+      </div>
+       <div id="RGPDText">
         The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. Your data is automatically deleted one year after your last connection. For any reclamation you can go to the CNIL website. 
         </div>
-        <div id="RGPDBack" class="tinyBlueShadowfilter" style="margin-bottom: 20%;     cursor:url('../static/game/assets/cursor/pointer.cur'), pointer;">Back</div>
+        <div id="RGPDBack" class="planetBackButton" style="height: 15%; width: 40%;">Back</div>
       </div>
-      <img src="{% static 'game/assets/scoreUI.png' %}">
-    </div>
   </div>
     
     <!-- GAME STUFF -->

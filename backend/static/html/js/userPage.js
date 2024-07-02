@@ -1,6 +1,6 @@
 import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
 import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks } from './loginPage.js';
-import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo, updateUserStatus } from './userManagement.js';
+import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo, populateProfileInfo, updateUserStatus } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 import { getUserStats, chooseStats } from './stats.js';
 
@@ -32,6 +32,7 @@ let previousFriendList = [];
 
 async function isListsChanged() {
   const newData = await get_friends_list();
+  console.log("je suis dans render friend list", newData);
   
   const sortedNewRequests = newData.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
   const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
@@ -43,7 +44,13 @@ async function isListsChanged() {
 
 export function initUserPlanet() {
   renderFriendList();
-  getProfileInfo();
+  getProfileInfo()
+  .then(data => {
+      populateProfileInfo(data);
+  })
+  .catch(error => {
+      console.error('Failed to retrieve profile info:', error);
+  });
   const searchBar = document.getElementById('searchInput');
   searchBar.value = '';
   clearMatchBlocks();
@@ -324,6 +331,7 @@ function createUserTile(user, type, reqId) {
   if (user.isHost)
     return;
   
+  console.log("statuuuus:", user.status);
   const userTile = document.createElement('div');
   userTile.classList.add('userTile');
   
@@ -367,11 +375,6 @@ function createUserTile(user, type, reqId) {
   userListBackground.appendChild(userTile);
 }
 
-function assignRandomStatus(user) {
-  const statuses = ['Offline', 'Online', 'in_game'];
-  user.status = statuses[Math.floor(Math.random() * statuses.length)];
-}
-
 async function RenderUsersSearched(query) {
   userListBackground.innerHTML = ''; // Clear existing user tiles
 
@@ -405,11 +408,6 @@ async function RenderUsersSearched(query) {
       .filter(user => user.username.toLowerCase().includes(query.toLowerCase()))
       .sort((a, b) => a.username.localeCompare(b.username));
 
-    // Assign random status to each user
-    requestList.forEach(obj => assignRandomStatus(obj.user));
-    friendList.forEach(obj => assignRandomStatus(obj.user));
-    otherList.forEach(user => assignRandomStatus(user));
-
     // Clear and concatenate previous lists for consistent sorting
     previousFriendList = data.received_request_list.concat(data.friends);
 
@@ -439,8 +437,7 @@ export async function renderFriendList() {
         return a.user.username.localeCompare(b.user.username);
     });
     
-    previousFriendList = sortedRequests.concat(sortedFriends);
-    
+    previousFriendList = sortedRequests.concat(sortedFriends);    
     sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'Request', userSendingRq.request_id));
     sortedFriends.forEach(friend => createUserTile(friend.user, 'Friend', friend.request_id));
   }

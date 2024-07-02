@@ -5,8 +5,8 @@ import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleRSContainerVisibility, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
-import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
+import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
+import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfo} from "./userManagement.js";
 import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
 
 function addGlow(elementId, glow) {
@@ -189,7 +189,13 @@ export async function handleLogin(formData) {
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
                     get_friends_list();
-                    getProfileInfo();
+                    getProfileInfo()
+                    .then(data => {
+                        populateProfileInfo(data);
+                    })
+                    .catch(error => {
+                        console.error('Failed to retrieve profile info:', error);
+                    });
                     TranslateAllTexts();
                     getGameInfo();
                     changeGraphics(data.graphic_mode);
@@ -383,9 +389,8 @@ function handleLogout(userId, token) {
         toggleGameStarted();
         resetHTMLelements();
     }
-    togglePause();
-    spaceShip.position.set(0, 0, -1293.5);
     spaceShip.rotation.set(0, 0, 0);
+    spaceShip.position.set(0, 0, -1293.5);
     setTimeout(() => {
         toggleBlurDisplay(true);
         toggleEscapeContainerVisibility();
