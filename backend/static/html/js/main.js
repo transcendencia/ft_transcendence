@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets } from "./planets.js";
+import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
-import {cancelLanding, landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
+import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
+import { getProfileInfo } from "./userManagement.js";
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
@@ -16,7 +17,8 @@ import { gameStarted, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-
+import { updateUserStatus } from "./userManagement.js";
+import { guestLoggedIn } from "./arenaPage.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -43,8 +45,11 @@ const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect rat
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
-export function toggleLobbyStart() {
-    lobbyStart = !lobbyStart;
+export function toggleLobbyStart(state = false) {
+    if (state === true)
+        lobbyStart = false;
+    else
+        lobbyStart = !lobbyStart;
 }
 
     // LIGHTING
@@ -236,22 +241,7 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
     userInfoCont.childNodes[1].textContent = user.username;
 }
 
-import { updateUserStatus } from "./userManagement.js";
-import { guestLoggedIn } from "./arenaPage.js";
-
-function disconnectLoggedGuest(userInfoCont, user, token) {
-    lsCont.removeChild(userInfoCont);
-    updateUserStatus('offline', token);
-    // console.log("before logout:", guestLoggedIn);
-
-    for (let i = 0; i < guestLoggedIn.length; i++) {
-        if (guestLoggedIn[i][0].id === user.id) {
-            guestLoggedIn.splice(i, 1);
-        }
-    }
-
-    // console.log("after logout:", guestLoggedIn);
-}
+import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
 
 export function displayUsersLogged(user, token) {
     
@@ -366,6 +356,7 @@ function planetMovement() {
             planet.orbitMesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
+        sun.rotation.y += 0.001;
     });
 }
 
@@ -407,8 +398,20 @@ export function startAnimation() {
         anim1.start();
     }
 
+    
+function createEscapeUserBadge(hostData) {
+    const escapeUserCont = document.getElementById("escapeUserContainer");
+    escapeUserCont.innerHTML = `
+    <div class="profilePic">
+      <img src="${hostData.profile_info.profile_picture}">
+    </div>
+    ${hostData.profile_info.username}
+  `;
+}
+
 export function toggleEscapeContainerVisibility() {
-    togglePause();
+    getProfileInfo().then(data => createEscapeUserBadge(data))
+    .catch(error => console.error('Failed to retrieve profile info:', error));    
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
@@ -418,29 +421,6 @@ export function toggleEscapeContainerVisibility() {
         structure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
     }
 }
-
-/*On va chercher la référence entre le html et le fichier js*/
-const rgpdStructure = document.getElementById("rgpdstructure");
-const rgpdBG = document.getElementById("rgpdBG");
-//recuperer ton bouton et apres tu add eventlistener
-//button.addEventListener("click", (event) => {})
-
-let rgpdDisplayed = false;
-
-function toggleRGPDContainerVisibility() {
-    if (!rgpdDisplayed) {
-        rgpdStructure.style.animation = 'headerDown 0.5s ease forwards'
-        rgpdBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
-        rgpdDisplayed = true;
-    }
-    else {
-        rgpdBG.style.animation = 'rollBG 0.2s ease backwards'
-        rgpdStructure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
-        rgpdDisplayed = false;
-    }
-}
-
-
 let pauseGame = false;
 
 export function togglePause() {
@@ -448,7 +428,28 @@ export function togglePause() {
     pauseGame ? pauseGame = false : pauseGame = true;
 }
 
-let firstPauseTriggered = false;
+const blockingPanel = document.getElementById('blockingPanel');
+const pwWindow = document.querySelector(".enterPasswordWindow");
+const deleteWindow = document.getElementById("validateDelete");
+
+// handle window resize
+window.addEventListener('resize', () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    composer.setSize(width, height);
+    composer.setPixelRatio(window.devicePixelRatio);
+    composer.render();
+    minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
+    minimapCamera.left = -minimapWidth * 8;
+    minimapCamera.right = minimapWidth * 8;
+    minimapCamera.top = minimapHeight * 8;
+    minimapCamera.bottom = -minimapHeight * 8;
+    minimapCamera.updateProjectionMatrix();
+    composer.render();
+});
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
@@ -456,56 +457,48 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'm')
         test_back();
     if (event.key === 'Enter') {
-        if (window.location.hash === "#signUpPage")
+        if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();
         const pwWindow = document.querySelector(".enterPasswordWindow");
         if (window.getComputedStyle(pwWindow).display === 'flex')
         document.getElementById("arenaLogInButton").click()
     }
-    if (event.target.tagName === 'INPUT')
-        return;
-    if (event.key === 'e' && !lobbyStart) {
-        // const token = localStorage.getItem('host_auth_token');
-        // console.log(token);
-        // if (token) {
-            showPage('none');
-            startAnimation();
-            // displayUsersLogged();
-        // }
-        // localStorage.clear();
-    }
-    if (event.key === 'e' && inRange && !gameStarted)
-        togglePlanet();
     if (event.key === 'Escape') {
         if (gameState.inGame)
         {
             toggleEscapeContainerVisibility();
+            togglePause();
             toggleBlurDisplay(false);
             pauseGame ? pauseGame = false : pauseGame = true;
             return;
         }
         if (landedOnPlanet) {
             togglePlanet();
-            toggleEscapeContainerVisibility();
-            blockingPanel.style.visibility = 'hidden';
+            blockingPanel.classList.remove('show');
+            pwWindow.classList.remove('showRectangle')
+            deleteWindow.classList.remove('showRectangle')
             showPage('none');
-            togglePause();
             returnToHost();
             return;
         }
-        else if (inCockpit) {
+        if (inCockpit) {
             moveCameraToBackOfCockpit();
             return;
         }
         if (lobbyStart) {
-            console.log("coucou");
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();
+            togglePause();
             resetOutlineAndText();
+            togglePause();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
     }
+    if (event.target.tagName === 'INPUT')
+        return;
+    if (event.key === 'e' && inRange && !gameStarted)
+        togglePlanet();
 });
 
 function test_back() {
@@ -526,10 +519,10 @@ let targetBlur = 0;
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);
 const verticalBlur = new ShaderPass(VerticalBlurShader);
-horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-horizontalBlur.renderToScreen = true; // Render to a texture
-verticalBlur.renderToScreen = true; // Render to the screen
+horizontalBlur.uniforms['tDiffuse'].value = null;
+verticalBlur.uniforms['tDiffuse'].value = null;
+horizontalBlur.renderToScreen = true;
+verticalBlur.renderToScreen = true;
 horizontalBlur.uniforms.h.value = targetBlur;
 verticalBlur.uniforms.v.value = targetBlur;
 composer.addPass(horizontalBlur);
@@ -587,6 +580,7 @@ function animate()
     if (gameStarted)
         return;
     TWEEN.update();
+    atmosphere.material.uniforms.time.value += 0.01;
     if (!landedOnPlanet)
         renderMinimap();
     update();

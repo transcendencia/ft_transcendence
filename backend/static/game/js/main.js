@@ -434,34 +434,42 @@ let doubleKeyPress = {
 };
 
 // Event listener for key presses and releases
-
 document.addEventListener('keydown', (event) => {
-    if (keyDown.hasOwnProperty(event.key)) {
-        if (gameState != undefined && gameState.arena != undefined && gameState.arena.bot != undefined && gameState.arena.bot.isPlaying)
-        {
-            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown')
+    let key = event.key;
+    if (key.length === 1) { // If it's a single character, convert to lowercase
+        key = key.toLowerCase();
+    }
+
+    if (keyDown.hasOwnProperty(key)) {
+        if (gameState != undefined && gameState.arena != undefined && gameState.arena.bot != undefined && gameState.arena.bot.isPlaying) {
+            if (key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowUp' || key === 'ArrowDown')
                 return;
         }
-        keyDown[event.key] = true;
+        keyDown[key] = true;
 
-        if (doubleKeyPress.hasOwnProperty(event.key)) {
-            if (lastKeyPressTime[event.key] && Date.now() - lastKeyPressTime[event.key] < 200 && Date.now() - lastKeyUpTime[event.key] < 200) 
-                doubleKeyPress[event.key] = true;
+        if (doubleKeyPress.hasOwnProperty(key)) {
+            if (lastKeyPressTime[key] && Date.now() - lastKeyPressTime[key] < 200 && Date.now() - lastKeyUpTime[key] < 200) 
+                doubleKeyPress[key] = true;
             else
-                doubleKeyPress[event.key] = false;
-            lastKeyPressTime[event.key] = Date.now();
+                doubleKeyPress[key] = false;
+            lastKeyPressTime[key] = Date.now();
         }
     }
 });
 
-
 document.addEventListener('keyup', (event) => {
-    if (keyDown.hasOwnProperty(event.key)) {
-        keyDown[event.key] = false;
-        lastKeyUpTime[event.key] = Date.now();
-        doubleKeyPress[event.key] = false;
+    let key = event.key;
+    if (key.length === 1) { // If it's a single character, convert to lowercase
+        key = key.toLowerCase();
+    }
+
+    if (keyDown.hasOwnProperty(key)) {
+        keyDown[key] = false;
+        lastKeyUpTime[key] = Date.now();
+        doubleKeyPress[key] = false;
     }
 });
+
 
 const scorePoints = document.getElementsByClassName("parallelogram");
 const blueBar = document.getElementsByClassName("bluebar");
@@ -503,6 +511,69 @@ function cameraDebug()
     console.log("camera.rotation.x =  " + camera.rotation.x);
     console.log("camera.rotation.y =  " + camera.rotation.y);
     console.log("camera.rotation.z =  " + camera.rotation.z);
+}
+
+
+function switchControlsVisibility(mode)
+{
+    const rightControls = document.getElementById('rightControls');
+    const leftControls = document.getElementById('leftControls');
+    const topControls = document.getElementById('topControls');
+    const rightRight = document.getElementById('rightRight');
+    const rightLeft = document.getElementById('rightLeft');
+    const rightPower = document.getElementById('rightPower');
+    const leftRight = document.getElementById('leftRight');
+    const leftLeft = document.getElementById('leftLeft');
+    const leftPower = document.getElementById('leftPower');
+
+    if (mode === 'top' || mode === 'topBot')
+    {
+        leftRight.src = 'static/game/assets/keys/key_s.png'
+        leftLeft.src = 'static/game/assets/keys/key_w.png'
+        leftPower.src = 'static/game/assets/keys/key_d.png'
+        rightRight.src = 'static/game/assets/keys/up_key.png'
+        rightLeft.src = 'static/game/assets/keys/down_key.png'
+        rightPower.src = 'static/game/assets/keys/left_key.png'
+    }
+    else
+    {
+        leftRight.src = 'static/game/assets/keys/key_d.png'
+        leftLeft.src = 'static/game/assets/keys/key_a.png'
+        leftPower.src = 'static/game/assets/keys/key_w.png'
+        rightRight.src = 'static/game/assets/keys/right_key.png'
+        rightLeft.src = 'static/game/assets/keys/left_key.png'
+        rightPower.src = 'static/game/assets/keys/up_key.png'
+    }
+    if (mode === 'split')
+    {
+        rightControls.style.opacity = 0.7;
+        leftControls.style.opacity = 0.7;
+        topControls.style.opacity = 0.0;
+    }
+    else if (mode === 'single')
+    {
+        leftControls.style.opacity = 0.7;
+        rightControls.style.opacity = 0.0;
+        topControls.style.opacity = 0.0;
+    }
+    else if (mode === 'top')
+    {
+        leftControls.style.opacity = 0.7;
+        rightControls.style.opacity = 0.7;
+        topControls.style.opacity = 0.7;
+    }
+    else if (mode === 'topBot')
+    {
+        leftControls.style.opacity = 0.7;
+        rightControls.style.opacity = 0.0;
+        topControls.style.opacity = 0.7;
+    }
+    else if (mode === 'hidden')
+    {
+        leftControls.style.opacity = 0.0;
+        rightControls.style.opacity = 0.0;
+        topControls.style.opacity = 0.0;
+    }
 }
 
 //ARENA CLASS
@@ -838,15 +909,25 @@ class Arena extends THREE.Mesh {
                 this.paddleRight.changePaddleControls(false);
                 cameraLeft.lookAt(this.position);
                 if (!this.game.user2.isBot)
+                {
                     swapToSplitScreen();
+                    switchControlsVisibility('split');
+                }
                 else
+                {
                     this.setSinglePlayerFov();
+                    switchControlsVisibility('single');
+                }
                 this.setSplitCameraPositions(camera, cameraLeft);
             }
             else
             {
                 thirdPlayerUI[0].style.opacity = 1;
                 swapToFullScreen();
+                if (this.game.user2.isBot)
+                    switchControlsVisibility('topBot');
+                else
+                    switchControlsVisibility('top');
                 this.setTopView(camera, false);
                 this.paddleLeft.changePaddleControls(true);
                 this.paddleRight.changePaddleControls(true);
@@ -1056,6 +1137,7 @@ class Arena extends THREE.Mesh {
         let duration = 1150;
 
         this.thirdPlayer.deactivateThirdPlayer();
+        switchControlsVisibility('hidden');
         loserPaddle.light.power = 0;
         winnerPaddle.light.power = 0;
         this.ball.light.power = 0;
@@ -3872,7 +3954,6 @@ function animate()
         TWEEN.update();
         if (gameState.inGame && !gameState.paused)
         {
-            console.log("playing");
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
             gameState.arena.thirdPlayer.monitorProjectilesMovement();

@@ -15,7 +15,7 @@ export function moveCameraToFrontOfCockpit() {1
         .to(backPosition, duration) // Set the target position and duration
         .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
         .start(); // Start the animation
-    showPage('signUpPage');
+    showPage('signUpPage', 'signUp');
     emptyLoginField();
     inCockpit = true;
 }
@@ -42,6 +42,7 @@ backToLoginButton.addEventListener('click', function() {
 
 var submitChangeButton = document.getElementById("submitSignUp");
 submitChangeButton.addEventListener("click", handleSignup);
+const RGPDPage = document.querySelector(".rgpdPage");
 // Add event listener to the sign-up form
 // const signupForm = document.getElementById('signupForm');
 // signupForm.addEventListener('submit', handleSignup);
@@ -49,20 +50,20 @@ submitChangeButton.addEventListener("click", handleSignup);
 //Add event listner to display RGPG page
 const RGPDPolicy = document.getElementById('RGPDPolicy');
 RGPDPolicy.addEventListener('click', function() {
-    console.log("on capte dans signup");
+    RGPDPage.classList.add("perspectived");
     showPage('rgpdPage');
 });
+
 
 //Add event listner to display sign-up page
 const RGPDBack = document.getElementById('RGPDBack');
 RGPDBack.addEventListener('click', function() {
     if (landedOnPlanet) {
-        blockingPanel.style.visibility = 'hidden';
+        blockingPanel.classList.remove('show');
+        blockingPanel.classList.remove('show');
         showPage('none');
     }
-        
-    else
-        showPage('signUpPage');
+    else {showPage('signUpPage');}
 });
 
 // Handle form submission

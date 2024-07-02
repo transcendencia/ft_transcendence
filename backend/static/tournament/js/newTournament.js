@@ -3,7 +3,7 @@ import { gameState } from "../../game/js/main.js";
 import { createUserInfoObject, displayRemovePlayerVisual, resetToPlusButton, resetUserInfoVisual, createUserTile, switchToGame } from "../../html/js/arenaPage.js";
 import { blue, purple, grey, lightGrey } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
-import { getProfileInfo, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
+import { getProfileInfo, populateProfileInfo, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
 
 
 export let gamemodeCounterTournament = 0;
@@ -132,7 +132,13 @@ export function resetTournament() {
   round = 1;
   thirdPlayerMode = false;
   plusClickedTournament = false;
-  getProfileInfo();
+  getProfileInfo()
+  .then(data => {
+      populateProfileInfo(data);
+  })
+  .catch(error => {
+      console.error('Failed to retrieve profile info:', error);
+  });
   resetPlusButton();
   resetBracket();
   plusButtons = document.querySelectorAll(".plusPlayerTournament");
@@ -270,7 +276,7 @@ function addEventListenerToTilesTournament() {
                   return;
               }
               pwWindow.classList.toggle("showRectangle");
-              blockingPanel.style.visibility = 'visible';
+              blockingPanel.classList.add('show');
               tempTileIndexTournament = i;
               const newObj = createUserInfoObject(tile, i);
               pwWindow.replaceChild(newObj.userInfoCont, pwWindow.querySelector('.userInfoCont'));
@@ -286,7 +292,7 @@ function addEventListenerToTilesTournament() {
       const textCont = tile.HTMLelement.querySelector(".textContainer");
 
       pwWindow.classList.remove("showRectangle");
-      blockingPanel.style.visibility = 'hidden';
+      blockingPanel.classList.remove('show');
       profileAddedToTournament[i] = true;
       playerNb++;
       const newObj = createUserInfoObject(tile, i);
@@ -323,7 +329,7 @@ function addEventListenerToTilesTournament() {
 
   backPasswordButton.addEventListener('click', function() {
     pwWindow.classList.remove("showRectangle");
-    blockingPanel.style.visibility = 'hidden';
+    blockingPanel.classList.remove('show');
   });
 
   const tournamentPlayer = [];
