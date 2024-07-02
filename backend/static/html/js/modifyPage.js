@@ -190,18 +190,21 @@ function downloadFile() {
     },
   })
   .then(response => {
+    console.log(response.ok);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.blob();
+    return response.blob().then(blob => ({ blob, response }));
   })
-  .then(blob => {
+  .then(({ blob, response }) => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    // Utilisez le nom de fichier fourni par le serveur s'il est disponible
-    const filename = response.headers.get('Content-Disposition')?.split('filename=')[1]?.replace(/"/g, '') || 'user_data.txt';
+    // Use the filename provided by the server if available
+    const contentDisposition = response.headers.get('Content-Disposition');
+    console.log("file name = " + contentDisposition);
+    const filename = contentDisposition?.split('filename=')[1]?.replace(/"/g, '') || 'user_data.txt';
     a.download = filename;
     document.body.appendChild(a);
     a.click();
