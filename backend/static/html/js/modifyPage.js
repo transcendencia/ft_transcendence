@@ -1,7 +1,7 @@
 import { togglePanelDisplay, togglePlanet, landedOnPlanet } from './enterPlanet.js';
 import { returnToHost } from './userPage.js';
 import { resetOutline } from './planetIntersection.js';
-import { toggleBlurDisplay, toggleLobbyStart } from './main.js';
+import { toggleBlurDisplay, toggleLobbyStart, toggleRSContainerVisibility } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie, resetModifyPageField } from './loginPage.js';
@@ -67,7 +67,6 @@ function deleteAccount() {
     // rediriger vers la page d'acceuil
     // deconnecter tout les guest
     // delete account dans la db
-    console.log("je suis dans delete account");
     document.getElementById("validateDelete").classList.toggle("showRectangle");
     deleteBlockingPanel.classList.add('show');
 
@@ -77,34 +76,37 @@ function deleteAccount() {
     })
 
     document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
-		  const token = sessionStorage.getItem('host_auth_token');
-		  fetch('delete_account/', {
-		    method: 'POST',
-		    headers: {
-			  'Authorization': `Token ${token}`,
-			  'X-CRSFToken': getCookie('crsftoken')
-		    },
-		  })
-		  .then(response => {
-		    deleteBlockingPanel.classList.remove('show');
-		    return response.json();
-		  })
-		  .catch(error => {
-		    console.error('There was a problem with the delete_account:', error);
-		});
-    // resetting ui to loginPage
-    document.getElementById("validateDelete").classList.toggle("showRectangle");
-    togglePlanet();
-    returnToHost();
-    spaceShip.position.set(0, 0, -1293.5);
-    spaceShip.rotation.set(0, 0, 0);
+        const token = sessionStorage.getItem('host_auth_token');
+        document.getElementById("validateDelete").classList.remove("showRectangle");
 
-    setTimeout(() => {
-        resetOutline();
-        spaceShipInt.visible = true;
-        showPage('loginPage');
-        toggleLobbyStart();
-    }, 25);
+        fetch('delete_account/', {
+          method: 'POST',
+          headers: {
+          'Authorization': `Token ${token}`,
+          'X-CRSFToken': getCookie('crsftoken')
+          },
+        })
+        .then(response => {
+          deleteBlockingPanel.classList.remove('show');
+          sessionStorage.setItem("hostLoggedIn", 'false');
+          return response.json();
+        })
+        .catch(error => {
+          console.error('There was a problem with the delete_account:', error);
+        });
+        // resetting ui to loginPage
+        document.getElementById("validateDelete").classList.remove("showRectangle");
+        togglePlanet(true);
+        returnToHost();
+        spaceShip.position.set(0, 0, -1293.5);
+        spaceShip.rotation.set(0, 0, 0);
+        
+        setTimeout(() => {
+          toggleLobbyStart(true);
+            // resetOutline();
+            spaceShipInt.visible = true;
+            showPage('loginPage');
+        }, 25);
     })
 
 }

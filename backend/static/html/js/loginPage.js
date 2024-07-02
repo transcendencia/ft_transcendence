@@ -177,8 +177,6 @@ export async function handleLogin(formData) {
             let guest_token = null;
             console.log(data.status);
             if (data.status === "succes") {
-                console.log("hostLoggedIn", hostLoggedIn);
-
                 if (hostLoggedIn === 'false') {
                     //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
 
