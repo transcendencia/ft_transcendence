@@ -175,8 +175,10 @@ export async function handleLogin(formData) {
         .then(response => response.json())
         .then(data => {
             let guest_token = null;
+            console.log("login status", data.status);
             if (data.status === "succes") {
 
+                console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
                     //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
 
@@ -393,11 +395,15 @@ function handleLogout(userId, token) {
 };
 
 window.addEventListener('beforeunload', function (event) {
-    // event.preventDefault();
     const token = sessionStorage.getItem('host_auth_token');
     if (token)
         handleLogout(sessionStorage.getItem('host_id'), token);
 });
+
+// window.addEventListener('beforeunload', function () {
+//     if (sessionStorage.getItem('host_auth_token')) 
+//         handleLogout(sessionStorage.getItem('host_id'), token);
+// });
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';
@@ -409,11 +415,14 @@ export function resetModifyPageField() {
     // Pas vider les username et le alias mais le mettre a la derniere valeur
     // document.getElementById('changeUsernameInput').value = '';
     // document.getElementById('changeAliasInput').value = '';
+	console.log("resetModifyPageField");
+    getProfileInfo();
     document.getElementById('changePasswordInput').value = '';
     document.getElementById('changeConfirmPasswordInput').value = '';
     document.getElementById('changeInfoMessage').innerText = '';
     document.getElementById('profile-pic').value = '';
     document.getElementById('changeInfoMessage').innerText = '';
+    document.getElementById('LinkPicture').innerText = '';
     const toggleSwitch = document.getElementById('toggleSwitch');
     toggleSwitch.classList.remove('active');
     //vider input nom de la photo
