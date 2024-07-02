@@ -12,11 +12,6 @@ class DoughnutGraph {
 	  this.position = 'bottom';
 	  if (title === 'Modes played' || title === 'Maps played')
 		cutoutPercentage = '0%';
-	  if (title === 'Win%')
-		{
-			if (this.dataStats[0] + this.dataStats[1] === 0)
-				this.dataStats = [0, 0];
-		}
 	  this.data = {
 		labels: ['Label 1', 'Label 2'],
 		datasets: [{
@@ -50,7 +45,7 @@ class DoughnutGraph {
 		  else if (title === 'Modes played' || title === 'Maps played')
 			ctx.fillText('', left + width / 2, top + height / 2);
 		  else
-		  	ctx.fillText(this.dataStats[0] + '%', left + width / 2, top + height / 2);
+		  	ctx.fillText(this.dataStats[0] / (this.dataStats[0] + this.dataStats[1]) * 100 + '%', left + width / 2, top + height / 2);
 		}
 	  };
   
@@ -302,15 +297,14 @@ export function getUserStats(userId) {
   .then(data => {
     mapChart.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
 	modeChart.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
-    winLostChart.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);
+    winLostChart.updateData([data.nbrWin, data.nbrLose], ['Win', 'Lost']);
 	accuracy.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
     mapChart2.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
 	modeChart2.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
-    winLostChart2.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);
+    winLostChart2.updateData([data.nbrWin, data.nbrLose], ['Win', 'Lost']);
 	accuracy2.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
 	updateStats3(data);
 	updateBasicStats(data);
-	console.log(data);
   })
   .catch(error => {
     console.error('Error fetching user stats:', error);
