@@ -5,7 +5,7 @@ import { toggleBlurDisplay, toggleLobbyStart } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie, resetModifyPageField } from './loginPage.js';
-import { getProfileInfo } from './userManagement.js';
+import { getProfileInfo, populateProfileInfo } from './userManagement.js';
 
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
@@ -37,9 +37,14 @@ function handleChangeInfoForm(event) {
   .then(data => {
     var changeInfoMessage = document.querySelector('.changeInfoMessage');
     if (data.status === "succes")
-      getProfileInfo();
-    else 
-      changeInfoMessage.classList.toggle("errorMessage");
+      getProfileInfo()
+        .then(data => {
+            populateProfileInfo(data);
+        })
+        .catch(error => {
+            console.error('Failed to retrieve profile info:', error);
+        });
+    else changeInfoMessage.classList.toggle("errorMessage");
     document.getElementById('changeInfoMessage').innerText = data.message;
     // document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
   })
@@ -65,11 +70,11 @@ function deleteAccount() {
     // delete account dans la db
     console.log("je suis dans delete account");
     document.getElementById("validateDelete").classList.toggle("showRectangle");
-    blockingPanel.style.visibility = 'hidden';
+    blockingPanel.classList.remove('show');
 
     document.getElementById('deleteAccountCancel').addEventListener("click", function() {
 		  document.getElementById("validateDelete").classList.toggle("showRectangle");
-		  blockingPanel.style.visibility = 'hidden';
+		  blockingPanel.classList.remove('show');
     })
 
     document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
@@ -82,7 +87,7 @@ function deleteAccount() {
 		    },
 		  })
 		  .then(response => {
-		    blockingPanel.style.visibility = 'hidden';
+		    blockingPanel.classList.remove('show');
 		    return response.json();
 		  })
 		  .catch(error => {
@@ -145,9 +150,12 @@ export function getRandomUsername() {
   });
 };
 
+const RGPDPage = document.querySelector(".rgpdPage");
+
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
 RGPDPolicy.addEventListener('click', function() {
-  blockingPanel.style.visibility = 'visible';
+  blockingPanel.classList.add('show');
+  RGPDPage.classList.remove("perspectived");
   showPage('rgpdPage');
 });
 
@@ -168,11 +176,10 @@ function backInfosDisplay() {
 }
 
 document.addEventListener('keydown', (event) => {
-  if (event.key == 'Escape') {
-      if (isInfosShow == true)
-      {
-        isInfosShow = false;
-        document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
-      }
+  if (event.key !== 'Escape')
+    return;
+    if (isInfosShow == true) {
+      isInfosShow = false;
+      document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
     }
 });

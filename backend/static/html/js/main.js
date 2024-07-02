@@ -3,8 +3,9 @@ import { showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
 import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
-import {cancelLanding, landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
+import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
+import { getProfileInfo } from "./userManagement.js";
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
@@ -237,21 +238,7 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
     userInfoCont.childNodes[1].textContent = user.username;
 }
 
-
-
-function disconnectLoggedGuest(userInfoCont, user, token) {
-    lsCont.removeChild(userInfoCont);
-    updateUserStatus('offline', token);
-    // console.log("before logout:", guestLoggedIn);
-
-    for (let i = 0; i < guestLoggedIn.length; i++) {
-        if (guestLoggedIn[i][0].id === user.id) {
-            guestLoggedIn.splice(i, 1);
-        }
-    }
-
-    // console.log("after logout:", guestLoggedIn);
-}
+import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
 
 export function displayUsersLogged(user, token) {
     
@@ -407,8 +394,20 @@ export function startAnimation() {
         anim1.start();
     }
 
+    
+function createEscapeUserBadge(hostData) {
+    const escapeUserCont = document.getElementById("escapeUserContainer");
+    escapeUserCont.innerHTML = `
+    <div class="profilePic">
+      <img src="${hostData.profile_info.profile_picture}">
+    </div>
+    ${hostData.profile_info.username}
+  `;
+}
+
 export function toggleEscapeContainerVisibility() {
-    togglePause();
+    getProfileInfo().then(data => createEscapeUserBadge(data))
+    .catch(error => console.error('Failed to retrieve profile info:', error));    
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
@@ -418,29 +417,6 @@ export function toggleEscapeContainerVisibility() {
         structure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
     }
 }
-
-/*On va chercher la référence entre le html et le fichier js*/
-const rgpdStructure = document.getElementById("rgpdstructure");
-const rgpdBG = document.getElementById("rgpdBG");
-//recuperer ton bouton et apres tu add eventlistener
-//button.addEventListener("click", (event) => {})
-
-let rgpdDisplayed = false;
-
-function toggleRGPDContainerVisibility() {
-    if (!rgpdDisplayed) {
-        rgpdStructure.style.animation = 'headerDown 0.5s ease forwards'
-        rgpdBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
-        rgpdDisplayed = true;
-    }
-    else {
-        rgpdBG.style.animation = 'rollBG 0.2s ease backwards'
-        rgpdStructure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
-        rgpdDisplayed = false;
-    }
-}
-
-
 let pauseGame = false;
 
 export function togglePause() {
@@ -448,7 +424,9 @@ export function togglePause() {
     pauseGame ? pauseGame = false : pauseGame = true;
 }
 
-let firstPauseTriggered = false;
+const blockingPanel = document.getElementById('blockingPanel');
+const pwWindow = document.querySelector(".enterPasswordWindow");
+const deleteWindow = document.getElementById("validateDelete");
 
 // handle window resize
 window.addEventListener('resize', () => {
@@ -473,54 +451,45 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
     if (event.key === 'Enter') {
-        if (window.location.hash === "#signUpPage")
+        if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();
     }
-    if (event.target.tagName === 'INPUT')
-        return;
-    if (event.key === 'e' && !lobbyStart) {
-        // const token = localStorage.getItem('host_auth_token');
-        // console.log(token);
-        // if (token) {
-            showPage('none');
-            startAnimation();
-            // displayUsersLogged();
-        // }
-        // localStorage.clear();
-    }
-    if (event.key === 'e' && inRange && !gameStarted)
-        togglePlanet();
     if (event.key === 'Escape') {
         if (gameState.inGame)
         {
             toggleEscapeContainerVisibility();
+            togglePause();
             toggleBlurDisplay(false);
             pauseGame ? pauseGame = false : pauseGame = true;
             return;
         }
         if (landedOnPlanet) {
             togglePlanet();
-            toggleEscapeContainerVisibility();
-            blockingPanel.style.visibility = 'hidden';
+            blockingPanel.classList.remove('show');
+            pwWindow.classList.remove('showRectangle')
+            deleteWindow.classList.remove('showRectangle')
             showPage('none');
-            togglePause();
             returnToHost();
             return;
         }
-        else if (inCockpit) {
+        if (inCockpit) {
             moveCameraToBackOfCockpit();
             return;
         }
         if (lobbyStart) {
-            console.log("coucou");
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();
+            togglePause();
             resetOutlineAndText();
             togglePause();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
     }
+    if (event.target.tagName === 'INPUT')
+        return;
+    if (event.key === 'e' && inRange && !gameStarted)
+        togglePlanet();
 });
 
 let targetBlur = 0;
