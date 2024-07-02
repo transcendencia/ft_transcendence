@@ -23,19 +23,10 @@
     transform: perspective(800px) rotateX(-53deg) rotateY(0deg) scale(1);
 }
 
-.rgpdFrame {
-    height: 80%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 .backgroundRGPDText {
     padding: 20px;
     height: 85%;
-    width:  50%;
+    width: 40%;
     border-radius: 12px;
     background-color: rgba(0, 0, 255, 0.5);    
     color: rgb(255, 255, 255);
@@ -49,6 +40,8 @@
     border: 4px solid #3777ff;
     text-shadow: 0 0 2px black;
     z-index: 5;
+    position: relative; /* Ensure parent is positioned */
+    overflow: hidden; /* Hide overflow for pseudo-elements */
 }
 
 .rgpdFrame img {

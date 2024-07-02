@@ -5,6 +5,7 @@ import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
+import { getProfileInfo } from "./userManagement.js";
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
@@ -392,8 +393,20 @@ export function startAnimation() {
         anim1.start();
     }
 
+    
+function createEscapeUserBadge(hostData) {
+    const escapeUserCont = document.getElementById("escapeUserContainer");
+    escapeUserCont.innerHTML = `
+    <div class="profilePic">
+      <img src="${hostData.profile_info.profile_picture}">
+    </div>
+    ${hostData.profile_info.username}
+  `;
+}
+
 export function toggleEscapeContainerVisibility() {
-    togglePause();
+    getProfileInfo().then(data => createEscapeUserBadge(data))
+    .catch(error => console.error('Failed to retrieve profile info:', error));    
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
@@ -403,29 +416,6 @@ export function toggleEscapeContainerVisibility() {
         structure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
     }
 }
-
-/*On va chercher la référence entre le html et le fichier js*/
-const rgpdStructure = document.getElementById("rgpdstructure");
-const rgpdBG = document.getElementById("rgpdBG");
-//recuperer ton bouton et apres tu add eventlistener
-//button.addEventListener("click", (event) => {})
-
-let rgpdDisplayed = false;
-
-function toggleRGPDContainerVisibility() {
-    if (!rgpdDisplayed) {
-        rgpdStructure.style.animation = 'headerDown 0.5s ease forwards'
-        rgpdBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
-        rgpdDisplayed = true;
-    }
-    else {
-        rgpdBG.style.animation = 'rollBG 0.2s ease backwards'
-        rgpdStructure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
-        rgpdDisplayed = false;
-    }
-}
-
-
 let pauseGame = false;
 
 export function togglePause() {
@@ -433,11 +423,9 @@ export function togglePause() {
     pauseGame ? pauseGame = false : pauseGame = true;
 }
 
-let firstPauseTriggered = false;
 const blockingPanel = document.getElementById('blockingPanel');
 const pwWindow = document.querySelector(".enterPasswordWindow");
 const deleteWindow = document.getElementById("validateDelete");
-
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
@@ -450,6 +438,7 @@ document.addEventListener('keydown', (event) => {
         if (gameState.inGame)
         {
             toggleEscapeContainerVisibility();
+            togglePause();
             toggleBlurDisplay(false);
             pauseGame ? pauseGame = false : pauseGame = true;
             return;
@@ -471,6 +460,7 @@ document.addEventListener('keydown', (event) => {
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();
+            togglePause();
             resetOutlineAndText();
             pauseGame ? pauseGame = false : pauseGame = true;
         }

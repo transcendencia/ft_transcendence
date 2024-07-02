@@ -5,7 +5,7 @@ import { toggleBlurDisplay, toggleLobbyStart } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie, resetModifyPageField } from './loginPage.js';
-import { getProfileInfo } from './userManagement.js';
+import { getProfileInfo, populateProfileInfo } from './userManagement.js';
 
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
@@ -37,9 +37,14 @@ function handleChangeInfoForm(event) {
   .then(data => {
     var changeInfoMessage = document.querySelector('.changeInfoMessage');
     if (data.status === "succes")
-      getProfileInfo();
-    else 
-      changeInfoMessage.classList.toggle("errorMessage");
+      getProfileInfo()
+        .then(data => {
+            populateProfileInfo(data);
+        })
+        .catch(error => {
+            console.error('Failed to retrieve profile info:', error);
+        });
+    else changeInfoMessage.classList.toggle("errorMessage");
     document.getElementById('changeInfoMessage').innerText = data.message;
     // document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
   })
