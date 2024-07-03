@@ -195,3 +195,44 @@ document.addEventListener('keydown', (event) => {
       document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
     }
 });
+
+const downloadButton = document.getElementById("downloadButton");
+downloadButton.addEventListener("click", downloadFile);
+function downloadFile() {
+  console.log("Initiating file download");
+  const token = sessionStorage.getItem('host_auth_token');
+  fetch('generateDataFile/', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Token ${token}`,
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+  })
+  .then(response => {
+    console.log(response.ok);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.blob().then(blob => ({ blob, response }));
+  })
+  .then(({ blob, response }) => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    // Use the filename provided by the server if available
+    const contentDisposition = response.headers.get('Content-Disposition');
+    console.log("file name = " + contentDisposition);
+    const filename = contentDisposition?.split('filename=')[1]?.replace(/"/g, '') || 'user_data.txt';
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    console.log("File download initiated");
+  })
+  .catch(error => {
+    console.error('Error during file download:', error);
+    alert('Une erreur est survenue lors du téléchargement du fichier. Veuillez réessayer.');
+  });
+}
