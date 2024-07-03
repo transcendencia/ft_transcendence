@@ -186,16 +186,18 @@
     display: none;
     background-color: #000f61;
     border: 4px solid #3777ff;
-    border-radius: 5px;
+    border-radius: 15px;
     align-items: center;
     justify-content: space-evenly;
     flex-direction: column;
-    height: 35%;
-    width: 60%;
+    height: 15%;
+    width: 30%;
+    top: 10%;
+    left: 65%;
     overflow: hidden;
     flex-shrink: 0;
     position: absolute;
-    z-index: 9999;
+    z-index: 9;
 }
 
 .validateDeleteText {
@@ -307,4 +309,8 @@
 
 .info-icon:hover {
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
+.info-icon:hover + .anonymousInfos {
+    display: flex;
 }

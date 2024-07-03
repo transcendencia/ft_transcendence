@@ -108,7 +108,7 @@
         "deleteAccountCancel": "No",
         "RGPDPolicyInUserPage": "Privacy policy",
         "infoBack" : "Back",
-        "textAnonymous": "When you activate anonymous mode you have a randon username and default profil picture",
+        "textAnonymous": "When activated, assigns a random username and a default profil picture",
         "successfulModifyInfo": "Info changed"
     },
     "es": {
