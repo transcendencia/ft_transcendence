@@ -186,6 +186,7 @@ export function getProfileInfo() {
 }
 
 export function send_request(id) {
+
     const token = sessionStorage.getItem('host_auth_token');
     fetch('send_friend_request/', {
         method: 'POST',
