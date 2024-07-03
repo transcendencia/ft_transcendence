@@ -16,7 +16,6 @@ let plusClicked = false;
 const botID = 0;
 let playerNb = 0;
 
-
 export const blue = '#3777ff';
 export const purple = 'rgb(164, 67, 255)'
 export const bgPurple = '#2d25a1'
