@@ -1,11 +1,10 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
-import { moveCameraToBackOfCockpit }  from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
+import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart, bluelight, createUserBadge, scene} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfo} from "./userManagement.js";
 import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
 
@@ -189,9 +188,11 @@ export async function handleLogin(formData) {
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
                     get_friends_list();
+                    console.log("host id:", sessionStorage.getItem("host_id"));
                     getProfileInfo(sessionStorage.getItem("host_id"))
                     .then(data => {
                         populateProfileInfo(data);
+                        createUserBadge(data, "playersConnHostBadge");
                     })
                     .catch(error => {
                         console.error('Failed to retrieve profile info:', error);
@@ -364,13 +365,6 @@ function handleLogout(userId, token) {
     .catch(error => {
         console.error('Erreur :', error);
     });
-    // const hostLoggedIn = localStorage.getItem("hostLoggedIn")
-    // console.log(hostLoggedIn)
-    // if (hostLoggedIn === 'true') {
-    //     // localStorage.setItem('hostLoggedIn', 'false');
-    //     localStorage.clear();
-    //     console.log(localStorage.getItem("hostLoggedIn"));
-    // }
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
@@ -387,6 +381,7 @@ function handleLogout(userId, token) {
         spaceShipInt.visible = true;
         showPage('loginPage');
         toggleLobbyStart();
+        scene.add(bluelight);
     }, 50);
 };
 
@@ -416,3 +411,4 @@ export function emptyLoginField() {
     document.getElementById('usernameLoginInput').value = '';
     document.getElementById('passwordLoginInput').value = '';
 }
+

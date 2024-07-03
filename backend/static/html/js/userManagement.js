@@ -166,6 +166,7 @@ export function populateProfileInfo(data) {
 }
 
 export function getProfileInfo(userId) {
+    console.log("userId:", userId);
     const token = sessionStorage.getItem('host_auth_token');
     return fetch(`get_profile_info/${userId}/`, {
         method: 'GET',
@@ -186,7 +187,6 @@ export function getProfileInfo(userId) {
 }
 
 export function send_request(id) {
-
     const token = sessionStorage.getItem('host_auth_token');
     fetch('send_friend_request/', {
         method: 'POST',

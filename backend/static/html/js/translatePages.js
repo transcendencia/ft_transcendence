@@ -94,7 +94,6 @@ const loginText = document.getElementById('loginText');
 const passwordText = document.getElementById('passwordText');
 const enterLogin = document.getElementById('enterLogin');
 const enterPassword = document.getElementById('enterPassword');
-const loginLanguageText = document.getElementById('loginLanguageText');
 const newToTheGame = document.querySelector('.basicText');
 const confirmPassword = document.getElementById('confirmPassword');
 const signUpTitle = document.getElementById('signUpTitle');
@@ -106,7 +105,6 @@ const signupHereButton = document.querySelector('.actionCont');
 function translateLoginPageTexts() {
     loginText.childNodes[0].textContent = '- ' + getTranslatedText('login') + ' -';
     passwordText.childNodes[0].textContent = '- ' + getTranslatedText('password') + ' -';
-    loginLanguageText.childNodes[4].textContent = '- ' + getTranslatedText('loginLanguage') + ' -';
     newToTheGame.childNodes[0].textContent = getTranslatedText('newToTheGame');
     signupHereButton.textContent = getTranslatedText('signUpHere');
     signUpTitle.textContent = getTranslatedText('signUpTitle');

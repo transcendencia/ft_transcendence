@@ -104,6 +104,7 @@ async function refreshUserFriendList() {
       togglePlanet();
     else {
       returnToHost();
+      clearInterval(searchUserInterval);
     }
   });
 
@@ -232,12 +233,13 @@ async function refreshUserFriendList() {
     profilePic.parentNode.classList.add("RequestTile");
   }
 
+  let searchUserInterval;
+
   async function fillSearchedUserPage(user, type) {
     displayedUserOnSearchPage = user;
     resetProfile();
     const newData = await get_friends_list();
-    console.log(type);
-    if (newData.sent_request_list.some(requestUser => requestUser.id === user.id) && type === 'default')
+    if (newData.sent_request_list.some(requestUser => requestUser.id === user.id) && type === 'Default')
       displayRequestSent();
     else if (type === 'Request')
       displayFriendRequestProfile();
@@ -251,15 +253,12 @@ async function refreshUserFriendList() {
 
     document.getElementById('searchedUserHistory').innerHTML = '';
     
-    getHistoryMatchPlayer2(user);
+    // searchUserInterval = setInterval( async() => {
+      getHistoryMatchPlayer2(user);
+    //   console.log("Checking... searchedUser")
+    //    if respectively changed, refresh basic and complex stats, history, name, alias, image and status(friend, request, nothing)
+    //   }, 5000);
 
-    const statsBlock = document.getElementById('winLoseTexts2');
-    statsBlock.innerHTML = `
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText1')} : 1</div>
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText2')} : 1</div>
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText3')} : 1</div>
-        <div style="font-family: 'Space'; font-size: 20px; color: white"> ${getTranslatedText('winLoseText4')} : 1</div>
-    `;
 }
 
 function getHistoryMatchPlayer2(user) {
@@ -458,10 +457,8 @@ export async function renderFriendList() {
   
       // Set new timeout to execute RenderUsersSearched after 300ms of user inactivity
       searchTimeout = setTimeout(() => {
-          if (searchQuery.length === 0) {
+          if (searchQuery.length === 0)
               renderFriendList();
-          } else {
-              RenderUsersSearched(searchQuery);
-          }
+          else RenderUsersSearched(searchQuery);
       }, 300); // Adjust the debounce delay as needed
   });
