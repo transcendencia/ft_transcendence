@@ -20,8 +20,8 @@ RUN mkdir -p /backend/logs && chmod 777 /backend/logs
 COPY crontab /etc/cron.d/django-cron
 RUN chmod 0644 /etc/cron.d/django-cron
 RUN crontab /etc/cron.d/django-cron
-
+COPY launch_crontab.sh /etc/launch_crontab.sh
+RUN chmod +x /etc/launch_crontab.sh
 # Copie du script connect_to_postgres.sh et rendu exécutable
-RUN env > get_env.sh
 
-CMD ["sh", "-c", "sleep 10 && cron -f"]
+CMD ["bash", "./launch_script.sh"]
