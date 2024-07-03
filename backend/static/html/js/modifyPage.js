@@ -116,23 +116,29 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
 deleteAccountButton.addEventListener("click", deleteAccount);
 
 function deleteAccount() {
-  // rediriger vers la page d'acceuil
-  // deconnecter tout les guest
-  // delete account dans la db
   document.getElementById("validateDelete").classList.toggle("showRectangle");
   deleteBlockingPanel.classList.add('show');
 }
 
 // document.addEventListener('DOMContentLoaded', (event) => {
   const toggleSwitch = document.getElementById('toggleSwitch');
+  let holdUsername;
+  let toggleSwitchClicked = false;
 
   toggleSwitch.addEventListener('click', function() {
       this.classList.toggle('active');
       if (this.classList.contains('active')) {
         anonymousStatus = true;
+        if (!toggleSwitchClicked) {
+          toggleSwitchClicked = true;
+          holdUsername = document.getElementById('changeUsernameInput').value;
+        }
         getRandomUsername();
       }
-      else anonymousStatus = false;
+      else {
+        anonymousStatus = false;
+        document.getElementById('changeUsernameInput').value = holdUsername;
+      }
   });
 // });
 
@@ -198,9 +204,6 @@ document.addEventListener('keydown', (event) => {
 });
 
 export function resetModifyPageField() {
-  // Pas vider les username et le alias mais le mettre a la derniere valeur
-  // document.getElementById('changeUsernameInput').value = '';
-  // document.getElementById('changeAliasInput').value = '';
   console.log("resetModifyPageField");
   getProfileInfo(sessionStorage.getItem("host_id"))
   .then(data => {
@@ -217,5 +220,4 @@ export function resetModifyPageField() {
   document.getElementById('LinkPicture').innerText = '';
   const toggleSwitch = document.getElementById('toggleSwitch');
   toggleSwitch.classList.remove('active');
-  //vider input nom de la photo
 }
