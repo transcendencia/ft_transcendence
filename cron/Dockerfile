@@ -4,7 +4,12 @@ ENV PYTHONDONTWRITEBYTECODE 1
 WORKDIR /backend
 COPY requirements_cron.txt /backend
 COPY . /backend/
-RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    cron \
+    && pip install django psycopg2-binary \ 
+    && apt-get clean \ 
+    && rm -rf /var/lib/apt/lists/*
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r ./requirements_cron.txt
 RUN pip install djangorestframework
@@ -16,4 +21,7 @@ COPY crontab /etc/cron.d/django-cron
 RUN chmod 0644 /etc/cron.d/django-cron
 RUN crontab /etc/cron.d/django-cron
 
-CMD ["cron", "-f"]
+# Copie du script connect_to_postgres.sh et rendu exécutable
+RUN env > get_env.sh
+
+CMD ["sh", "-c", "sleep 10 && cron -f"]
