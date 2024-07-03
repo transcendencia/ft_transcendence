@@ -4,6 +4,10 @@ from django.utils import timezone
 from ...models import User
 logger = logging.getLogger(__name__)
 
+
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 class Command(BaseCommand):
     help = 'Delete inactive users'
 
@@ -15,12 +19,15 @@ class Command(BaseCommand):
             
             with open('/backend/logs/cron_execution.log', 'a') as f:
                 f.write(message + '\n')
-            users = User.objects.all()
-            for user in users:
+            twoYearsAgo = datetime.now() - relativedelta(years=2)
+            usersToDelete = User.objects.filter(last_login_date=twoYearsAgo)
+            for user in usersToDelete:
                 print(f'Utilisateur: {user.username}')
+                user.delete()
+                # User.objects.filter(last_login_date=timezone.now() - timedelta(days=30)).delete()
             # Votre logique ici
             # Par exemple :
-            # User.objects.filter(last_login__lt=timezone.now() - timedelta(days=30)).delete()
+            # 
             
             completion_message = f"Cron job completed at {timezone.now()}"
             print(completion_message)
