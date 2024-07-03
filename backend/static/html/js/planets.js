@@ -135,7 +135,7 @@ sun.position.set(0, -10, 0);
 function setupPlanets(models) {
 	scene.add(sun);
 	scene.add(atmosphere);
-	scene.add(box);
+	// scene.add(box);
 	const planetData = [
 		{name: 'arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80},
 		{name: 'settings', distance: 600, scale: 50, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40},
