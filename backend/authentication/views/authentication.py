@@ -50,13 +50,14 @@ def login_page(request):
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({
-          'status': "succes", 
+          'status': "success", 
           'token': token.key, 
           'msg_code': "loginSuccessful",
           'language': user.language, 
           'id': user.id, 
           'graphic_mode': user.graphic_mode})
-      else:
+      else: 
+        print("offline")
         return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"})
     else:
       return  Response({'status': "failure", 'msg_code': "loginFailed"})

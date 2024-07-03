@@ -176,7 +176,7 @@ export async function handleLogin(formData) {
         .then(data => {
             let guest_token = null;
             console.log("login status", data.status);
-            if (data.status === "succes") {
+            if (data.status === "success") {
 
                 console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
@@ -189,7 +189,7 @@ export async function handleLogin(formData) {
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
                     get_friends_list();
-                    getProfileInfo()
+                    getProfileInfo(sessionStorage.getItem("host_id"))
                     .then(data => {
                         populateProfileInfo(data);
                     })
@@ -352,19 +352,7 @@ function resetHTMLelements(){
 
 function handleLogout(userId, token) {
     // Disconnect all the guest
-    if (userId === sessionStorage.getItem('host_id')) {
-        // console.log(guestLoggedIn);
-        guestLoggedIn.forEach(user => {
-            updateUserStatus('offline', user[1]);
-        });
-    }
-    guestLoggedIn.splice(0, guestLoggedIn.length);
-    const lsCont = document.getElementById('lsCont');
-    lsCont.innerHTML = `
-        <div class="tinyRedShadowfilter">
-            Players Connected
-        </div>
-    `;
+    logoutGuest(userId);
 
     // Disconnect the host
     updateUserStatus('offline', token)
@@ -400,42 +388,29 @@ function handleLogout(userId, token) {
     }, 50);
 };
 
+function logoutGuest(userId) {
+    if (userId === sessionStorage.getItem('host_id')) {
+        guestLoggedIn.forEach(user => {
+            updateUserStatus('offline', user[1]);
+        });
+    }
+    guestLoggedIn.splice(0, guestLoggedIn.length);
+    const lsCont = document.getElementById('lsCont');
+    lsCont.innerHTML = `
+        <div class="tinyRedShadowfilter">
+            Players Connected
+        </div>
+    `;
+}
+
 window.addEventListener('beforeunload', function (event) {
     const token = sessionStorage.getItem('host_auth_token');
     if (token)
         handleLogout(sessionStorage.getItem('host_id'), token);
 });
 
-// window.addEventListener('beforeunload', function () {
-//     if (sessionStorage.getItem('host_auth_token')) 
-//         handleLogout(sessionStorage.getItem('host_id'), token);
-// });
-
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';
     document.getElementById('usernameLoginInput').value = '';
     document.getElementById('passwordLoginInput').value = '';
-}
-
-export function resetModifyPageField() {
-    // Pas vider les username et le alias mais le mettre a la derniere valeur
-    // document.getElementById('changeUsernameInput').value = '';
-    // document.getElementById('changeAliasInput').value = '';
-	console.log("resetModifyPageField");
-    getProfileInfo()
-    .then(data => {
-        populateProfileInfo(data);
-    })
-    .catch(error => {
-        console.error('Failed to retrieve profile info:', error);
-    });
-    document.getElementById('changePasswordInput').value = '';
-    document.getElementById('changeConfirmPasswordInput').value = '';
-    document.getElementById('changeInfoMessage').innerText = '';
-    document.getElementById('profile-pic').value = '';
-    document.getElementById('changeInfoMessage').innerText = '';
-    document.getElementById('LinkPicture').innerText = '';
-    const toggleSwitch = document.getElementById('toggleSwitch');
-    toggleSwitch.classList.remove('active');
-    //vider input nom de la photo
 }

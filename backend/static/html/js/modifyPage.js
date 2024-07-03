@@ -4,11 +4,10 @@ import { resetOutline } from './planetIntersection.js';
 import { toggleBlurDisplay, toggleLobbyStart, toggleRSContainerVisibility } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
-import { getCookie, resetModifyPageField } from './loginPage.js';
+import { getCookie } from './loginPage.js';
 import { getProfileInfo, updateUserStatus, populateProfileInfo } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
-
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
 let isInfosShow = false;
@@ -39,7 +38,7 @@ function handleChangeInfoForm(event) {
   .then(data => {
     var changeInfoMessage = document.querySelector('.changeInfoMessage');
     if (data.status === "succes")
-      getProfileInfo()
+      getProfileInfo(sessionStorage.getItem("host_id"))
         .then(data => {
             populateProfileInfo(data);
         })
@@ -197,3 +196,26 @@ document.addEventListener('keydown', (event) => {
       document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
     }
 });
+
+export function resetModifyPageField() {
+  // Pas vider les username et le alias mais le mettre a la derniere valeur
+  // document.getElementById('changeUsernameInput').value = '';
+  // document.getElementById('changeAliasInput').value = '';
+  console.log("resetModifyPageField");
+  getProfileInfo(sessionStorage.getItem("host_id"))
+  .then(data => {
+      populateProfileInfo(data);
+  })
+  .catch(error => {
+      console.error('Failed to retrieve profile info:', error);
+  });
+  document.getElementById('changePasswordInput').value = '';
+  document.getElementById('changeConfirmPasswordInput').value = '';
+  document.getElementById('changeInfoMessage').innerText = '';
+  document.getElementById('profile-pic').value = '';
+  document.getElementById('changeInfoMessage').innerText = '';
+  document.getElementById('LinkPicture').innerText = '';
+  const toggleSwitch = document.getElementById('toggleSwitch');
+  toggleSwitch.classList.remove('active');
+  //vider input nom de la photo
+}

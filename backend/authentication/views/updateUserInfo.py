@@ -60,9 +60,10 @@ class UserStatusView(APIView):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_profile_info(request):
+def get_profile_info(request, userId):
   if (request.method == 'GET'):
-    user = request.user
+    # user = request.user
+    user = get_object_or_404(User, id=userId)
     if user:
       profile_info = user.get_profile_info()
       return Response({'profile_info': profile_info})

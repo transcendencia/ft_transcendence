@@ -165,9 +165,9 @@ export function populateProfileInfo(data) {
     RenderUserTournament(data.profile_info);
 }
 
-export function getProfileInfo() {
+export function getProfileInfo(userId) {
     const token = sessionStorage.getItem('host_auth_token');
-    return fetch('get_profile_info/', {
+    return fetch(`get_profile_info/${userId}/`, {
         method: 'GET',
         headers: {
             'Authorization': `Token ${token}`,
@@ -248,4 +248,21 @@ export async function delete_friend_request(id) {
     .catch(error => {
         console.error('Erreur :', error);
     });
+}
+
+export function test_back() {
+    console.log("test back");
+    // SIGN UP
+    // document.getElementById('usernameLoginInput').value = 67890;
+    // document.getElementById('passwordLoginInput').value = 'q';
+    // document.getElementById('confirmPasswordSignUpInput').value = 'q';
+    // document.getElementById("submitSignUp").click();
+
+    // LOGIN
+    // document.getElementById('usernameLoginInput').value = 67890;
+    // document.getElementById('passwordLoginInput').value = 'q';
+    // document.getElementById("loginButton").click();
+
+    // GET PROFILE INFO
+    getProfileInfo(3);
 }
