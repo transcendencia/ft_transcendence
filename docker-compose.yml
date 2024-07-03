@@ -48,7 +48,6 @@ services:
       - server
     volumes:
       - ./backend/:/backend
-
 volumes:
   server_volume:
     name: server_volume
