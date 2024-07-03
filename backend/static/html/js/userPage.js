@@ -1,8 +1,8 @@
 import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
 import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks } from './loginPage.js';
-import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo, populateProfileInfo, updateUserStatus } from './userManagement.js';
-import { getTranslatedText } from './translatePages.js';
+import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo, populateProfileInfos, updateUserStatus } from './userManagement.js';
 import { getUserStats, chooseStats } from './stats.js';
+import {  resetModifyPageField } from './modifyPage.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
 const colorClicked = '#5d75ff47';
@@ -43,9 +43,9 @@ async function isListsChanged() {
 
 export function initUserPlanet() {
   renderFriendList();
-  getProfileInfo()
+  getProfileInfo(sessionStorage.getItem("host_id"))
   .then(data => {
-      populateProfileInfo(data);
+      populateProfileInfos(data);
   })
   .catch(error => {
       console.error('Failed to retrieve profile info:', error);
@@ -91,17 +91,20 @@ async function refreshUserFriendList() {
       hostUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
       modifyUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
       pageDisplayed = "hostProfile";
+      resetModifyPageField();
     }
     chooseStats(1);
     setTimeout(getUserStats(sessionStorage.getItem("host_id"), 500));
   }
 
   backButtonUserPage.addEventListener('click', () => {
+    console.log("pageDisplayed:", pageDisplayed);
     if (pageDisplayed === "hostProfile")
       togglePlanet();
     else {
       returnToHost();
       clearInterval(searchUserInterval);
+      previousUserInfos = null;
     }
   });
 
@@ -230,32 +233,56 @@ async function refreshUserFriendList() {
     profilePic.parentNode.classList.add("RequestTile");
   }
 
-  let searchUserInterval;
+let searchUserInterval;
+let previousUserInfos;
 
-  async function fillSearchedUserPage(user, type) {
-    displayedUserOnSearchPage = user;
-    resetProfile();
-    const newData = await get_friends_list();
-    if (newData.sent_request_list.some(requestUser => requestUser.id === user.id) && type === 'Default')
-      displayRequestSent();
-    else if (type === 'Request')
-      displayFriendRequestProfile();
-    else if (type === 'Friend')
-      displayFriendProfile(user);
+function searchedUserFinishedAMatch(data) {
+  if (data.nbr_match != previousUserInfos.nbr_match)
+    return true;
+  return false;
+}
 
-    // Update the DOM elements with user information
-    profilePic.src = user.profile_picture;
-    username.textContent = user.username;
-    alias.textContent = user.alias;
+function searchedUserInfoChanged(profilePic, alias, username) {
+  if (profilePic != previousUserInfos.profile_picture || alias != previousUserInfos.alias || username != previousUserInfos.username)
+    return true;
+  return false;
+}
 
-    document.getElementById('searchedUserHistory').innerHTML = '';
-    
-    // searchUserInterval = setInterval( async() => {
-      getHistoryMatchPlayer2(user);
-    //   console.log("Checking... searchedUser")
-    //    if respectively changed, refresh basic and complex stats, history, name, alias, image and status(friend, request, nothing)
-    //   }, 5000);
+async function fillSearchedUserPage(user, type) {
+  displayedUserOnSearchPage = user;
+  resetProfile();
+  const newData = await get_friends_list();
+  if (newData.sent_request_list.some(requestUser => requestUser.id === user.id) && type === 'Default')
+    displayRequestSent();
+  else if (type === 'Request')
+    displayFriendRequestProfile();
+  else if (type === 'Friend')
+    displayFriendProfile(user);
 
+  // Update the DOM elements with user information
+  profilePic.src = user.profile_picture;
+  username.textContent = user.username;
+  alias.textContent = user.alias;
+
+  document.getElementById('searchedUserHistory').innerHTML = '';
+  
+  previousUserInfos = data;
+  getHistoryMatchPlayer2(user);
+  searchUserInterval = setInterval( async() => {
+    getProfileInfo(user.id).then(data => {
+      if (searchedUserFinishedAMatch(data.nbrMatch)) {
+        console.log("stats changed : ", data.username);
+        updateSearchedUserStats(data);
+        previousUserInfos = data;
+      }
+      if (searchedUserInfoChanged(data.profile_picture, data.alias, data.username)) {
+        console.log("info changed : ", data.username);
+        updateSearchedUserInfos(data);
+        previousUserInfos = data;
+      }
+      console.log("Checking... searchedUser")
+    });
+  }, 5000);
 }
 
 function getHistoryMatchPlayer2(user) {
@@ -347,6 +374,8 @@ function createUserTile(user, type, reqId) {
   loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
   loupeContainer.classList.add('loupeImg');
   loupeContainer.addEventListener('click', () => {
+    if (pageDisplayed === "modifyPage")
+      resetModifyPageField();
     slideAnimations(loupeContainer);
     setTimeout(() => {
       fillSearchedUserPage(user, type);

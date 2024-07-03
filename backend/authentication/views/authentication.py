@@ -41,6 +41,9 @@ def login_page(request):
 
     logger.debug(f'Username received: {usernameLower}, Host logged in: {isHostLoggedIn}')
 
+    if usernameLower == 'bot':
+      print("Bot try to login")
+      return Response({'status': "failure", 'msg_code': "loginFailed"})
     user = authenticate(username=usernameLower, password=password)
     if user is not None:
       print("user status in login:", user.status)
@@ -50,13 +53,14 @@ def login_page(request):
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({
-          'status': "succes", 
+          'status': "success", 
           'token': token.key, 
           'msg_code': "loginSuccessful",
           'language': user.language, 
           'id': user.id, 
           'graphic_mode': user.graphic_mode})
-      else:
+      else: 
+        print("offline")
         return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"})
     else:
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
@@ -88,6 +92,7 @@ def signup(request):
     user = User(username=user_data['username'], language=new_language)
     user.set_password(user_data['password'])
     user.save()
+    logger.debug("User created successfully with username: %s", user.username)
     return Response({'status': "success", "msg_code": "successfulSignup"}, status=status.HTTP_200_OK)
   
   first_error = next(iter(serializer.errors.values()))[0]

@@ -3,7 +3,7 @@ import { gameState } from "../../game/js/main.js";
 import { createUserInfoObject, displayRemovePlayerVisual, resetToPlusButton, resetUserInfoVisual, createUserTile, switchToGame } from "../../html/js/arenaPage.js";
 import { blue, purple, grey, lightGrey } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
-import { getProfileInfo, populateProfileInfo, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
+import { getProfileInfo, populateProfileInfos, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
 
 
 export let gamemodeCounterTournament = 0;
@@ -132,9 +132,9 @@ export function resetTournament() {
   round = 1;
   thirdPlayerMode = false;
   plusClickedTournament = false;
-  getProfileInfo()
+  getProfileInfo(sessionStorage.getItem("host_id"))
   .then(data => {
-      populateProfileInfo(data);
+      populateProfileInfos(data);
   })
   .catch(error => {
       console.error('Failed to retrieve profile info:', error);

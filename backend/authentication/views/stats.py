@@ -108,10 +108,10 @@ def get_stats(request, userId):
         powerlessMode += 1
     
     # Map percentage
-    oceanMapPercentage = round((oceanMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    spaceMapPercentage = round((spaceMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    dragonMapPercentage = round((dragonMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    skyMapPercentage = round((skyMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    oceanMapPercentage = round((oceanMap / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    spaceMapPercentage = round((spaceMap / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    dragonMapPercentage = round((dragonMap / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    skyMapPercentage = round((skyMap / nbrGames) * 100, 1) if nbrGames > 0 else 0
 
     mapPercentages = {
       "oceanMap": oceanMapPercentage,
@@ -121,9 +121,9 @@ def get_stats(request, userId):
     }
 
     # Mode percantage
-    classicModePercentage = round((classicMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    spinOnlyModePercentage = round((spinOnlyMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    powerlessModePercentage = round((powerlessMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    classicModePercentage = round((classicMode / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    spinOnlyModePercentage = round((spinOnlyMode / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    powerlessModePercentage = round((powerlessMode / nbrGames) * 100, 1) if nbrGames > 0 else 0
 
     modePercentages = {
       "classicMode": classicModePercentage,

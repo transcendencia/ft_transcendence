@@ -1,13 +1,13 @@
 import { togglePanelDisplay, togglePlanet, landedOnPlanet } from './enterPlanet.js';
 import { returnToHost } from './userPage.js';
 import { resetOutline } from './planetIntersection.js';
-import { toggleBlurDisplay, toggleLobbyStart } from './main.js';
+import { toggleBlurDisplay, toggleLobbyStart, toggleRSContainerVisibility } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
-import { getCookie, resetModifyPageField } from './loginPage.js';
-import { getProfileInfo, populateProfileInfo } from './userManagement.js';
+import { getCookie } from './loginPage.js';
+import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
-
+import { guestLoggedIn } from './arenaPage.js';
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
 let isInfosShow = false;
@@ -38,7 +38,7 @@ function handleChangeInfoForm(event) {
   .then(data => {
     var changeInfoMessage = document.querySelector('.changeInfoMessage');
     if (data.status === "succes")
-      getProfileInfo()
+      getProfileInfo(sessionStorage.getItem("host_id"))
         .then(data => {
             populateProfileInfo(data);
         })
@@ -54,72 +54,91 @@ function handleChangeInfoForm(event) {
 }
 
 const deleteAccountButton = document.querySelector(".deleteAccountButton");
-deleteAccountButton.addEventListener("click", deleteAccount);
+const deleteBlockingPanel = document.getElementById('deleteBlockingPanel');
 const blockingPanel = document.getElementById('blockingPanel');
 
-
 document.getElementById('profile-pic').addEventListener('change', function() {
-  var fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
-  console.log("On chercher une photo");
+  let fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
   document.getElementById('LinkPicture').textContent = fileName;
 });
 
+// Add the event listeners for cancel and confirmation buttons once
+document.getElementById('deleteAccountCancel').addEventListener("click", function() {
+  document.getElementById("validateDelete").classList.remove("showRectangle");
+  deleteBlockingPanel.classList.remove('show');
+});
+
+document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
+  const token = sessionStorage.getItem('host_auth_token');
+  document.getElementById("validateDelete").classList.remove("showRectangle");
+
+  fetch('delete_account/', {
+      method: 'POST',
+      headers: {
+          'Authorization': `Token ${token}`,
+          'X-CRSFToken': getCookie('crsftoken')
+      },
+  })
+  .then(response => {
+      deleteBlockingPanel.classList.remove('show');
+      if (guestLoggedIn.length > 0) {
+        guestLoggedIn.forEach(user => {
+            updateUserStatus('offline', user[1]);
+        });
+      }
+      guestLoggedIn.splice(0, guestLoggedIn.length);
+      const lsCont = document.getElementById('lsCont');
+      lsCont.innerHTML = `
+          <div class="tinyRedShadowfilter">
+              Players Connected
+          </div>
+      `;
+      sessionStorage.clear();
+      return response.json();
+  })
+  .catch(error => {
+      console.error('There was a problem with the delete_account:', error);
+  });
+
+  document.getElementById("validateDelete").classList.remove("showRectangle");
+  togglePlanet(true);
+  returnToHost();
+  spaceShip.position.set(0, 0, -1293.5);
+  spaceShip.rotation.set(0, 0, 0);
+
+  setTimeout(() => {
+      toggleLobbyStart(true);
+      spaceShipInt.visible = true;
+      showPage('loginPage');
+  }, 25);
+});
+
+deleteAccountButton.addEventListener("click", deleteAccount);
+
 function deleteAccount() {
-    // rediriger vers la page d'acceuil
-    // deconnecter tout les guest
-    // delete account dans la db
-    console.log("je suis dans delete account");
-    document.getElementById("validateDelete").classList.toggle("showRectangle");
-    blockingPanel.classList.remove('show');
-
-    document.getElementById('deleteAccountCancel').addEventListener("click", function() {
-		  document.getElementById("validateDelete").classList.toggle("showRectangle");
-		  blockingPanel.classList.remove('show');
-    })
-
-    document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
-		  const token = sessionStorage.getItem('host_auth_token');
-		  fetch('delete_account/', {
-		    method: 'POST',
-		    headers: {
-			  'Authorization': `Token ${token}`,
-			  'X-CRSFToken': getCookie('crsftoken')
-		    },
-		  })
-		  .then(response => {
-		    blockingPanel.classList.remove('show');
-		    return response.json();
-		  })
-		  .catch(error => {
-		    console.error('There was a problem with the delete_account:', error);
-		});
-    // resetting ui to loginPage
-    document.getElementById("validateDelete").classList.toggle("showRectangle");
-    togglePlanet();
-    returnToHost();
-    spaceShip.position.set(0, 0, -1293.5);
-    spaceShip.rotation.set(0, 0, 0);
-
-    setTimeout(() => {
-        resetOutline();
-        spaceShipInt.visible = true;
-        showPage('loginPage');
-        toggleLobbyStart();
-    }, 25);
-    })
-
+  document.getElementById("validateDelete").classList.toggle("showRectangle");
+  deleteBlockingPanel.classList.add('show');
 }
 
 // document.addEventListener('DOMContentLoaded', (event) => {
   const toggleSwitch = document.getElementById('toggleSwitch');
+  let oldUsername;
+  let toggleSwitchClicked = false;
 
   toggleSwitch.addEventListener('click', function() {
       this.classList.toggle('active');
       if (this.classList.contains('active')) {
         anonymousStatus = true;
+        if (!toggleSwitchClicked) {
+          toggleSwitchClicked = true;
+          oldUsername = document.getElementById('changeUsernameInput').value;
+        }
         getRandomUsername();
       }
-      else anonymousStatus = false;
+      else {
+        anonymousStatus = false;
+        document.getElementById('changeUsernameInput').value = oldUsername;
+      }
   });
 // });
 
@@ -183,3 +202,22 @@ document.addEventListener('keydown', (event) => {
       document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
     }
 });
+
+export function resetModifyPageField() {
+  console.log("resetModifyPageField");
+  getProfileInfo(sessionStorage.getItem("host_id"))
+  .then(data => {
+      populateProfileInfo(data);
+  })
+  .catch(error => {
+      console.error('Failed to retrieve profile info:', error);
+  });
+  document.getElementById('changePasswordInput').value = '';
+  document.getElementById('changeConfirmPasswordInput').value = '';
+  document.getElementById('changeInfoMessage').innerText = '';
+  document.getElementById('profile-pic').value = '';
+  document.getElementById('changeInfoMessage').innerText = '';
+  document.getElementById('LinkPicture').innerText = '';
+  const toggleSwitch = document.getElementById('toggleSwitch');
+  toggleSwitch.classList.remove('active');
+}

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets } from "./planets.js";
+import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
@@ -17,7 +17,7 @@ import { gameStarted, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-import { updateUserStatus } from "./userManagement.js";
+import { updateUserStatus, test_back } from "./userManagement.js";
 import { guestLoggedIn } from "./arenaPage.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
@@ -45,8 +45,11 @@ const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect rat
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
-export function toggleLobbyStart() {
-    lobbyStart = !lobbyStart;
+export function toggleLobbyStart(state = false) {
+    if (state === true)
+        lobbyStart = false;
+    else
+        lobbyStart = !lobbyStart;
 }
 
 // LIGHTING
@@ -350,6 +353,7 @@ function planetMovement() {
             planet.orbitMesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
+        sun.rotation.y += 0.001;
     });
 }
 
@@ -402,9 +406,12 @@ export function createUserBadge(hostData, elementId) {
   `;
 }
 
+export function displayHostEscapePage() {
+    getProfileInfo(sessionStorage.getItem("host_id")).then(data => createEscapeUserBadge(data))
+    .catch(error => console.error('Failed to retrieve profile info:', error)); 
+}
+
 export function toggleEscapeContainerVisibility() {
-    getProfileInfo().then(data => createUserBadge(data, "escapeUserContainer"))
-    .catch(error => console.error('Failed to retrieve profile info:', error));    
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
@@ -447,13 +454,19 @@ window.addEventListener('resize', () => {
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
+    if (event.key === 'm')
+        test_back();
     if (event.key === 'Enter') {
         if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();
+        const pwWindow = document.querySelector(".enterPasswordWindow");
+        if (window.getComputedStyle(pwWindow).display === 'flex')
+            document.getElementById("arenaLogInButton").click()
     }
     if (event.key === 'Escape') {
         if (gameState.inGame)
         {
+            displayHostEscapePage();
             toggleEscapeContainerVisibility();
             togglePause();
             toggleBlurDisplay(false);
@@ -476,6 +489,7 @@ document.addEventListener('keydown', (event) => {
         if (lobbyStart) {
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
+            displayHostEscapePage();
             toggleEscapeContainerVisibility();
             togglePause();
             resetOutlineAndText();
@@ -553,6 +567,7 @@ function animate()
     if (gameStarted)
         return;
     TWEEN.update();
+    atmosphere.material.uniforms.time.value += 0.01;
     if (!landedOnPlanet)
         renderMinimap();
     update();

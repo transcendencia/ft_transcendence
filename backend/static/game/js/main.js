@@ -436,6 +436,8 @@ let doubleKeyPress = {
 // Event listener for key presses and releases
 document.addEventListener('keydown', (event) => {
     let key = event.key;
+    if (event.target.tagName === 'INPUT')
+        return;
     if (key.length === 1) { // If it's a single character, convert to lowercase
         key = key.toLowerCase();
     }
@@ -459,6 +461,8 @@ document.addEventListener('keydown', (event) => {
 
 document.addEventListener('keyup', (event) => {
     let key = event.key;
+    if (event.target.tagName === 'INPUT')
+        return;
     if (key.length === 1) { // If it's a single character, convert to lowercase
         key = key.toLowerCase();
     }

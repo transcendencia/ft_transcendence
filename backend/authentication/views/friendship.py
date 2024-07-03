@@ -89,6 +89,7 @@ def return_friends_list(request):
                 'user' : user,
                 'request_id' : req.id,
             }
+            user_in_received_request_list.append(user)
             received_request_list.append(user_pair)
             user_in_received_request_list.append(user)
             user_in_list.append(req.sender.id)
