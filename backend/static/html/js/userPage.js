@@ -351,6 +351,8 @@ function createUserTile(user, type, reqId) {
   loupeContainer.innerHTML = `<img src="../../../static/html/assets/icons/loupe.png">`;
   loupeContainer.classList.add('loupeImg');
   loupeContainer.addEventListener('click', () => {
+    if (pageDisplayed === "modifyPage")
+      resetModifyPageField();
     slideAnimations(loupeContainer);
     setTimeout(() => {
       fillSearchedUserPage(user, type);
