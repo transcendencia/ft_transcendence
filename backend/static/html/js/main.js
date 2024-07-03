@@ -407,13 +407,11 @@ export function createUserBadge(hostData, elementId) {
 }
 
 export function displayHostEscapePage() {
-    getProfileInfo(sessionStorage.getItem("host_id")).then(data => createEscapeUserBadge(data, "escapeUserContainer"))
+    getProfileInfo(sessionStorage.getItem("host_id")).then(data => createUserBadge(data, "escapeUserContainer"))
     .catch(error => console.error('Failed to retrieve profile info:', error)); 
 }
 
 export function toggleEscapeContainerVisibility() {
-    // getProfileInfo(sessionStorage.getItem("host_id")).then(data => createEscapeUserBadge(data))
-    // .catch(error => console.error('Failed to retrieve profile info:', error));    
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
