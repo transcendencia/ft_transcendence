@@ -93,7 +93,7 @@ export function cancelLanding()
     landedOnPlanet = false;
 }
 
-export function togglePlanet() {
+export function togglePlanet(deleteAccount = false) {
     if (planetInRange)
         clearInterval(checkEach5Sec);
     if (!landedOnPlanet)
@@ -103,7 +103,8 @@ export function togglePlanet() {
         resetRotations();
         landedOnPlanet = false;
     }
-    toggleRSContainerVisibility();
+    if (deleteAccount != true)
+        toggleRSContainerVisibility();
     resetOutlineAndText();
     toggleBlurDisplay();
     togglePanelDisplay();

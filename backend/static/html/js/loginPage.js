@@ -5,7 +5,7 @@ import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIc
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
 import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart, bluelight, createUserBadge, scene} from "./main.js";
-import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfo} from "./userManagement.js";
+import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
 import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
 
 function addGlow(elementId, glow) {
@@ -174,10 +174,10 @@ export async function handleLogin(formData) {
         .then(response => response.json())
         .then(data => {
             let guest_token = null;
-            console.log(data.status);
-            if (data.status === "succes") {
-                console.log("hostLoggedIn", hostLoggedIn);
+            console.log("login status", data.status);
+            if (data.status === "success") {
 
+                console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
                     //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
 
@@ -188,9 +188,10 @@ export async function handleLogin(formData) {
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
                     get_friends_list();
-                    getProfileInfo()
+                    getProfileInfo(sessionStorage.getItem("host_id"))
                     .then(data => {
-                        populateProfileInfo(data);
+                        populateProfileInfos(data);
+                        
                     })
                     .catch(error => {
                         console.error('Failed to retrieve profile info:', error);
@@ -209,7 +210,7 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
-                console.log("failed login", data);
+                console.log("data.msg", data.msg_code);
                 if (hostLoggedIn === 'false')
                     document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
                 else if (hostLoggedIn === 'true')
@@ -339,7 +340,7 @@ export function getGameInfo() {
 }
 
 // Logout
-var disconnectButton = document.getElementById("disconnectButton");
+const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
     handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
 });
@@ -352,26 +353,11 @@ function resetHTMLelements(){
     document.getElementById('c1').style.display = 'none';
 }
 
+
 function handleLogout(userId, token) {
     // Disconnect all the guest
-    if (userId === sessionStorage.getItem('host_id')) {
-        // console.log(guestLoggedIn);
-        guestLoggedIn.forEach(user => {
-            console.log(user);
-            updateUserStatus('offline', user[1]);
-        });
-    }
-    guestLoggedIn.splice(0, guestLoggedIn.length);
-    const lsCont = document.getElementById('lsCont');
-    lsCont.innerHTML = `
-    <div class="d-flex row justify-content-center align-items-center tinyRedShadowfilter" style="margin-left: 10px;">
-    Players Connected
-    </div>
-        <div id="playersConnHostBadge" class="userInfoCont tinyRedShadowfilter" style="transform: scale(0.7); margin-left: -20px">
-        </div>
-    </div>
-    `;
-    
+    logoutGuest(userId);
+
     // Disconnect the host
     updateUserStatus('offline', token)
     .then(() => {
@@ -400,33 +386,29 @@ function handleLogout(userId, token) {
     }, 50);
 };
 
-window.addEventListener('beforeunload', function () {
-    // event.preventDefault();
+function logoutGuest(userId) {
+    if (userId === sessionStorage.getItem('host_id')) {
+        guestLoggedIn.forEach(user => {
+            updateUserStatus('offline', user[1]);
+        });
+    }
+    guestLoggedIn.splice(0, guestLoggedIn.length);
+    const lsCont = document.getElementById('lsCont');
+    lsCont.innerHTML = `
+        <div class="tinyRedShadowfilter">
+            Players Connected
+        </div>
+    `;
+}
+
+window.addEventListener('beforeunload', function (event) {
     const token = sessionStorage.getItem('host_auth_token');
     if (token)
         handleLogout(sessionStorage.getItem('host_id'), token);
-    // event.returnValue = '';
-
-    // const errors = console.error.logs || [];
-    // localStorage.setItem('savedErrors', JSON.stringify(errors));
 });
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';
     document.getElementById('usernameLoginInput').value = '';
     document.getElementById('passwordLoginInput').value = '';
-}
-
-export function resetModifyPageField() {
-    // Pas vider les username et le alias mais le mettre a la derniere valeur
-    // document.getElementById('changeUsernameInput').value = '';
-    // document.getElementById('changeAliasInput').value = '';
-    document.getElementById('changePasswordInput').value = '';
-    document.getElementById('changeConfirmPasswordInput').value = '';
-    document.getElementById('changeInfoMessage').innerText = '';
-    document.getElementById('profile-pic').value = '';
-    document.getElementById('changeInfoMessage').innerText = '';
-    const toggleSwitch = document.getElementById('toggleSwitch');
-    toggleSwitch.classList.remove('active');
-    //vider input nom de la photo
 }
