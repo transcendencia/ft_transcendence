@@ -264,5 +264,5 @@ export function test_back() {
     // document.getElementById("loginButton").click();
 
     // GET PROFILE INFO
-    getProfileInfo(3);
+    // getProfileInfo(3);
 }
