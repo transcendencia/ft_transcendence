@@ -65,8 +65,7 @@ export function toggleLobbyStart(state = false) {
     const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
     spaceShipPointLight.castShadow = true;
     const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
-    const lightHelper = new THREE.PointLightHelper(pointLight);
-    scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
+    scene.add(pointLight, ambientLight, spaceShipPointLight, pointLight2);
 
 
 class LobbyVisuals
@@ -94,6 +93,41 @@ class LobbyVisuals
         this.bloomPass.radius = 0.8;
         this.stars = [];
         this.addStars(1000);
+
+        const fontLoader = new THREE.FontLoader();
+        fontLoader.load('https://threejs.org/examples/fonts/optimer_bold.typeface.json', (font) => {
+            const textGeometry = new THREE.TextGeometry('42', {
+                font: font,
+                size: 50, // Adjusted size
+                height: 22, // Adjusted height
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.1, // Reduced bevel thickness
+                bevelSize: 0.2, // Reduced bevel size
+                bevelOffset: 0,
+                bevelSegments: 3 // Adjusted bevel segments
+            });
+            textGeometry.computeBoundingBox();
+            const boundingBox = textGeometry.boundingBox;
+        
+            const textWidth = boundingBox.max.x - boundingBox.min.x;
+            const textHeight = boundingBox.max.y - boundingBox.min.y;
+            const textDepth = boundingBox.max.z - boundingBox.min.z;
+        
+            const material = new THREE.MeshPhongMaterial({color: 0x000000});
+            const textMesh = new THREE.Mesh(textGeometry, material);
+        
+            // Create a pivot object and add the text to it
+            const pivot = new THREE.Object3D();
+            pivot.add(textMesh);
+        
+            // Offset the text position so that its center is at the pivot point
+            textMesh.position.set(-textWidth / 2, -textHeight / 2, -textDepth / 2);
+        
+            // Add the pivot to the scene
+            this.scene.add(pivot);
+            this.text = pivot;
+        });
     }
     addStar() {
         const geometry = new THREE.SphereGeometry(1.125, 12, 12);
@@ -581,6 +615,7 @@ function animate()
         return;
     TWEEN.update();
     atmosphere.material.uniforms.time.value += 0.01;
+    lobbyVisuals.text.rotation.y += 0.01;
     if (!landedOnPlanet)
         renderMinimap();
     update();
