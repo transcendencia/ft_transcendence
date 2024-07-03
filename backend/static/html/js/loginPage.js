@@ -191,7 +191,7 @@ export async function handleLogin(formData) {
                     getProfileInfo(sessionStorage.getItem("host_id"))
                     .then(data => {
                         populateProfileInfos(data);
-                        
+                        createUserBadge(data, "playersConnHostBadge")
                     })
                     .catch(error => {
                         console.error('Failed to retrieve profile info:', error);
@@ -203,8 +203,6 @@ export async function handleLogin(formData) {
                     showPage('none');
                     startAnimation();
                     emptyLoginField();
-                    getProfileInfo().then(data => createUserBadge(data, "playersConnHostBadge"))
-                    .catch(error => console.error('Failed to retrieve profile info:', error));    
                 } else {
                     guest_token = data.token;
                 }
