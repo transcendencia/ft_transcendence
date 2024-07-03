@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
 
 class Command(BaseCommand):
     help = 'Delete inactive users'
@@ -19,7 +18,14 @@ class Command(BaseCommand):
             
             with open('/backend/logs/cron_execution.log', 'a') as f:
                 f.write(message + '\n')
-            twoYearsAgo = datetime.now() - relativedelta(years=2)
+          
+            today = datetime.now()
+            try:
+                twoYearsAgo = today.replace(year=today.year - 2)
+            except ValueError:
+                # Gestion du cas où le 29 février d'une année bissextile n'existe pas dans une année non bissextile
+                twoYearsAgo = today.replace(year=today.year - 2, day=28)
+        
             usersToDelete = User.objects.filter(last_login_date=twoYearsAgo)
             for user in usersToDelete:
                 print(f'Utilisateur: {user.username}')
