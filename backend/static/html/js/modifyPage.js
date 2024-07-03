@@ -122,7 +122,7 @@ function deleteAccount() {
 
 // document.addEventListener('DOMContentLoaded', (event) => {
   const toggleSwitch = document.getElementById('toggleSwitch');
-  let holdUsername;
+  let oldUsername;
   let toggleSwitchClicked = false;
 
   toggleSwitch.addEventListener('click', function() {
@@ -131,13 +131,13 @@ function deleteAccount() {
         anonymousStatus = true;
         if (!toggleSwitchClicked) {
           toggleSwitchClicked = true;
-          holdUsername = document.getElementById('changeUsernameInput').value;
+          oldUsername = document.getElementById('changeUsernameInput').value;
         }
         getRandomUsername();
       }
       else {
         anonymousStatus = false;
-        document.getElementById('changeUsernameInput').value = holdUsername;
+        document.getElementById('changeUsernameInput').value = oldUsername;
       }
   });
 // });
