@@ -17,7 +17,7 @@ import { gameStarted, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-import { updateUserStatus } from "./userManagement.js";
+import { updateUserStatus, test_back } from "./userManagement.js";
 import { guestLoggedIn } from "./arenaPage.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
@@ -410,7 +410,7 @@ function createEscapeUserBadge(hostData) {
 }
 
 export function toggleEscapeContainerVisibility() {
-    getProfileInfo().then(data => createEscapeUserBadge(data))
+    getProfileInfo(sessionStorage.getItem("host_id")).then(data => createEscapeUserBadge(data))
     .catch(error => console.error('Failed to retrieve profile info:', error));    
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
@@ -461,7 +461,7 @@ document.addEventListener('keydown', (event) => {
             document.getElementById("submitSignUp").click();
         const pwWindow = document.querySelector(".enterPasswordWindow");
         if (window.getComputedStyle(pwWindow).display === 'flex')
-        document.getElementById("arenaLogInButton").click()
+            document.getElementById("arenaLogInButton").click()
     }
     if (event.key === 'Escape') {
         if (gameState.inGame)
@@ -500,20 +500,6 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'e' && inRange && !gameStarted)
         togglePlanet();
 });
-
-function test_back() {
-    console.log("test back");
-    // SIGN UP
-    // document.getElementById('usernameLoginInput').value = 67890;
-    // document.getElementById('passwordLoginInput').value = 'q';
-    // document.getElementById('confirmPasswordSignUpInput').value = 'q';
-    // document.getElementById("submitSignUp").click();
-
-    // LOGIN
-    // document.getElementById('usernameLoginInput').value = 67890;
-    // document.getElementById('passwordLoginInput').value = 'q';
-    // document.getElementById("loginButton").click();
-}
 
 let targetBlur = 0;
 

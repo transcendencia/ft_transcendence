@@ -132,7 +132,7 @@ export function resetTournament() {
   round = 1;
   thirdPlayerMode = false;
   plusClickedTournament = false;
-  getProfileInfo()
+  getProfileInfo(sessionStorage.getItem("host_id"))
   .then(data => {
       populateProfileInfo(data);
   })

@@ -1,8 +1,9 @@
 import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
-import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks, resetModifyPageField } from './loginPage.js';
+import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks } from './loginPage.js';
 import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo, populateProfileInfo, updateUserStatus } from './userManagement.js';
 import { getTranslatedText } from './translatePages.js';
 import { getUserStats, chooseStats } from './stats.js';
+import {  resetModifyPageField } from './modifyPage.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
 const colorClicked = '#5d75ff47';
@@ -43,7 +44,7 @@ async function isListsChanged() {
 
 export function initUserPlanet() {
   renderFriendList();
-  getProfileInfo()
+  getProfileInfo(sessionStorage.getItem("host_id"))
   .then(data => {
       populateProfileInfo(data);
   })
