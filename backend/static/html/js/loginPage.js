@@ -208,6 +208,7 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
+                console.log("data.msg", data.msg_code);
                 if (hostLoggedIn === 'false')
                     document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
                 else if (hostLoggedIn === 'true')
@@ -349,6 +350,7 @@ function resetHTMLelements(){
     document.getElementById('c3').style.display = 'none';
     document.getElementById('c1').style.display = 'none';
 }
+
 
 function handleLogout(userId, token) {
     // Disconnect all the guest
