@@ -212,7 +212,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     minimapContainer.appendChild(minimapRenderer.domElement);
 
     const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
-    const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000045 }); 
+    const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x00000000 }); 
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
     minimapBG.position.set(0, -600, 0);
     minimapBG.lookAt(minimapCamera.position); // Make the plane face the camera
