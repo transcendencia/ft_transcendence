@@ -18,24 +18,40 @@
     border: 5px solid wheat; 
 } */
 
-.hologram-container {
+
+.hologram-background {
     width: 600px;
     height: 400px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+.holoPerspective {
+    transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg);
+}
+
+.hologram-container {
+    text-shadow: 0 0 5px rgb(0, 64, 255);
     background-color: rgba(0, 64, 255, 0.1);
     border: 2px solid rgb(0, 64, 255);
     border-radius: 10px;
     box-shadow: 0 0 20px rgb(0, 64, 255), inset 0 0 20px rgb(0, 64, 255);
-    position: fixed;
-    top: 49%;
-    left: 50%;
-    overflow: hidden;
-    transform-style: preserve-3d;
-    animation: float 4s ease-in-out infinite;
+}
+
+.hologram-textBar {
+    text-shadow: 0 0 5px rgb(0, 64, 255);
+    background-color: rgba(0, 13, 51, 0.683);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgb(0, 64, 255);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgb(0, 64, 255), inset 0 0 20px rgb(0, 64, 255);
 }
 
 .hologram-content {
     padding: 20px;
-    color: rgb(0, 64, 255);
     text-shadow: 0 0 5px rgb(0, 64, 255);
     position: relative;
     transform: scaleY(1.2);
@@ -61,26 +77,17 @@
     z-index: 2;
 }
 
-.hologram-container::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-        circle at 50% -20%,
-        rgba(0, 42, 255, 0.2),
-        transparent 70%
-    );
-    z-index: 2;
+.hologram-container.no-before::before {
+    content: none !important;
+    background: none !important;
+    animation: none !important;
 }
 
 @keyframes scan {
-    0% {
+    100% {
         transform: translateY(-100%);
     }
-    100% {
+    0% {
         transform: translateY(100%);
     }
 }
@@ -90,16 +97,7 @@
         transform: rotateX(-30deg) translateY(-5px) translate(-50%, -50%) scale(1.3);
     }
     50% {
-        transform: rotateX(-30deg) translateY(5px) translate(-50%, -50%) scale(1.3);
-    }
-}
-
-@keyframes floatIcons {
-    0%, 100% {
-        transform: translateY(-5px) translate(-50%, -50%);
-    }
-    50% {
-        transform: translateY(5px) translate(-50%, -50%);
+        transform: rotateX(-30deg) translateY(5px) translate(-50%, -50%) scale(1.3) ;
     }
 }
 
@@ -117,20 +115,21 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: rgb(182, 221, 254);
+    color: rgb(42, 159, 255);
     font-size: 12px;
     z-index: 5;
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .littleMsgCont {
+    margin-top: 5px;
     font-size: 12px;
     font-family: "Space";
     text-shadow: none;
 }
 
 .actionCont:hover {
-    color: rgb(117, 190, 255);
+    color: rgb(0, 102, 192);
 }
 
 .separator {
@@ -159,7 +158,6 @@
     display: flex;
     justify-content: space-evenly;
     align-items: space-around;
-    animation: floatIcons 4s ease-in-out infinite;
 }
 
 .languageColumn {
@@ -226,6 +224,7 @@
 }
 
 .title {
+    text-shadow: 0 0 10px rgb(0, 64, 255);
     font-size: 60px;
     font-family: "Space";
     position: fixed;
@@ -239,11 +238,6 @@
     align-items: center;
     overflow: hidden; /* Ensure text input doesn't overflow */
     border-radius: 5px;
-    text-shadow: 
-        -5px -5px 0 black,  
-         5px -5px 0 black,
-        -5px  5px 0 black,
-         5px  5px 0 black;
     height: 25%;
 }
 
@@ -253,16 +247,12 @@
     font-size: 25px; /* Adjust font size as needed */
     font-family: "Space";
     text-align: center;
-    text-shadow: 
-        -2px -2px 0 black,  
-         2px -2px 0 black,
-        -2px  2px 0 black,
-         2px  2px 0 black;
 }
 
 .title img {
     margin: -200px;
     transform: scale(0.2);
+    filter: drop-shadow(0 0 30px rgb(0, 64, 255));
 }
 
 .textBar {
@@ -288,8 +278,8 @@
 
 .text-input {
     position: absolute;
-    width: 80%; /* Match the width of the container */
-    height: 30%; /* Automatically adjust height based on content */
+    width: 95%; /* Match the width of the container */
+    height: 50%; /* Automatically adjust height based on content */
     background: none;
     border: none;
     color: white; /* Set text color to white */

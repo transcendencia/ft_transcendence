@@ -38,13 +38,13 @@
       TRANSCENDENCIA
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
     </div>
-    <div class="hologram-container d-flex flex-column justify-content-center align-items-center">
+    <div class="hologram-background hologram-container d-flex flex-column justify-content-center align-items-center" style="animation: float 4s ease-in-out infinite;">
         <div class="hologram-content">
           <form id="loginForm" method="post" action="login_page/">
             {% csrf_token %}
         <div class="titleText" id="loginText">
           - Login -
-          <div class="textBar">
+          <div class="hologram-textBar d-flex justify-content-center align-items-center">
             <input id = "usernameLoginInput" class="text-input" name="username" spellcheck="false"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
@@ -57,7 +57,7 @@
         </div>
         <div class="titleText" id="passwordText">
           - Password -
-          <div class="textBar">
+          <div class="hologram-textBar d-flex justify-content-center align-items-center">
             <input id = "passwordLoginInput" class="text-input" name="password" spellcheck="false" type="password" autocomplete="off"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
@@ -85,41 +85,42 @@
 
 <!-- SIGN UP PAGE -->
   <form id="signupForm" class="signUpPage page d-flex flex-column justify-content-around align-items-center">
-    <div class="perspective">
+    <div class="hologram-background hologram-container no-before holoPerspective d-flex flex-column justify-content-center align-items-center" style="height: 70%; width: 50%; top: 40%;">
+      <div class="hologram-content">
       <!-- <form id="signupForm" method="post" action="signup/"> -->
           {% csrf_token %}
-        <div id="signUpTitle"style="font-size: 56px;">Sign Up </div>
+    <div id="signUpTitle" class="d-flex justify-content-center align-items-center" style="font-size: 56px; text-shadow: 0 0 10px rgb(0, 64, 255); font-family: 'Space';">Sign Up </div>
         <p id="createAccountText" style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
         <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
           Login
-        <div class="textBar">
-          <input id= "usernameSignUpInput" class="text-input" name="username" style="font-size: 30px;" spellcheck="false" ></input>
+        <div class="hologram-textBar d-flex justify-content-center align-items-center">
+          <input id= "usernameSignUpInput" class="text-input" name="username" style="font-size: 30px; " spellcheck="false" ></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
       <div class="titleText" style="margin-top:-8px;transform: scale(1.2); font-size: 20px;" id="enterPassword">
           Password
-        <div class="textBar">
+        <div class="hologram-textBar d-flex justify-content-center align-items-center">
           <input id= "passwordSignUpInput" class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
       <div class="titleText" style="margin-top:-8px; transform: scale(1.2); font-size: 20px;" id="confirmPassword">
         confirm password
-        <div class="textBar">
+        <div class="hologram-textBar d-flex justify-content-center align-items-center">
           <input id= "confirmPasswordSignUpInput" class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
-      <!-- <div class="littleMsgCont">
-      </div> -->
       <div>
-        <div id="RGPDCreate" class="newToTheGame" style="width: 100%; font-size: 20px;">
+        <div id="RGPDCreate" class="newToTheGame" style="width: 100%; font-size: 20px; text-shadow: 0 0 10px rgb(0, 64, 255); font-family: 'Space';">
           By registering, you accept the
         </div> 
-        <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter" style="font-size: 25px;">
+        <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter" style="font-size: 25px; text-shadow: 0 0 10px rgb(0, 64, 255); font-family: 'Space';">
           privacy policy 
         </div> 
+    </div>
+  </div>
       </div>
       </div>
       <div class="perspective3">
@@ -862,8 +863,8 @@
 
   <!-- RGPD PAGE -->          
   <div class="rgpdPage page">
-      <div class="backgroundRGPDText">
-      <div id="RGPDTitle" class="title" style="font-size : 50px;">
+      <div class="hologram-background hologram-container no-before holoPerspective d-flex flex-column justify-content-evenly align-items-center" style="height: 70%; width: 50%; top: 40%;">
+      <div id="RGPDTitle" class="d-flex justify-content-center align-items-center">
         PRIVACY POLICY
       </div>
        <div id="RGPDText">
