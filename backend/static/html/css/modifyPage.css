@@ -314,3 +314,10 @@
 .info-icon:hover + .anonymousInfos {
     display: flex;
 }
+
+.privacyAndDownloadCont {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
