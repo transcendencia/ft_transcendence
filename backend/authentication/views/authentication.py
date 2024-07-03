@@ -41,6 +41,9 @@ def login_page(request):
 
     logger.debug(f'Username received: {usernameLower}, Host logged in: {isHostLoggedIn}')
 
+    if usernameLower == 'bot':
+      print("Bot try to login")
+      return Response({'status': "failure", 'msg_code': "loginFailed"})
     user = authenticate(username=usernameLower, password=password)
     if user is not None:
       print("user status in login:", user.status)
