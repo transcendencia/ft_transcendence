@@ -205,7 +205,6 @@ function translateModifyPageTexts(){
     deleteAccountConfirmation.textContent = getTranslatedText('deleteAccountConfirmation');
     deleteAccountCancel.textContent = getTranslatedText('deleteAccountCancel');
     RGPDPolicyInUserPage.textContent = getTranslatedText('RGPDPolicyInUserPage');
-    infoBack.textContent = getTranslatedText('infoBack');
     textAnonymous.textContent = getTranslatedText('textAnonymous');
      
 }

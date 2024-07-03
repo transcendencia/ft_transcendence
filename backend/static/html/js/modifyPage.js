@@ -174,19 +174,17 @@ RGPDPolicy.addEventListener('click', function() {
 });
 
 const infoButton = document.getElementById("infoButton");
-infoButton.addEventListener("click", displayAnonymousMode);
+infoButton.addEventListener("mouseenter", displayAnonymousMode);
+infoButton.addEventListener("mouseleave", hideAnonymousMode);
 
 function displayAnonymousMode() {
   isInfosShow = !isInfosShow;
-  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
+  document.getElementById("displayAnonymousMode").classList.add("showRectangle");
 }
 
-const infoBack = document.getElementById("infoBack");
-infoBack.addEventListener("click", backInfosDisplay);
-
-function backInfosDisplay() {
+function hideAnonymousMode() {
   isInfosShow = false;
-  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
+  document.getElementById("displayAnonymousMode").classList.remove("showRectangle");
 }
 
 document.addEventListener('keydown', (event) => {
