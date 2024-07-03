@@ -1,9 +1,3 @@
 # Chargement des variables d'environnement
-POSTGRES_DB=postgres
-POSTGRES_USER=lciullo
-POSTGRES_PASSWORD=test
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
-DJANGO_SETTINGS_MODULE=backend.settings
 # Exécution de la commande principale toutes les minutes
 * * * * * /etc/launch_crontab.sh
