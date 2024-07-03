@@ -9,6 +9,7 @@ import { getProfileInfo, updateUserStatus, populateProfileInfo } from './userMan
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
 
+
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
 let isInfosShow = false;
 let anonymousStatus;

@@ -84,12 +84,14 @@ def return_friends_list(request):
 
     for req in friends_requests:
         if req.status == 'pending' and req.receiver == request.user:
+            user = UserListSerializer(req.sender, many=False).data
             user_pair = { 
-                'user' : UserListSerializer(req.sender, many=False).data,
+                'user' : user,
                 'request_id' : req.id,
             }
             user_in_received_request_list.append(user)
             received_request_list.append(user_pair)
+            user_in_received_request_list.append(user)
             user_in_list.append(req.sender.id)
         
         if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user):
