@@ -443,9 +443,11 @@ export function createUserBadge(hostData, elementId) {
   `;
 }
 
-export function toggleEscapeContainerVisibility() {
-    getProfileInfo().then(data => createUserBadge(data, 'escapeUserContainer'))
-    .catch(error => console.error('Failed to retrieve profile info:', error));    
+export function toggleEscapeContainerVisibility(disconnect = false) {
+    if (!disconnect) {
+        getProfileInfo().then(data => createUserBadge(data, 'escapeUserContainer'))
+        .catch(error => console.error('Failed to retrieve profile info:', error));    
+    }
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
