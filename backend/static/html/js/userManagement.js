@@ -181,7 +181,6 @@ export function getProfileInfo(userId) {
     })
     .catch(error => {
         console.error('Erreur :', error);
-        throw error;  
     });
 }
 

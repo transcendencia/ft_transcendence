@@ -6,7 +6,6 @@ import {  resetModifyPageField } from './modifyPage.js';
 
 const statsButtons = document.querySelectorAll('.statButton');
 const colorClicked = '#5d75ff47';
-let currentUser;
 
 statsButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
@@ -20,7 +19,7 @@ statsButtons.forEach((button, index) => {
     {
       for (let i = 3; i < 6; i++)
         statsButtons[i].style.backgroundColor = 'transparent';
-      getUserStats(currentUser.id);
+      getUserStats(displayedUserOnSearchPage.id);
     }
     button.style.backgroundColor = colorClicked;
     chooseStats(index + 1);
@@ -29,16 +28,28 @@ statsButtons.forEach((button, index) => {
 
 
 let previousFriendList = [];
+let previousSearchList = [];
 
-async function isListsChanged() {
+async function userListChanged() {
   const newData = await get_friends_list();
-  
-  const sortedNewRequests = newData.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
-  const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
-  const concatenatedNewList = sortedNewRequests.concat(sortedNewFriends);
-  const listsChanged = JSON.stringify(concatenatedNewList) !== JSON.stringify(previousFriendList);
-  
-  return listsChanged;
+  if (searchQuery === '') {
+    const friendList = filterAndSortLists(newData, '');
+    const friendListChanged = JSON.stringify(friendList) !== JSON.stringify(previousFriendList);
+    if (friendListChanged)
+      console.log("friendListChanged!");
+    return friendListChanged;
+  }
+  const searchList = filterAndSortLists(newData, searchQuery);
+  const searchListChanged = JSON.stringify(searchList) !== JSON.stringify(previousSearchList);
+  if (searchListChanged)
+    console.log("searchListChanged!");
+  return searchListChanged;
+}
+
+function refreshUserList() {
+  if (searchQuery === '')
+      renderFriendList();
+  else RenderUsersSearched(searchQuery);
 }
 
 export function initUserPlanet() {
@@ -47,27 +58,19 @@ export function initUserPlanet() {
   .then(data => {
       populateProfileInfos(data);
   })
-  .catch(error => {
-      console.error('Failed to retrieve profile info:', error);
-  });
   const searchBar = document.getElementById('searchInput');
   searchBar.value = '';
   clearMatchBlocks();
   getGameInfo();
   //delay the animation of stats while page is opening
   setTimeout(getUserStats(sessionStorage.getItem("host_id"), 1750));
-  setCheckerToInterval(setInterval( async() => {
-  if (await isListsChanged())
-    refreshUserFriendList();
-  //if respectively changed, refresh basic and complex stats, history, name, alias, image and status(friend, request, nothing)
+  setCheckerToInterval(setInterval(async() => {
+  if (await userListChanged())
+    refreshUserList();
+  if (pageDisplayed === "searchedProfile")
+    refreshSearchedPage(displayedUserOnSearchPage);
+  console.log("checking...");
   }, 5000));
-}
-
-async function refreshUserFriendList() {
-    if (inputElement.value === '')
-      await renderFriendList();
-    else await RenderUsersSearched(inputElement.value);
-  console.log("Checking...");
 }
 
 // Sample user data
@@ -82,7 +85,7 @@ async function refreshUserFriendList() {
   let pageDisplayed = "hostProfile";
 
  export function returnToHost() {
-    if (pageDisplayed === "userProfile") {
+    if (pageDisplayed === "searchedProfile") {
       searchedUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";    
       hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
       pageDisplayed = "hostProfile";
@@ -98,7 +101,6 @@ async function refreshUserFriendList() {
   }
 
   backButtonUserPage.addEventListener('click', () => {
-    console.log("pageDisplayed:", pageDisplayed);
     if (pageDisplayed === "hostProfile")
       togglePlanet();
     else {
@@ -125,7 +127,7 @@ async function refreshUserFriendList() {
         userPagesContainer.style.flexDirection = "row";
         searchedUserPage.style.animation = "slideUserPage 1s forwards ease-in-out";    
         hostUserPage.style.animation = "slideUserPage 1s forwards ease-in-out";
-        pageDisplayed = "userProfile";
+        pageDisplayed = "searchedProfile";
       }
       else if (pageDisplayed === "modifyPage") {
         setTimeout(() => {
@@ -134,7 +136,7 @@ async function refreshUserFriendList() {
         },500)
         searchedUserPage.style.animation = "slideDiagonally 0.5s forwards ease-in-out";    
         modifyUserPage.style.animation = "slideDiagonally 0.5s forwards ease-in-out";
-        pageDisplayed = "userProfile";
+        pageDisplayed = "searchedProfile";
       }
       else {
         searchedUserPage.style.animation = "slideUserPageUp 0.25s forwards ease-in";
@@ -161,7 +163,7 @@ async function refreshUserFriendList() {
     resetProfile();
     try {
       await delete_friend_request(requestId);
-      await RenderUsersSearched(inputElement.value);
+      await RenderUsersSearched(searchQuery);
     } catch (error) {
       console.error('Error deleting friend request:', error);
     }
@@ -170,10 +172,9 @@ async function refreshUserFriendList() {
   checkMarkImg.addEventListener('click', async () => {
     resetProfile();
     displayFriendProfile(displayedUserOnSearchPage);
-    console.log(displayedUserOnSearchPage);
     try {
       await accept_friend_request(requestId);
-      await RenderUsersSearched(inputElement.value);
+      await RenderUsersSearched(searchQuery);
     } catch (error) {
       console.error('Error validating friend request:', error);
     }
@@ -236,20 +237,29 @@ async function refreshUserFriendList() {
 let searchUserInterval;
 let previousUserInfos;
 
-function searchedUserFinishedAMatch(data) {
-  if (data.nbr_match != previousUserInfos.nbr_match)
+function searchedUserFinishedAMatch(nbr_match) {
+  if (!previousUserInfos)
+    return false;
+  if (nbr_match !== previousUserInfos.nbr_match)
     return true;
   return false;
 }
 
-function searchedUserInfoChanged(profilePic, alias, username) {
-  if (profilePic != previousUserInfos.profile_picture || alias != previousUserInfos.alias || username != previousUserInfos.username)
+function searchedUserInfoChanged(profilePic, username, alias) {
+  if (!previousUserInfos)
+    return false;
+  if (profilePic !== previousUserInfos.profile_picture || alias !== previousUserInfos.alias || username !== previousUserInfos.username)
     return true;
   return false;
 }
 
-async function fillSearchedUserPage(user, type) {
-  displayedUserOnSearchPage = user;
+function updateSearchedUserInfos(profilePicture, newName, newAlias) {
+  profilePic.src = profilePicture;
+  username.textContent = newName;
+  alias.textContent = newAlias;
+}
+
+async function displayUserType(user,type) {
   resetProfile();
   const newData = await get_friends_list();
   if (newData.sent_request_list.some(requestUser => requestUser.id === user.id) && type === 'Default')
@@ -258,43 +268,53 @@ async function fillSearchedUserPage(user, type) {
     displayFriendRequestProfile();
   else if (type === 'Friend')
     displayFriendProfile(user);
-
-  // Update the DOM elements with user information
-  profilePic.src = user.profile_picture;
-  username.textContent = user.username;
-  alias.textContent = user.alias;
-
-  document.getElementById('searchedUserHistory').innerHTML = '';
-  
-  previousUserInfos = data;
-  getHistoryMatchPlayer2(user);
-  searchUserInterval = setInterval( async() => {
-    getProfileInfo(user.id).then(data => {
-      if (searchedUserFinishedAMatch(data.nbrMatch)) {
-        console.log("stats changed : ", data.username);
-        updateSearchedUserStats(data);
-        previousUserInfos = data;
-      }
-      if (searchedUserInfoChanged(data.profile_picture, data.alias, data.username)) {
-        console.log("info changed : ", data.username);
-        updateSearchedUserInfos(data);
-        previousUserInfos = data;
-      }
-      console.log("Checking... searchedUser")
-    });
-  }, 5000);
 }
 
-function getHistoryMatchPlayer2(user) {
+function refreshSearchedPage(user) {
+  getProfileInfo(user.id).then(data => {
+    const userData = data.profile_info;
+    if (searchedUserFinishedAMatch(userData.nbr_match)) {
+      document.getElementById('searchedUserHistory').innerHTML = '';
+      getUserStats(user.id);
+      createUserMatch(user);
+      previousUserInfos = userData;
+      console.log("stats changed : ", userData.username);
+    }
+    if (searchedUserInfoChanged(userData.profile_picture, userData.username, userData.alias)) {
+      updateSearchedUserInfos(userData.profile_picture, userData.username, userData.alias);
+      previousUserInfos = userData;
+      console.log("info changed : ", userData.username);
+    }
+  });
+}
+
+async function fillSearchedUserPage(user, type) {
+  displayedUserOnSearchPage = user;
+  
+  resetProfile();
+  displayUserType(user, type);
+
+  updateSearchedUserInfos(user.profile_picture, user.username, user.alias);
+  getUserStats(user.id);
+  chooseStats(4);
+
+  document.getElementById('searchedUserHistory').innerHTML = '';
+  createUserMatch(user);
+  
+  getProfileInfo(user.id).then(data => {previousUserInfos = data.profile_info;});
+  refreshSearchedPage(user);
+}
+
+function createUserMatch(user) {
   const token = sessionStorage.getItem('host_auth_token');
-  const csrftoken = getCookie('csrftoken');
+  const csrfToken = getCookie('csrftoken');
   
   fetch('get_game_player2/', {
     method: 'POST',
     headers: {
       'Authorization': `Token ${token}`,
       'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken
+      'X-CSRFToken': csrfToken
     },
     body: JSON.stringify({id: user.id})
   })
@@ -381,9 +401,6 @@ function createUserTile(user, type, reqId) {
       fillSearchedUserPage(user, type);
       if (reqId !== undefined)
         requestId = reqId;
-      currentUser = user;
-      getUserStats(user.id);
-      chooseStats(4);
     }, 125);
   });
 
@@ -403,6 +420,29 @@ function createUserTile(user, type, reqId) {
   userTile.appendChild(loupeContainer);
   userListBackground.appendChild(userTile);
 }
+function filterAndSortLists(data, query) {
+  let requestList = data.received_request_list;
+  let friendList = data.friends;
+  let otherList = data.other_user_list;
+
+  if (query !== '') {
+    requestList = requestList.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()));
+    friendList = friendList.filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()));
+    otherList = otherList.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
+  }
+
+  requestList.sort((a, b) => a.user.username.localeCompare(b.user.username));
+  friendList.sort((a, b) => {
+    const statusOrder = { 'online': 0, 'in_game': 1, 'offline': 2 };
+    if (a.user.status !== b.user.status) {
+    otherList.sort((a, b) => a.username.localeCompare(b.username));
+      return statusOrder[a.user.status] - statusOrder[b.user.status];
+    }
+    return a.user.username.localeCompare(b.user.username);
+  });
+
+  return { requestList, friendList, otherList };
+}
 
 async function RenderUsersSearched(query) {
   userListBackground.innerHTML = ''; // Clear existing user tiles
@@ -411,70 +451,33 @@ async function RenderUsersSearched(query) {
     renderFriendList();
     return;
   }
-
-  try {
-    const data = await get_friends_list();
-    if (!data) return;
-
-    // Filter and sort the lists based on the query
-    const requestList = data.received_request_list
-      .filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
-      .sort((a, b) => a.user.username.localeCompare(b.user.username));
-    
-    const friendList = data.friends
-      .filter(obj => obj.user.username.toLowerCase().includes(query.toLowerCase()))
-      .sort((a, b) => {
-        // Define status order
-        const statusOrder = { 'online': 0, 'in_game': 1, 'offline': 2 };
-        // Compare status first, then by username
-        if (a.user.status !== b.user.status) {
-          return statusOrder[a.user.status] - statusOrder[b.user.status];
-        }
-        return a.user.username.localeCompare(b.user.username);
-      });
-    
-    const otherList = data.other_user_list
-      .filter(user => user.username.toLowerCase().includes(query.toLowerCase()))
-      .sort((a, b) => a.username.localeCompare(b.username));
-
-    // Clear and concatenate previous lists for consistent sorting
-    previousFriendList = data.received_request_list.concat(data.friends);
-
-    // Render tiles based on filtered and sorted lists
-    requestList.forEach(obj => createUserTile(obj.user, 'Request', obj.request_id));
-    friendList.forEach(obj => createUserTile(obj.user, 'Friend', obj.request_id));
-    otherList.forEach(user => createUserTile(user, 'Default', undefined));
-  } catch (error) {
-    console.error('Error in rendering searched users:', error);
-  }
+  const data = await get_friends_list();
+  if (!data) return;
+  // Filter and sort the lists based on the query
+  const lists = filterAndSortLists(data, query);
+  previousSearchList = lists;
+  // Render tiles based on filtered and sorted lists
+  lists.requestList.forEach(obj => createUserTile(obj.user, 'Request', obj.request_id));
+  lists.friendList.forEach(obj => createUserTile(obj.user, 'Friend', obj.request_id));
+  lists.otherList.forEach(user => createUserTile(user, 'Default', undefined));
 }
 
 export async function renderFriendList() {
-  userListBackground.innerHTML = ''; // Clear existing user tiles
+    userListBackground.innerHTML = ''; // Clear existing user tiles
 
     const data = await get_friends_list();
-    const sortedRequests = data.received_request_list.sort((a, b) => a.user.username.localeCompare(b.user.username));
-    
-    // sortedRequests.forEach(obj => assignRandomStatus(obj.user));
-    // data.friends.forEach(friend => assignRandomStatus(friend.user));
 
-    const sortedFriends = data.friends.sort((a, b) => {
-        const statusOrder = { 'online': 0, 'in_game': 1, 'offline': 2 };
-        if (statusOrder[a.user.status] !== statusOrder[b.user.status]) {
-            return statusOrder[a.user.status] - statusOrder[b.user.status];
-        }
-        return a.user.username.localeCompare(b.user.username);
-    });
-    
-    previousFriendList = sortedRequests.concat(sortedFriends);    
-    sortedRequests.forEach(userSendingRq => createUserTile(userSendingRq.user, 'Request', userSendingRq.request_id));
-    sortedFriends.forEach(friend => createUserTile(friend.user, 'Friend', friend.request_id));
+    const lists = filterAndSortLists(data, '');
+    previousFriendList = lists;
+    lists.requestList.forEach(userSendingRq => createUserTile(userSendingRq.user, 'Request', userSendingRq.request_id));
+    lists.friendList.forEach(friend => createUserTile(friend.user, 'Friend', friend.request_id));
   }
 
   let searchTimeout;
+  let searchQuery = '';
 
-  inputElement.addEventListener('input', function(event) {
-      const searchQuery = this.value.trim();
+  inputElement.addEventListener('input', function() {
+      searchQuery = this.value.trim();
   
       // Clear previous timeout
       clearTimeout(searchTimeout);

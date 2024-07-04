@@ -154,7 +154,8 @@ class LobbyVisuals
     }
     activateSpeedEffect()
     {
-        //tween animation to augment camera fov
+        if (!lobbyStart)
+            return;
         new TWEEN.Tween(this.camera)
         .to({fov: 75}, 100)
         .easing(TWEEN.Easing.Quadratic.Out)
@@ -407,8 +408,7 @@ export function createUserBadge(hostData, elementId) {
 }
 
 export function displayHostEscapePage() {
-    getProfileInfo(sessionStorage.getItem("host_id")).then(data => createEscapeUserBadge(data))
-    .catch(error => console.error('Failed to retrieve profile info:', error)); 
+    getProfileInfo(sessionStorage.getItem("host_id")).then(data => createUserBadge(data, "escapeUserContainer"))
 }
 
 export function toggleEscapeContainerVisibility() {
@@ -494,7 +494,7 @@ document.addEventListener('keydown', (event) => {
             togglePause();
             resetOutlineAndText();
             togglePause();
-            pauseGame ? pauseGame = false : pauseGame = true;
+            pauseGame = !pauseGame;
         }
     }
     if (event.target.tagName === 'INPUT')
