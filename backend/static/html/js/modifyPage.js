@@ -1,7 +1,6 @@
-import { togglePanelDisplay, togglePlanet, landedOnPlanet } from './enterPlanet.js';
+import { togglePlanet } from './enterPlanet.js';
 import { returnToHost } from './userPage.js';
-import { resetOutline } from './planetIntersection.js';
-import { toggleBlurDisplay, toggleLobbyStart, toggleRSContainerVisibility } from './main.js';
+import { toggleLobbyStart, createUserBadge } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie } from './loginPage.js';
@@ -40,11 +39,10 @@ function handleChangeInfoForm(event) {
     if (data.status === "succes")
       getProfileInfo(sessionStorage.getItem("host_id"))
         .then(data => {
-            populateProfileInfo(data);
+            populateProfileInfos(data);
+            
         })
-        .catch(error => {
-            console.error('Failed to retrieve profile info:', error);
-        });
+
     else changeInfoMessage.classList.toggle("errorMessage");
     document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
   })
@@ -207,11 +205,8 @@ export function resetModifyPageField() {
   console.log("resetModifyPageField");
   getProfileInfo(sessionStorage.getItem("host_id"))
   .then(data => {
-      populateProfileInfo(data);
+      populateProfileInfos(data);
   })
-  .catch(error => {
-      console.error('Failed to retrieve profile info:', error);
-  });
   document.getElementById('changePasswordInput').value = '';
   document.getElementById('changeConfirmPasswordInput').value = '';
   document.getElementById('changeInfoMessage').innerText = '';

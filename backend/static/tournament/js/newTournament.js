@@ -136,9 +136,6 @@ export function resetTournament() {
   .then(data => {
       populateProfileInfos(data);
   })
-  .catch(error => {
-      console.error('Failed to retrieve profile info:', error);
-  });
   resetPlusButton();
   resetBracket();
   plusButtons = document.querySelectorAll(".plusPlayerTournament");

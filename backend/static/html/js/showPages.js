@@ -9,7 +9,6 @@ export function showPage(pageId, transition = 'default') {
         page.classList.remove('signUp');
     });
     // Show the selected page
-    console.log(pageId);
     if (pageId == 'none')
         return;
     window.location.hash = `#${pageId}`;
@@ -24,14 +23,13 @@ let oldLocation = window.location.hash || '#loginPage';
 if (!window.location.hash) {
     window.location.hash = '#loginPage';
     oldLocation = '#loginPage';
+    showPage('loginPage');
 } else {
     showPage(window.location.hash.substring(1)); // Show the current page based on the hash
 }
 
-showPage('loginPage');
 
-addEventListener("hashchange", (event) => {
-    console.log(window.location.hash, oldLocation);
+addEventListener("hashchange", () => {
     if (window.location.hash == '#loginPage' && oldLocation == '#signUpPage' )
         moveCameraToBackOfCockpit();   
     else if (window.location.hash == '#signUpPage' && oldLocation == '#loginPage')
