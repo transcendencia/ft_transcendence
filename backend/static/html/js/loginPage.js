@@ -8,6 +8,7 @@ import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js
 import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfo} from "./userManagement.js";
 import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
+import { togglePlanet } from "./enterPlanet.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -352,6 +353,8 @@ function resetHTMLelements(){
 
 function handleLogout(userId, token) {
     // Disconnect all the guest
+    if (gameState.inGame)
+        togglePlanet();
     if (userId === sessionStorage.getItem('host_id')) {
         // console.log(guestLoggedIn);
         guestLoggedIn.forEach(user => {
@@ -384,15 +387,19 @@ function handleLogout(userId, token) {
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
+        toggleEscapeContainerVisibility(true);
         toggleGameStarted();
+        if (gameState.arena.game.user2.isBot)
+            gameState.arena.bot.deactivateBot();
         resetHTMLelements();
     }
-    togglePause();
+    else
+        togglePause();
     spaceShip.rotation.set(0, 0, 0);
     spaceShip.position.set(0, 0, -1293.5);
     setTimeout(() => {
         toggleBlurDisplay(true);
-        toggleEscapeContainerVisibility();
+        toggleEscapeContainerVisibility(true);
         resetOutline();
         spaceShipInt.visible = true;
         showPage('loginPage');
