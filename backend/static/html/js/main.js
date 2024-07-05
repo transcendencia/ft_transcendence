@@ -390,8 +390,10 @@ function planetMovement() {
             planet.orbitMesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
-        sun.rotation.y += 0.001;
     });
+    if (sun && lobbyVisuals.text)
+    sun.rotation.y += 0.001;
+    lobbyVisuals.text.rotation.y += 0.01;
 }
 
 export function startAnimation() {
@@ -500,7 +502,9 @@ document.addEventListener('keydown', (event) => {
         document.getElementById("arenaLogInButton").click()
     }
     if (event.key === 'Escape') {
-        if (gameState.inGame)
+        if (gameState.inGame && !gameState.arena.game.isPlaying)
+            return;
+        if (gameState.inGame && gameState.arena.game.isPlaying)
         {
             toggleEscapeContainerVisibility();
             togglePause();
@@ -508,7 +512,7 @@ document.addEventListener('keydown', (event) => {
             pauseGame ? pauseGame = false : pauseGame = true;
             return;
         }
-        if (landedOnPlanet) {
+        else if (landedOnPlanet) {
             togglePlanet();
             blockingPanel.classList.remove('show');
             pwWindow.classList.remove('showRectangle')
@@ -517,11 +521,11 @@ document.addEventListener('keydown', (event) => {
             returnToHost();
             return;
         }
-        if (inCockpit) {
+        else if (inCockpit) {
             moveCameraToBackOfCockpit();
             return;
         }
-        if (lobbyStart) {
+        else if (lobbyStart) {
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();
@@ -616,8 +620,6 @@ function animate()
     if (gameStarted)
         return;
     TWEEN.update();
-    atmosphere.material.uniforms.time.value += 0.01;
-    lobbyVisuals.text.rotation.y += 0.01;
     if (!landedOnPlanet)
         renderMinimap();
     update();
