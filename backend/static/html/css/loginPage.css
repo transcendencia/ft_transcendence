@@ -30,7 +30,7 @@
 }
 
 .holoPerspective {
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg);
 }
 
 .hologram-container {
@@ -39,6 +39,19 @@
     border: 2px solid rgb(0, 64, 255);
     border-radius: 10px;
     box-shadow: 0 0 20px rgb(0, 64, 255), inset 0 0 20px rgb(0, 64, 255);
+}
+
+.open {
+    animation: openAnimation 3s forwards;
+}
+
+@keyframes openAnimation {
+    0% {
+        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(0);
+    }
+    100% {
+        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(1);
+    }
 }
 
 .hologram-textBar {
