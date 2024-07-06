@@ -16,6 +16,14 @@ export function moveCameraToFrontOfCockpit() {1
         .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
         .start(); // Start the animation
     showPage('signUpPage', 'signUp');
+    const selectedPage = document.querySelector('.signUpPage');
+    const hologramContainer = selectedPage.querySelector('.hologram-container');
+    
+    if (hologramContainer) {
+        hologramContainer.classList.remove('open');
+        void hologramContainer.offsetWidth;
+        hologramContainer.classList.add('open');
+    }
     emptyLoginField();
     inCockpit = true;
 }
