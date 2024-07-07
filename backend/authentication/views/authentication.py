@@ -27,7 +27,6 @@ def index(request):
 @permission_classes([AllowAny])
 def login_page(request):
   try:
-    print(request.data)
     username = request.POST.get("username")
     usernameLower = username.lower()
     password = request.POST.get("password")

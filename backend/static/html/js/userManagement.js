@@ -71,15 +71,6 @@ export async function updateUserStatus(status, token) {
     }
 }
 
-// export  function getUserStatus(userId) {
-//     return fetch('get_status/${userId}', {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type':
-//         }
-//     })
-// }
-
 export function getUserStatus(userId) {
     const token = sessionStorage.getItem('host_auth_token');
     return fetch(`/user/status/${userId}/`, {
