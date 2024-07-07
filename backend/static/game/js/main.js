@@ -3899,6 +3899,9 @@ function swapToSplitScreen() {
         .onComplete(() => {
             blueBar[0].style.transition = "opacity 2s ease";
             blueBar[0].style.opacity = 0.2;
+            setTimeout(() => {
+                blueBar[0].style.display = 'block';
+            }, 2000);
         })
         .start();
 }
@@ -3907,6 +3910,9 @@ function swapToFullScreen()
 {
     blueBar[0].style.transition = "opacity 0.5s ease";
     blueBar[0].style.opacity = 0;
+    setTimeout(() => {
+        blueBar[0].style.display = 'none';
+    }, 500);
     const targetWidth = window.innerWidth;
     const duration = 500; // Animation duration in milliseconds
     new TWEEN.Tween(renderer.domElement)
