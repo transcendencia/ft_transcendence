@@ -1,7 +1,6 @@
 import { getCookie } from './loginPage.js';
 import { getTranslatedText} from "./translatePages.js";
-import { setHostAsPlayerOne, RenderAllUsersInList} from "./arenaPage.js";
-import { RenderUserTournament } from '../../tournament/js/newTournament.js';
+import { setHostAsPlayerOne} from "./arenaPage.js";
 
 export function updateUserGraphicMode(graphicMode) {
 	const token = sessionStorage.getItem('host_auth_token');
@@ -160,8 +159,8 @@ export function populateProfileInfos(data) {
         <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
         <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
     `;
-    setHostAsPlayerOne(data.profile_info);
-    RenderUserTournament(data.profile_info);
+    setHostAsPlayerOne(data.profile_info, 'Tournament');
+    setHostAsPlayerOne(data.profile_info, 'Arena');
 }
 
 export function getProfileInfo(userId) {

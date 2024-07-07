@@ -90,14 +90,6 @@ buttonHeaders.forEach((buttonHeader, index) => {
     });
 });
 
-export function RenderUserTournament(user) {
-    const usernameElement = document.getElementById('player1TournamentUsername');
-    usernameElement.textContent = user.username;
-    const pictureElement = document.getElementById('player1TournamentPicture');
-    pictureElement.src = user.profile_picture;
-    addUserToTournament(user.id, user.username, user.profile_picture);
-  }
-
 const userTilesTournament = [];  // Array to store the user tiles
 
 export function resetTournament() {
@@ -143,8 +135,8 @@ const userlistTitle = leftColumn.childNodes[1];
 userlistTitle.textContent = getTranslatedText('userlist');
 let plusClicked = 0;
 
-let plusButtons = document.querySelectorAll(".plusPlayerTournament");
-plusButtons.forEach((plusButton, i) => {
+export let plusButtonsTournament = document.querySelectorAll(".plusPlayerTournament");
+plusButtonsTournament.forEach((plusButton, i) => {
 	plusButton.classList.add('hover-enabled');
 	plusButton.addEventListener('click', function () {
 		if (!plusClicked)
@@ -154,11 +146,8 @@ plusButtons.forEach((plusButton, i) => {
 	});
 });
 
-let userListBackground = document.getElementById('userlistTournamentPage');
 
-export function initTournamentPlanet(){
-  RenderAllUsersInList(userListBackground);
-}
+
 
 export function resetPlusButton() {
   let addPlayerElements = document.querySelectorAll('.addPlayer');

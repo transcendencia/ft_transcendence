@@ -3,8 +3,7 @@ import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } fro
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
 import { initUserPlanet } from './userPage.js';
 import { resetTournament, tournamentState } from '../../tournament/js/newTournament.js';
-import { initArenaPlanet } from './arenaPage.js';
-import { initTournamentPlanet } from '../../tournament/js/newTournament.js';
+import { initArenaPlanet, initTournamentPlanet } from './arenaPage.js';
 
 export let landedOnPlanet = false;
 let planetPanel = document.querySelectorAll(".planetPanel");

@@ -1,11 +1,9 @@
 import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { togglePlanet, setCheckerToInterval, checkEach5Sec} from "./enterPlanet.js";
-import { afterGameTournament, botDifficultyTournament } from "../../tournament/js/newTournament.js";
+import { afterGameTournament, botDifficultyTournament, addUserToTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
-import { gamemodeCounterTournament, mapCounterTournament } from "../../tournament/js/newTournament.js";
-
-const userlist = document.querySelector(".userlistBackground");
+import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
@@ -44,7 +42,7 @@ buttonHeaders.forEach((buttonHeader, index) => {
 });
 
 export function Glow(thirdPlayerProtectionFromBot = false, plusClicked) {
-	userlist.classList.add('whiteGlowing');
+	userListBackground.classList.add('whiteGlowing');
 		userTiles.forEach((tile) => {
 			if (isBotId(tile.user.id) && thirdPlayerProtectionFromBot && plusClicked === 1)
 				return;
@@ -54,7 +52,7 @@ export function Glow(thirdPlayerProtectionFromBot = false, plusClicked) {
 	}
 	
 export function resetGlow() {
-	userlist.classList.remove('whiteGlowing')
+	userListBackground.classList.remove('whiteGlowing')
 	userTiles.forEach((child, i) => {
 		const children = child.HTMLelement.querySelectorAll(":scope > *");
 		children.forEach(element => {
@@ -67,8 +65,8 @@ export function resetGlow() {
 userlistTitle.textContent = getTranslatedText('userlist');
 
 export function resetAddingMode() {
-	setCssClassToArray('add', 'hover-enabled', plusButtons);
-	setCssClassToArray('remove', 'clicked', plusButtons);
+	setCssClassToArray('add', 'hover-enabled', plusButtonsArena);
+	setCssClassToArray('remove', 'clicked', plusButtonsArena);
 	userlistTitle.textContent = getTranslatedText('userlist');
 	resetGlow();
 	plusClicked = 0;
@@ -76,7 +74,7 @@ export function resetAddingMode() {
 	userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").classList.remove('hovered')});
 }
 export function setAddingMode(plusButton, i, thirdPlayerProtectionFromBot = false) {
-	setCssClassToArray('remove', 'hover-enabled', plusButtons);
+	setCssClassToArray('remove', 'hover-enabled', plusButtonsArena);
 	plusButton.classList.add('clicked');
 	plusClicked = i + 1;
 	userlistTitle.textContent = getTranslatedText('chooseProfile');
@@ -93,8 +91,8 @@ export function setCssClassToArray(mode, className, array) {
 	else array.forEach(button => {button.classList.remove(className)});	 
 }
 
-const plusButtons = document.querySelectorAll(".plusPlayer");
-plusButtons.forEach((plusButton, i) => {
+const plusButtonsArena = document.querySelectorAll(".plusPlayer");
+plusButtonsArena.forEach((plusButton, i) => {
 	plusButton.classList.add('hover-enabled');
 	plusButton.addEventListener('click', function () {
 		if (!plusClicked)
@@ -175,8 +173,8 @@ const backPasswordButton = document.getElementById("arenaBackLogInButton");
 let userClickedId = -1; // To store the index of the tile that was clicked
 let addedPlayerBadges = [];
 
-function putUserInMatch() {
-	console.log("yo");
+function putUserInMatch(plusButtonsArray) {
+	console.log("planet: ", planetInRange);
 	updateListAndResetTimer();
 	const tile = userTiles.get(userClickedId);
 	const textCont = tile.HTMLelement.querySelector(".textContainer");
@@ -186,7 +184,7 @@ function putUserInMatch() {
 	
 	const userBadge = createUserInfoObject(tile, true);
 	addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked});
-	const plusButton = plusButtons[plusClicked - 1];
+	const plusButton = plusButtonsArray[plusClicked - 1];
 	plusButton.parentNode.replaceChild(userBadge.userInfoCont, plusButton);
 
 	resetGlow();
@@ -196,7 +194,7 @@ function putUserInMatch() {
 }
 
 function updateListAndResetTimer() {
-	RenderAllUsersInList(userListBackground);
+	RenderAllUsersInList();
 	clearTimeout(checkEach5Sec);
 	setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
 }
@@ -220,7 +218,9 @@ validatePasswordButton.addEventListener('click', async function() {
 			
 			if (guestToken) {
 				guestLoggedIn.push([guest, guestToken]);
-				putUserInMatch();
+				if (planetInRange === 'arena')
+					putUserInMatch(plusButtonsArena);
+				else putUserInMatch(plusButtonsTournament);
 				displayUsersLogged(guest, guestToken);
 				document.getElementById('enterPasswordInput').value = '';
 				document.getElementById('errorLogGuest').innerHTML = '';
@@ -251,7 +251,9 @@ function addEventListenerToTile(tile) {
 		return;
 	if (isBotId(tile.user.id) || (tile.user.status === 'online' && isGuest(tile.user.id))) {
 		userClickedId = tile.user.id;
-		putUserInMatch();
+		if (planetInRange === 'arena')
+			putUserInMatch(plusButtonsArena);
+		else putUserInMatch(plusButtonsTournament);
 		return;
 	}
 	pwWindow.classList.toggle("showRectangle");
@@ -262,15 +264,19 @@ function addEventListenerToTile(tile) {
 	});
   }
 
-export function setHostAsPlayerOne(user) {
-	const usernameElement = document.getElementById('player1MatchUsername');
-	const pictureElement = document.getElementById('player1MatchPicture');
+export function setHostAsPlayerOne(user, mode) {
+	const usernameElement = document.getElementById(`player1${mode}Username`);
+	const pictureElement = document.getElementById(`player1${mode}Picture`);
 	usernameElement.textContent = user.username;
-	pictureElement.src = user.profile_picture; 
-	addUserToMatch(user.id, user.username, user.profile_picture);
+	pictureElement.src = user.profile_picture;
+	
+	if (mode === 'Tournament')
+		addUserToTournament(user.id, user.username, user.profile_picture);
+	else addUserToMatch(user.id, user.username, user.profile_picture);
 }
 
 import { get_friends_list, updateUserStatus } from "./userManagement.js";
+import { planetInRange } from "./planetIntersection.js";
 
 const backButtonArenaPage = document.getElementById("arenaBackButton");
 backButtonArenaPage.addEventListener('click', () => {togglePlanet()});
@@ -290,17 +296,23 @@ async function isListsChanged() {
 	return listsChanged;
   }
 
+  export function initTournamentPlanet(){
+	userListBackground = document.getElementById('userlistTournamentPage');
+  RenderAllUsersInList();
+}
+
   export function initArenaPlanet() {
+	userListBackground = document.getElementById('userlistArenaPage');
 	resetArenaPage();
-	RenderAllUsersInList(userListBackground);
+	RenderAllUsersInList();
 	setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
   }
 
 export function resetArenaPage() {
 	console.log(addedPlayerBadges);
 	addedPlayerBadges.forEach(obj => {
-		if (obj.userBadge && plusButtons[obj.plusClicked - 1])
-			resetToPlusButton(obj.userBadge, plusButtons[obj.plusClicked - 1]);
+		if (obj.userBadge && plusButtonsArena[obj.plusClicked - 1])
+			resetToPlusButton(obj.userBadge, plusButtonsArena[obj.plusClicked - 1]);
 	});
 	playerNb = 0;
 	profileAdded = [];
@@ -310,15 +322,15 @@ export function resetArenaPage() {
   
   async function refreshUserListIfChanged() {
 	if (await isListsChanged())
-	  await RenderAllUsersInList(userListBackground);
+	  await RenderAllUsersInList();
 	console.log("Checking...");
   }
 
   const userTiles = new Map();
   
-let userListBackground = document.getElementById('userlistArenaPage');
+let userListBackground;
 
-export async function RenderAllUsersInList(userListBackground) {
+export async function RenderAllUsersInList() {
 
 	const users = await get_friends_list();
 	const sortedNewFriends = users.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
@@ -374,7 +386,7 @@ export async function RenderAllUsersInList(userListBackground) {
 		HTMLelement.querySelector('.textContainer').textContent = user.username;
 		HTMLelement.querySelector('img').src = user.profile_picture;
 	  } else {
-		const newTile = createUserTile(user, type, userListBackground);
+		const newTile = createUserTile(user, type);
 		newTile.classList.add('removing');
 		addPromises.push(new Promise(resolve => {
 			setTimeout(() => {
@@ -397,7 +409,7 @@ export async function RenderAllUsersInList(userListBackground) {
 	await Promise.all(addPromises);
   }
   
-export function createUserTile(user, type, userListBackground) {
+export function createUserTile(user, type) {
 	const userTile = document.createElement('div');
 	userTile.classList.add('userTile');
 	
