@@ -13,7 +13,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-import { gameStarted, displayRemovePlayerVisual, resetArenaPage} from './arenaPage.js';
+import { gameStarted, resetArenaPage} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
@@ -249,7 +249,7 @@ export function displayUsersLogged(user, token) {
         const lsCont = document.getElementById('lsCont');
 
         const userInfoCont = document.createElement('div');
-        userInfoCont.classList.add('userInfoCont', 'log');
+        userInfoCont.classList.add('userInfoCont', 'log', 'hover-enabled');
 
         const profilePic = document.createElement('div');
         profilePic.classList.add('profilePic');
@@ -264,12 +264,7 @@ export function displayUsersLogged(user, token) {
         lsCont.appendChild(userInfoCont);
         // if (user.isHost)
         //     return;
-        userInfoCont.addEventListener('mouseenter', function () {
-            displayRemovePlayerVisual(userInfoCont, img, profilePic);
-        });
-        userInfoCont.addEventListener('mouseleave', function () {
-            resetUserInfoLoggedVisual(userInfoCont, img, profilePic, user);
-        });
+
         userInfoCont.addEventListener('click', function () {
             disconnectLoggedGuest(userInfoCont, user, token);
         });

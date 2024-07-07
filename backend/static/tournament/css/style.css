@@ -130,11 +130,22 @@ body {
   z-index: 90;
 }
 
-.plusPlayerTournament:hover {
-  background-color: rgb(50,50,50);
-  cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
-
+.plusPlayerTournament.clicked {
+  animation: clicked 2s ease-in-out infinite;
 }
+
+@keyframes clicked {
+  50% {transform: scale(1);}
+  0%, 100% {transform: scale(1.1);}
+}
+
+.plusPlayerTournament.clicked,
+.plusPlayerTournament.hover-enabled:hover {
+  background-color: rgb(80,80,80);
+  cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+  transform: scale(1.1);
+}
+
 
 .addPlayer{
   height: 100%;

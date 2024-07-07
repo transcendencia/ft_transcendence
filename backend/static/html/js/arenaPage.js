@@ -113,12 +113,6 @@ function displayTypeColor(type, ...containers) {
     containers.forEach(cont => cont.classList.add(`${newType}Tile`));
 }
 
-export function displayRemovePlayerVisual(userInfoCont, profilePic) {
-}
-
-export function resetUserInfoVisual(userInfoCont, clonedImg, profilePic, tileText, i, tile) {
-}
-
 export function resetToPlusButton(userInfoCont, plusButton) {
 	userInfoCont.parentNode.replaceChild(plusButton, userInfoCont);
 }
@@ -173,8 +167,7 @@ const backPasswordButton = document.getElementById("arenaBackLogInButton");
 let userClickedId = -1; // To store the index of the tile that was clicked
 let addedPlayerBadges = [];
 
-function putUserInMatch(plusButtonsArray) {
-	console.log("planet: ", planetInRange);
+function putUserInMatch(plusButtonsArray, mode) {
 	updateListAndResetTimer();
 	const tile = userTiles.get(userClickedId);
 	const textCont = tile.HTMLelement.querySelector(".textContainer");
@@ -190,7 +183,10 @@ function putUserInMatch(plusButtonsArray) {
 	resetGlow();
 	resetAddingMode(plusButton);
 	addClickListenerToNewUserBadge(userBadge, plusButton, tile, userClickedId);
-	addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, plusClicked);
+
+	if (mode === 'tournament')
+		addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
+	else addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture);
 }
 
 function updateListAndResetTimer() {
@@ -218,9 +214,9 @@ validatePasswordButton.addEventListener('click', async function() {
 			
 			if (guestToken) {
 				guestLoggedIn.push([guest, guestToken]);
-				if (planetInRange === 'arena')
-					putUserInMatch(plusButtonsArena);
-				else putUserInMatch(plusButtonsTournament);
+				if (planetInRange.name === 'arena')
+					putUserInMatch(plusButtonsArena, 'arena');
+				else putUserInMatch(plusButtonsTournament, 'tournament');
 				displayUsersLogged(guest, guestToken);
 				document.getElementById('enterPasswordInput').value = '';
 				document.getElementById('errorLogGuest').innerHTML = '';
@@ -251,9 +247,9 @@ function addEventListenerToTile(tile) {
 		return;
 	if (isBotId(tile.user.id) || (tile.user.status === 'online' && isGuest(tile.user.id))) {
 		userClickedId = tile.user.id;
-		if (planetInRange === 'arena')
-			putUserInMatch(plusButtonsArena);
-		else putUserInMatch(plusButtonsTournament);
+		if (planetInRange.name === 'arena')
+			putUserInMatch(plusButtonsArena, 'arena');
+		else putUserInMatch(plusButtonsTournament, 'tournament');
 		return;
 	}
 	pwWindow.classList.toggle("showRectangle");
@@ -659,8 +655,7 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
 		let token = sessionStorage.getItem('host_auth_token');
 		updateUserStatus('in_game', token);
 		for(let i = 0; i < guestLoggedIn.length; i++) {
-			console.log("lets check:", guestLoggedIn[i][0].id, player2.playerId)
-			if (guestLoggedIn[i][0].id === player2.playerId || guestLoggedIn[i][0].id === player3.playerId) {
+			if (guestLoggedIn[i][0].id === player2.playerId || (player3 && guestLoggedIn[i][0].id === player3.playerId)) {
 				token = guestLoggedIn[i][1];
 				updateUserStatus('in_game', token);
 			}

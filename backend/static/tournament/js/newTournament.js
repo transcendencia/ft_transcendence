@@ -1,6 +1,6 @@
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { createUserInfoObject, displayRemovePlayerVisual, resetToPlusButton, resetUserInfoVisual, createUserTile, switchToGame, RenderAllUsersInList } from "../../html/js/arenaPage.js";
+import { createUserInfoObject, resetToPlusButton, createUserTile, switchToGame, RenderAllUsersInList } from "../../html/js/arenaPage.js";
 import { Glow, resetGlow, resetAddingMode, setAddingMode, setCssClassToArray } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
 import { getProfileInfo, populateProfileInfos, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
@@ -32,6 +32,7 @@ function toggleGamemodeTournament(buttonHeader, imgIndex) {
 function handleMapsTournament(buttonHeader, imgIndex) {
   if (imgIndex === 0){
       mapCounterTournament--;
+
       if (mapCounterTournament === -1)
           mapCounterTournament = 3;
   }
@@ -146,9 +147,6 @@ plusButtonsTournament.forEach((plusButton, i) => {
 	});
 });
 
-
-
-
 export function resetPlusButton() {
   let addPlayerElements = document.querySelectorAll('.addPlayer');
 
@@ -177,6 +175,7 @@ let tempTileIndexTournament = -1;
   const tournamentPlayer = [];
 
 export function addUserToTournament(playerId, username, profile_picture) {
+  console.log(username);
     if (!tournamentPlayer.some(player => player.username === username)) {
         tournamentPlayer.push({
           playerId: playerId,

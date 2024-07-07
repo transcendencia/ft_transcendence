@@ -97,6 +97,7 @@ body {
 }
 
 .bluebar {
+    display: none;
     background-color: #0008ff51;
     border: 1px solid #ffffffff;
     height: 100%;
