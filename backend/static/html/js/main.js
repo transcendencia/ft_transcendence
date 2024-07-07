@@ -73,6 +73,7 @@ class LobbyVisuals
     constructor(scene, camera, renderer)
     {
         this.scene = scene;
+        this.textLoaded = false;
         this.camera = camera;
         this.renderer = renderer;
         this.currentGraphics = 'medium';
@@ -126,6 +127,7 @@ class LobbyVisuals
         
             // Add the pivot to the scene
             this.scene.add(pivot);
+            this.textLoaded = true;
             this.text = pivot;
         });
     }
@@ -391,9 +393,11 @@ function planetMovement() {
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
     });
-    if (sun && lobbyVisuals.text)
-    sun.rotation.y += 0.001;
-    lobbyVisuals.text.rotation.y += 0.01;
+    if (sun && lobbyVisuals.textLoaded)
+    {
+        sun.rotation.y += 0.001;
+        lobbyVisuals.text.rotation.y += 0.01;
+    }
 }
 
 export function startAnimation() {
