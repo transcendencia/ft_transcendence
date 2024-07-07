@@ -115,8 +115,13 @@ def return_friends_list(request):
     all_users = User.objects.exclude(id__in=user_in_list).exclude(id=request.user.id).exclude(username="bot")
     other_user_list = UserListSerializer(all_users, many=True).data
     user_not_friend = other_user_list + user_in_received_request_list
-    # Scuriser si il toruve pas le bot
-    bot = UserSerializer(User.objects.get(username="bot")).data
+   # A tester
+    try:
+        bot = UserSerializer(User.objects.get(username="bot")).data
+    except User.DoesNotExist:
+        bot = UserSerializer(User.objects.create_user(username="bot", password="bot1234")).data
+
+    # bot = UserSerializer(User.objects.get(username="bot")).data
     
     # print(received_request_list)
     print(friends)  
