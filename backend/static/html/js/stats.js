@@ -279,7 +279,6 @@ const accuracy2 = new DoughnutGraph('accuracyStat2', 'Accuracy', ['#5dffa990', '
 
 export function getUserStats(userId) {
   const token = sessionStorage.getItem('host_auth_token');
-  console.log(userId);
   fetch(`get_stats/${userId}`, {
     method: 'GET',
     headers: {

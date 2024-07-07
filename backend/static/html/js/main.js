@@ -13,12 +13,11 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-import { gameStarted, displayRemovePlayerVisual} from './arenaPage.js';
+import { gameStarted, displayRemovePlayerVisual, resetArenaPage} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
 import { updateUserStatus, test_back } from "./userManagement.js";
-import { guestLoggedIn } from "./arenaPage.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -287,6 +286,10 @@ let rsContVisible = false;
 const structure = document.querySelector(".structure");
 const escapeBG = document.querySelector(".escapeBG");
 
+export function swipeLeftSideContainer(endPos) {
+    leftSideContainer.style.left = endPos;
+}
+
 export function toggleRSContainerVisibility() {
     if (rsContVisible) {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
@@ -295,8 +298,7 @@ export function toggleRSContainerVisibility() {
     } else {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '0%';
-        leftSideContainer.style.transition = 'left 0.5s ease-in-out';
-        leftSideContainer.style.left = '0%';
+        swipeLeftSideContainer('0%');
         rsContVisible = true;
     }
 }
@@ -412,13 +414,15 @@ export function displayHostEscapePage() {
 }
 
 export function toggleEscapeContainerVisibility() {
-    if (targetBlur !== 0) {
+    if (!escapeContainerVisible) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
+        escapeContainerVisible = true;
     }
     else {
         escapeBG.style.animation = 'rollBG 0.2s ease backwards'
         structure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
+        escapeContainerVisible = false;
     }
 }
 let pauseGame = false;
@@ -453,7 +457,7 @@ window.addEventListener('resize', () => {
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
-        console.log(camera.position);
+        resetArenaPage();
     if (event.key === 'm')
         test_back();
     if (event.key === 'Enter') {
@@ -503,6 +507,7 @@ document.addEventListener('keydown', (event) => {
         togglePlanet();
 });
 
+let escapeContainerVisible = false;
 let targetBlur = 0;
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);

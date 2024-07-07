@@ -1,7 +1,7 @@
 import { getCookie } from './loginPage.js';
 import { getTranslatedText} from "./translatePages.js";
-import { RenderHostMatch, RenderAllUsersInList} from "./arenaPage.js";
-import { RenderUserTournament, RenderAllUsersTournament } from '../../tournament/js/newTournament.js';
+import { setHostAsPlayerOne, RenderAllUsersInList} from "./arenaPage.js";
+import { RenderUserTournament } from '../../tournament/js/newTournament.js';
 
 export function updateUserGraphicMode(graphicMode) {
 	const token = sessionStorage.getItem('host_auth_token');
@@ -139,7 +139,6 @@ export function get_user_list() {
     })
     .then(response => response.json())
     .then(data => {
-        RenderAllUsersTournament(data); 
     })
     .catch(error => {
         console.error('Error:', error);
@@ -161,7 +160,7 @@ export function populateProfileInfos(data) {
         <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
         <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
     `;
-    RenderHostMatch(data.profile_info);
+    setHostAsPlayerOne(data.profile_info);
     RenderUserTournament(data.profile_info);
 }
 

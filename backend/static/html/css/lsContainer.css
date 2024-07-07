@@ -10,6 +10,7 @@
 	flex-direction: column;
 	width: auto; /* Change width to auto */
 	max-width: max-content; /* Set a minimum width */
+	transition: left 0.5s ease-in-out;
 }
 
 .log   {
