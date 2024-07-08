@@ -179,7 +179,6 @@ export async function handleLogin(formData) {
 
                 console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
-                    //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
 
                     sessionStorage.setItem("hostLoggedIn", 'true');
                     sessionStorage.setItem("host_auth_token", data.token);
@@ -197,6 +196,7 @@ export async function handleLogin(formData) {
                     .catch(error => {
                         console.error('Failed to retrieve profile info:', error);
                     });
+                    
                     TranslateAllTexts();
                     getGameInfo();
                     changeGraphics(data.graphic_mode);
@@ -209,11 +209,8 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
-                console.log("data.msg", data.msg_code);
-                if (hostLoggedIn === 'false')
-                    document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
-                else if (hostLoggedIn === 'true')
-                    document.getElementById('errorLogGuest').innerText = getTranslatedText(data.msg_code);
+                const messageContainerId = hostLoggedIn ? 'errorLogGuest' : 'messageContainer';
+                document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
                 resolve(null);
             }
         })
