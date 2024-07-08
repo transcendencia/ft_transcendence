@@ -118,17 +118,6 @@ def generate_unique_username(request):
             return Response({'username': username}, status=200)
     return Response(status=400)
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_user_list(request):
-  if request.method == 'GET':
-    users = User.objects.all()
-    serializers = UserListSerializer(users, many=True)
-    return Response(serializers.data)
-  else:
-    return Response(status=405)
-
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])

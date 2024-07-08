@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,12 +17,14 @@ from rest_framework.response import Response
 from ..models import User, FriendRequest
 from ..serializers import UserSerializer, SignupSerializer, UserListSerializer
 
-#verifier qu'une friend request n'existe pas deja entre ces 2 user 
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def send_friend_request(request):
-    if request.method == 'POST':
+# #verifier qu'une friend request n'existe pas deja entre ces 2 user 
+# #Return erreur si la friend request existe pas
+class FriendRequestView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    print("I'm in the friend request ")
+    def post(self, request):
         sender = request.user
         receiver_id = request.data.get('receiver_id')
         try:
@@ -32,42 +35,42 @@ def send_friend_request(request):
         if receiver == sender:
             raise ValidationError("Cannot send friend request to yourself")
 
-        # print(sender.username, receiver.)
         friend_request, created = FriendRequest.objects.get_or_create(sender=sender, receiver=receiver)
 
         if created:
-            print("Friend request send")
             response = "Friend request sent"
         else:
             response = "Friend request not sent (already exists)"
-    else:
-        response = None
-    
-    return Response({'message': response})
+        
+        return Response({'message': response})
 
-#Return erreur si la friend request existe pas
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def	accept_friend_request(request):
-	friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
-	if friend_request.sender == request.user:
-		return Response('You cannot accept the invite if you are the sender')
-	friend_request.status = "accepted"
-	friend_request.save()
-	return Response('friend request accepted')
+    def put(self, request):
+        try:
+            friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
+        except FriendRequest.DoesNotExist:
+            return Response({'message': 'Friend request does not exist'}, status=400)
 
+        if friend_request.sender == request.user:
+            return Response('You cannot accept the invite if you are the sender', status=400)
+        
+        friend_request.status = "accepted"
+        friend_request.save()
+        
+        return Response('Friend request accepted')
 
-#Return erreur si la friend request existe pas
-#Verifier que j'essaie pas de rejeter une request que j'ai moi mm envoyer
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def reject_friend_request(request):
-    friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
-    friend_request.delete()
-    
-    return Response({'status' : "success"})
+    def delete(self, request):
+        try:
+            friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
+        except FriendRequest.DoesNotExist:
+            return Response({'message': 'Friend request does not exist'}, status=400)
+
+        # if friend_request.sender == request.user:
+        #     return Response('You cannot reject a request that you sent', status=400)
+        
+        friend_request.delete()
+        
+        return Response({'status': "success"})
+
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

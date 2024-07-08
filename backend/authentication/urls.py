@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import authentication, tournament, updateUserInfo, gameInfo, friendship, stats
+
 from .views.updateUserInfo import UserStatusView 
+from .views.friendship import FriendRequestView
 
 urlpatterns = [
 	path('', authentication.index, name='index'),
@@ -20,7 +22,6 @@ urlpatterns = [
     
     path('change_profile_info/', updateUserInfo.change_profile_info, name="change_profile_info"),
     path('get_profile_info/<int:userId>/', updateUserInfo.get_profile_info, name="get_profile_info"),
-    path('get_user_list/', updateUserInfo.get_user_list, name="get_user_list"),
     path('get_game_player2/', gameInfo.get_game_player2, name="get_game_player2"),
     path('change_graphic_mode/', updateUserInfo.change_graphic_mode, name="change_graphic_mode"),
     path('delete_account/', updateUserInfo.delete_account, name="delete_account"),
@@ -28,9 +29,7 @@ urlpatterns = [
     path('generate_unique_username/', updateUserInfo.generate_unique_username, name="generate_unique_username"),
     
     #friendship.py
-    path('send_friend_request/', friendship.send_friend_request, name="send_friend_request"),
-    path('accept_friend_request/', friendship.accept_friend_request, name="accept_friend_request"),
-    path('reject_friend_request/', friendship.reject_friend_request, name="reject_friend_request"),
+    path('friend_request/', FriendRequestView.as_view(), name='friend-request'),
     path('return_friends_list/', friendship.return_friends_list, name="return_friends_list"),
 
     #stats.py
