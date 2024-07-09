@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets } from "./planets.js";
+import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
-import {cancelLanding, landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
+import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
+import { getProfileInfo } from "./userManagement.js";
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
@@ -16,7 +17,8 @@ import { gameStarted, displayRemovePlayerVisual} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-
+import { updateUserStatus } from "./userManagement.js";
+import { guestLoggedIn } from "./arenaPage.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -43,8 +45,11 @@ const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect rat
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
-export function toggleLobbyStart() {
-    lobbyStart = !lobbyStart;
+export function toggleLobbyStart(state = false) {
+    if (state === true)
+        lobbyStart = false;
+    else
+        lobbyStart = !lobbyStart;
 }
 
     // LIGHTING
@@ -60,8 +65,7 @@ export function toggleLobbyStart() {
     const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
     spaceShipPointLight.castShadow = true;
     const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
-    const lightHelper = new THREE.PointLightHelper(pointLight);
-    scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
+    scene.add(pointLight, ambientLight, spaceShipPointLight, pointLight2);
 
 
 class LobbyVisuals
@@ -69,6 +73,7 @@ class LobbyVisuals
     constructor(scene, camera, renderer)
     {
         this.scene = scene;
+        this.textLoaded = false;
         this.camera = camera;
         this.renderer = renderer;
         this.currentGraphics = 'medium';
@@ -89,6 +94,42 @@ class LobbyVisuals
         this.bloomPass.radius = 0.8;
         this.stars = [];
         this.addStars(1000);
+
+        const fontLoader = new THREE.FontLoader();
+        fontLoader.load('https://threejs.org/examples/fonts/optimer_bold.typeface.json', (font) => {
+            const textGeometry = new THREE.TextGeometry('42', {
+                font: font,
+                size: 50, // Adjusted size
+                height: 22, // Adjusted height
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.1, // Reduced bevel thickness
+                bevelSize: 0.2, // Reduced bevel size
+                bevelOffset: 0,
+                bevelSegments: 3 // Adjusted bevel segments
+            });
+            textGeometry.computeBoundingBox();
+            const boundingBox = textGeometry.boundingBox;
+        
+            const textWidth = boundingBox.max.x - boundingBox.min.x;
+            const textHeight = boundingBox.max.y - boundingBox.min.y;
+            const textDepth = boundingBox.max.z - boundingBox.min.z;
+        
+            const material = new THREE.MeshPhongMaterial({color: 0x000000});
+            const textMesh = new THREE.Mesh(textGeometry, material);
+        
+            // Create a pivot object and add the text to it
+            const pivot = new THREE.Object3D();
+            pivot.add(textMesh);
+        
+            // Offset the text position so that its center is at the pivot point
+            textMesh.position.set(-textWidth / 2, -textHeight / 2, -textDepth / 2);
+        
+            // Add the pivot to the scene
+            this.scene.add(pivot);
+            this.textLoaded = true;
+            this.text = pivot;
+        });
     }
     addStar() {
         const geometry = new THREE.SphereGeometry(1.125, 12, 12);
@@ -236,22 +277,7 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
     userInfoCont.childNodes[1].textContent = user.username;
 }
 
-import { updateUserStatus } from "./userManagement.js";
-import { guestLoggedIn } from "./arenaPage.js";
-
-function disconnectLoggedGuest(userInfoCont, user, token) {
-    lsCont.removeChild(userInfoCont);
-    updateUserStatus('offline', token);
-    // console.log("before logout:", guestLoggedIn);
-
-    for (let i = 0; i < guestLoggedIn.length; i++) {
-        if (guestLoggedIn[i][0].id === user.id) {
-            guestLoggedIn.splice(i, 1);
-        }
-    }
-
-    // console.log("after logout:", guestLoggedIn);
-}
+import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
 
 export function displayUsersLogged(user, token) {
     
@@ -367,6 +393,11 @@ function planetMovement() {
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
     });
+    if (sun && lobbyVisuals.textLoaded)
+    {
+        sun.rotation.y += 0.001;
+        lobbyVisuals.text.rotation.y += 0.01;
+    }
 }
 
 export function startAnimation() {
@@ -407,8 +438,22 @@ export function startAnimation() {
         anim1.start();
     }
 
-export function toggleEscapeContainerVisibility() {
-    togglePause();
+    
+export function createUserBadge(hostData, elementId) {
+    const escapeUserCont = document.getElementById(elementId);
+    escapeUserCont.innerHTML = `
+    <div class="profilePic">
+      <img src="${hostData.profile_info.profile_picture}">
+    </div>
+    ${hostData.profile_info.username}
+  `;
+}
+
+export function toggleEscapeContainerVisibility(disconnect = false) {
+    if (!disconnect) {
+        getProfileInfo().then(data => createUserBadge(data, 'escapeUserContainer'))
+        .catch(error => console.error('Failed to retrieve profile info:', error));    
+    }
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
@@ -418,29 +463,6 @@ export function toggleEscapeContainerVisibility() {
         structure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
     }
 }
-
-/*On va chercher la référence entre le html et le fichier js*/
-const rgpdStructure = document.getElementById("rgpdstructure");
-const rgpdBG = document.getElementById("rgpdBG");
-//recuperer ton bouton et apres tu add eventlistener
-//button.addEventListener("click", (event) => {})
-
-let rgpdDisplayed = false;
-
-function toggleRGPDContainerVisibility() {
-    if (!rgpdDisplayed) {
-        rgpdStructure.style.animation = 'headerDown 0.5s ease forwards'
-        rgpdBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
-        rgpdDisplayed = true;
-    }
-    else {
-        rgpdBG.style.animation = 'rollBG 0.2s ease backwards'
-        rgpdStructure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
-        rgpdDisplayed = false;
-    }
-}
-
-
 let pauseGame = false;
 
 export function togglePause() {
@@ -448,39 +470,58 @@ export function togglePause() {
     pauseGame ? pauseGame = false : pauseGame = true;
 }
 
-let firstPauseTriggered = false;
+const blockingPanel = document.getElementById('blockingPanel');
+const pwWindow = document.querySelector(".enterPasswordWindow");
+const deleteWindow = document.getElementById("validateDelete");
+
+// handle window resize
+window.addEventListener('resize', () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    composer.setSize(width, height);
+    composer.setPixelRatio(window.devicePixelRatio);
+    composer.render();
+    minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
+    minimapCamera.left = -minimapWidth * 8;
+    minimapCamera.right = minimapWidth * 8;
+    minimapCamera.top = minimapHeight * 8;
+    minimapCamera.bottom = -minimapHeight * 8;
+    minimapCamera.updateProjectionMatrix();
+    composer.render();
+});
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
-    if (event.target.tagName === 'INPUT')
-        return;
-    if (event.key === 'e' && !lobbyStart) {
-        // const token = localStorage.getItem('host_auth_token');
-        // console.log(token);
-        // if (token) {
-            showPage('none');
-            startAnimation();
-            // displayUsersLogged();
-        // }
-        // localStorage.clear();
+    if (event.key === 'm')
+        test_back();
+    if (event.key === 'Enter') {
+        if (window.location.hash === "#signUpPage") 
+            document.getElementById("submitSignUp").click();
+        const pwWindow = document.querySelector(".enterPasswordWindow");
+        if (window.getComputedStyle(pwWindow).display === 'flex')
+        document.getElementById("arenaLogInButton").click()
     }
-    if (event.key === 'e' && inRange && !gameStarted)
-        togglePlanet();
     if (event.key === 'Escape') {
-        if (gameState.inGame)
+        if (gameState.inGame && !gameState.arena.game.isPlaying)
+            return;
+        if (gameState.inGame && gameState.arena.game.isPlaying)
         {
             toggleEscapeContainerVisibility();
+            togglePause();
             toggleBlurDisplay(false);
             pauseGame ? pauseGame = false : pauseGame = true;
             return;
         }
-        if (landedOnPlanet) {
+        else if (landedOnPlanet) {
             togglePlanet();
-            toggleEscapeContainerVisibility();
-            blockingPanel.style.visibility = 'hidden';
+            blockingPanel.classList.remove('show');
+            pwWindow.classList.remove('showRectangle')
+            deleteWindow.classList.remove('showRectangle')
             showPage('none');
-            togglePause();
             returnToHost();
             return;
         }
@@ -488,25 +529,44 @@ document.addEventListener('keydown', (event) => {
             moveCameraToBackOfCockpit();
             return;
         }
-        if (lobbyStart) {
-            console.log("coucou");
+        else if (lobbyStart) {
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
             toggleEscapeContainerVisibility();
+            togglePause();
             resetOutlineAndText();
+            togglePause();
             pauseGame ? pauseGame = false : pauseGame = true;
         }
     }
+    if (event.target.tagName === 'INPUT')
+        return;
+    if (event.key === 'e' && inRange && !gameStarted)
+        togglePlanet();
 });
+
+function test_back() {
+    console.log("test back");
+    // SIGN UP
+    // document.getElementById('usernameLoginInput').value = 67890;
+    // document.getElementById('passwordLoginInput').value = 'q';
+    // document.getElementById('confirmPasswordSignUpInput').value = 'q';
+    // document.getElementById("submitSignUp").click();
+
+    // LOGIN
+    // document.getElementById('usernameLoginInput').value = 67890;
+    // document.getElementById('passwordLoginInput').value = 'q';
+    // document.getElementById("loginButton").click();
+}
 
 let targetBlur = 0;
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);
 const verticalBlur = new ShaderPass(VerticalBlurShader);
-horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-horizontalBlur.renderToScreen = true; // Render to a texture
-verticalBlur.renderToScreen = true; // Render to the screen
+horizontalBlur.uniforms['tDiffuse'].value = null;
+verticalBlur.uniforms['tDiffuse'].value = null;
+horizontalBlur.renderToScreen = true;
+verticalBlur.renderToScreen = true;
 horizontalBlur.uniforms.h.value = targetBlur;
 verticalBlur.uniforms.v.value = targetBlur;
 composer.addPass(horizontalBlur);
@@ -550,9 +610,17 @@ function update() {
 return;
 }
 
+let fpsInterval = 1000 / 75; // 75 FPS
+let stats = new Stats();
+let lastUpdateTime = performance.now();
+
+
 function animate()
 {
     requestAnimationFrame( animate )
+    let now = performance.now();
+    let elapsed = now - lastUpdateTime;
+    if (elapsed < fpsInterval) return; // Skip if too big FPS
     if (gameStarted)
         return;
     TWEEN.update();
@@ -565,6 +633,10 @@ function animate()
     mixer2.update(0.025);
     mixer3.update(0.025);
     // renderer.render(scene, camera);
+
+    stats.update();
+    lastUpdateTime = now - (elapsed % fpsInterval);
+    stats.time = performance.now();
 }
 
 const checkModelsLoaded = setInterval(() => {

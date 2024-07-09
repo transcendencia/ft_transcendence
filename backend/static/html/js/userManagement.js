@@ -4,7 +4,7 @@ import { RenderHostMatch, RenderAllUsersInList} from "./arenaPage.js";
 import { RenderUserTournament, RenderAllUsersTournament } from '../../tournament/js/newTournament.js';
 
 export function updateUserGraphicMode(graphicMode) {
-	const token = localStorage.getItem('host_auth_token');
+	const token = sessionStorage.getItem('host_auth_token');
     return fetch('change_graphic_mode/', {
         method: 'POST',
         headers: {
@@ -25,7 +25,7 @@ export function updateUserGraphicMode(graphicMode) {
 }
 
 export function updateUserLanguage(new_language) {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     fetch('change_language/', {
         method: 'POST',
         headers: {
@@ -81,7 +81,7 @@ export async function updateUserStatus(status, token) {
 // }
 
 export function getUserStatus(userId) {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     return fetch(`/user/status/${userId}/`, {
         method: 'GET',
         headers: {
@@ -106,7 +106,7 @@ export function getUserStatus(userId) {
 }
 
 export async function get_friends_list() {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     
     try {
         const response = await fetch('return_friends_list/', {
@@ -128,7 +128,7 @@ export async function get_friends_list() {
 }
 
 export function get_user_list() {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     // console.log(token);
     fetch('get_user_list/', {
         method: 'GET',
@@ -147,43 +147,47 @@ export function get_user_list() {
     });
 };
 
-export function getProfileInfo() {
-	const token = localStorage.getItem('host_auth_token');
-		fetch('get_profile_info/', {
-		    method: 'GET',
-			headers: {
-				'Authorization': `Token ${token}`,
-			}
-		})
-		.then(response => {
-			if (!response.ok)
-				throw new Error('Error lors de la recuperation des donne');
-				return response.json();
-		})
-		.then(data=> {
-			document.getElementById('username').textContent = data.profile_info.username;
-			document.getElementById('alias').textContent = data.profile_info.alias;
-			document.getElementById('profile_pic').src = data.profile_info.profile_picture;
-            document.getElementById('changeUsernameInput').value = data.profile_info.username;
-            document.getElementById('changeAliasInput').value = data.profile_info.alias;
-            const basicStats = document.getElementById('winLoseTexts1');
-            basicStats.innerHTML = `
-                <div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.profile_info.nbr_match}</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.profile_info.nbr_match_win}</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
-                <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
-            `;
-            RenderHostMatch(data.profile_info);
-            RenderUserTournament(data.profile_info);
-		})
-		.catch(error => {
-			console.error('Erreur :', error);
-		});
+export function populateProfileInfo(data) {
+    document.getElementById('username').textContent = data.profile_info.username;
+    document.getElementById('alias').textContent = data.profile_info.alias;
+    document.getElementById('profile_pic').src = data.profile_info.profile_picture;
+    document.getElementById('changeUsernameInput').value = data.profile_info.username;
+    document.getElementById('changeAliasInput').value = data.profile_info.alias;
+
+    const basicStats = document.getElementById('winLoseTexts1');
+    basicStats.innerHTML = `
+        <div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.profile_info.nbr_match}</div>
+        <div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.profile_info.nbr_match_win}</div>
+        <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
+        <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
+    `;
+    RenderHostMatch(data.profile_info);
+    RenderUserTournament(data.profile_info);
 }
 
-export function send_request(username) {
+export function getProfileInfo() {
+    const token = sessionStorage.getItem('host_auth_token');
+    return fetch('get_profile_info/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}`,
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error lors de la recuperation des donnees');
+        }
+        return response.json();
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+        throw error;  
+    });
+}
 
-    const token = localStorage.getItem('host_auth_token');
+export function send_request(id) {
+
+    const token = sessionStorage.getItem('host_auth_token');
     fetch('send_friend_request/', {
         method: 'POST',
         headers: {
@@ -191,7 +195,7 @@ export function send_request(username) {
             'Authorization': `Token ${token}`,
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({ receiver_name: username })
+        body: JSON.stringify({ receiver_id: id })
     })
     .then(response => {
         if (!response.ok) {
@@ -204,7 +208,7 @@ export function send_request(username) {
 }
 
 export async function accept_friend_request(id) {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     console.log("id", id);
     await fetch('accept_friend_request/', {
         method: 'POST',
@@ -226,7 +230,7 @@ export async function accept_friend_request(id) {
   }
 
 export async function delete_friend_request(id) {
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     await fetch('reject_friend_request/', {
         method: 'POST',
         headers: {

@@ -44,11 +44,12 @@
         <div class="titleText" id="loginText">
           - Login -
           <div class="textBar">
-            <input class="text-input" name="username" spellcheck="false"></input>
+            <input id = "usernameLoginInput" class="text-input" name="username" spellcheck="false"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
           <div class="littleMsgCont d-flex justify-content-center align-items-center">
-            <div class="newToTheGame">New to the game ?
+            <div class="newToTheGame">
+              <div class="basicText" style="margin-right: 10px;"> New to the game ? </div>
               <div class="actionCont tinyBlueShadowfilter">Sign Up Here</div>
             </div>
           </div>
@@ -56,12 +57,12 @@
         <div class="titleText" id="passwordText">
           - Password -
           <div class="textBar">
-            <input class="text-input" name="password" spellcheck="false" type="password" autocomplete="off"></input>
+            <input id = "passwordLoginInput" class="text-input" name="password" spellcheck="false" type="password" autocomplete="off"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
         </div>
         <div id= "messageContainer" class="loginMessageCont d-flex justify-content-center align-items-center"></div>
-        <button type="submit" style="display: none;"></button>
+        <button type="submit" id="loginButton" style="display: none;"></button>
       </form>
     </div>
     <div class="languageColumn" id="loginLanguageText">
@@ -94,31 +95,31 @@
         <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
           Login
         <div class="textBar">
-          <input class="text-input" name="username" style="font-size: 30px;" spellcheck="false" ></input>
+          <input id= "usernameSignUpInput" class="text-input" name="username" style="font-size: 30px;" spellcheck="false" ></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
-      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
+      <div class="titleText" style="margin-top:-8px;transform: scale(1.2); font-size: 20px;" id="enterPassword">
           Password
         <div class="textBar">
-          <input class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
+          <input id= "passwordSignUpInput" class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
-      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
+      <div class="titleText" style="margin-top:-8px; transform: scale(1.2); font-size: 20px;" id="confirmPassword">
         confirm password
         <div class="textBar">
-          <input class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
+          <input id= "confirmPasswordSignUpInput" class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
       <!-- <div class="littleMsgCont">
       </div> -->
       <div>
-        <div id="RGPDCreate" class="newToTheGame" >
-          By making you accept the
+        <div id="RGPDCreate" class="newToTheGame" style="width: 100%; font-size: 20px;">
+          By registering, you accept the
         </div> 
-        <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter">
+        <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter" style="font-size: 25px;">
           privacy policy 
         </div> 
       </div>
@@ -261,11 +262,11 @@
       <div class="validateDeleteText">Enter your password</div>
       <div class="changeInfoBar" style="height: 20%;">
         <input id="enterPasswordInput" name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" type="password" placeholder="Password"></input>
-        <div id="errorLogGuest"></div>
       </div>
+      <div id="errorLogGuest" class="d-flex justify-content-center align-items-center text-center" style="height: 10%; width: 60%; font-size: 13px; font-family: 'space'; color: red;"></div>
       <div class="buttonContainer" style="height: 10%;">
         <div id="arenaBackLogInButton" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">back</div>
-      <div id="arenaLogInButton" class="validateDeleteButton">Log in</div>
+      <div type="submit" id="arenaLogInButton" class="validateDeleteButton">Log in</div>
       </div>
     </div>
 
@@ -349,7 +350,7 @@
                 </div>
                 <div class="statColumn">
                   <div class="statItem">
-                    <span class="statName">Nemesis:</span>
+                    <span class="statName">score ratio:</span>
                     <span class="statValue" id="nemesis">1</span>
                 </div>
                   <div class="statItem">
@@ -443,7 +444,7 @@
                   </div>
                   <div class="statColumn">
                     <div class="statItem">
-                      <span class="statName">Nemesis:</span>
+                      <span class="statName">score ratio:</span>
                       <span class="statValue" id="nemesis">1</span>
                   </div>
                     <div class="statItem">
@@ -472,10 +473,7 @@
                   <img id="infoButton" class="info-icon" src="../static/html/assets/icons/info_3.png" alt="Information" />
                 </div>
                 <div id="displayAnonymousMode" class="anonymousInfos" style="font-size: 13px; text-align: center; font-family: 'space'; color: white; margin-top: 10px;">
-                  <div id="textAnonymous" class="testAnonymous" >When you activate anonymous mode you have a randon username and default profil picture </div>
-                  <div id="infoBack" class="actionCont tinyBlueShadowfilter" style="font-size: 13px; margin-top: 5px;">
-                      Back
-                  </div>
+                  <div id="textAnonymous" class="testAnonymous" >When you activate anonymous mode you have a random username and default profil picture </div>
                 </div> 
                   <div class="changeInfoBar">
                       <input id="changeUsernameInput" name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
@@ -489,6 +487,7 @@
                     <div class="changeInfoBar">
                       <input id="changeConfirmPasswordInput" name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password"></input>
                     </div>
+<<<<<<< HEAD
                     <div id="RGPDPolicyInUserPage" class="actionCont tinyBlueShadowfilter rgpd-policy">
                       PRIVACY POLICY
                     </div>
@@ -496,6 +495,17 @@
                         DOWNLOAD YOUR DATA
                     </div> 
                    <div class="profilePicContainer">
+=======
+                    <div class="privacyAndDownloadCont">
+                      <div id="RGPDPolicyInUserPage" class="actionCont tinyBlueShadowfilter" style="font-size: 20px; font-family: 'space'">
+                        PRIVACY POLICY
+                      </div> 
+                      <div id="downloadButton" class="actionCont tinyBlueShadowfilter" style="font-size: 20px; font-family: 'space'">
+                        DOWNLOAD DATA
+                      </div>
+                    </div>
+                    <div class="profilePicContainer">
+>>>>>>> finalgame
                       <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
                       <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
@@ -508,6 +518,7 @@
                     </div>
                 </form>
             </div>
+            <div id="deleteBlockingPanel" class="blockingPanel"></div>
             <div id="validateDelete" class="validateDelete">
               <div id="validateDeleteAccountText" class="validateDeleteText">All data will be permanently lost. Are you sure you want to delete your account?</div>
               <div class="buttonContainer">
@@ -815,7 +826,7 @@
   </div>
   <div class="escapeBG">
     <div class="settings">
-      <div class="languageColumn" id="graphicsText" style="width: 50%; height: 40%;">
+      <div class="languageColumn" id="graphicsText" style="width: 60%; height: 40%;">
             <div class="languageSettings">
             <div class="graphicsIcon" id="graphicsIcon1">Simple</div>
             <div class="graphicsIcon redGlow" id="graphicsIcon2">Classic</div>
@@ -824,7 +835,7 @@
             <div class="separator"></div>
             Graphics
           </div>
-          <div class="languageColumn" id="EscapeLanguageText" style="width: 50%; height: 40%;">
+          <div class="languageColumn" id="EscapeLanguageText" style="width: 55%; height: 40%;">
             <div class="languageSettings">
               <div class="languageIcon" id="es1">
                 <div class="icon" style="background-image: url('../static/html/assets/icons/mexicanAlienWhite.png');" ></div>
@@ -845,9 +856,9 @@
   </div>
     <div class="loggedAs">
       Currently logged as :
-      <div class="userInfoCont">
+      <div id="escapeUserContainer" class="userInfoCont">
         <div class="profilePic">
-          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+          <img id="escapeProfileImg" src="{% static 'html/assets/icons/ES_NU.png' %}">
         </div>
         AtomiK
       </div>
@@ -855,31 +866,86 @@
       <div class="redButton" id="disconnectButton" style="margin-top: -30px;width: 35%; height: 8%;">Disconnect</div>
     </div>
     </div>
-    <!-- RGPD PAGE -->          
   </div>
-  
-  <div class="rgpdPage page invisible" >
-    <div id="RGPDTitle" class="title" style="font-size : 70px;">
-      PRIVACY POLICY
-    </div>
-    <div class="rgpdFrame">
-      <img src="{% static 'game/assets/scoreUI.png' %}" style="transform: rotate(180deg);">
+
+  <!-- RGPD PAGE -->          
+  <div class="rgpdPage page">
       <div class="backgroundRGPDText">
-       <div id="RGPDTexte" class="text-content">
+      <div id="RGPDTitle" class="title" style="font-size : 50px;">
+        PRIVACY POLICY
+      </div>
+       <div id="RGPDText">
         The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. Your data is automatically deleted one year after your last connection. For any reclamation you can go to the CNIL website. 
         </div>
-        <div id="RGPDBack" class="tinyBlueShadowfilter" style="margin-bottom: 20%;     cursor:url('../static/game/assets/cursor/pointer.cur'), pointer;">Back</div>
+        <div id="RGPDBack" class="planetBackButton" style="height: 15%; width: 40%;">Back</div>
       </div>
-      <img src="{% static 'game/assets/scoreUI.png' %}">
-    </div>
   </div>
     
     <!-- GAME STUFF -->
   <div class="bluebar glow"></div>
-  <div id="startScreen"class=startScreen>
+  <div id="startScreen" class="startScreen">
     <div id="startGameText">press e to start</div>
-  </div>
+    <div id="startPlayer1Cont" class="startPlayerCont">
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img id=startpp1 src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        <div id="startUsername1Text" class="text-white" style="transform: scaleX(-1)">AtomiK</div>
+      </div>
+    </div>
+    <div id="startPlayer2Cont" class="startPlayerCont">
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img id=startpp2 src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        <div id="startUsername2Text" class="text-white">AtomiK</div>
+      </div>
+    </div>
+</div>
+
   <div class="gameUI">
+    <div id="leftControls" class="leftControlsUI">
+      <div class="control">
+          <img id="leftLeft" src="{% static 'game/assets/keys/key_a.png' %}" style="width: 50px; height: 50px;">
+          <span style="color: white;">Left</span>
+      </div>
+      <div class="control">
+          <img id="leftRight" src="{% static 'game/assets/keys/key_d.png' %}" style="width: 50px; height: 50px;">
+          <span style="color: white;">Right</span>
+      </div>
+      <div class="control">
+        <img id="leftPower" src="{% static 'game/assets/keys/key_w.png' %}" style="width: 50px; height: 50px;">
+        <span style="color: white;">Powerup</span>
+      </div>
+    </div>
+    <div id="rightControls" class="rightControlsUI">
+      <div class="control">
+          <span style="color: white;">Left</span>
+          <img id="rightLeft" src="{% static 'game/assets/keys/left_key.png' %}" style="width: 50px; height: 50px;">
+      </div>
+      <div class="control">
+          <span style="color: white;">Right</span>
+          <img id="rightRight" src="{% static 'game/assets/keys/right_key.png' %}" style="width: 50px; height: 50px;">
+      </div>
+      <div class="control">
+        <span style="color: white;">Powerup</span>
+        <img id="rightPower" src="{% static 'game/assets/keys/up_key.png' %}" style="width: 50px; height: 50px;">
+      </div>
+    </div>
+    <div id="topControls" class="topControlsUI">
+      <div class="topControl">
+          <img src="{% static 'game/assets/keys/leftClick_key.png' %}" style="width: 50px; height: 50px;">
+          <span style="color: white;">Bullet</span>
+      </div>
+      <div class="topControl">
+          <img src="{% static 'game/assets/keys/centerClick_key.png' %}" style="width: 50px; height: 50px;">
+          <span style="color: white;">Orb</span>
+      </div>
+      <div class="topControl">
+        <img src="{% static 'game/assets/keys/rightClick_key.png' %}" style="width: 50px; height: 50px;">
+        <span style="color: white;">Bullet</span>
+      </div>
+    </div>
     <div class="scoreUI">
       <div class="centerRectangle glow" style="border-color: rgb(171, 31, 0); box-shadow: rgb(171, 31, 0);">
         <div class="speedbar"></div>

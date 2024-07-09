@@ -73,14 +73,14 @@ export function togglePanelDisplay() {
 
 function resetRotations() {
     spaceShip.rotation.set(0, 0, 0);
-        if (spaceShip.position.z > 0 && spaceShip.position.x < 0)
-            spaceShip.rotation.set(0, THREE.MathUtils.degToRad(135), 0);
-        else if (spaceShip.position.z > 0 && spaceShip.position.x > 0)
-            spaceShip.rotation.set(0, THREE.MathUtils.degToRad(225), 0);
-        else if (spaceShip.position.z < 0 && spaceShip.position.x < 0)
-        spaceShip.rotation.set(0, THREE.MathUtils.degToRad(45), 0);
-        else spaceShip.rotation.set(0, THREE.MathUtils.degToRad(315), 0);
-        camera.rotation.set(0, 0, 0);
+    if (spaceShip.position.z > 0 && spaceShip.position.x < 0)
+        spaceShip.rotation.set(0, THREE.MathUtils.degToRad(135), 0);
+    else if (spaceShip.position.z > 0 && spaceShip.position.x > 0)
+        spaceShip.rotation.set(0, THREE.MathUtils.degToRad(225), 0);
+    else if (spaceShip.position.z < 0 && spaceShip.position.x < 0)
+    spaceShip.rotation.set(0, THREE.MathUtils.degToRad(45), 0);
+    else spaceShip.rotation.set(0, THREE.MathUtils.degToRad(315), 0);
+    camera.rotation.set(0, 0, 0);
 }
 
 export function triggerInfiniteAnim(img1, img2) {
@@ -93,7 +93,7 @@ export function cancelLanding()
     landedOnPlanet = false;
 }
 
-export function togglePlanet() {
+export function togglePlanet(deleteAccount = false) {
     if (planetInRange)
         clearInterval(checkEach5Sec);
     if (!landedOnPlanet)
@@ -103,7 +103,8 @@ export function togglePlanet() {
         resetRotations();
         landedOnPlanet = false;
     }
-    toggleRSContainerVisibility();
+    if (deleteAccount != true)
+        toggleRSContainerVisibility();
     resetOutlineAndText();
     toggleBlurDisplay();
     togglePanelDisplay();

@@ -95,7 +95,7 @@ const passwordText = document.getElementById('passwordText');
 const enterLogin = document.getElementById('enterLogin');
 const enterPassword = document.getElementById('enterPassword');
 const loginLanguageText = document.getElementById('loginLanguageText');
-const newToTheGame = document.querySelector('.newToTheGame');
+const newToTheGame = document.querySelector('.basicText');
 const confirmPassword = document.getElementById('confirmPassword');
 const signUpTitle = document.getElementById('signUpTitle');
 const createAccountText = document.getElementById('createAccountText');
@@ -139,14 +139,14 @@ function translateEscapePageTexts() {
 }
 
 const RGPDTitle = document.getElementById('RGPDTitle');
-const RGPDTexte = document.getElementById('RGPDTexte');
+const RGPDText = document.getElementById('RGPDText');
 const RGPDCreate = document.getElementById('RGPDCreate');
 const RGPDPolicy = document.getElementById('RGPDPolicy');
 const RGPDBack = document.getElementById('RGPDBack');
 
 function translateRGPDTexts() {
     RGPDTitle.textContent = getTranslatedText('RGPDTitle');
-    RGPDTexte.textContent = getTranslatedText('RGPDTexte');
+    RGPDText.textContent = getTranslatedText('RGPDText');
     RGPDCreate.textContent = getTranslatedText('RGPDCreate');
     RGPDPolicy.textContent = getTranslatedText('RGPDPolicy');
     RGPDBack.textContent = getTranslatedText('RGPDBack');
@@ -205,7 +205,6 @@ function translateModifyPageTexts(){
     deleteAccountConfirmation.textContent = getTranslatedText('deleteAccountConfirmation');
     deleteAccountCancel.textContent = getTranslatedText('deleteAccountCancel');
     RGPDPolicyInUserPage.textContent = getTranslatedText('RGPDPolicyInUserPage');
-    infoBack.textContent = getTranslatedText('infoBack');
     textAnonymous.textContent = getTranslatedText('textAnonymous');
      
 }
