@@ -20,7 +20,6 @@ import random
 #--------------------LANGUAGE--------------------
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def change_language(request):
   user = request.user
 
@@ -59,10 +58,8 @@ class UserStatusView(APIView):
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def get_profile_info(request, userId):
   if (request.method == 'GET'):
-    # user = request.user
     user = get_object_or_404(User, id=userId)
     if user:
       profile_info = user.get_profile_info()
@@ -74,7 +71,6 @@ def get_profile_info(request, userId):
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def change_profile_info(request):
     if request.method == 'POST':
         anonymousStatus = request.data.get('anonymousStatus') == 'true'
@@ -99,7 +95,6 @@ def change_profile_info(request):
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def generate_unique_username(request):
     random_word = random.choice(words)
     random_item = random.choice(items)
@@ -120,7 +115,6 @@ def generate_unique_username(request):
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def change_graphic_mode(request):
   if request.method == 'POST':
     request.user.graphic_mode = request.data.get('graphicMode')
@@ -132,7 +126,6 @@ def change_graphic_mode(request):
 #SECURISER
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def delete_account(request):
   request.user.delete()
   return Response({'status' : "success"})

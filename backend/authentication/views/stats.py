@@ -16,7 +16,6 @@ from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def get_stats(request, userId):
   try:
     # est ce que c ok ???? get_or_404
