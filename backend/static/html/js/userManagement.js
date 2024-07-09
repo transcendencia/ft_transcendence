@@ -4,6 +4,7 @@ import { RenderHostMatch, RenderAllUsersInList} from "./arenaPage.js";
 import { RenderUserTournament, RenderAllUsersTournament } from '../../tournament/js/newTournament.js';
 
 // USER STATUS
+// changer en requete PATCH
 export async function updateUserStatus(status, token) {
     console.log("token", token);
 
@@ -120,7 +121,7 @@ export async function accept_friend_request(id) {
     const token = sessionStorage.getItem('host_auth_token');
     console.log("id", id);
     await fetch('friend_request/', {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`,
@@ -182,6 +183,7 @@ export async function get_friends_list() {
 }
 
 // UPDATE
+// Passer en requete PATCH
 export function updateUserGraphicMode(graphicMode) {
 	const token = sessionStorage.getItem('host_auth_token');
     return fetch('change_graphic_mode/', {
@@ -203,6 +205,7 @@ export function updateUserGraphicMode(graphicMode) {
     });
 }
 
+// Passer en requete PATCH
 export function updateUserLanguage(new_language) {
     const token = sessionStorage.getItem('host_auth_token');
     fetch('change_language/', {

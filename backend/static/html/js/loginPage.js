@@ -151,6 +151,7 @@ function handleLoginSubmit(event) {
 }
 
 // Handle form submission
+// Should I change it with a patch request
 export async function handleLogin(formData) {
     if (sessionStorage.getItem("hostLoggedIn") === null) {
         sessionStorage.setItem("hostLoggedIn", 'false');

@@ -27,6 +27,8 @@ def index(request):
 @permission_classes([AllowAny])
 def login_page(request):
   try:
+    print ("data", request.data)
+
     username = request.POST.get("username")
     usernameLower = username.lower()
     password = request.POST.get("password")
@@ -44,7 +46,7 @@ def login_page(request):
       return Response({'status': "failure", 'msg_code': "loginFailed"})
     user = authenticate(username=usernameLower, password=password)
     if user is not None:
-      print("user status in login:", user.status)
+      print(f'status {user.status}')
       if user.status == "offline":
         updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
 
@@ -58,9 +60,10 @@ def login_page(request):
           'id': user.id, 
           'graphic_mode': user.graphic_mode})
       else: 
-        print("offline")
+        print("user already logged in")
         return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"})
     else:
+      print("login failed")
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
   except Exception as e:
       print(str(e))

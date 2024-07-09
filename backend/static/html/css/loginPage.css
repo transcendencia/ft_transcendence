@@ -30,9 +30,9 @@
 }
 
 .holoPerspective {
-    transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg);
+    transform: translate(-50%, -50%);
 }
-
+/* perspective(800px) rotateX(-55deg) */
 .hologram-container {
     text-shadow: 0 0 5px rgb(0, 64, 255);
     background-color: rgba(0, 64, 255, 0.1);
@@ -47,13 +47,13 @@
 
 @keyframes openAnimation {
     0% {
-        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(0);
+        transform: translate(-50%, -50%) scale(0);
     }
     100% {
-        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(1);
+        transform: translate(-50%, -50%) scale(1);
     }
 }
-
+/* perspective(800px) rotateX(-55deg) */
 .hologram-textBar {
     text-shadow: 0 0 5px rgb(0, 64, 255);
     background-color: rgba(0, 13, 51, 0.683);
