@@ -23,7 +23,6 @@ class FriendRequestView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    print("I'm in the friend request ")
     def post(self, request):
         sender = request.user
         receiver_id = request.data.get('receiver_id')
@@ -44,7 +43,7 @@ class FriendRequestView(APIView):
         
         return Response({'message': response})
 
-    def put(self, request):
+    def patch(self, request):
         try:
             friend_request = FriendRequest.objects.get(id=request.data.get("request_id"))
         except FriendRequest.DoesNotExist:
@@ -64,9 +63,6 @@ class FriendRequestView(APIView):
         except FriendRequest.DoesNotExist:
             return Response({'message': 'Friend request does not exist'}, status=400)
 
-        # if friend_request.sender == request.user:
-        #     return Response('You cannot reject a request that you sent', status=400)
-        
         friend_request.delete()
         
         return Response({'status': "success"})
@@ -79,25 +75,27 @@ def return_friends_list(request):
     friends_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
 
     received_request_list = []
-    user_in_received_request_list = []
     friends = []
     sent_request_list = []
     user_in_list = []
     user_not_friend = []
 
     for req in friends_requests:
-        if req.status == 'pending' and req.receiver == request.user:
-            user = UserListSerializer(req.sender, many=False).data
-            user_pair = { 
-                'user' : user,
-                'request_id' : req.id,
-            }
-            user_in_received_request_list.append(user)
-            received_request_list.append(user_pair)
-            user_in_received_request_list.append(user)
-            user_in_list.append(req.sender.id)
+        if req.status == 'pending': 
+            if req.receiver == request.user:
+                user = UserListSerializer(req.sender, many=False).data
+                user_pair = { 
+                    'user' : user,
+                    'request_id' : req.id,
+                }
+                received_request_list.append(user_pair)
+                user_in_list.append(req.sender.id)
+            
+            if req.sender == request.user:
+                sent_request_list.append(UserListSerializer(req.receiver, many=False).data)
+    
         
-        if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user):
+        if req.status == 'accepted':
             if request.user == req.receiver:
                 user_pair = { 
                     'user' : UserListSerializer(req.sender, many=False).data,
@@ -111,23 +109,20 @@ def return_friends_list(request):
                 }
                 user_in_list.append(req.receiver.id)
             friends.append(user_pair)
-
-        if req.status == 'pending' and req.sender == request.user:
-            sent_request_list.append(UserListSerializer(req.receiver, many=False).data)
     
     all_users = User.objects.exclude(id__in=user_in_list).exclude(id=request.user.id).exclude(username="bot")
     other_user_list = UserListSerializer(all_users, many=True).data
-    user_not_friend = other_user_list + user_in_received_request_list
-   # A tester
+
+    user_not_friend = other_user_list.copy()
+    for user_pair in received_request_list:
+        user_not_friend.append(user_pair['user'])
+
     try:
         bot = UserSerializer(User.objects.get(username="bot")).data
     except User.DoesNotExist:
         bot = UserSerializer(User.objects.create_user(username="bot", password="bot1234")).data
 
-    # bot = UserSerializer(User.objects.get(username="bot")).data
-    
-    # print(received_request_list)
-    print(friends)  
+    # print(received_request_list) 
     return Response({
         'received_request_list': received_request_list, 
         'friends': friends, 
