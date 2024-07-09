@@ -27,7 +27,7 @@ def index(request):
 @permission_classes([AllowAny])
 def login_page(request):
   try:
-    print ("data", request.data)
+    # print ("data", request.data)
 
     username = request.POST.get("username")
     usernameLower = username.lower()
@@ -44,6 +44,7 @@ def login_page(request):
 
     if usernameLower == 'bot':
       return Response({'status': "failure", 'msg_code': "loginFailed"})
+    print(f'username: {username}, password: {password}')
     user = authenticate(username=usernameLower, password=password)
     if user is not None:
       print(f'status {user.status}')

@@ -164,7 +164,7 @@ export async function get_friends_list() {
     const token = sessionStorage.getItem('host_auth_token');
     
     try {
-        const response = await fetch('return_friends_list/', {
+        const response = await fetch('friends_list/', {
             method: 'GET',
             headers: {
                 'Authorization': `Token ${token}`,
@@ -175,6 +175,7 @@ export async function get_friends_list() {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
+        console.log(data);
         return data;
     } catch (error) {
         console.error('Error:', error);

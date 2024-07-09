@@ -2,7 +2,7 @@ from django.urls import path
 from .views import authentication, tournament, updateUserInfo, gameInfo, friendship, stats
 
 from .views.updateUserInfo import UserStatusView 
-from .views.friendship import FriendRequestView
+from .views.friendship import FriendRequestView, FriendListView
 
 urlpatterns = [
 	path('', authentication.index, name='index'),
@@ -29,8 +29,9 @@ urlpatterns = [
     path('generate_unique_username/', updateUserInfo.generate_unique_username, name="generate_unique_username"),
     
     #friendship.py
-    path('friend_request/', FriendRequestView.as_view(), name='friend-request'),
-    path('return_friends_list/', friendship.return_friends_list, name="return_friends_list"),
+    path('friend_request/', FriendRequestView.as_view(), name='friend_request'),
+    path('friends_list/', FriendListView.as_view(), name='friend_list'),
+    # path('return_friends_list/', friendship.return_friends_list, name="return_friends_list"),
 
     #stats.py
     path('get_stats/<int:userId>', stats.get_stats, name="get_stats"),
