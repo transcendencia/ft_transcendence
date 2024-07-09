@@ -9,7 +9,6 @@ urlpatterns = [
     path('login_page/', authentication.login_page, name='login_page'),
     path('signup/', authentication.signup, name='signup'),
     
-    path('rgpd/', authentication.rgpd, name='rgpd'),
 
     #updateUserInfo.py
     path('change_language/', updateUserInfo.change_language, name='change_language'),
@@ -47,6 +46,10 @@ urlpatterns = [
 
     # path('get_game_list/', gameInfo.get_game_list, name='get_game_list'),
     # path('get_game_info/', gameInfo.get_game_info, name='get_game_info'),
+<<<<<<< HEAD
+=======
+
+>>>>>>> finalgame
     #rgpd.py
     path('generateDataFile/', rgpd.generateDataFile, name='generateDataFile'),
 ]

@@ -109,7 +109,6 @@ function handleBotDifficulty(buttonHeader, imgIndex) {
 
 const buttonHeaders = document.querySelectorAll('.buttonTitle');
 buttonHeaders.forEach((buttonHeader, index) => {
-    
     const images = buttonHeader.querySelectorAll('img');
     images.forEach((image, imgIndex) => {
         image.addEventListener('mouseenter', function () {
@@ -186,6 +185,16 @@ export function toggleGameStarted() {
 }
 
 export function endGame(isTournament) {
+    let token = sessionStorage.getItem('host_auth_token');
+    updateUserStatus('online', token);
+    for(let i = 0; i < guestLoggedIn.length; i++) {
+        console.log("lets check:", guestLoggedIn[i][0].id, gameState.arena.game.user2.id)
+        if (guestLoggedIn[i][0].id === gameState.arena.game.user2.id || guestLoggedIn[i][0].id === gameState.arena.game.user3.id) {
+            console.log("les id des gens:", guestLoggedIn[i][0].id, gameState.arena.game.user2.id, gameState.arena.game.user3.id);
+            token = guestLoggedIn[i][1];
+            updateUserStatus('online', token);
+        }
+    }
     gameStarted = false;
     let user3 = null;
 
@@ -236,9 +245,19 @@ export function switchToGame(gameState, player1, player2, player3, isTournament)
 
 export function    initGame(gameState, player1, player2, player3, isTournament) {
     // prepare for initialization
+    console.log("players", player1, player2, player3);
     gameState.loading = true;
     gameState.inLobby = false;
     setTimeout(() => {
+        let token = sessionStorage.getItem('host_auth_token');
+        updateUserStatus('in_game', token);
+        for(let i = 0; i < guestLoggedIn.length; i++) {
+            console.log("lets check:", guestLoggedIn[i][0].id, player2.playerId)
+            if (guestLoggedIn[i][0].id === player2.playerId || guestLoggedIn[i][0].id === player3.playerId) {
+                token = guestLoggedIn[i][1];
+                updateUserStatus('in_game', token);
+            }
+        }
       gameState.arena.game.hasToBeInitialized = true;
       // choose gameMode
       if (isTournament){
@@ -250,11 +269,11 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
           gameState.arena.game.powerUpsActivated = true;
           gameState.arena.game.effectsOnly = false;
       }
-      if (gamemodeCounter === 1) {
+      else if (gamemodeCounter === 1) {
           gameState.arena.game.powerUpsActivated = false;
           gameState.arena.game.effectsOnly = false;
       }
-      if (gamemodeCounter === 2) {
+      else if (gamemodeCounter === 2) {
           gameState.arena.game.powerUpsActivated = true;
           gameState.arena.game.effectsOnly = true;
       }
@@ -271,12 +290,11 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
       // const 
       gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
       gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
-        if (playerNb === 2) {
+      if (playerNb === 2) {
         gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
         gameState.arena.game.thirdPlayer = true;
       }
-      else
-        gameState.arena.game.thirdPlayer = false;
+      else gameState.arena.game.thirdPlayer = false;
       gameState.arena.game.tournamentGame = isTournament;
       gameState.arena.loadingScreen.loadingComplete();
     }, 250);
@@ -297,6 +315,7 @@ const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
     let player2;
     let player3;
+    console.log("matchplayer = ", matchPlayer);
     if (matchPlayer.length < 2)
         return;
     if (matchPlayer.length === 2){
@@ -413,14 +432,15 @@ function addEventListenerToTiles() {
     userTiles.forEach((tile, i) => {
         profileAdded[i] = false;
         tile.HTMLelement.addEventListener('click', function() {
+            console.log("user.status:", tile.user.status);
             if (plusClicked && !profileAdded[i]) {
-                if (isBot(i) || (tile.user.status === 'online' && !tile.user.is_host && isGuest(tile.user.id))) {
+                if (isBot(i) || (tile.user.status === 'online' && !tile.user.isO_host && isGuest(tile.user.id))) {
                     tempTileIndex = i;
                     putUserInMatch();
                     return;
                 }
                 pwWindow.classList.toggle("showRectangle");
-                blockingPanel.style.visibility = 'visible';
+                blockingPanel.classList.add("show");
                 tempTileIndex = i;
                 const newObj = createUserInfoObject(tile, i);
                 pwWindow.replaceChild(newObj.userInfoCont, pwWindow.querySelector('.userInfoCont'));
@@ -430,14 +450,17 @@ function addEventListenerToTiles() {
 }
 
 //Checker que le host_id est le bon
-function isGuest(userId) {
-    console.log("length of guestLoggedIn:", guestLoggedIn);
-    for (let i = 0; i < guestLoggedIn.length; i++) {
-        if (guestLoggedIn[i][0].id === userId)
-            return true;
-    }
-    return false;
-}
+// function isGuest(userId) {
+//     console.log("length of guestLoggedIn:", guestLoggedIn);
+//     for (let i = 0; i < guestLoggedIn.length; i++) {
+//         if (guestLoggedIn[i][0].id === userId) {
+//             console.log("isGuest: true");
+//             return true;
+//         }
+//     }
+//     console.log("isGuest: false");
+//     return false;
+// }
 
 function putUserInMatch() {
     if (plusClicked && !profileAdded[tempTileIndex]) {
@@ -446,7 +469,7 @@ function putUserInMatch() {
         const textCont = tile.HTMLelement.querySelector(".textContainer");
         
         pwWindow.classList.remove("showRectangle");
-        blockingPanel.style.visibility = 'hidden';
+        blockingPanel.classList.remove('show');
         profileAdded[i] = true;
         playerNb++;
         if (plusClicked === 1)
@@ -482,14 +505,9 @@ function putUserInMatch() {
 }
 
 import { handleLogin } from './loginPage.js';
-import { displayUsersLogged} from './main.js';
+import { displayUsersLogged } from './main.js';
 
 export let guestLoggedIn = [];
-
-// let guestLoggedIn =  {
-//     user: "nom_utilisateur",
-//     token: "token_utilisateur"
-// };
 
 validatePasswordButton.addEventListener('click', async function() {
     if (guestLoggedIn.length < 7) {
@@ -506,15 +524,16 @@ validatePasswordButton.addEventListener('click', async function() {
             
             if (guestToken) {
                 guestLoggedIn.push([guest, guestToken]);
-                // console.log("Contenu actuel de guestLoggedIn :", guestLoggedIn);
+                putUserInMatch();
                 displayUsersLogged(guest, guestToken);
+                document.getElementById('enterPasswordInput').value = '';
+                document.getElementById('errorLogGuest').innerHTML = '';
             } else {
                 console.log("Erreur dans le login");
             }
         } catch (error) {
             console.error('Erreur lors de la connexion :', error);
         }
-        putUserInMatch();
     }
     else
         console.log("Too many guest");
@@ -522,7 +541,9 @@ validatePasswordButton.addEventListener('click', async function() {
 
 backPasswordButton.addEventListener('click', function() {
     pwWindow.classList.remove("showRectangle");
-    blockingPanel.style.visibility = 'hidden';
+    blockingPanel.classList.remove('show');
+    document.getElementById('enterPasswordInput').value = '';
+    document.getElementById('errorLogGuest').innerText = '';
 });
 
 const matchPlayer = [];
@@ -592,12 +613,13 @@ export function RenderHostMatch(user) {
     addUserToMatch(user.id, user.username, user.profile_picture, 0);
   }
 
-import { get_friends_list } from "./userManagement.js";
+import { get_friends_list, updateUserStatus } from "./userManagement.js";
 
 const backButtonArenaPage = document.querySelectorAll(".planetBackButton");
+const backButtonRGPDPage = document.getElementById("RGPDBack");
 
 backButtonArenaPage.forEach((button, index) => {
-    if (index !== 1) {
+    if (index !== 1 && button !== backButtonRGPDPage) {
         button.addEventListener('click', () => {
             togglePlanet();
         });
@@ -608,7 +630,7 @@ let previousUserList = [];
 
   async function isListsChanged() {
     const newData = await get_friends_list();
-    
+
     const sortedNewFriends = newData.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
     const sortedNewUserNotFriend = newData.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
     const concatenatedNewList = sortedNewFriends.concat(sortedNewUserNotFriend);
@@ -636,10 +658,37 @@ let previousUserList = [];
 
     const sortedNewFriends = users.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
     const sortedNewUserNotFriend = users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
+    userTiles.length = 0;
 
     createUserTile(users.bot, 'Bot', userListBackground, userTiles);
-    users.friends.forEach(obj => {/*si user pas online sur autre ordi*/ createUserTile(obj.user, 'Friend', userListBackground, userTiles)});
-    users.user_not_friend.forEach(user => {/*si user pas online sur autre ordi*/ createUserTile(user, 'Default', userListBackground, userTiles)});
+    users.friends.forEach(obj => { 
+        if (isLoggedOnSession(obj)) 
+            createUserTile(obj.user, 'Friend', userListBackground, userTiles);
+        });
+    users.user_not_friend.forEach(user => {
+        if (isLoggedOnSession(user)) 
+            createUserTile(user, 'Default', userListBackground, userTiles);
+        });
     addEventListenerToTiles();
     previousUserList = sortedNewFriends.concat(sortedNewUserNotFriend);
+}
+
+
+function isLoggedOnSession(user) {
+    if (user.status === 'online') {
+        if (user.is_host === true)
+            return false;
+        else if (user.is_host === false && !isGuest(user.id))
+            return false;
+    }
+    console.log("isLoggedOnSession: true");
+    return true;
+}
+
+function isGuest(userId) {
+    for (let i = 0; i < guestLoggedIn.length; i++) {
+        if (guestLoggedIn[i][0].id === userId)
+            return true;
+    }
+    return false;
 }
