@@ -300,10 +300,6 @@
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
-<<<<<<< HEAD
-.downloadButton:hover {
-    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
-=======
 .info-icon:hover + .anonymousInfos {
     display: flex;
 }
@@ -313,5 +309,4 @@
     flex-direction: row;
     align-items: center;
     gap: 20px;
->>>>>>> finalgame
 }

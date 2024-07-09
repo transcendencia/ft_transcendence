@@ -188,33 +188,19 @@ function hideAnonymousMode() {
 }
 
 document.addEventListener('keydown', (event) => {
-<<<<<<< HEAD
-  if (event.key == 'Escape') {
-      if (isInfosShow == true)
-      {
-        isInfosShow = false;
-        document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
-      }
-    }  
-=======
   if (event.key !== 'Escape')
     return;
     if (isInfosShow == true) {
       isInfosShow = false;
       document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
     }
->>>>>>> finalgame
 });
 
 const downloadButton = document.getElementById("downloadButton");
 downloadButton.addEventListener("click", downloadFile);
 function downloadFile() {
   console.log("Initiating file download");
-<<<<<<< HEAD
-  const token = localStorage.getItem('host_auth_token');
-=======
   const token = sessionStorage.getItem('host_auth_token');
->>>>>>> finalgame
   fetch('generateDataFile/', {
     method: 'GET',
     headers: {
