@@ -77,7 +77,7 @@ export function populateProfileInfo(data) {
 export function getProfileInfo(userId) {
     console.log("userId:", userId);
     const token = sessionStorage.getItem('host_auth_token');
-    return fetch(`get_profile_info/${userId}/`, {
+    return fetch(`user_info/${userId}/`, {
         method: 'GET',
         headers: {
             'Authorization': `Token ${token}`,
@@ -187,7 +187,7 @@ export async function get_friends_list() {
 // Passer en requete PATCH
 export function updateUserGraphicMode(graphicMode) {
 	const token = sessionStorage.getItem('host_auth_token');
-    return fetch('change_graphic_mode/', {
+    return fetch('user/graphic_mode/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -209,7 +209,7 @@ export function updateUserGraphicMode(graphicMode) {
 // Passer en requete PATCH
 export function updateUserLanguage(new_language) {
     const token = sessionStorage.getItem('host_auth_token');
-    fetch('change_language/', {
+    fetch('user/language/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
