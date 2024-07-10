@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
-import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
+import { resetOutline, resetOutlineAndText, planetInRange, getPlanetIntersection } from "./planetIntersection.js";
 import { initUserPlanet } from './userPage.js';
 import { resetTournament, tournamentState } from '../../tournament/js/newTournament.js';
-import { initArenaPlanet, initTournamentPlanet } from './arenaPage.js';
+import { initArenaPlanet, initTournamentPlanet, resetArenaPage } from './arenaPage.js';
 
 export let landedOnPlanet = false;
 let planetPanel = document.querySelectorAll(".planetPanel");
@@ -95,6 +95,10 @@ export function togglePlanet(deleteAccount = false) {
     if (!landedOnPlanet)
         landedOnPlanet = true;
     else {
+        if (planetInRange.name === 'arena')
+        	resetArenaPage();
+        else if (planetInRange.name === 'tournament')
+            resetTournament();
         clearInterval(checkEach5Sec);
         resetOutline();
         resetRotations();
