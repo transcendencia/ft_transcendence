@@ -1,7 +1,7 @@
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { createUserInfoObject, resetToPlusButton, createUserTile, switchToGame, RenderAllUsersInList } from "../../html/js/arenaPage.js";
-import { Glow, resetGlow, resetAddingMode, setAddingMode, setCssClassToArray } from "../../html/js/arenaPage.js";
+import { Glow, resetGlow, resetAddingMode, setAddingMode, setCssClassToArray, plusClicked} from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
 import { getProfileInfo, populateProfileInfos, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
 
@@ -117,10 +117,6 @@ export function resetTournament() {
   })
   resetPlusButton();
   resetBracket();
-  plusButtons = document.querySelectorAll(".plusPlayerTournament");
-  plusButtons.forEach(function(otherPlusButton) {
-    otherPlusButton.style.pointerEvents = 'auto';
-  });
 }
 
 //add user to tournaments
@@ -134,16 +130,15 @@ export let tournamentState = 0;
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
 userlistTitle.textContent = getTranslatedText('userlist');
-let plusClicked = 0;
 
 export let plusButtonsTournament = document.querySelectorAll(".plusPlayerTournament");
 plusButtonsTournament.forEach((plusButton, i) => {
 	plusButton.classList.add('hover-enabled');
 	plusButton.addEventListener('click', function () {
 		if (!plusClicked)
-			setAddingMode(plusButton, i, true);
+			setAddingMode(plusButton, i, false);
 		else if (plusClicked === i + 1)
-			resetAddingMode(plusButton);
+			resetAddingMode(false);
 	});
 });
 
@@ -155,7 +150,7 @@ export function resetPlusButton() {
       return;
     let playerNumber = index + 1;
     element.innerHTML = `
-      <div class="plusPlayerTournament" style="pointer-events: none;">+</div></div>
+      <div class="plusPlayerTournament">+</div></div>
       <div id="player${playerNumber}Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player ${playerNumber} </div>
     `;
   });

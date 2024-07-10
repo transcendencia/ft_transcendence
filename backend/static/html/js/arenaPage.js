@@ -5,11 +5,12 @@ import { afterGameTournament, botDifficultyTournament, addUserToTournament } fro
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
 
+
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
 userlistTitle.textContent = getTranslatedText('userlist');
 
-let plusClicked = 0;
+export let plusClicked = 0;
 const botID = 1;
 let playerNb = 0;
 
@@ -41,10 +42,10 @@ buttonHeaders.forEach((buttonHeader, index) => {
 	});
 });
 
-export function Glow(thirdPlayerProtectionFromBot = false, plusClicked) {
+export function Glow(tournament = false, plusClicked) {
 	userListBackground.classList.add('whiteGlowing');
 		userTiles.forEach((tile) => {
-			if (isBotId(tile.user.id) && thirdPlayerProtectionFromBot && plusClicked === 1)
+			if (isBotId(tile.user.id) && tournament && plusClicked === 1)
 				return;
 			const tileChildren = tile.HTMLelement.querySelectorAll(":scope > *");
 			tileChildren.forEach(child => child.classList.add('whiteGlowing'))
@@ -64,23 +65,32 @@ export function resetGlow() {
 
 userlistTitle.textContent = getTranslatedText('userlist');
 
-export function resetAddingMode() {
-	setCssClassToArray('add', 'hover-enabled', plusButtonsArena);
-	setCssClassToArray('remove', 'clicked', plusButtonsArena);
+export function resetAddingMode(mode) {
+	console.log(mode);
+	if (mode === 'arena') {
+		setCssClassToArray('add', 'hover-enabled', plusButtonsArena);
+		setCssClassToArray('remove', 'clicked', plusButtonsArena);
+	} else {
+		console.log("arena");
+		setCssClassToArray('add', 'hover-enabled', plusButtonsTournament);
+		setCssClassToArray('remove', 'clicked', plusButtonsTournament);
+	}
 	userlistTitle.textContent = getTranslatedText('userlist');
 	resetGlow();
 	plusClicked = 0;
 	profileAdded[botID] = false;
 	userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").classList.remove('hovered')});
 }
-export function setAddingMode(plusButton, i, thirdPlayerProtectionFromBot = false) {
-	setCssClassToArray('remove', 'hover-enabled', plusButtonsArena);
+export function setAddingMode(plusButton, i, arena) {
+	if (arena)
+		setCssClassToArray('remove', 'hover-enabled', plusButtonsArena);
+	else setCssClassToArray('remove', 'hover-enabled', plusButtonsTournament);
 	plusButton.classList.add('clicked');
 	plusClicked = i + 1;
 	userlistTitle.textContent = getTranslatedText('chooseProfile');
-	Glow(thirdPlayerProtectionFromBot, plusClicked);
+	Glow(arena, plusClicked);
 	userTiles.forEach(tile => {
-		if (!(isBotId(tile.user.id) && thirdPlayerProtectionFromBot && plusClicked === 1)) 
+		if (!(isBotId(tile.user.id) && arena && plusClicked === 1)) 
 			tile.HTMLelement.querySelector(".textContainer").classList.add('hovered')
 	});
 }
@@ -98,7 +108,7 @@ plusButtonsArena.forEach((plusButton, i) => {
 		if (!plusClicked)
 			setAddingMode(plusButton, i, true);
 		else if (plusClicked === i + 1)
-			resetAddingMode(plusButton);
+			resetAddingMode(true);
 	});
 });
 
@@ -154,9 +164,13 @@ function addClickListenerToNewUserBadge(userBadge, plusButton, tile) {
 	userBadge.userInfoCont.addEventListener('click', function() {
 		playerNb--;
 		profileAdded[tile.user.id] = false;
+		console.log(plusButton);
 		resetToPlusButton(userBadge.userInfoCont, plusButton);
 		updateListAndResetTimer();
 		removeUserFromMatch(tile.user.id);
+		console.log("before", addedPlayerBadges, tile.user.username);
+		addedPlayerBadges = addedPlayerBadges.filter(badge => badge.username !== tile.user.username);
+		console.log("after", addedPlayerBadges, tile.user.username);
 	});
 }
 
@@ -176,12 +190,12 @@ function putUserInMatch(plusButtonsArray, mode) {
 	playerNb++;
 	
 	const userBadge = createUserInfoObject(tile, true);
-	addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked});
+	addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked, username: tile.user.username});
 	const plusButton = plusButtonsArray[plusClicked - 1];
 	plusButton.parentNode.replaceChild(userBadge.userInfoCont, plusButton);
 
 	resetGlow();
-	resetAddingMode(plusButton);
+	resetAddingMode(mode);
 	addClickListenerToNewUserBadge(userBadge, plusButton, tile, userClickedId);
 
 	if (mode === 'tournament')
@@ -294,26 +308,24 @@ async function isListsChanged() {
 
   export function initTournamentPlanet(){
 	userListBackground = document.getElementById('userlistTournamentPage');
-  RenderAllUsersInList();
+	RenderAllUsersInList();
 }
 
   export function initArenaPlanet() {
 	userListBackground = document.getElementById('userlistArenaPage');
-	resetArenaPage();
 	RenderAllUsersInList();
 	setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
   }
 
 export function resetArenaPage() {
-	console.log(addedPlayerBadges);
+	plusClicked = 0;
 	addedPlayerBadges.forEach(obj => {
-		if (obj.userBadge && plusButtonsArena[obj.plusClicked - 1])
-			resetToPlusButton(obj.userBadge, plusButtonsArena[obj.plusClicked - 1]);
+		resetToPlusButton(obj.userBadge, plusButtonsArena[obj.plusClicked - 1]);
 	});
 	playerNb = 0;
 	profileAdded = [];
 	addedPlayerBadges = [];
-	resetAddingMode();
+	resetAddingMode(true);
 }
   
   async function refreshUserListIfChanged() {
