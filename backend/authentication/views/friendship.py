@@ -1,21 +1,14 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.shortcuts import redirect
-from django.contrib.auth import get_user_model
 from django.db.models import Q
 
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import authentication_classes
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import ValidationError
-from rest_framework.response import Response
 
 from ..models import User, FriendRequest
-from ..serializers import UserSerializer, SignupSerializer, UserListSerializer
+from ..serializers import UserSerializer, UserListSerializer
 
 # #verifier qu'une friend request n'existe pas deja entre ces 2 user 
 # #Return erreur si la friend request existe pas

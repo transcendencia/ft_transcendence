@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import authentication, tournament, updateUserInfo, gameInfo, friendship, stats
 
-from .views.updateUserInfo import UserStatusView 
+from .views.updateUserInfo import UserStatusView, UserLanguageView, UserInfoView, UserGraphicModeView
 from .views.friendship import FriendRequestView, FriendListView
 
 urlpatterns = [
@@ -13,17 +13,14 @@ urlpatterns = [
     
 
     #updateUserInfo.py
-    path('change_language/', updateUserInfo.change_language, name='change_language'),
-    # path('update_status/', updateUserInfo.update_status, name='update_status'),
-    # path('get_status/<int:userId>', updateUserInfo.get_status, name='get_status'),
-
+    path('user/language/', UserLanguageView.as_view(), name='update_language'),
     path('user/status/', UserStatusView.as_view(), name='update_status'),
     path('user/status/<int:userId>/', UserStatusView.as_view(), name='get_status'),
-    
-    path('change_profile_info/', updateUserInfo.change_profile_info, name="change_profile_info"),
-    path('get_profile_info/<int:userId>/', updateUserInfo.get_profile_info, name="get_profile_info"),
+    path('user_info/<int:userId>/', UserInfoView.as_view(), name='user_info'),
+    path('user/graphic_mode/', UserGraphicModeView.as_view(), name='graphic_mode'),
+    path('user_info/', UserInfoView.as_view(), name='user_info'),
+
     path('get_game_player2/', gameInfo.get_game_player2, name="get_game_player2"),
-    path('change_graphic_mode/', updateUserInfo.change_graphic_mode, name="change_graphic_mode"),
     path('delete_account/', updateUserInfo.delete_account, name="delete_account"),
 
     path('generate_unique_username/', updateUserInfo.generate_unique_username, name="generate_unique_username"),
