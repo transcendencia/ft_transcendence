@@ -135,18 +135,12 @@ export function chooseStats(stat) {
 	const stat5 = document.getElementById('statsBlock5');
 	const stat6 = document.getElementById('statsBlock6');
 
-	if (stat > 3)
-	{
-		removeClasses(stat4);
-		removeClasses(stat5);
-		removeClasses(stat6);
-	}
-	else
-	{
-		removeClasses(stat1);
-		removeClasses(stat2);
-		removeClasses(stat3);
-	}
+	removeClasses(stat4);
+	removeClasses(stat5);
+	removeClasses(stat6);
+	removeClasses(stat1);
+	removeClasses(stat2);
+	removeClasses(stat3);
 
     if (stat === 1) {
         if (stat2.style.display === 'flex') {
