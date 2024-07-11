@@ -1204,11 +1204,23 @@ class Arena extends THREE.Mesh {
             const winningScreen = document.querySelector('.winning-screen');
             const winningText = document.getElementById('winningText');
             const scoreText = document.getElementById('scoreText');
+            const rematchButton = document.getElementById('rematchButton');
+            const backToLobbyText = document.getElementById('backToLobbyText');
             scoreText.textContent = this.game.leftScore + ' - ' + this.game.rightScore;
             if (this.game.leftScore === 3)
                 winningText.textContent = this.game.user1.username + ' wins!';
             else
                 winningText.textContent = this.game.user2.username + ' wins!';
+            if (this.game.tournamentGame)
+            {
+                rematchButton.style.visibility = 'hidden';
+                backToLobbyText.textContent = 'back to tournament';
+            }
+            else
+            {
+                rematchButton.style.visibility = 'visible';
+                backToLobbyText.textContent = 'back to arena';
+            }
             winningScreen.classList.add('visible');
             if (this.game.user2.isBot === 'Bot')
                 this.bot.deactivateBot();
