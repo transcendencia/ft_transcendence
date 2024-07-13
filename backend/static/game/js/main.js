@@ -2256,7 +2256,7 @@ class OceanMap {
         {
             this.arena.material = this.lowGraphicArenaMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.lowGraphicPaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial.clone();
             this.arena.ball.material = this.lowGraphicBallMaterial;
             this.arena.ball.trailParticles.changeMaterial(this.lowGraphicTrailMaterial);
             this.arena.ball.particles.changeParticleNumber(0);
@@ -2284,7 +2284,7 @@ class OceanMap {
             this.arena.ball.particles.changeParticleNumber(1000);
             this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
             this.arena.paddleLeft.paddleMesh.material = this.paddleGlassMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial.clone();
             this.arena.paddleLeft.particleNumber = 250;
             this.arena.paddleRight.particleNumber = 250;
             this.arena.paddleLeft.particles.changeParticleNumber(250);
@@ -2306,7 +2306,7 @@ class OceanMap {
             }
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.paddleGlassMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial.clone();
             this.arena.ball.material = this.ballGlassMaterial;
             this.arena.ball.particles.changeParticleNumber(15000);
             this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
@@ -2668,7 +2668,7 @@ class SkyMap {
         {
             this.arena.material = this.lowGraphicArenaMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.lowGraphicPaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial.clone();
             this.arena.ball.material = this.lowGraphicBallMaterial;
             this.arena.ball.trailParticles.changeMaterial(this.lowGraphicTrailMaterial);
             this.arena.ball.particles.changeParticleNumber(0);
@@ -2705,7 +2705,7 @@ class SkyMap {
             this.arena.ball.particles.changeParticleNumber(1000);
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial.clone();
             this.arena.ball.material = this.reflectiveBallMaterial;
             this.arena.bloomPass.strength = 0.05;
             this.scene.background = this.skyCubeMapTexture;
@@ -2731,7 +2731,7 @@ class SkyMap {
             this.arena.paddleRight.particles.changeParticleSize(0.2);
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial.clone();
             this.arena.ball.material = this.reflectiveBallMaterial;
             this.arena.bloomPass.strength = 0.05;
             this.scene.background = this.skyCubeMapTexture;
