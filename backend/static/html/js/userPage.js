@@ -101,9 +101,14 @@ async function refreshUserFriendList() {
     console.log("pageDisplayed:", pageDisplayed);
     if (pageDisplayed === "hostProfile")
       togglePlanet();
-    else {
+    else if (pageDisplayed === "modifyPage")
+    {
+      const modifyPage = document.getElementById('userInfoForm');
+      modifyPage.style.visibility = 'hidden';
       returnToHost();
     }
+    else
+      returnToHost();
   });
 
   modifyInfoButton.addEventListener('click', () => {
@@ -113,6 +118,8 @@ async function refreshUserFriendList() {
     hostUserPage.style.animation = "slideHostPageUp 1s forwards ease-in-out";
     modifyUserPage.style.animation = "slideHostPageUp 1s forwards ease-in-out";
     pageDisplayed = "modifyPage"
+    const modifyPage = document.getElementById('userInfoForm');
+    modifyPage.style.visibility = 'visible';
   });
 
   let inputElement = document.getElementById("searchInput");
