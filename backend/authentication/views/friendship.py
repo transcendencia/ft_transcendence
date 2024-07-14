@@ -76,6 +76,7 @@ def return_friends_list(request):
     friends_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
 
     received_request_list = []
+    user_in_received_request_list = []
     friends = []
     sent_request_list = []
     user_in_list = []
@@ -83,11 +84,14 @@ def return_friends_list(request):
 
     for req in friends_requests:
         if req.status == 'pending' and req.receiver == request.user:
+            user = UserListSerializer(req.sender, many=False).data
             user_pair = { 
-                'user' : UserListSerializer(req.sender, many=False).data,
+                'user' : user,
                 'request_id' : req.id,
             }
+            user_in_received_request_list.append(user)
             received_request_list.append(user_pair)
+            user_in_received_request_list.append(user)
             user_in_list.append(req.sender.id)
         
         if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user):
@@ -110,7 +114,7 @@ def return_friends_list(request):
     
     all_users = User.objects.exclude(id__in=user_in_list).exclude(id=request.user.id).exclude(username="bot")
     other_user_list = UserListSerializer(all_users, many=True).data
-    user_not_friend = other_user_list + received_request_list
+    user_not_friend = other_user_list + user_in_received_request_list
     # Scuriser si il toruve pas le bot
     bot = UserSerializer(User.objects.get(username="bot")).data
     

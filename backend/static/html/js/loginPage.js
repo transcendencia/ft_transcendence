@@ -1,13 +1,12 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
-import { moveCameraToBackOfCockpit }  from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
-import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfo} from "./userManagement.js";
-import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
+import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight} from "./main.js";
+import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
+import { resetOutline } from "./planetIntersection.js";
 import { togglePlanet } from "./enterPlanet.js";
 
 function addGlow(elementId, glow) {
@@ -27,7 +26,7 @@ let graphicsIcons = document.querySelectorAll('.graphicsIcon');
 const signupHereButton = document.querySelector('.actionCont');
 
 if (signupHereButton.addEventListener('click', function() {
-    moveCameraToFrontOfCockpit();
+    moveCameraToFrontOfCockpit('signUpPage');
 }));
 
 graphicsIcons.forEach(function(icon) {
@@ -176,10 +175,8 @@ export async function handleLogin(formData) {
         .then(response => response.json())
         .then(data => {
             let guest_token = null;
-            console.log("login status", data.status);
-            if (data.status === "succes") {
-
-                console.log("hostLoggedIn", hostLoggedIn);
+            console.log(data.status);
+            if (data.status === "success") {
                 if (hostLoggedIn === 'false') {
                     //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
 
@@ -190,13 +187,11 @@ export async function handleLogin(formData) {
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
                     get_friends_list();
-                    getProfileInfo()
+                    getProfileInfo(sessionStorage.getItem("host_id"))
                     .then(data => {
-                        populateProfileInfo(data);
+                        populateProfileInfos(data);
+                        createUserBadge(data, "playersConnHostBadge")
                     })
-                    .catch(error => {
-                        console.error('Failed to retrieve profile info:', error);
-                    });
                     TranslateAllTexts();
                     getGameInfo();
                     changeGraphics(data.graphic_mode);
@@ -209,6 +204,7 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
+                console.log("failed login", data);
                 if (hostLoggedIn === 'false')
                     document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
                 else if (hostLoggedIn === 'true')
@@ -341,6 +337,7 @@ export function getGameInfo() {
 const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
     handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
+    toggleEscapeContainerVisibility();
 });
 
 function resetHTMLelements(){
@@ -351,24 +348,12 @@ function resetHTMLelements(){
     document.getElementById('c1').style.display = 'none';
 }
 
+
 function handleLogout(userId, token) {
     // Disconnect all the guest
     if (gameState.inGame)
         togglePlanet();
-    if (userId === sessionStorage.getItem('host_id')) {
-        // console.log(guestLoggedIn);
-        guestLoggedIn.forEach(user => {
-            updateUserStatus('offline', user[1]);
-        });
-    }
-    guestLoggedIn.splice(0, guestLoggedIn.length);
-    const lsCont = document.getElementById('lsCont');
-    lsCont.innerHTML = `
-        <div class="tinyRedShadowfilter">
-            Players Connected
-        </div>
-    `;
-
+    logoutGuest(userId);
     // Disconnect the host
     updateUserStatus('offline', token)
     .then(() => {
@@ -377,13 +362,6 @@ function handleLogout(userId, token) {
     .catch(error => {
         console.error('Erreur :', error);
     });
-    // const hostLoggedIn = localStorage.getItem("hostLoggedIn")
-    // console.log(hostLoggedIn)
-    // if (hostLoggedIn === 'true') {
-    //     // localStorage.setItem('hostLoggedIn', 'false');
-    //     localStorage.clear();
-    //     console.log(localStorage.getItem("hostLoggedIn"));
-    // }
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
@@ -404,8 +382,20 @@ function handleLogout(userId, token) {
         spaceShipInt.visible = true;
         showPage('loginPage');
         toggleLobbyStart();
+        swipeLeftSideContainer('-40%');
+        scene.add(bluelight);
+        scene.remove(whitelight);
     }, 50);
 };
+
+export function logoutGuest(userId) {
+    if (userId === sessionStorage.getItem('host_id')) {
+        guestLoggedIn.forEach(user => {
+            updateUserStatus('offline', user[1]);
+        });
+    }
+    guestLoggedIn.splice(0, guestLoggedIn.length);
+}
 
 window.addEventListener('beforeunload', function (event) {
     const token = sessionStorage.getItem('host_auth_token');
@@ -424,25 +414,3 @@ export function emptyLoginField() {
     document.getElementById('passwordLoginInput').value = '';
 }
 
-export function resetModifyPageField() {
-    // Pas vider les username et le alias mais le mettre a la derniere valeur
-    // document.getElementById('changeUsernameInput').value = '';
-    // document.getElementById('changeAliasInput').value = '';
-	console.log("resetModifyPageField");
-    getProfileInfo()
-    .then(data => {
-        populateProfileInfo(data);
-    })
-    .catch(error => {
-        console.error('Failed to retrieve profile info:', error);
-    });
-    document.getElementById('changePasswordInput').value = '';
-    document.getElementById('changeConfirmPasswordInput').value = '';
-    document.getElementById('changeInfoMessage').innerText = '';
-    document.getElementById('profile-pic').value = '';
-    document.getElementById('changeInfoMessage').innerText = '';
-    document.getElementById('LinkPicture').innerText = '';
-    const toggleSwitch = document.getElementById('toggleSwitch');
-    toggleSwitch.classList.remove('active');
-    //vider input nom de la photo
-}

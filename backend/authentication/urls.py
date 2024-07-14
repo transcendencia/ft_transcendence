@@ -19,7 +19,7 @@ urlpatterns = [
     path('user/status/<int:userId>/', UserStatusView.as_view(), name='get_status'),
     
     path('change_profile_info/', updateUserInfo.change_profile_info, name="change_profile_info"),
-    path('get_profile_info/', updateUserInfo.get_profile_info, name="get_profile_info"),
+    path('get_profile_info/<int:userId>/', updateUserInfo.get_profile_info, name="get_profile_info"),
     path('get_user_list/', updateUserInfo.get_user_list, name="get_user_list"),
     path('get_game_player2/', gameInfo.get_game_player2, name="get_game_player2"),
     path('change_graphic_mode/', updateUserInfo.change_graphic_mode, name="change_graphic_mode"),

@@ -1,7 +1,6 @@
 import { getCookie } from './loginPage.js';
 import { getTranslatedText} from "./translatePages.js";
-import { RenderHostMatch, RenderAllUsersInList} from "./arenaPage.js";
-import { RenderUserTournament, RenderAllUsersTournament } from '../../tournament/js/newTournament.js';
+import { setHostAsPlayerOne} from "./arenaPage.js";
 
 export function updateUserGraphicMode(graphicMode) {
 	const token = sessionStorage.getItem('host_auth_token');
@@ -139,7 +138,6 @@ export function get_user_list() {
     })
     .then(response => response.json())
     .then(data => {
-        RenderAllUsersTournament(data); 
     })
     .catch(error => {
         console.error('Error:', error);
@@ -147,7 +145,7 @@ export function get_user_list() {
     });
 };
 
-export function populateProfileInfo(data) {
+export function populateProfileInfos(data) {
     document.getElementById('username').textContent = data.profile_info.username;
     document.getElementById('alias').textContent = data.profile_info.alias;
     document.getElementById('profile_pic').src = data.profile_info.profile_picture;
@@ -161,13 +159,13 @@ export function populateProfileInfo(data) {
         <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
         <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
     `;
-    RenderHostMatch(data.profile_info);
-    RenderUserTournament(data.profile_info);
+    setHostAsPlayerOne(data.profile_info, 'Tournament');
+    setHostAsPlayerOne(data.profile_info, 'Arena');
 }
 
-export function getProfileInfo() {
+export function getProfileInfo(userId) {
     const token = sessionStorage.getItem('host_auth_token');
-    return fetch('get_profile_info/', {
+    return fetch(`get_profile_info/${userId}/`, {
         method: 'GET',
         headers: {
             'Authorization': `Token ${token}`,
@@ -181,7 +179,6 @@ export function getProfileInfo() {
     })
     .catch(error => {
         console.error('Erreur :', error);
-        throw error;  
     });
 }
 
@@ -248,4 +245,21 @@ export async function delete_friend_request(id) {
     .catch(error => {
         console.error('Erreur :', error);
     });
+}
+
+export function test_back() {
+    console.log("test back");
+    // SIGN UP
+    // document.getElementById('usernameLoginInput').value = 67890;
+    // document.getElementById('passwordLoginInput').value = 'q';
+    // document.getElementById('confirmPasswordSignUpInput').value = 'q';
+    // document.getElementById("submitSignUp").click();
+
+    // LOGIN
+    // document.getElementById('usernameLoginInput').value = 67890;
+    // document.getElementById('passwordLoginInput').value = 'q';
+    // document.getElementById("loginButton").click();
+
+    // GET PROFILE INFO
+    // getProfileInfo(3);
 }
