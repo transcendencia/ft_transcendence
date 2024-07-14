@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { showPage } from './showPages.js';
+import { initPage, showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
 import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
@@ -58,6 +58,10 @@ pointLight.position.copy(sun.position);
 pointLight.scale.set(10, 10, 10);
 
 export const bluelight = new THREE.PointLight(0x0000ff, 1.5)
+bluelight.castShadow = true;
+bluelight.position.set(0,5,-1300);
+
+export const whitelight = new THREE.PointLight(0xffffff, 1.5)
 bluelight.castShadow = true;
 bluelight.position.set(0,5,-1300);
 
@@ -389,6 +393,7 @@ export function startAnimation() {
             cancelLanding();
             toggleRSContainerVisibility();
             scene.remove(bluelight);
+            scene.add(whitelight);
         });
         anim1.chain(anim2, anim3);
         anim1.start();
@@ -589,6 +594,7 @@ const checkModelsLoaded = setInterval(() => {
         animate();
         camMovement();
         initializeCamera();
+        initPage();
     }
 }, 100);
 

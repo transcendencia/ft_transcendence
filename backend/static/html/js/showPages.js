@@ -9,6 +9,7 @@ export function showPage(pageId, transition = 'default') {
         page.classList.remove('signUp');
     });
     // Show the selected page
+    console.log(pageId);
     if (pageId === 'none') return;
     window.location.hash = `#${pageId}`;
     sessionStorage.setItem('currentPage', pageId); // Store current page in sessionStorage
@@ -20,18 +21,22 @@ export function showPage(pageId, transition = 'default') {
 
 let oldLocation = window.location.hash || '#loginPage';
 
-// Retrieve the last page from sessionStorage if it exists
-const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
-window.location.hash = `#${lastPage}`;
-showPage(lastPage);
+export function initPage() {
+    const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
+    window.location.hash = `#${lastPage}`;
+    console.log('yo', lastPage);
+    if (lastPage === 'signUpPage' || lastPage === 'rgpdPage')
+        moveCameraToFrontOfCockpit(lastPage, 'signUp');
+    else moveCameraToBackOfCockpit();
+}
 
 addEventListener("hashchange", () => {
     if (window.location.hash === '#loginPage' && oldLocation === '#signUpPage') {
         moveCameraToBackOfCockpit();
     } else if (window.location.hash === '#signUpPage' && oldLocation === '#loginPage') {
-        moveCameraToFrontOfCockpit();
+        moveCameraToFrontOfCockpit('signUpPage');
     } else if (window.location.hash === '#rgpdPage' && oldLocation === '#signUpPage') {
-        showPage('rgpdPage');
+        moveCameraToFrontOfCockpit('rgpdPage');
         const RGPDPage = document.querySelector(".rgpdPage");
         RGPDPage.classList.add("perspectived");
     } else if (window.location.hash === '#signUpPage' && oldLocation === '#rgpdPage') {
