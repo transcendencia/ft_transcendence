@@ -8,14 +8,18 @@ export let inCockpit = false;
 
 const backPosition = new THREE.Vector3(0, 4.5, -1295); // Define the target position for the camera
 const frontPosition = new THREE.Vector3(0, 4.5, -1304); // Define the target position for the camera
-export function moveCameraToFrontOfCockpit() {1
+
+export function moveCameraToFrontOfCockpit(page) {1
     const duration = 1000; // Define the duration of the animation in milliseconds
     console.log(backPosition);
     const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
         .to(backPosition, duration) // Set the target position and duration
         .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
         .start(); // Start the animation
-    showPage('signUpPage', 'signUp');
+    if (page === 'signUpPage')
+        showPage('signUpPage', 'signUp');
+    else if (page === 'rgpdPage')
+        showPage('rgpdPage', 'default');
     emptyLoginField();
     inCockpit = true;
 }

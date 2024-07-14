@@ -4,7 +4,7 @@ import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer} from "./main.js";
+import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
 import { resetOutline } from "./planetIntersection.js";
 
@@ -25,7 +25,7 @@ let graphicsIcons = document.querySelectorAll('.graphicsIcon');
 const signupHereButton = document.querySelector('.actionCont');
 
 if (signupHereButton.addEventListener('click', function() {
-    moveCameraToFrontOfCockpit();
+    moveCameraToFrontOfCockpit('signUpPage');
 }));
 
 graphicsIcons.forEach(function(icon) {
@@ -379,6 +379,7 @@ function handleLogout(userId, token) {
         toggleLobbyStart();
         swipeLeftSideContainer('-40%');
         scene.add(bluelight);
+        scene.remove(whitelight);
     }, 50);
 };
 
