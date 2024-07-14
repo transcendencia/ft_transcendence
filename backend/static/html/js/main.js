@@ -76,6 +76,9 @@ class LobbyVisuals
         this.textLoaded = false;
         this.camera = camera;
         this.renderer = renderer;
+        // this.renderer.physicallyCorrectLights = true;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.currentGraphics = 'medium';
         this.composer;
         this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
@@ -94,6 +97,7 @@ class LobbyVisuals
         this.bloomPass.radius = 0.8;
         this.stars = [];
         this.addStars(1000);
+        this.textMesh;
 
         const fontLoader = new THREE.FontLoader();
         fontLoader.load('https://threejs.org/examples/fonts/optimer_bold.typeface.json', (font) => {
@@ -101,7 +105,7 @@ class LobbyVisuals
                 font: font,
                 size: 50, // Adjusted size
                 height: 22, // Adjusted height
-                curveSegments: 12,
+                curveSegments: 62,
                 bevelEnabled: true,
                 bevelThickness: 0.1, // Reduced bevel thickness
                 bevelSize: 0.2, // Reduced bevel size
@@ -114,17 +118,21 @@ class LobbyVisuals
             const textWidth = boundingBox.max.x - boundingBox.min.x;
             const textHeight = boundingBox.max.y - boundingBox.min.y;
             const textDepth = boundingBox.max.z - boundingBox.min.z;
-        
-            const material = new THREE.MeshPhongMaterial({color: 0x000000});
-            const textMesh = new THREE.Mesh(textGeometry, material);
-        
+          
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                metalness: 1,
+                roughness: 0,
+                envMap: this.spaceCubeMapTexture
+            });
+
+            this.textMesh = new THREE.Mesh(textGeometry, material);
             // Create a pivot object and add the text to it
             const pivot = new THREE.Object3D();
-            pivot.add(textMesh);
+            pivot.add(this.textMesh);
         
             // Offset the text position so that its center is at the pivot point
-            textMesh.position.set(-textWidth / 2, -textHeight / 2, -textDepth / 2);
-        
+            this.textMesh.position.set(-textWidth / 2, -textHeight / 2, -textDepth / 2);
             // Add the pivot to the scene
             this.scene.add(pivot);
             this.textLoaded = true;

@@ -109,7 +109,14 @@
         "RGPDPolicyInUserPage": "Privacy policy",
         "infoBack" : "Back",
         "textAnonymous": "When activated, assigns a random username and a default profil picture",
-        "successfulModifyInfo": "Info changed"
+        "successfulModifyInfo": "Info changed",
+        
+        
+        "startGameText": "Press [E] to start the game",
+        "leftText": "left",
+        "rightText": "right",
+        "powerText": "power",
+        "winText": "wins"
     },
     "es": {
         "login": "Usuario",
@@ -219,7 +226,14 @@
         "RGPDPolicyInUserPage": "politica de confidencialidad",
         "infoBack" : "Volver",
         "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada",
-        "successfulModifyInfo": "información cambiada"
+        "successfulModifyInfo": "información cambiada",
+
+
+        "startGameText": "Pulse [E] para empezar",
+        "leftText": "izquierda",
+        "rightText": "derecha",
+        "powerText": "poder",
+        "winText": "gana"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -287,6 +301,9 @@
         "gamemodeNameText1": "Classique",
         "gamemodeNameText2": "Sans Pouvoirs",
         "gamemodeNameText3": "Balles Courbes",
+
+        "enterPlanetText": "[E] pour selectionner",
+
         "maps": "Cartes",
         "botDifficulty": "niveau de l'IA",
         "botDifficultyEasy": "Facile",
@@ -328,6 +345,13 @@
         "RGPDPolicyInUserPage": "Politique de confidentialite",
         "infoBack" : "Retour",
         "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut",
-        "successfulModifyInfo": "Informations change"
+        "successfulModifyInfo": "Informations change",
+
+
+        "startGameText": "[E] pour commencer",
+        "leftText": "gauche",
+        "rightText": "droite",
+        "powerText": "pouvoir",
+        "winText": "gagne"
     }
 }

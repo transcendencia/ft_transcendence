@@ -17,7 +17,7 @@ import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragm
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
 import { lobbyVisuals } from '../../html/js/main.js';
 import { gameStarted } from '../../html/js/arenaPage.js';
-// import { gameStarted } from '../../html/js/arenaPage.js';
+import { getTranslatedText } from '../../html/js/translatePages.js';
 import { endGame, rematchGame } from '../../html/js/arenaPage.js';
 import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 // FPS COUNTER
@@ -1208,9 +1208,9 @@ class Arena extends THREE.Mesh {
             const backToLobbyText = document.getElementById('backToLobbyText');
             scoreText.textContent = this.game.leftScore + ' - ' + this.game.rightScore;
             if (this.game.leftScore === 3)
-                winningText.textContent = this.game.user1.username + ' wins!';
+                winningText.textContent = this.game.user1.username + ' ' + getTranslatedText('winText') + '!';
             else
-                winningText.textContent = this.game.user2.username + ' wins!';
+                winningText.textContent = this.game.user2.username + ' ' + getTranslatedText('winText') + '!';
             if (this.game.tournamentGame)
             {
                 rematchButton.style.visibility = 'hidden';
