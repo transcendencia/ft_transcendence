@@ -209,6 +209,27 @@ function translateModifyPageTexts(){
      
 }
 
+const startGameText = document.getElementById('startGameText');
+const leftLeftText = document.getElementById('leftLeftText');
+const leftRightText = document.getElementById('leftRightText');
+const leftPowerText = document.getElementById('leftPowerText');
+const rightLeftText = document.getElementById('rightLeftText');
+const rightRightText = document.getElementById('rightRightText');
+const rightPowerText = document.getElementById('rightPowerText');
+const rematchText = document.getElementById('rematchText');
+
+
+function translateGameTexts() {
+    startGameText.textContent = getTranslatedText('startGameText');
+    leftLeftText.textContent = getTranslatedText('leftText');
+    leftRightText.textContent = getTranslatedText('rightText');
+    leftPowerText.textContent = getTranslatedText('powerText');
+    rightLeftText.textContent = getTranslatedText('leftText');
+    rightRightText.textContent = getTranslatedText('rightText');
+    rightPowerText.textContent = getTranslatedText('powerText');
+    // rematchText.textContent = getTranslatedText
+}
+
 export function TranslateAllTexts() {
     translateArenaPageTexts();
     translateTournamentPageTexts();
@@ -217,4 +238,5 @@ export function TranslateAllTexts() {
     translateRGPDTexts();
     translateUserPageTexts();
     translateModifyPageTexts()
+    translateGameTexts();
 }
