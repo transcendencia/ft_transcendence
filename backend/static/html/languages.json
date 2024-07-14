@@ -112,11 +112,14 @@
         "successfulModifyInfo": "Info changed",
         
         
-        "startGameText": "Press [E] to start the game",
+        "startGameText": "[E] to start the game",
         "leftText": "left",
         "rightText": "right",
         "powerText": "power",
-        "winText": "wins"
+        "winText": "wins",
+        "rematchText": "rematch",
+        "backToArena": "back to arena",
+        "backToTournament": "back to tournament"
     },
     "es": {
         "login": "Usuario",
@@ -233,7 +236,10 @@
         "leftText": "izquierda",
         "rightText": "derecha",
         "powerText": "poder",
-        "winText": "gana"
+        "winText": "gana",
+        "rematchText": "revancha",
+        "backToArena": "volver a arena",
+        "backToTournament": "volver a torneo"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -352,6 +358,9 @@
         "leftText": "gauche",
         "rightText": "droite",
         "powerText": "pouvoir",
-        "winText": "gagne"
+        "winText": "gagne",
+        "rematchText": "rejouer",
+        "backToArena": "retour a l'arene",
+        "backToTournament": "retour au tournoi"
     }
 }

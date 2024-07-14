@@ -1214,12 +1214,12 @@ class Arena extends THREE.Mesh {
             if (this.game.tournamentGame)
             {
                 rematchButton.style.visibility = 'hidden';
-                backToLobbyText.textContent = 'back to tournament';
+                backToLobbyText.textContent = getTranslatedText('backToTournament');
             }
             else
             {
                 rematchButton.style.visibility = 'visible';
-                backToLobbyText.textContent = 'back to arena';
+                backToLobbyText.textContent = getTranslatedText('backToArena');
             }
             winningScreen.classList.add('visible');
             if (this.game.user2.isBot === 'Bot')

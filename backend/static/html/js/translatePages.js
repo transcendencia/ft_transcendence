@@ -227,7 +227,7 @@ function translateGameTexts() {
     rightLeftText.textContent = getTranslatedText('leftText');
     rightRightText.textContent = getTranslatedText('rightText');
     rightPowerText.textContent = getTranslatedText('powerText');
-    // rematchText.textContent = getTranslatedText
+    rematchText.textContent = getTranslatedText('rematchText');
 }
 
 export function TranslateAllTexts() {
