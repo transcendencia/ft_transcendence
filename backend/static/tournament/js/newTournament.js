@@ -1,9 +1,9 @@
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { createUserInfoObject, displayRemovePlayerVisual, resetToPlusButton, resetUserInfoVisual, createUserTile, switchToGame } from "../../html/js/arenaPage.js";
-import { blue, purple, grey, lightGrey } from "../../html/js/arenaPage.js";
+import { createUserInfoObject, resetToPlusButton, createUserTile, switchToGame, RenderAllUsersInList } from "../../html/js/arenaPage.js";
+import { Glow, resetGlow, resetAddingMode, setAddingMode, setCssClassToArray, plusClicked} from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
-import { getProfileInfo, populateProfileInfo, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
+import { getProfileInfo, populateProfileInfos, get_friends_list, getUserStatus } from "../../html/js/userManagement.js";
 
 
 export let gamemodeCounterTournament = 0;
@@ -32,6 +32,7 @@ function toggleGamemodeTournament(buttonHeader, imgIndex) {
 function handleMapsTournament(buttonHeader, imgIndex) {
   if (imgIndex === 0){
       mapCounterTournament--;
+
       if (mapCounterTournament === -1)
           mapCounterTournament = 3;
   }
@@ -90,29 +91,7 @@ buttonHeaders.forEach((buttonHeader, index) => {
     });
 });
 
-export function RenderUserTournament(user) {
-    const usernameElement = document.getElementById('player1TournamentUsername');
-    usernameElement.textContent = user.username;
-    const pictureElement = document.getElementById('player1TournamentPicture');
-    pictureElement.src = user.profile_picture;
-    addUserToTournament(user.id, user.username, user.profile_picture);
-  }
-
-let plusButtons = document.querySelectorAll(".plusPlayerTournament");
 const userTilesTournament = [];  // Array to store the user tiles
-
-export async function RenderAllUsersTournament() {
-    const userListBackground = document.getElementById('userlistTournamentPage');
-    
-    userListBackground.innerHTML = '';
-    userTilesTournament.length = 0;
-    const users = await get_friends_list();
-
-    createUserTile(users.bot, 'Bot', userListBackground, userTilesTournament);
-    users.friends.forEach(obj => {createUserTile(obj.user, 'Friend', userListBackground, userTilesTournament)});
-    users.user_not_friend.forEach(user => {createUserTile(user, '', userListBackground, userTilesTournament)});
-    addEventListenerToTilesTournament();
-}
 
 export function resetTournament() {
   document.querySelectorAll('.before-launch').forEach(function(el) {
@@ -132,24 +111,15 @@ export function resetTournament() {
   round = 1;
   thirdPlayerMode = false;
   plusClickedTournament = false;
-  getProfileInfo()
+  getProfileInfo(sessionStorage.getItem("host_id"))
   .then(data => {
-      populateProfileInfo(data);
+      populateProfileInfos(data);
   })
-  .catch(error => {
-      console.error('Failed to retrieve profile info:', error);
-  });
   resetPlusButton();
   resetBracket();
-  plusButtons = document.querySelectorAll(".plusPlayerTournament");
-  plusButtons.forEach(function(otherPlusButton) {
-    otherPlusButton.style.pointerEvents = 'auto';
-  });
 }
 
 //add user to tournaments
-
-const userlist = document.querySelectorAll(".userlistBackground")[2];
 
 let profileAddedToTournament = [];
 let plusClickedTournament = false
@@ -157,93 +127,20 @@ const botID = 0;
 let playerNb = 0;
 export let tournamentState = 0;
 
-function GlowTournament() {
-  userlist.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-  userlist.style.borderColor = '#ffb30eff';
-  userlist.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
-  userTilesTournament.forEach((tile, i) => {
-      if (profileAddedToTournament[i])
-          return;
-      const tileChildren = tile.HTMLelement.querySelectorAll(":scope > *");
-      tileChildren.forEach(function(element) {
-          element.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
-          element.style.borderColor = '#ffb30eff';
-          element.style.animation = 'shadowBlink 1s infinite alternate ease-in-out';
-      });
-  });
-}
-
-function resetGlowTournament() {
-  userlist.style.borderColor = blue;
-  userlist.style.animation = '';
-  userTilesTournament.forEach((child, i) => {
-      const children = child.HTMLelement.querySelectorAll(":scope > *");
-      children.forEach(element => {
-          element.style.borderColor = blue;
-          element.style.animation = '';
-      });
-      if (i === botID) {
-          children.forEach(element => {
-              element.style.borderColor = purple;
-          });
-      }
-  });
-}
-
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
 userlistTitle.textContent = getTranslatedText('userlist');
 
-function resetAddingModeTournament() {
-  userlistTitle.textContent = getTranslatedText('userlist');
-  plusClickedTournament = 0;
-  plusButtons.forEach(function(otherPlusButton) {
-      otherPlusButton.style.pointerEvents = 'auto';
-  });
-  profileAddedToTournament[botID] = false;
-}
-
-function setAddingModeTournament(plusButton, i) {
-  userlistTitle.textContent = getTranslatedText('chooseProfile');
-  plusClickedTournament = i + 1;
-  plusButtons.forEach(function(otherPlusButton) {
-      if (otherPlusButton !== plusButton) {
-          otherPlusButton.style.pointerEvents = 'none';
-      }
-  });
-}
-
-export function addEventListenersToPlusButtons() {
-  plusButtons.forEach(function(plusButton, i) {
-    plusButton.addEventListener('click', function () {
-      if (!plusClickedTournament) {
-            setAddingModeTournament(plusButton, i);
-            GlowTournament();
-            plusButton.style.backgroundColor = lightGrey;
-        }
-        else {
-            resetAddingModeTournament(plusButton);
-            resetGlowTournament();
-            plusButton.style.backgroundColor = grey;
-        }
-    });
-    //Hovering
-    plusButton.addEventListener('mouseenter', function () {
-        if (!plusClickedTournament)
-            plusButton.style.backgroundColor = lightGrey;
-    });
-  
-    plusButton.addEventListener('mouseleave', function () {
-        if (!plusClickedTournament)
-            plusButton.style.backgroundColor = grey;
-    });
-  });
-}
-
-export function initTournamentPlanet(){
-  RenderAllUsersTournament();
-  addEventListenersToPlusButtons();
-}
+export let plusButtonsTournament = document.querySelectorAll(".plusPlayerTournament");
+plusButtonsTournament.forEach((plusButton, i) => {
+	plusButton.classList.add('hover-enabled');
+	plusButton.addEventListener('click', function () {
+		if (!plusClicked)
+			setAddingMode(plusButton, i, false);
+		else if (plusClicked === i + 1)
+			resetAddingMode(false);
+	});
+});
 
 export function resetPlusButton() {
   let addPlayerElements = document.querySelectorAll('.addPlayer');
@@ -253,7 +150,7 @@ export function resetPlusButton() {
       return;
     let playerNumber = index + 1;
     element.innerHTML = `
-      <div class="plusPlayerTournament" style="pointer-events: none;">+</div></div>
+      <div class="plusPlayerTournament">+</div></div>
       <div id="player${playerNumber}Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player ${playerNumber} </div>
     `;
   });
@@ -265,68 +162,6 @@ const validatePasswordButton = document.getElementById("arenaLogInButton");
 const backPasswordButton = document.getElementById("arenaBackLogInButton");
 let tempTileIndexTournament = -1;
 
-function addEventListenerToTilesTournament() {
-  userTilesTournament.forEach((tile, i) => {
-      profileAddedToTournament[i] = false;
-      tile.HTMLelement.addEventListener('click', function() {
-          if (plusClickedTournament && !profileAddedToTournament[i]) {
-              if (tile.type == 'Bot' /*|| playerAlreadyLogged*/) {
-                  tempTileIndexTournament = i;
-                  putUserInTournament();
-                  return;
-              }
-              pwWindow.classList.toggle("showRectangle");
-              blockingPanel.classList.add('show');
-              tempTileIndexTournament = i;
-              const newObj = createUserInfoObject(tile, i);
-              pwWindow.replaceChild(newObj.userInfoCont, pwWindow.querySelector('.userInfoCont'));
-          }
-      });
-  });
-}
-
-  export function putUserInTournament() {
-    if (plusClickedTournament && !profileAddedToTournament[tempTileIndexTournament]) {
-      const i = tempTileIndexTournament;
-      const tile = userTilesTournament[i];
-      const textCont = tile.HTMLelement.querySelector(".textContainer");
-
-      pwWindow.classList.remove("showRectangle");
-      blockingPanel.classList.remove('show');
-      profileAddedToTournament[i] = true;
-      playerNb++;
-      const newObj = createUserInfoObject(tile, i);
-      addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
-      const oldObj = plusButtons[plusClickedTournament - 1];
-      oldObj.parentNode.replaceChild(newObj.userInfoCont, oldObj);
-      resetGlowTournament();
-      resetAddingModeTournament();
-      newObj.userInfoCont.addEventListener('mouseenter', function () {
-          displayRemovePlayerVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic);
-      });
-      newObj.userInfoCont.addEventListener('mouseleave', function () {
-          resetUserInfoVisual(newObj.userInfoCont, newObj.clonedImg, newObj.profilePic, newObj.tileText, i, tile);
-      });
-      newObj.userInfoCont.addEventListener('click', function() {
-          resetToPlusButton(newObj.userInfoCont, oldObj, textCont);
-          profileAddedToTournament[i] = false;
-          profileAddedToTournament[botID] = false;
-          playerNb--;
-          removeUserFromTournament(tile.user.id);
-      });
-
-      if (tile.type === 'Friend')
-        textCont.classList.remove('friendBg');
-      else if (tile.type === 'Bot')
-          textCont.classList.remove('botBg');
-      else textCont.classList.remove('defaultBg');
-    }
-  }
-
-  validatePasswordButton.addEventListener('click', function() {
-    putUserInTournament();
-  });
-
   backPasswordButton.addEventListener('click', function() {
     pwWindow.classList.remove("showRectangle");
     blockingPanel.classList.remove('show');
@@ -334,30 +169,22 @@ function addEventListenerToTilesTournament() {
 
   const tournamentPlayer = [];
 
-  export function addUserToTournament(playerId, username, profile_picture) {
-      if (!tournamentPlayer.some(player => player.username === username)) {
-          tournamentPlayer.push({
-            playerId: playerId,
-            username: username,
-            profile_picture: profile_picture,
-            order: -1,
-            position: 0,
-            round: 1,
-          });
-      }
-  }
-
-  function removeUserFromTournament(playerId) {
-    const playerIndex = tournamentPlayer.findIndex(player => player.playerId === playerId);
-    //remove if player is find
-    if (playerIndex !== -1)
-        tournamentPlayer.splice(playerIndex, 1);
-  }
+export function addUserToTournament(playerId, username, profile_picture) {
+  console.log(username);
+    if (!tournamentPlayer.some(player => player.username === username)) {
+        tournamentPlayer.push({
+          playerId: playerId,
+          username: username,
+          profile_picture: profile_picture,
+          order: -1,
+          position: 0,
+          round: 1,
+        });
+    }
+}
 
   export function toggleThirdPlayerMode() {
-    if (thirdPlayerMode === false)
-      thirdPlayerMode = true;
-    else thirdPlayerMode = false;
+    
   }
 
   function getRandomNumber(tournamentPlayer, player1, player2) {

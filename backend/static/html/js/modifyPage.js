@@ -1,11 +1,10 @@
-import { togglePanelDisplay, togglePlanet, landedOnPlanet } from './enterPlanet.js';
+import { togglePlanet } from './enterPlanet.js';
 import { returnToHost } from './userPage.js';
-import { resetOutline } from './planetIntersection.js';
-import { toggleBlurDisplay, toggleLobbyStart, toggleRSContainerVisibility } from './main.js';
+import { toggleLobbyStart, createUserBadge } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
-import { getCookie, resetModifyPageField } from './loginPage.js';
-import { getProfileInfo, updateUserStatus, populateProfileInfo } from './userManagement.js';
+import { getCookie } from './loginPage.js';
+import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
 
@@ -39,13 +38,12 @@ function handleChangeInfoForm(event) {
   .then(data => {
     var changeInfoMessage = document.querySelector('.changeInfoMessage');
     if (data.status === "succes")
-      getProfileInfo()
+      getProfileInfo(sessionStorage.getItem("host_id"))
         .then(data => {
-            populateProfileInfo(data);
+            populateProfileInfos(data);
+            
         })
-        .catch(error => {
-            console.error('Failed to retrieve profile info:', error);
-        });
+
     else changeInfoMessage.classList.toggle("errorMessage");
     document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
   })
@@ -82,25 +80,19 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   })
   .then(response => {
       deleteBlockingPanel.classList.remove('show');
+      if (guestLoggedIn.length > 0) {
+        guestLoggedIn.forEach(user => {
+            updateUserStatus('offline', user[1]);
+        });
+      }
+      guestLoggedIn.splice(0, guestLoggedIn.length);
+      sessionStorage.clear();
       return response.json();
   })
   .catch(error => {
       console.error('There was a problem with the delete_account:', error);
   });
 
-  if (guestLoggedIn.length > 0) {
-    guestLoggedIn.forEach(user => {
-        updateUserStatus('offline', user[1]);
-    });
-  }
-  guestLoggedIn.splice(0, guestLoggedIn.length);
-  const lsCont = document.getElementById('lsCont');
-  lsCont.innerHTML = `
-      <div class="tinyRedShadowfilter">
-          Players Connected
-      </div>
-  `;
-  sessionStorage.clear();
   document.getElementById("validateDelete").classList.remove("showRectangle");
   togglePlanet(true);
   returnToHost();
@@ -117,23 +109,29 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
 deleteAccountButton.addEventListener("click", deleteAccount);
 
 function deleteAccount() {
-  // rediriger vers la page d'acceuil
-  // deconnecter tout les guest
-  // delete account dans la db
   document.getElementById("validateDelete").classList.toggle("showRectangle");
   deleteBlockingPanel.classList.add('show');
 }
 
 // document.addEventListener('DOMContentLoaded', (event) => {
   const toggleSwitch = document.getElementById('toggleSwitch');
+  let oldUsername;
+  let toggleSwitchClicked = false;
 
   toggleSwitch.addEventListener('click', function() {
       this.classList.toggle('active');
       if (this.classList.contains('active')) {
         anonymousStatus = true;
+        if (!toggleSwitchClicked) {
+          toggleSwitchClicked = true;
+          oldUsername = document.getElementById('changeUsernameInput').value;
+        }
         getRandomUsername();
       }
-      else anonymousStatus = false;
+      else {
+        anonymousStatus = false;
+        document.getElementById('changeUsernameInput').value = oldUsername;
+      }
   });
 // });
 
@@ -235,4 +233,27 @@ function downloadFile() {
     console.error('Error during file download:', error);
     alert('Une erreur est survenue lors du téléchargement du fichier. Veuillez réessayer.');
   });
+}
+
+export function resetModifyPageField() {
+  // Pas vider les username et le alias mais le mettre a la derniere valeur
+  // document.getElementById('changeUsernameInput').value = '';
+  // document.getElementById('changeAliasInput').value = '';
+console.log("resetModifyPageField");
+  getProfileInfo(sessionStorage.getItem('host_id'))
+  .then(data => {
+      populateProfileInfos(data);
+  })
+  .catch(error => {
+      console.error('Failed to retrieve profile info:', error);
+  });
+  document.getElementById('changePasswordInput').value = '';
+  document.getElementById('changeConfirmPasswordInput').value = '';
+  document.getElementById('changeInfoMessage').innerText = '';
+  document.getElementById('profile-pic').value = '';
+  document.getElementById('changeInfoMessage').innerText = '';
+  document.getElementById('LinkPicture').innerText = '';
+  const toggleSwitch = document.getElementById('toggleSwitch');
+  toggleSwitch.classList.remove('active');
+  //vider input nom de la photo
 }
