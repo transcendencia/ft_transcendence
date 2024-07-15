@@ -4,13 +4,14 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, F, FloatField, ExpressionWrapper, Case, When
+from django.db.models import Q
 
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 
-from ..models import User, UserStat
+from ..models import User, UserStat, FriendRequest
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
 
 @api_view(['GET'])
@@ -18,6 +19,7 @@ from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer
 @permission_classes([IsAuthenticated])
 def get_stats(request, userId):
   try:
+    # est ce que c ok ???? get_or_404
     user = get_object_or_404(User, id=userId)
     gameWon = UserStat.objects.filter(player=user, isWinner=True)
     nbrGameWon = gameWon.count()
@@ -59,8 +61,6 @@ def get_stats(request, userId):
       )
     )
 
-    efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
-
     # Total points taken
     totalPointsTaken = allGames.aggregate(totalPointsTaken=Sum('pointsTaken'))['totalPointsTaken'] or 0
 
@@ -90,7 +90,6 @@ def get_stats(request, userId):
     for game in allGames:
       
       # Map counter
-      print("map game", game.mapGame)
       if game.mapGame == "oceanMap":
         oceanMap += 1 
       elif game.mapGame == "spaceMap":
@@ -101,7 +100,6 @@ def get_stats(request, userId):
           skyMap += 1
       
       # Mode counter
-      print("mode game", game.modeGame)
       if game.modeGame == "CLASSIC":
         classicMode += 1
       elif game.modeGame == "SPIN ONLY":
@@ -110,15 +108,10 @@ def get_stats(request, userId):
         powerlessMode += 1
     
     # Map percentage
-    oceanMapPercentage = round((oceanMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    spaceMapPercentage = round((spaceMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    dragonMapPercentage = round((dragonMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    skyMapPercentage = round((skyMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-
-    # Mode percantage
-    classicModePercentage = round((classicMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    spinOnlyModePercentage = round((spinOnlyMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    powerlessModePercentage = round((powerlessMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
+    oceanMapPercentage = round((oceanMap / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    spaceMapPercentage = round((spaceMap / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    dragonMapPercentage = round((dragonMap / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    skyMapPercentage = round((skyMap / nbrGames) * 100, 1) if nbrGames > 0 else 0
 
     mapPercentages = {
       "oceanMap": oceanMapPercentage,
@@ -126,6 +119,11 @@ def get_stats(request, userId):
       "dragonMap": dragonMapPercentage,
       "skyMap": skyMapPercentage
     }
+
+    # Mode percantage
+    classicModePercentage = round((classicMode / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    spinOnlyModePercentage = round((spinOnlyMode / nbrGames) * 100, 1) if nbrGames > 0 else 0
+    powerlessModePercentage = round((powerlessMode / nbrGames) * 100, 1) if nbrGames > 0 else 0
 
     modePercentages = {
       "classicMode": classicModePercentage,
@@ -138,8 +136,6 @@ def get_stats(request, userId):
 
     totalBounces = sums['totalBounces']
     totalPointsTaken = sums['totalPointsTaken']
-    print(totalBounces)
-    print(totalPointsTaken)
     if totalBounces is not None and totalPointsTaken is not None:
       if totalPointsTaken != 0:
         efficiency = round((totalBounces / totalPointsTaken), 1)
@@ -148,14 +144,25 @@ def get_stats(request, userId):
     else:
       efficiency = -1
 
+    # Number of friends
+    friends = FriendRequest.objects.filter((Q(receiver=user) | Q(sender=user)) & Q(status="accepted"))
+    nbrFriends = friends.count()
+
+    userInfo = {
+      'username': user.username,
+      'alias': user.alias,
+      'profilePicture': user.profile_picture.url,
+      'created_at': user.created_at,
+    }
+
     return Response({
+      'userInfo': userInfo,
       'percentageGameWon': percentageGameWon, 
       'percentageGameLost': percentageGameLost,
       'totalDashes': totalDashes,
       'totalPowerUpsUsed': totalPowerUpsUsed,
       'dashesPercentage': dashesPercentage,
       'poweredUsedPercentage': poweredUsedPercentage,
-      'efficiencyRatios': efficiencyRatios,
       'nbrGames': nbrGames,
       'maxStreak': maxStreak,
       'currentStreak': currentStreak,
@@ -164,7 +171,12 @@ def get_stats(request, userId):
       'efficiency' : efficiency,
       'totalPointsTaken': totalPointsTaken,
       'totalBounces': totalBounces,
-      'totalGameTime': totalGameTime
+      'totalGameTime': totalGameTime,
+      'nbrGoal': user.nbr_goals,
+      'nbrWin': user.nbr_match_win,
+      'nbrLose': user.nbr_match_lost,
+      'nbrMatch': user.nbr_match,
+      'nbrFriends' : nbrFriends,
     })
 
   except User.DoesNotExist:

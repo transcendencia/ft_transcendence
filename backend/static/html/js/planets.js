@@ -68,12 +68,60 @@ class Planet {
 }
 
 const planets = [];
+// New atmosphere shader
+const atmosphereVertexShader = `
+	varying vec3 vNormal;
+	varying vec3 vPosition;
+	uniform float time;
 
-const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
-const sphereMaterial = new THREE.MeshBasicMaterial({
-	 color: 0xffaa00,
+	void main() {
+		vNormal = normalize(normalMatrix * normal);
+		vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+		gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+	}
+`
+;
+
+const atmosphereFragmentShader = `
+    uniform vec3 glowColor;
+    uniform float glowIntensity;
+    uniform float time;
+
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+
+    void main() {
+        float intensity = pow(0.75 - dot(vNormal, vec3(0, 0, 1.0)), 2.0) * glowIntensity;
+        gl_FragColor = vec4(glowColor, 1.0) * intensity;
+    }
+`;
+
+const atmosphereMaterial = new THREE.ShaderMaterial({
+	uniforms: {
+		glowColor: { value: new THREE.Color(0xffaa33) },
+		glowIntensity: { value: 0.4 },
+		time: { value: 0}
+	},
+	vertexShader: atmosphereVertexShader,
+	fragmentShader: atmosphereFragmentShader,
+	side: THREE.BackSide,
+	blending: THREE.AdditiveBlending,
+	transparent: true
 });
-const sun = new THREE.Mesh(sphereGeometry, sphereMaterial);
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load('static/game/assets/sunTexture.jpg');
+const sunMaterial = new THREE.MeshBasicMaterial({
+	color:0xff9900,
+	side: THREE.DoubleSide,
+	map: texture
+})
+
+const sunGeometry = new THREE.SphereGeometry(1, 128, 128);
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+
+const atmosphereGeometry = new THREE.SphereGeometry(1.3, 64, 64);
+const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+
 
 const boxGeometry = new THREE.BoxGeometry(40, 40, 40);
 const boxMaterial = new THREE.MeshBasicMaterial({
@@ -81,14 +129,16 @@ const boxMaterial = new THREE.MeshBasicMaterial({
 const box = new THREE.Mesh(boxGeometry, boxMaterial);
 
 sun.scale.set(300, 300, 300);
+atmosphere.scale.set(300, 300, 300);
 sun.position.set(0, -10, 0);
 
 function setupPlanets(models) {
 	scene.add(sun);
-	scene.add(box);
+	scene.add(atmosphere);
+	// scene.add(box);
 	const planetData = [
 		{name: 'arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80},
-		{name: 'settings', distance: 600, scale: 35, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40},
+		{name: 'settings', distance: 600, scale: 50, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40},
 		{name: 'tournament', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90},
 	]
 	planetData.forEach(data => {
@@ -97,4 +147,4 @@ function setupPlanets(models) {
 	});
 }
 
-export {sun, planets, setupPlanets, box}
+export {sun, atmosphere, planets, setupPlanets, box}

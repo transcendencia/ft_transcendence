@@ -94,8 +94,7 @@ const loginText = document.getElementById('loginText');
 const passwordText = document.getElementById('passwordText');
 const enterLogin = document.getElementById('enterLogin');
 const enterPassword = document.getElementById('enterPassword');
-const loginLanguageText = document.getElementById('loginLanguageText');
-const newToTheGame = document.querySelector('.newToTheGame');
+const newToTheGame = document.querySelector('.basicText');
 const confirmPassword = document.getElementById('confirmPassword');
 const signUpTitle = document.getElementById('signUpTitle');
 const createAccountText = document.getElementById('createAccountText');
@@ -106,7 +105,6 @@ const signupHereButton = document.querySelector('.actionCont');
 function translateLoginPageTexts() {
     loginText.childNodes[0].textContent = '- ' + getTranslatedText('login') + ' -';
     passwordText.childNodes[0].textContent = '- ' + getTranslatedText('password') + ' -';
-    loginLanguageText.childNodes[4].textContent = '- ' + getTranslatedText('loginLanguage') + ' -';
     newToTheGame.childNodes[0].textContent = getTranslatedText('newToTheGame');
     signupHereButton.textContent = getTranslatedText('signUpHere');
     signUpTitle.textContent = getTranslatedText('signUpTitle');
@@ -138,6 +136,19 @@ function translateEscapePageTexts() {
     disconnectButton.textContent = getTranslatedText('disconnect');
 }
 
+const RGPDTitle = document.getElementById('RGPDTitle');
+const RGPDText = document.getElementById('RGPDText');
+const RGPDCreate = document.getElementById('RGPDCreate');
+const RGPDPolicy = document.getElementById('RGPDPolicy');
+const RGPDBack = document.getElementById('RGPDBack');
+
+function translateRGPDTexts() {
+    RGPDTitle.textContent = getTranslatedText('RGPDTitle');
+    RGPDText.textContent = getTranslatedText('RGPDText');
+    RGPDCreate.textContent = getTranslatedText('RGPDCreate');
+    RGPDPolicy.textContent = getTranslatedText('RGPDPolicy');
+    RGPDBack.textContent = getTranslatedText('RGPDBack');
+}
 const friendlistText = document.getElementById('friendListText');
 const historyText = document.getElementById('historyText');
 const historyText2 = document.getElementById('historyText2');
@@ -146,6 +157,7 @@ const profileTitleText = document.getElementById('profileTitleText');
 const statisticsText = document.getElementById('statisticsText');
 const statisticsText2 = document.getElementById('statisticsText2');
 const backButton = document.getElementById('userBackButton');
+
 
 function translateUserPageTexts() {
     friendlistText.textContent = getTranslatedText('friendlist');
@@ -158,38 +170,71 @@ function translateUserPageTexts() {
     backButton.textContent = getTranslatedText('backButton');   
 }
 
-const changeInfoText = document.getElementById('changeInfo');
+const changeInfo = document.getElementById('changeInfo');
 const changeUsernameInput = document.getElementById('changeUsernameInput');
+const changeAliasInput = document.getElementById('changeAliasInput');
 const changePasswordInput = document.getElementById('changePasswordInput');
 const changeConfirmPasswordInput = document.getElementById('changeConfirmPasswordInput');
 const changeProfilePicture = document.getElementById('changeProfilePicture');
+const AnonymousMode = document.getElementById('AnonymousMode');
 const chooseProfilePic = document.getElementById('chooseProfilePic');
 const deleteAccountButton = document.getElementById('deleteAccountButton');
 const submitInfoButton = document.getElementById('submitInfoButton');
 const validateDeleteAccountText = document.getElementById('validateDeleteAccountText');
 const deleteAccountConfirmation = document.getElementById('deleteAccountConfirmation');
 const deleteAccountCancel = document.getElementById('deleteAccountCancel');
+const RGPDPolicyInUserPage = document.getElementById('RGPDPolicyInUserPage');
+const infoBack = document.getElementById('infoBack');
+const textAnonymous = document.getElementById('textAnonymous');
+
 
 function translateModifyPageTexts(){
-    changeInfoText.textContent = getTranslatedText('changeInfoText');
-    changeUsernameInput.textContent = getTranslatedText('changeUsernameInput');
-    changePasswordInput.textContent = getTranslatedText('password');
-    changeConfirmPasswordInput.textContent = getTranslatedText('confimPassword');
+    changeInfo.textContent = getTranslatedText('changeInfo');
+    changeUsernameInput.placeholder = getTranslatedText('changeUsernameInput');
+    changeAliasInput.placeholder =  getTranslatedText('changeAliasInput');  
+    changePasswordInput.placeholder = getTranslatedText('changePasswordInput');
+    changeConfirmPasswordInput.placeholder = getTranslatedText('changeConfirmPasswordInput');
     changeProfilePicture.textContent = getTranslatedText('changeProfilePicture');
+    AnonymousMode.textContent = getTranslatedText('AnonymousMode');
     chooseProfilePic.textContent = getTranslatedText('chooseProfilePic');
     deleteAccountButton.textContent = getTranslatedText('deleteAccountButton');
     submitInfoButton.textContent = getTranslatedText('submitInfoButton');
     validateDeleteAccountText.textContent = getTranslatedText('validateDeleteAccountText');
     deleteAccountConfirmation.textContent = getTranslatedText('deleteAccountConfirmation');
     deleteAccountCancel.textContent = getTranslatedText('deleteAccountCancel');
+    RGPDPolicyInUserPage.textContent = getTranslatedText('RGPDPolicyInUserPage');
+    textAnonymous.textContent = getTranslatedText('textAnonymous');
+     
 }
+
+const startGameText = document.getElementById('startGameText');
+const leftLeftText = document.getElementById('leftLeftText');
+const leftRightText = document.getElementById('leftRightText');
+const leftPowerText = document.getElementById('leftPowerText');
+const rightLeftText = document.getElementById('rightLeftText');
+const rightRightText = document.getElementById('rightRightText');
+const rightPowerText = document.getElementById('rightPowerText');
+const rematchText = document.getElementById('rematchText');
+
+
+function translateGameTexts() {
+    startGameText.textContent = getTranslatedText('startGameText');
+    leftLeftText.textContent = getTranslatedText('leftText');
+    leftRightText.textContent = getTranslatedText('rightText');
+    leftPowerText.textContent = getTranslatedText('powerText');
+    rightLeftText.textContent = getTranslatedText('leftText');
+    rightRightText.textContent = getTranslatedText('rightText');
+    rightPowerText.textContent = getTranslatedText('powerText');
+    rematchText.textContent = getTranslatedText('rematchText');
+}
+
+
 
 const enterPasswordText = document.getElementById('enterPasswordText');
 const enterPasswordInput = document.getElementById('enterPasswordInput');
 const arenaBackLogInButton = document.getElementById('arenaBackLogInButton');
 const arenaLogInButton = document.getElementById('arenaLogInButton');
 const showAliasText = document.getElementById('showAliasText');
-const aliasBackLogInButton = document.getElementById('aliasBackLogInButton');
 const aliasLogInButton = document.getElementById('aliasLogInButton');
 
 function translatePopupWindow(){
@@ -199,7 +244,6 @@ function translatePopupWindow(){
     arenaLogInButton.textContent = getTranslatedText('arenaLogInButton');
     
     showAliasText.textContent = getTranslatedText('showAliasText');
-    aliasBackLogInButton.textContent = getTranslatedText('aliasBackLogInButton');
     aliasLogInButton.textContent = getTranslatedText('aliasLogInButton');
 }
 
@@ -208,7 +252,9 @@ export function TranslateAllTexts() {
     translateTournamentPageTexts();
     translateLoginPageTexts();
     translateEscapePageTexts();
+    translateRGPDTexts();
     translateUserPageTexts();
-    translateModifyPageTexts();
+    translateModifyPageTexts()
+    translateGameTexts();
     translatePopupWindow();
 }

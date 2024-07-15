@@ -1,0 +1,64 @@
+.rgpdPage {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1); /* Scale up by 2 times */
+    overflow: hidden; /* Ensure text input doesn't overflow */
+    border-radius: 5px;
+    width: 80%;
+    height: 99%;
+    transition: opacity 1s, visibility 0s 1s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.backgroundRGPDText {
+    padding: 20px;
+    height: 85%;
+    width: 40%;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 255, 0.2);    
+    color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    text-align: center;
+    font-family: 'computer';
+    font-size: 22px;
+    border: 4px solid #3777ff;
+    text-shadow: 0 0 2px black;
+    z-index: 5;
+    backdrop-filter: blur(10px);
+    position: relative; /* Ensure parent is positioned */
+    overflow: hidden; /* Hide overflow for pseudo-elements */
+}
+
+.rgpdFrame img {
+    transform: scaleX(1.3);
+}
+
+#RGPDTitle {
+    font-family: 'space';
+    font-size: 50px;
+    height: 12%;
+    width: 90%;
+}
+
+#RGPDText {
+    text-align: center;
+    font-size: 18px;
+    width: 90%;
+    font-family: 'space';
+}
+
+.pauseTitle {
+    position: fixed;
+    top: -10%;
+    height: 10%;
+    width: 200%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
