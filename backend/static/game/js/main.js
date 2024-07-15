@@ -17,7 +17,7 @@ import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragm
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
 import { lobbyVisuals } from '../../html/js/main.js';
 import { gameStarted } from '../../html/js/arenaPage.js';
-// import { gameStarted } from '../../html/js/arenaPage.js';
+import { getTranslatedText } from '../../html/js/translatePages.js';
 import { endGame, rematchGame } from '../../html/js/arenaPage.js';
 import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 // FPS COUNTER
@@ -1208,11 +1208,23 @@ class Arena extends THREE.Mesh {
             const winningScreen = document.querySelector('.winning-screen');
             const winningText = document.getElementById('winningText');
             const scoreText = document.getElementById('scoreText');
+            const rematchButton = document.getElementById('rematchButton');
+            const backToLobbyText = document.getElementById('backToLobbyText');
             scoreText.textContent = this.game.leftScore + ' - ' + this.game.rightScore;
             if (this.game.leftScore === 3)
-                winningText.textContent = this.game.user1.username + ' wins!';
+                winningText.textContent = this.game.user1.username + ' ' + getTranslatedText('winText') + '!';
             else
-                winningText.textContent = this.game.user2.username + ' wins!';
+                winningText.textContent = this.game.user2.username + ' ' + getTranslatedText('winText') + '!';
+            if (this.game.tournamentGame)
+            {
+                rematchButton.style.visibility = 'hidden';
+                backToLobbyText.textContent = getTranslatedText('backToTournament');
+            }
+            else
+            {
+                rematchButton.style.visibility = 'visible';
+                backToLobbyText.textContent = getTranslatedText('backToArena');
+            }
             winningScreen.classList.add('visible');
             if (this.game.user2.isBot === 'Bot')
                 this.bot.deactivateBot();
@@ -2248,7 +2260,7 @@ class OceanMap {
         {
             this.arena.material = this.lowGraphicArenaMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.lowGraphicPaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial.clone();
             this.arena.ball.material = this.lowGraphicBallMaterial;
             this.arena.ball.trailParticles.changeMaterial(this.lowGraphicTrailMaterial);
             this.arena.ball.particles.changeParticleNumber(0);
@@ -2276,7 +2288,7 @@ class OceanMap {
             this.arena.ball.particles.changeParticleNumber(1000);
             this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
             this.arena.paddleLeft.paddleMesh.material = this.paddleGlassMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial.clone();
             this.arena.paddleLeft.particleNumber = 250;
             this.arena.paddleRight.particleNumber = 250;
             this.arena.paddleLeft.particles.changeParticleNumber(250);
@@ -2298,7 +2310,7 @@ class OceanMap {
             }
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.paddleGlassMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.paddleGlassMaterial.clone();
             this.arena.ball.material = this.ballGlassMaterial;
             this.arena.ball.particles.changeParticleNumber(15000);
             this.arena.ball.trailParticles.changeMaterial(this.trailMaterial);
@@ -2660,7 +2672,7 @@ class SkyMap {
         {
             this.arena.material = this.lowGraphicArenaMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.lowGraphicPaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.lowGraphicPaddleMaterial.clone();
             this.arena.ball.material = this.lowGraphicBallMaterial;
             this.arena.ball.trailParticles.changeMaterial(this.lowGraphicTrailMaterial);
             this.arena.ball.particles.changeParticleNumber(0);
@@ -2697,7 +2709,7 @@ class SkyMap {
             this.arena.ball.particles.changeParticleNumber(1000);
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial.clone();
             this.arena.ball.material = this.reflectiveBallMaterial;
             this.arena.bloomPass.strength = 0.05;
             this.scene.background = this.skyCubeMapTexture;
@@ -2723,7 +2735,7 @@ class SkyMap {
             this.arena.paddleRight.particles.changeParticleSize(0.2);
             this.arena.material = this.reflectiveMaterial;
             this.arena.paddleLeft.paddleMesh.material = this.reflectivePaddleMaterial;
-            this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial;
+            this.arena.paddleRight.paddleMesh.material = this.reflectivePaddleMaterial.clone();
             this.arena.ball.material = this.reflectiveBallMaterial;
             this.arena.bloomPass.strength = 0.05;
             this.scene.background = this.skyCubeMapTexture;
@@ -3593,11 +3605,13 @@ class Bot {
 }
 
 class UserStats {
-    constructor(isThirdPlayer, usernameElement, ppElement) {
+    constructor(isThirdPlayer, usernameElement, ppElement, startpp, startUser) {
         this.isThirdPlayer = isThirdPlayer;
         this.isWinner = false;
         this.usernameElement = usernameElement;
+        this.startUserElement = startUser;
         this.ppElement = ppElement;
+        this.startppElement = startpp
         this.pointsScored = 0;
         this.pointsTaken = 0;
         this.nbDashes = 0;
@@ -3631,6 +3645,11 @@ class UserStats {
         this.profilePicture = profilePicture;
         this.usernameElement.textContent = username;
         this.ppElement.src = profilePicture;
+        if (this.isThirdPlayer === false)
+        {
+            this.startppElement.src = profilePicture;
+            this.startUserElement.textContent = username;
+        }
     }
     toJson() {
         return {
@@ -3669,10 +3688,14 @@ class Game {
         this.user1ProfilePicture = document.getElementById('pp1');
         this.user2ProfilePicture = document.getElementById('pp2');
         this.user3ProfilePicture = document.getElementById('pp3');
+        this.startUser1ProfilePicture = document.getElementById('startpp1');
+        this.startUser2ProfilePicture = document.getElementById('startpp2');
+        this.startUser1Username = document.getElementById('startUsername1Text');
+        this.startUser2Username = document.getElementById('startUsername2Text');
 
-        this.user1 = new UserStats(false, this.user1Username, this.user1ProfilePicture); // User1 is the left paddle
-        this.user2 = new UserStats(false, this.user2Username, this.user2ProfilePicture); // User2 is the right paddle
-        this.user3 = new UserStats(true, this.user3Username, this.user3ProfilePicture); // User3 is the third player
+        this.user1 = new UserStats(false, this.user1Username, this.user1ProfilePicture, this.startUser1ProfilePicture, this.startUser1Username); // User1 is the left paddle
+        this.user2 = new UserStats(false, this.user2Username, this.user2ProfilePicture, this.startUser2ProfilePicture, this.startUser2Username); // User2 is the right paddle
+        this.user3 = new UserStats(true, this.user3Username, this.user3ProfilePicture, this.startUser1ProfilePicture, this.startUser2Username); // User3 is the third player
         this.map; // (options =  'spaceMap', 'dragonMap', 'skyMap', 'oceanMap')
 
         // OUTPUT
@@ -3899,6 +3922,9 @@ function swapToSplitScreen() {
         .onComplete(() => {
             blueBar[0].style.transition = "opacity 2s ease";
             blueBar[0].style.opacity = 0.2;
+            setTimeout(() => {
+                blueBar[0].style.display = 'block';
+            }, 2000);
         })
         .start();
 }
@@ -3907,6 +3933,9 @@ function swapToFullScreen()
 {
     blueBar[0].style.transition = "opacity 0.5s ease";
     blueBar[0].style.opacity = 0;
+    setTimeout(() => {
+        blueBar[0].style.display = 'none';
+    }, 500);
     const targetWidth = window.innerWidth;
     const duration = 500; // Animation duration in milliseconds
     new TWEEN.Tween(renderer.domElement)

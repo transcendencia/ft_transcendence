@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import authentication, tournament, updateUserInfo, gameInfo, friendship, stats
+from .views import authentication, updateUserInfo, gameInfo, friendship, stats, rgpd
 
 from .views.updateUserInfo import UserStatusView, UserLanguageView, UserInfoView, UserGraphicModeView
 from .views.friendship import FriendRequestView, FriendListView
@@ -33,13 +33,13 @@ urlpatterns = [
     path('get_stats/<int:userId>', StatsView.as_view(), name="get_stats"),
 
     #tounament.py
-    path('tournament/', tournament.result, name='result'),
-    path('addPlayer/', tournament.add_member, name='add_member'),
     path('add_game/', gameInfo.add_game, name='add_game'),
-    path('game_list/', gameInfo.game_list, name='game_list'),
     path('get_game_list/', gameInfo.get_game_list, name='get_game_list'),
     path('get_game_user/', gameInfo.get_game_user, name='get_game_user'),
 
     # path('get_game_list/', gameInfo.get_game_list, name='get_game_list'),
     # path('get_game_info/', gameInfo.get_game_info, name='get_game_info'),
+
+    #rgpd.py
+    path('generateDataFile/', rgpd.generateDataFile, name='generateDataFile'),
 ]

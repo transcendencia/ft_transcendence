@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
+import { resetTournament, tournamentState } from '../../tournament/js/newTournament.js';
+import { initArenaPlanet, initTournamentPlanet, resetArenaPage } from './arenaPage.js';
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
 import { initUserPlanet } from './userPage.js';
-import { resetTournament, tournamentState, addEventListenersToPlusButtons } from '../../tournament/js/newTournament.js';
-import { initArenaPlanet } from './arenaPage.js';
-import { initTournamentPlanet } from '../../tournament/js/newTournament.js';
 
 export let landedOnPlanet = false;
 let planetPanel = document.querySelectorAll(".planetPanel");
@@ -24,7 +23,6 @@ export function togglePanelDisplay() {
     if (anim)
         clearTimeout(anim);
     if (landedOnPlanet && planetInRange.name == "arena") {
-        // RenderAllUsers();
         anim = setTimeout(function () {triggerInfiniteAnim(imagesArena[0], imagesArena[1])}, 2000);
         planetPanel[0].style.animation = "roll 2s forwards";
         imagesArena[0].style.animation = "moveImageRight 2s forwards";
@@ -55,14 +53,12 @@ export function togglePanelDisplay() {
     if (landedOnPlanet && planetInRange.name == "tournament") {
         if (tournamentState === 2)
             resetTournament();
-        // else
-        //    addEventListenersToPlusButtons();
-        initTournamentPlanet();
         anim = setTimeout(function () {triggerInfiniteAnim(imagesTournament[0], imagesTournament[1])}, 2000);
         planetPanel[2].style.animation = "roll 2s forwards";
         imagesTournament[0].style.animation = "moveImageRight 2s forwards";
         imagesTournament[1].style.animation = "moveImageLeft 2s forwards";
         background[2].style.animation = "expandBG 2s forwards";
+        initTournamentPlanet();
     } else {
         imagesTournament[0].style.animation = "moveImageRightreverse 1s forwards";
         imagesTournament[1].style.animation = "moveImageLeftreverse 1s forwards";
@@ -94,11 +90,14 @@ export function cancelLanding()
 }
 
 export function togglePlanet(deleteAccount = false) {
-    if (planetInRange)
-        clearInterval(checkEach5Sec);
     if (!landedOnPlanet)
         landedOnPlanet = true;
     else {
+        if (planetInRange.name === 'arena')
+        	resetArenaPage();
+        else if (planetInRange.name === 'tournament')
+            resetTournament();
+        clearInterval(checkEach5Sec);
         resetOutline();
         resetRotations();
         landedOnPlanet = false;

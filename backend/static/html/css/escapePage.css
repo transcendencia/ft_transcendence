@@ -142,7 +142,7 @@
     background-color: rgb(15, 25, 105);
     border: 4px solid #3777ff;
     height: 30px;
-    width: 200px;
+    width: 220px;
     display: flex; /* Add display flex */
     align-items: center; /* Vertically center the items */
     /* cursor: default; */
@@ -163,7 +163,32 @@
     overflow: hidden;
 }
 
+
+.userInfoCont.hover-enabled:hover,
+.userInfoCont.hover-enabled:hover .profilePic {
+    color: #ff0000 !important;
+    border-color: #ff0000 !important;
+    background-color: #3e0000 !important;
+    font-size: 20px;
+    font-family: 'computer';
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
 .profilePic img {
     height: 100%;
     width: auto; 
+}
+
+.userInfoCont .hover-text,
+.userInfoCont.hover-enabled:hover .default-text,
+.userInfoCont .profilePic .hover-img,
+.userInfoCont.hover-enabled:hover .profilePic .user-img {
+    display: none;
+}
+
+.userInfoCont .default-text,
+.userInfoCont.hover-enabled:hover .hover-text,
+.userInfoCont .profilePic .user-img,
+.userInfoCont.hover-enabled:hover .profilePic .hover-img {
+    display: block;
 }
