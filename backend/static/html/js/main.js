@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { initPage, showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets, atmosphere } from "./planets.js";
+import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
@@ -328,8 +328,8 @@ renderer.render(scene, camera);
 const rightSideContainer = document.getElementById("rsCont");
 const leftSideContainer = document.getElementById("lsCont");
 let rsContVisible = false;
-const structure = document.querySelector(".structure");
-const escapeBG = document.querySelector(".escapeBG");
+export const structure = document.querySelector(".structure");
+export const escapeBG = document.querySelector(".escapeBG");
 
 export function swipeLeftSideContainer(endPos) {
     leftSideContainer.style.left = endPos;
@@ -496,6 +496,8 @@ const blockingPanel = document.getElementById('blockingPanel');
 const pwWindow = document.querySelector(".enterPasswordWindow");
 const deleteWindow = document.getElementById("validateDelete");
 
+
+
 // handle window resize
 window.addEventListener('resize', () => {
     const width = window.innerWidth;
@@ -514,6 +516,15 @@ window.addEventListener('resize', () => {
     minimapCamera.updateProjectionMatrix();
     composer.render();
 });
+
+export function resetGameEscape()
+{
+    displayHostEscapePage();
+    toggleEscapeContainerVisibility();
+    togglePause();
+    toggleBlurDisplay(false);
+    pauseGame ? pauseGame = false : pauseGame = true;
+}
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
@@ -571,6 +582,10 @@ document.addEventListener('keydown', (event) => {
 
 let escapeContainerVisible = false;
 let targetBlur = 0;
+
+export function removeContainerVisible() {
+    escapeContainerVisible = false;
+}
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);
 const verticalBlur = new ShaderPass(VerticalBlurShader);
