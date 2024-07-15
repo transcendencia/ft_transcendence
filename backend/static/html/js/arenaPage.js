@@ -4,7 +4,7 @@ import { togglePlanet, setCheckerToInterval, checkEach5Sec} from "./enterPlanet.
 import { afterGameTournament, botDifficultyTournament, addUserToTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
-
+import { askForAlias } from "../../tournament/js/newTournament.js";
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
@@ -71,7 +71,6 @@ export function resetAddingMode(mode) {
 		setCssClassToArray('add', 'hover-enabled', plusButtonsArena);
 		setCssClassToArray('remove', 'clicked', plusButtonsArena);
 	} else {
-		console.log("arena");
 		setCssClassToArray('add', 'hover-enabled', plusButtonsTournament);
 		setCssClassToArray('remove', 'clicked', plusButtonsTournament);
 	}
@@ -108,7 +107,7 @@ plusButtonsArena.forEach((plusButton, i) => {
 		if (!plusClicked)
 			setAddingMode(plusButton, i, true);
 		else if (plusClicked === i + 1)
-			resetAddingMode(true);
+			resetAddingMode("arena");
 	});
 });
 
@@ -175,13 +174,13 @@ function addClickListenerToNewUserBadge(userBadge, plusButton, tile) {
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
-const pwWindow = document.querySelector(".enterPasswordWindow");
+const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
 const validatePasswordButton = document.getElementById("arenaLogInButton");
 const backPasswordButton = document.getElementById("arenaBackLogInButton");
 let userClickedId = -1; // To store the index of the tile that was clicked
 let addedPlayerBadges = [];
 
-function putUserInMatch(plusButtonsArray, mode) {
+export function putUserInMatch(plusButtonsArray, mode) {
 	updateListAndResetTimer();
 	const tile = userTiles.get(userClickedId);
 	const textCont = tile.HTMLelement.querySelector(".textContainer");
@@ -230,7 +229,8 @@ validatePasswordButton.addEventListener('click', async function() {
 				guestLoggedIn.push([guest, guestToken]);
 				if (planetInRange.name === 'arena')
 					putUserInMatch(plusButtonsArena, 'arena');
-				else putUserInMatch(plusButtonsTournament, 'tournament');
+				else 
+					askForAlias(guest);
 				displayUsersLogged(guest, guestToken);
 				document.getElementById('enterPasswordInput').value = '';
 				document.getElementById('errorLogGuest').innerHTML = '';
@@ -325,7 +325,7 @@ export function resetArenaPage() {
 	playerNb = 0;
 	profileAdded = [];
 	addedPlayerBadges = [];
-	resetAddingMode(true);
+	resetAddingMode("arena");
 }
   
   async function refreshUserListIfChanged() {
@@ -727,23 +727,23 @@ const loginPage = document.querySelector('.loginPage');
 const planetPanel = document.querySelectorAll('.planetPanel');
 const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
-	let player2;
-	let player3;
-	if (matchPlayer.length < 2)
-		return;
-	if (matchPlayer.length === 2){
-		player2 = matchPlayer[1];
-		player3 = "";
-	}
-	else {
-		if (matchPlayer[1].thirdPlayer){
-			player2 = matchPlayer[2];
-			player3 = matchPlayer[1];
-		}
-		else {
-			player2 = matchPlayer[1];
-			player3 = matchPlayer[2];
-		}
-	}
-	switchToGame(gameState, matchPlayer[0], player2, player3, false);
+    let player2;
+    let player3;
+    if (matchPlayer.length < 2 || (matchPlayer.length < 3 && matchPlayer[1].thirdPlayer))
+        return;
+    if (matchPlayer.length === 2){
+        player2 = matchPlayer[1];
+        player3 = "";
+    }
+    else {
+        if (matchPlayer[1].thirdPlayer){
+            player2 = matchPlayer[2];
+            player3 = matchPlayer[1];
+        }
+        else {
+            player2 = matchPlayer[1];
+            player3 = matchPlayer[2];
+        }
+    }
+    switchToGame(gameState, matchPlayer[0], player2, player3, false);
 });

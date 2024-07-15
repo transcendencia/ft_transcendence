@@ -142,7 +142,7 @@
     background-color: rgb(15, 25, 105);
     border: 4px solid #3777ff;
     height: 30px;
-    width: 200px;
+    width: 220px;
     display: flex; /* Add display flex */
     align-items: center; /* Vertically center the items */
     /* cursor: default; */

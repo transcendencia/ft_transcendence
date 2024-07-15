@@ -24,7 +24,7 @@ function handleChangeInfoForm(event) {
   formData.append('anonymousStatus', anonymousStatus)
 
   const token = sessionStorage.getItem('host_auth_token');
-  fetch('change_profile_info/', {
+  fetch('user_info/', {
     method: 'POST',
     headers: {
       'Authorization': `Token ${token}`,

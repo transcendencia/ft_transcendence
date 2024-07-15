@@ -152,6 +152,7 @@ function handleLoginSubmit(event) {
 }
 
 // Handle form submission
+// Should I change it with a patch request
 export async function handleLogin(formData) {
     if (sessionStorage.getItem("hostLoggedIn") === null) {
         sessionStorage.setItem("hostLoggedIn", 'false');
@@ -177,8 +178,9 @@ export async function handleLogin(formData) {
             let guest_token = null;
             console.log(data.status);
             if (data.status === "success") {
+
+                // console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
-                    //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
 
                     sessionStorage.setItem("hostLoggedIn", 'true');
                     sessionStorage.setItem("host_auth_token", data.token);
@@ -187,11 +189,16 @@ export async function handleLogin(formData) {
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
                     get_friends_list();
+                    // console.log("host id:", sessionStorage.getItem("host_id"));
                     getProfileInfo(sessionStorage.getItem("host_id"))
                     .then(data => {
                         populateProfileInfos(data);
                         createUserBadge(data, "playersConnHostBadge")
                     })
+                    .catch(error => {
+                        console.error('Failed to retrieve profile info:', error);
+                    });
+                    
                     TranslateAllTexts();
                     getGameInfo();
                     changeGraphics(data.graphic_mode);
@@ -204,11 +211,9 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
-                console.log("failed login", data);
-                if (hostLoggedIn === 'false')
-                    document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
-                else if (hostLoggedIn === 'true')
-                    document.getElementById('errorLogGuest').innerText = getTranslatedText(data.msg_code);
+                const messageContainerId = hostLoggedIn ? 'messageContainer' : 'errorLogGuest';
+
+                document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
                 resolve(null);
             }
         })
@@ -364,6 +369,7 @@ function handleLogout(userId, token) {
         return;
     }
     logoutGuest(userId);
+
     // Disconnect the host
     updateUserStatus('offline', token)
     .then(() => {

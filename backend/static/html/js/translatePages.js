@@ -231,6 +231,25 @@ function translateGameTexts() {
     rematchText.textContent = getTranslatedText('rematchText');
 }
 
+
+
+const enterPasswordText = document.getElementById('enterPasswordText');
+const enterPasswordInput = document.getElementById('enterPasswordInput');
+const arenaBackLogInButton = document.getElementById('arenaBackLogInButton');
+const arenaLogInButton = document.getElementById('arenaLogInButton');
+const showAliasText = document.getElementById('showAliasText');
+const aliasLogInButton = document.getElementById('aliasLogInButton');
+
+function translatePopupWindow(){
+    enterPasswordText.textContent = getTranslatedText('enterPasswordText');
+    enterPasswordInput.placeholder = getTranslatedText('enterPasswordInput');
+    arenaBackLogInButton.textContent = getTranslatedText('arenaBackLogInButton');
+    arenaLogInButton.textContent = getTranslatedText('arenaLogInButton');
+    
+    showAliasText.textContent = getTranslatedText('showAliasText');
+    aliasLogInButton.textContent = getTranslatedText('aliasLogInButton');
+}
+
 export function TranslateAllTexts() {
     translateArenaPageTexts();
     translateTournamentPageTexts();
@@ -240,4 +259,5 @@ export function TranslateAllTexts() {
     translateUserPageTexts();
     translateModifyPageTexts()
     translateGameTexts();
+    translatePopupWindow();
 }
