@@ -30,7 +30,7 @@
 }
 
 .holoPerspective {
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg);
 }
 /* perspective(800px) rotateX(-55deg) */
 .hologram-container {
@@ -47,17 +47,17 @@
 
 @keyframes openAnimation {
     0% {
-        transform: translate(-50%, -50%) scale(0);
+        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(0);
     }
     100% {
-        transform: translate(-50%, -50%) scale(1);
+        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(1);
     }
 }
 /* perspective(800px) rotateX(-55deg) */
 .hologram-textBar {
     text-shadow: 0 0 5px rgb(0, 64, 255);
     background-color: rgba(0, 13, 51, 0.683);
-    backdrop-filter: blur(10px);
+    /* backdrop-filter: blur(10px); */
     border: 2px solid rgb(0, 64, 255);
     border-radius: 10px;
     box-shadow: 0 0 20px rgb(0, 64, 255), inset 0 0 20px rgb(0, 64, 255);
@@ -292,7 +292,7 @@
 .text-input {
     position: absolute;
     width: 95%; /* Match the width of the container */
-    height: 50%; /* Automatically adjust height based on content */
+    height: auto; /* Automatically adjust height based on content */
     background: none;
     border: none;
     color: white; /* Set text color to white */

@@ -1,11 +1,10 @@
-import { togglePanelDisplay, togglePlanet, landedOnPlanet } from './enterPlanet.js';
+import { togglePlanet } from './enterPlanet.js';
 import { returnToHost } from './userPage.js';
-import { resetOutline } from './planetIntersection.js';
-import { toggleBlurDisplay, toggleLobbyStart, toggleRSContainerVisibility } from './main.js';
+import { toggleLobbyStart, createUserBadge } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
 import { getCookie } from './loginPage.js';
-import { getProfileInfo, updateUserStatus, populateProfileInfo } from './userManagement.js';
+import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
 
@@ -41,11 +40,10 @@ function handleChangeInfoForm(event) {
     if (data.status === "succes")
       getProfileInfo(sessionStorage.getItem("host_id"))
         .then(data => {
-            populateProfileInfo(data);
+            populateProfileInfos(data);
+            
         })
-        .catch(error => {
-            console.error('Failed to retrieve profile info:', error);
-        });
+
     else changeInfoMessage.classList.toggle("errorMessage");
     document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
   })
@@ -88,12 +86,6 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
         });
       }
       guestLoggedIn.splice(0, guestLoggedIn.length);
-      const lsCont = document.getElementById('lsCont');
-      lsCont.innerHTML = `
-          <div class="tinyRedShadowfilter">
-              Players Connected
-          </div>
-      `;
       sessionStorage.clear();
       return response.json();
   })
@@ -180,19 +172,17 @@ RGPDPolicy.addEventListener('click', function() {
 });
 
 const infoButton = document.getElementById("infoButton");
-infoButton.addEventListener("click", displayAnonymousMode);
+infoButton.addEventListener("mouseenter", displayAnonymousMode);
+infoButton.addEventListener("mouseleave", hideAnonymousMode);
 
 function displayAnonymousMode() {
   isInfosShow = !isInfosShow;
-  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
+  document.getElementById("displayAnonymousMode").classList.add("showRectangle");
 }
 
-const infoBack = document.getElementById("infoBack");
-infoBack.addEventListener("click", backInfosDisplay);
-
-function backInfosDisplay() {
+function hideAnonymousMode() {
   isInfosShow = false;
-  document.getElementById("displayAnonymousMode").classList.toggle("showRectangle");
+  document.getElementById("displayAnonymousMode").classList.remove("showRectangle");
 }
 
 document.addEventListener('keydown', (event) => {
@@ -204,11 +194,55 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+const downloadButton = document.getElementById("downloadButton");
+downloadButton.addEventListener("click", downloadFile);
+function downloadFile() {
+  console.log("Initiating file download");
+  const token = sessionStorage.getItem('host_auth_token');
+  fetch('generateDataFile/', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Token ${token}`,
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+  })
+  .then(response => {
+    console.log(response.ok);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.blob().then(blob => ({ blob, response }));
+  })
+  .then(({ blob, response }) => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    // Use the filename provided by the server if available
+    const contentDisposition = response.headers.get('Content-Disposition');
+    console.log("file name = " + contentDisposition);
+    const filename = contentDisposition?.split('filename=')[1]?.replace(/"/g, '') || 'user_data.txt';
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    console.log("File download initiated");
+  })
+  .catch(error => {
+    console.error('Error during file download:', error);
+    alert('Une erreur est survenue lors du téléchargement du fichier. Veuillez réessayer.');
+  });
+}
+
 export function resetModifyPageField() {
-  console.log("resetModifyPageField");
-  getProfileInfo(sessionStorage.getItem("host_id"))
+  // Pas vider les username et le alias mais le mettre a la derniere valeur
+  // document.getElementById('changeUsernameInput').value = '';
+  // document.getElementById('changeAliasInput').value = '';
+console.log("resetModifyPageField");
+  getProfileInfo(sessionStorage.getItem('host_id'))
   .then(data => {
-      populateProfileInfo(data);
+      populateProfileInfos(data);
   })
   .catch(error => {
       console.error('Failed to retrieve profile info:', error);
@@ -221,4 +255,5 @@ export function resetModifyPageField() {
   document.getElementById('LinkPicture').innerText = '';
   const toggleSwitch = document.getElementById('toggleSwitch');
   toggleSwitch.classList.remove('active');
+  //vider input nom de la photo
 }

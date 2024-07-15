@@ -269,7 +269,7 @@ export function printBracket(tournamentPlayer, currentMatch, thirdPlayerMode) {
   const B3B4matchElement = document.getElementById("B3-B4-match");
   const C1C2matchElement = document.getElementById("C1-C2-match");
 
-  export function updateBracket(winner_name, currentMatch, nbMatch, round){ 
+  export function updateBracket(tournamentPlayer, winner_name, currentMatch, nbMatch, round){ 
     if (round == 2){
       if (nbMatch == 0){
         let ul = document.getElementById("B1_name");

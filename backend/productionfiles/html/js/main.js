@@ -460,7 +460,6 @@ export function createUserBadge(hostData, elementId) {
 
 export function displayHostEscapePage() {
     getProfileInfo(sessionStorage.getItem("host_id")).then(data => createUserBadge(data, "escapeUserContainer"))
-    .catch(error => console.error('Failed to retrieve profile info:', error)); 
 }
 
 export function toggleEscapeContainerVisibility(disconnect = false) {
@@ -487,8 +486,7 @@ export function togglePause() {
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
-const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
-const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
+const pwWindow = document.querySelector(".enterPasswordWindow");
 const deleteWindow = document.getElementById("validateDelete");
 
 // handle window resize
@@ -510,20 +508,13 @@ window.addEventListener('resize', () => {
     composer.render();
 });
 
-function panelRemove(){
-    blockingPanel.classList.remove('show');
-    pwWindow.classList.remove('showRectangle');
-    aliasWindow.classList.remove('showRectangle');
-    deleteWindow.classList.remove('showRectangle');
-}
-
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
     if (event.key === 'Enter') {
         if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();
-        // const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+        const pwWindow = document.querySelector(".enterPasswordWindow");
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
     }
@@ -541,7 +532,9 @@ document.addEventListener('keydown', (event) => {
         }
         else if (landedOnPlanet) {
             togglePlanet();
-            panelRemove();
+            blockingPanel.classList.remove('show');
+            pwWindow.classList.remove('showRectangle')
+            deleteWindow.classList.remove('showRectangle')
             showPage('none');
             returnToHost();
             return;

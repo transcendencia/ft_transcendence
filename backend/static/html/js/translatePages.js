@@ -203,9 +203,48 @@ function translateModifyPageTexts(){
     deleteAccountConfirmation.textContent = getTranslatedText('deleteAccountConfirmation');
     deleteAccountCancel.textContent = getTranslatedText('deleteAccountCancel');
     RGPDPolicyInUserPage.textContent = getTranslatedText('RGPDPolicyInUserPage');
-    infoBack.textContent = getTranslatedText('infoBack');
     textAnonymous.textContent = getTranslatedText('textAnonymous');
      
+}
+
+const startGameText = document.getElementById('startGameText');
+const leftLeftText = document.getElementById('leftLeftText');
+const leftRightText = document.getElementById('leftRightText');
+const leftPowerText = document.getElementById('leftPowerText');
+const rightLeftText = document.getElementById('rightLeftText');
+const rightRightText = document.getElementById('rightRightText');
+const rightPowerText = document.getElementById('rightPowerText');
+const rematchText = document.getElementById('rematchText');
+
+
+function translateGameTexts() {
+    startGameText.textContent = getTranslatedText('startGameText');
+    leftLeftText.textContent = getTranslatedText('leftText');
+    leftRightText.textContent = getTranslatedText('rightText');
+    leftPowerText.textContent = getTranslatedText('powerText');
+    rightLeftText.textContent = getTranslatedText('leftText');
+    rightRightText.textContent = getTranslatedText('rightText');
+    rightPowerText.textContent = getTranslatedText('powerText');
+    rematchText.textContent = getTranslatedText('rematchText');
+}
+
+
+
+const enterPasswordText = document.getElementById('enterPasswordText');
+const enterPasswordInput = document.getElementById('enterPasswordInput');
+const arenaBackLogInButton = document.getElementById('arenaBackLogInButton');
+const arenaLogInButton = document.getElementById('arenaLogInButton');
+const showAliasText = document.getElementById('showAliasText');
+const aliasLogInButton = document.getElementById('aliasLogInButton');
+
+function translatePopupWindow(){
+    enterPasswordText.textContent = getTranslatedText('enterPasswordText');
+    enterPasswordInput.placeholder = getTranslatedText('enterPasswordInput');
+    arenaBackLogInButton.textContent = getTranslatedText('arenaBackLogInButton');
+    arenaLogInButton.textContent = getTranslatedText('arenaLogInButton');
+    
+    showAliasText.textContent = getTranslatedText('showAliasText');
+    aliasLogInButton.textContent = getTranslatedText('aliasLogInButton');
 }
 
 export function TranslateAllTexts() {
@@ -216,4 +255,6 @@ export function TranslateAllTexts() {
     translateRGPDTexts();
     translateUserPageTexts();
     translateModifyPageTexts()
+    translateGameTexts();
+    translatePopupWindow();
 }

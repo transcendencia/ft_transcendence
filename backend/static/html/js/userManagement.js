@@ -1,10 +1,7 @@
 import { getCookie } from './loginPage.js';
 import { getTranslatedText} from "./translatePages.js";
-import { RenderHostMatch, RenderAllUsersInList} from "./arenaPage.js";
-import { RenderUserTournament, RenderAllUsersTournament } from '../../tournament/js/newTournament.js';
+import { setHostAsPlayerOne} from "./arenaPage.js";
 
-// USER STATUS
-// changer en requete PATCH
 export async function updateUserStatus(status, token) {
     console.log("token", token);
 
@@ -47,7 +44,6 @@ export function getUserStatus(userId) {
         return response.json();
     })
     .then(data => {
-        console.log('Utilisateur trouvé :', data.user_status);
         return data.user_status;
     })
     .catch(error => {
@@ -55,8 +51,26 @@ export function getUserStatus(userId) {
     });
 }
 
-// PROFILE INFO
-export function populateProfileInfo(data) {
+export function get_user_list() {
+    const token = sessionStorage.getItem('host_auth_token');
+    // console.log(token);
+    fetch('get_user_list/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${token}`,
+            // 'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        throw error;
+    });
+};
+
+export function populateProfileInfos(data) {
     document.getElementById('username').textContent = data.profile_info.username;
     document.getElementById('alias').textContent = data.profile_info.alias;
     document.getElementById('profile_pic').src = data.profile_info.profile_picture;
@@ -70,8 +84,8 @@ export function populateProfileInfo(data) {
         <div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.profile_info.nbr_match_lost}</div>
         <div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.profile_info.nbr_goals}</div>
     `;
-    RenderHostMatch(data.profile_info);
-    RenderUserTournament(data.profile_info);
+    setHostAsPlayerOne(data.profile_info, 'Tournament');
+    setHostAsPlayerOne(data.profile_info, 'Arena');
 }
 
 export function getProfileInfo(userId) {
@@ -91,12 +105,12 @@ export function getProfileInfo(userId) {
     })
     .catch(error => {
         console.error('Erreur :', error);
-        throw error;  
     });
 }
 
 // FRIEND REQUEST
 export function send_request(id) {
+
     const token = sessionStorage.getItem('host_auth_token');
     fetch('friend_request/', {
         method: 'POST',
