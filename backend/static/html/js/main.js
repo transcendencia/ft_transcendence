@@ -291,6 +291,7 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
 }
 
 import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
+import { getTranslatedText } from './translatePages.js';
 
 export function displayUsersLogged(user, token) {
     
@@ -463,6 +464,12 @@ export function displayHostEscapePage() {
 }
 
 export function toggleEscapeContainerVisibility(disconnect = false) {
+    const disconnectButton = document.getElementById('disconnectButton');
+    if (gameState.inGame)
+        disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
+    else
+        disconnectButton.textContent = getTranslatedText("disconnect");
+
     if (!disconnect) {
         getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
         .catch(error => console.error('Failed to retrieve profile info:', error));    

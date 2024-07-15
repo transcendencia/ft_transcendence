@@ -36,7 +36,7 @@ re: down
 
 
 migration:
-	 rm -rf backend/authentication/migrations
+	sudo rm -rf backend/authentication/migrations
 	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
 	- @find backend/media -type f ! -name 'default.png' ! -name 'botLogo.png' -delete
 	${MAKE} all
