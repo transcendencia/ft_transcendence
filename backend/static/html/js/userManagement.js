@@ -75,7 +75,7 @@ export function populateProfileInfo(data) {
 }
 
 export function getProfileInfo(userId) {
-    console.log("userId:", userId);
+    // console.log("userId:", userId);
     const token = sessionStorage.getItem('host_auth_token');
     return fetch(`user_info/${userId}/`, {
         method: 'GET',
@@ -175,7 +175,7 @@ export async function get_friends_list() {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         return data;
     } catch (error) {
         console.error('Error:', error);
