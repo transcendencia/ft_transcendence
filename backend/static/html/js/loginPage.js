@@ -211,7 +211,8 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
-                const messageContainerId = hostLoggedIn ? 'errorLogGuest' : 'messageContainer';
+                const messageContainerId = hostLoggedIn ? 'messageContainer' : 'errorLogGuest';
+
                 document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
                 resolve(null);
             }
