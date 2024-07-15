@@ -13,6 +13,7 @@ class User(AbstractUser):
   ]
   language = models.CharField(max_length=10, choices=language_choices, default='en')
   last_login_date = models.DateField(null=True, blank=True)
+  created_at = models.DateTimeField(auto_now_add=True)
 
   status_choices = [
     ('online', 'online'),
@@ -35,6 +36,8 @@ class User(AbstractUser):
     return {'id': self.id, 
     'username': self.username, 
     'alias': self.alias, 
+    'status': self.status,
+    'is_host': self.is_host,
     'profile_picture': self.profile_picture.url, 
     'nbr_match': self.nbr_match, 
     'nbr_match_win': self.nbr_match_win,

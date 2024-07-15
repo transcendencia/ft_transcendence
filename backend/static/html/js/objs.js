@@ -4,8 +4,11 @@ import { scene } from "./main.js";
 import { setupPlanets } from "./planets.js";
 
 
-let spaceShip;
+export let spaceShip;
+export let spaceShipInt;
 let spaceShipLoaded = false;
+let spaceShipIntLoaded = false;
+let markerLoaded = false;
 
 const objectLoader = new GLTFLoader();
 objectLoader.load(
@@ -24,9 +27,23 @@ objectLoader.load(
         console.error(error);
     }
 );
+
+export let marker;
+
+objectLoader.load(
+    '../static/html/assets/spaceShip/scene.gltf',
+    function(gltf) {
+        marker = gltf.scene;
+        marker.scale.set(10,10,10);
+        marker.position.set(0,400,0);
+        scene.add(marker);
+    },
+    function(xhr) {
+        // console.log((xhr.loaded / xhr.total * 100) + '%loaded');
+        markerLoaded = true;
+    },
+);
     
-let spaceShipInt;
-let spaceShipIntLoaded = false;
 
 objectLoader.load(
     '../static/html/assets/blender/spaceshipInterior.glb',
@@ -187,7 +204,7 @@ for (let i = 0; i < modelsData.length; i++) {
             }
         },
         function (xhr) {
-            // console.log(`${data.filePath}: ${(xhr.loaded / xhr.total * 100)}% loaded`);
+            // console.log((xhr.loaded / xhr.total * 100) + '%loaded');
         },
         function (error) {
             console.error(`Error loading ${data.filePath}:`, error);
@@ -196,9 +213,7 @@ for (let i = 0; i < modelsData.length; i++) {
 }
 
 
-function allModelsLoaded() {
-    // console.log(models);
-    return modelsData.every(model => model.loaded) && spaceShipLoaded;
+export function allModelsLoaded() {
+    console.log(modelsData.every(model => model.loaded), spaceShipLoaded, spaceShipIntLoaded, markerLoaded)
+    return modelsData.every(model => model.loaded) && spaceShipLoaded && spaceShipIntLoaded && markerLoaded;
 }
-
-export { spaceShip, spaceShipInt, allModelsLoaded };

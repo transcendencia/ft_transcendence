@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
     {% load static %}
 <head>
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% static '../static/html/css/arenaPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/SignUpPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/userPage.css' %}">
+    <link rel="stylesheet" href="{% static '../static/html/css/rgpdPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/modifyPage.css' %}">
     <link rel="stylesheet" href="{% static '../static/html/css/tiles.css' %}">
     <link rel="stylesheet" href="{% static '../static/game/style/style.css' %}">
@@ -32,84 +33,94 @@
 </head>
 <body>
   <!-- LOGIN PAGE -->
-    <div class="loginPage page d-flex flex-column justify-content-around align-items-center">
+    <div class="loginPage page">
     <div class="title">
-      TRANSCENDENCIIA
+      TRANSCENDENCIA
       <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}">
     </div>
-    <div class="inputContainer d-flex flex-column justify-content-center align-items-center">
-      <form id="loginForm" method="post" action="login_page/">
-        {% csrf_token %}
+    <div class="hologram-background hologram-container d-flex flex-column justify-content-center align-items-center" style="animation: float 4s ease-in-out infinite;">
+        <div class="hologram-content">
+          <form id="loginForm" method="post" action="login_page/">
+            {% csrf_token %}
         <div class="titleText" id="loginText">
           - Login -
-          <div class="textBar">
-            <input class="text-input" name="username" spellcheck="false"></input>
+          <div class="hologram-textBar d-flex justify-content-center align-items-center">
+            <input id = "usernameLoginInput" class="text-input" name="username" spellcheck="false"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
           <div class="littleMsgCont d-flex justify-content-center align-items-center">
-            <div class="newToTheGame">New to the game ?
+            <div class="newToTheGame">
+              <div class="basicText" style="margin-right: 10px;"> New to the game ? </div>
               <div class="actionCont tinyBlueShadowfilter">Sign Up Here</div>
             </div>
           </div>
         </div>
         <div class="titleText" id="passwordText">
           - Password -
-          <div class="textBar">
-            <input class="text-input" name="password" spellcheck="false" type="password" autocomplete="off"></input>
+          <div class="hologram-textBar d-flex justify-content-center align-items-center">
+            <input id = "passwordLoginInput" class="text-input" name="password" spellcheck="false" type="password" autocomplete="off"></input>
             <img src="{%static 'html/assets/icons/frame.png' %}">
           </div>
         </div>
         <div id= "messageContainer" class="loginMessageCont d-flex justify-content-center align-items-center"></div>
-        <button type="submit" style="display: none;"></button>
+        <button type="submit" id="loginButton" style="display: none;"></button>
       </form>
     </div>
-    <div class="languageColumn" id="loginLanguageText">
-      <div class="languageSettings">
-        <div class="languageIcon" id="es">
-          <div class="icon" style="background-image: url('../static/html/assets/icons/mexicanAlienWhite.png');" ></div>
-          <div class="flag" style="background-image: url('../static/html/assets/icons/ES_NU.png');"></div>
-        </div>
-        <div class="languageIcon" id="fr">
-          <div class="icon" style="background-image: url('../static/html/assets/icons/frenchAlienWhite.png');" ></div>
-          <div class="flag" style="background-image: url('../static/html/assets/icons/FR_NU.png');"></div>
-        </div>
-        <div class="languageIcon glow" id="en">
-          <div class="icon" style="background-image: url('../static/html/assets/icons/englishAlienWhite.png');" ></div>
-          <div class="flag" style="background-image: url('../static/html/assets/icons/BR_NU.png');"></div>
-        </div>
-      </div>
-      <div class="separator"></div>
-      - Choose a language -
-    </div>
   </div>
+    <div class="languageCont">
+      <div class="languageIcon" id="es" style="left: 70%;">
+        <div class="icon" style="background-image: url('../static/html/assets/icons/mexicanAlienWhite.png');" ></div>
+        <div class="flag" style="background-image: url('../static/html/assets/icons/ES_NU.png');"></div>
+      </div>
+      <div class="languageIcon glow" id="en" style="top: 20%;">
+        <div class="icon" style="background-image: url('../static/html/assets/icons/englishAlienWhite.png');" ></div>
+        <div class="flag" style="background-image: url('../static/html/assets/icons/BR_NU.png');"></div>
+      </div>
+      <div class="languageIcon" id="fr" style="right: 70%;">
+        <div class="icon" style="background-image: url('../static/html/assets/icons/frenchAlienWhite.png');" ></div>
+        <div class="flag" style="background-image: url('../static/html/assets/icons/FR_NU.png');"></div>
+      </div>
+    </div>
+</div>
 
-  <!-- SIGN UP PAGE -->
+<!-- SIGN UP PAGE -->
   <form id="signupForm" class="signUpPage page d-flex flex-column justify-content-around align-items-center">
-    <div class="perspective">
-        <!-- <form id="signupForm" method="post" action="signup/"> -->
+    <div class="hologram-background hologram-container no-before holoPerspective d-flex flex-column justify-content-center align-items-center" style="height: 70%; width: 50%; top: 40%;">
+      <div class="hologram-content">
+      <!-- <form id="signupForm" method="post" action="signup/"> -->
           {% csrf_token %}
-        <div id="signUpTitle">Sign Up</div>
+    <div id="signUpTitle" class="d-flex justify-content-center align-items-center" style="font-size: 56px; text-shadow: 0 0 10px rgb(0, 64, 255); font-family: 'Space';">Sign Up </div>
         <p id="createAccountText" style="margin-top:-15px; font-size: 10px; color: rgb(117, 190, 255);"> create an account</p>
         <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
           Login
-        <div class="textBar">
-          <input class="text-input" name="username" style="font-size: 30px;" spellcheck="false" ></input>
+        <div class="hologram-textBar d-flex justify-content-center align-items-center">
+          <input id= "usernameSignUpInput" class="text-input" name="username" style="font-size: 30px; " spellcheck="false" ></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
-      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="enterPassword">
+      <div class="titleText" style="margin-top:-8px;transform: scale(1.2); font-size: 20px;" id="enterPassword">
           Password
-        <div class="textBar">
-          <input class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
+        <div class="hologram-textBar d-flex justify-content-center align-items-center">
+          <input id= "passwordSignUpInput" class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
-      <div class="titleText" style="transform: scale(1.2); font-size: 20px;" id="confirmPassword">
+      <div class="titleText" style="margin-top:-8px; transform: scale(1.2); font-size: 20px;" id="confirmPassword">
         confirm password
-        <div class="textBar">
-          <input class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
+        <div class="hologram-textBar d-flex justify-content-center align-items-center">
+          <input id= "confirmPasswordSignUpInput" class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
+      </div>
+      <div>
+        <div id="RGPDCreate" class="newToTheGame" style="width: 100%; font-size: 20px; text-shadow: 0 0 10px rgb(0, 64, 255); font-family: 'Space';">
+          By registering, you accept the
+        </div> 
+        <div id="RGPDPolicy" class="actionCont tinyBlueShadowfilter" style="font-size: 25px; text-shadow: 0 0 10px rgb(0, 64, 255); font-family: 'Space';">
+          privacy policy 
+        </div> 
+    </div>
+  </div>
       </div>
       </div>
       <div class="perspective3">
@@ -121,13 +132,9 @@
       </div>
     <!-- </form> -->
     <div class="backButton tinyWhiteShadowfilter">
-      Back to login
+      Back
     </div>
   </form>
-
-
-
-
 
   <!-- CANVAS -->
   <div id="a">
@@ -157,10 +164,17 @@
     </div>
 
     <div id="lsCont" class="leftSideContainer d-flex flex-column align-items-start justify-content-start">
-      <div class="tinyRedShadowfilter">
+      <div class="d-flex row justify-content-center align-items-center tinyRedShadowfilter" style="margin-left: 10px;">
         Players Connected
       </div>
+      <div id="playersConnHostBadge" class="userInfoCont tinyRedShadowfilter" style="transform: scale(0.7); margin-left: -20px">
+        <div class="profilePic">
+          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        AtomiK
+      </div>
     </div>
+
 
 
 
@@ -180,18 +194,16 @@
           <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Arena </div>
           <div class="choosePlayerCont">
           <div class="thirdPlayerCont">
-            <div class="addPlayerArena">
-              <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
-              <div id="player3Text" style="font-size: 15px; font-family: 'space'; color: white;"></div>
-            </div>
+            <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
+            <div id="player3Text" style="font-size: 15px; font-family: 'space'; color: white;"></div>
           </div>
           <div class="rightColumnRow">
             <div class="elemCont">
               <div class="userInfoCont">
                 <div class="profilePic">
-                  <img id="player1MatchPicture" src="{% static 'html/assets/icons/ES_NU.png' %}">
+                  <img id="player1ArenaPicture">
                 </div>
-                <div id="player1MatchUsername">Player</div>
+                <div id="player1ArenaUsername"></div>
               </div>
               <div id="player1Text" style="font-size: 15px; font-family: 'space'; color: white;"> Player 1 </div>
             </div>
@@ -205,10 +217,8 @@
               <img src="{% static 'html/assets/icons/spaceshipIcon.png' %}" style="transform: scale(0.08) rotate(-90deg);">
             </div>
             <div class="elemCont">
-              <div class="addPlayerArena">
-                <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
-                <div id="player2Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 2 </div>
-              </div>
+              <div class="plusPlayer"><div style="pointer-events: none;">+</div></div>
+              <div id="player2Text" style="z-index:99; font-size: 15px; font-family: 'space'; color: white;"> Player 2 </div>
             </div>
           </div>
           </div> 
@@ -259,11 +269,11 @@
       <div id="enterPasswordText" class="validateDeleteText">Enter your password</div>
       <div class="changeInfoBar" style="height: 20%;">
         <input id="enterPasswordInput" name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" type="password" placeholder="Password"></input>
-        <div id="errorLogGuest"></div>
       </div>
+      <div id="errorLogGuest" class="d-flex justify-content-center align-items-center text-center" style="height: 10%; width: 60%; font-size: 13px; font-family: 'space'; color: red;"></div>
       <div class="buttonContainer" style="height: 10%;">
         <div id="arenaBackLogInButton" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">back</div>
-      <div id="arenaLogInButton" class="validateDeleteButton">Log in</div>
+      <div type="submit" id="arenaLogInButton" class="validateDeleteButton">Log in</div>
       </div>
     </div>
 
@@ -279,7 +289,6 @@
       <!-- <div class="changeInfoBar" style="height: 20%;"> -->
       <!-- </div> -->
       <div class="buttonContainer" style="height: 10%;">
-        <div id="aliasBackLogInButton" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">back</div>
       <div id="aliasLogInButton" class="validateDeleteButton">Ok</div>
       </div>
     </div>
@@ -325,10 +334,16 @@
                   <div class="statsModesBlock">
                    <p id="statisticsText">statistics</p> 
                    <div class="statsModes">
-                     <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
-                     <div class="statButton" style="border-radius: 0px;">Stat2</div>
-                     <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
+                    <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">
+                        <img src="{% static 'game/assets/stats/crown.svg' %}" alt="Crown">
                     </div>
+                    <div class="statButton" style="border-radius: 0px;">
+                        <img src="{% static 'game/assets/stats/map.svg' %}" alt="Map">
+                    </div>
+                    <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
+                        <img src="{% static 'game/assets/stats/paper.svg' %}" alt="Paper">
+                    </div>
+                </div>
                   </div>
                 </div>
                 <div class="rightBlock">
@@ -338,12 +353,12 @@
                 </div>
               </div>
               <div id="statsBlock1" class="statsBlock" style="display: flex">
-                <canvas id="winLostStat"></canvas>
-                <canvas id="accuracyStat"></canvas>
+                <canvas class="graph" id="winLostStat"></canvas>
+                <canvas class="graph" id="accuracyStat"></canvas>
               </div>
               <div id="statsBlock2" class="statsBlock" style="display:none;">
-                <canvas id="gameModeStat"></canvas>
-                <canvas id="mapStat"></canvas>
+                <canvas class="graph" id="gameModeStat"></canvas>
+                <canvas class="graph" id="mapStat"></canvas>
               </div>
               <div id="statsBlock3" class="statsBlockNoGraphs" style="display:none;">
                 <div class="statColumn">
@@ -366,7 +381,7 @@
                 </div>
                 <div class="statColumn">
                   <div class="statItem">
-                    <span class="statName">Nemesis:</span>
+                    <span class="statName">score ratio:</span>
                     <span class="statValue" id="nemesis">1</span>
                 </div>
                   <div class="statItem">
@@ -389,7 +404,7 @@
                   <div class="leftBlock">
                     <div id="searchedUserInfoBlock" class="userInfoBlock">
                       <div class="nameImgBlock" id="profile_info">
-                        <div class="imgFrame"><img id="profile_pic2"></div> <!-- Photo de profil-->
+                        <div class="imgFrame"><img id="profile_pic2"></div> <!-- Photo de profile-->
                         <div class="mail-pseudo-info">
                           <div id="username2" class="text-white"></div> <!-- Username -->
                           <div id="alias2" style="font-size: 10px; color: rgb(189, 209, 255); overflow-wrap: break-word;"></div> <!-- Bio -->
@@ -413,10 +428,16 @@
                     <div class="statsModesBlock">
                      <p id="statisticsText2">statistics</p> 
                      <div class="statsModes">
-                       <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">Stat1</div>
-                       <div class="statButton" style="border-radius: 0px;">Stat2</div>
-                       <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">Stat3</div>
+                      <div class="statButton" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; background-color: #5d75ff47;">
+                          <img src="{% static 'game/assets/stats/crown.svg' %}" alt="Crown">
                       </div>
+                      <div class="statButton" style="border-radius: 0px;">
+                          <img src="{% static 'game/assets/stats/map.svg' %}" alt="Map">
+                      </div>
+                      <div class="statButton" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
+                          <img src="{% static 'game/assets/stats/paper.svg' %}" alt="Paper">
+                      </div>
+                  </div>
                     </div>
                   </div>
                   <div class="rightBlock">
@@ -425,43 +446,101 @@
                     </div>
                   </div>
                 </div>
-                <div class="statsBlock"></div>
+                <div id="statsBlock4" class="statsBlock" style="display: flex">
+                  <canvas class="graph" id="winLostStat2"></canvas>
+                  <canvas class="graph" id="accuracyStat2"></canvas>
+                </div>
+                <div id="statsBlock5" class="statsBlock" style="display:none;">
+                  <canvas class="graph" id="gameModeStat2"></canvas>
+                  <canvas class="graph" id="mapStat2"></canvas>
+                </div>
+                <div id="statsBlock6" class="statsBlockNoGraphs" style="display:none;">
+                  <div class="statColumn">
+                    <div class="statItem">
+                      <span class="statName">Current Winstreak:</span>
+                      <span class="statValue" id="currentWinstreak">100</span>
+                    </div>
+                    <div class="statItem">
+                      <span class="statName">Highest Winstreak:</span>
+                      <span class="statValue" id="highestWinstreak">50</span>
+                    </div>
+                    <div class="statItem">
+                      <span class="statName">Number of dashes:</span>
+                      <span class="statValue" id="dashNumber">10</span>
+                    </div>
+                    <div class="statItem">
+                      <span class="statName">Number of power ups:</span>
+                      <span class="statValue" id="powerUpsNumber">2000</span>
+                    </div>
+                  </div>
+                  <div class="statColumn">
+                    <div class="statItem">
+                      <span class="statName">score ratio:</span>
+                      <span class="statValue" id="nemesis">1</span>
+                  </div>
+                    <div class="statItem">
+                      <span class="statName">Number of friends:</span>
+                      <span class="statValue" id="friendsNumber">0</span>
+                    </div>
+                    <div class="statItem">
+                      <span class="statName">Time played:</span>
+                      <span class="statValue" id="timePlayed">1</span>
+                    </div>
+                    <div class="statItem">
+                      <span class="statName">Date of creation:</span>
+                      <span class="statValue" id="dateOfCreation">24/06/2024</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <form id="userInfoForm" class="modifyPage"> <!--Je modifie les info ici-->
+              <form id="userInfoForm" class="modifyPage" style="visibility: hidden;"> <!--Je modifie les info ici-->
                 <div id="changeInfo" style="font-size: 13px; font-family: 'space'; color: white">Only fill in information you want to change</div>
                <div  class="toggle-container">
-                  <span class= "changeProfilePicture">Anonymous mode:</span>
+                  <span id="AnonymousMode" class="changeProfilePicture">Anonymous mode:</span>
                   <div class="switch" id="toggleSwitch">
                     <div class="slider"></div>
                   </div>
-                  <img class="info-icon" src="../static/html/assets/icons/info.png" alt="Information" />
+                  <img id="infoButton" class="info-icon" src="../static/html/assets/icons/info_3.png" alt="Information" />
                 </div>
+                <div id="displayAnonymousMode" class="anonymousInfos" style="font-size: 13px; text-align: center; font-family: 'space'; color: white; margin-top: 10px;">
+                  <div id="textAnonymous" class="testAnonymous" >When you activate anonymous mode you have a random username and default profil picture </div>
+                </div> 
                   <div class="changeInfoBar">
-                      <input id="changeUsernameInput" name="username" class="text-input3" spellcheck="false" placeholder="Username" maxlength="13"></input>
+                      <input id="changeUsernameInput" name="username" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Username" maxlength="13"></input>
                     </div>
                     <div class="changeInfoBar">
                       <input id="changeAliasInput" name="alias" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Alias" maxlength="28"></input>
                     </div>
                     <div class="changeInfoBar">
-                      <input id="changePasswordInput"name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Password"></input>
+                      <input id="changePasswordInput"name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Password" type="password"></input>
                     </div>
                     <div class="changeInfoBar">
-                      <input id="changeConfirmPasswordInput" name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password"></input>
+                      <input id="changeConfirmPasswordInput" name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password" type="password"></input>
                     </div>
-                   <div class="profilePicContainer">
+                    <div class="privacyAndDownloadCont">
+                      <div id="RGPDPolicyInUserPage" class="actionCont tinyBlueShadowfilter" style="font-size: 20px; font-family: 'space'">
+                        PRIVACY POLICY
+                      </div> 
+                      <div id="downloadButton" class="actionCont tinyBlueShadowfilter" style="font-size: 20px; font-family: 'space'">
+                        DOWNLOAD DATA
+                      </div>
+                    </div>
+                    <div class="profilePicContainer">
                       <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
                       <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
                     </div>
+                    <div id="LinkPicture" style="font-size:10px;" class="changeInfoMessage"></div>
                     <div id= "changeInfoMessage" class="changeInfoMessage"></div>
                     <div class="buttonContainer">
-                      <div id="deleteAccountButton"class="deleteAccountButton">Delete Account</div>
+                      <div id="deleteAccountButton" class="deleteAccountButton">Delete Account</div>
                       <div id="submitInfoButton" class="submitChangeButton">Submit</div>
                     </div>
                 </form>
             </div>
-            <div class="validateDelete">
+            <div id="deleteBlockingPanel" class="blockingPanel"></div>
+            <div id="validateDelete" class="validateDelete">
               <div id="validateDeleteAccountText" class="validateDeleteText">All data will be permanently lost. Are you sure you want to delete your account?</div>
               <div class="buttonContainer">
                 <div class="validateDeleteButton" id="deleteAccountConfirmation">Yes</div>
@@ -774,7 +853,7 @@
   </div>
   <div class="escapeBG">
     <div class="settings">
-      <div class="languageColumn" id="graphicsText" style="width: 50%; height: 40%;">
+      <div class="languageColumn" id="graphicsText" style="width: 60%; height: 40%;">
             <div class="languageSettings">
             <div class="graphicsIcon" id="graphicsIcon1">Simple</div>
             <div class="graphicsIcon redGlow" id="graphicsIcon2">Classic</div>
@@ -783,19 +862,19 @@
             <div class="separator"></div>
             Graphics
           </div>
-          <div class="languageColumn" id="EscapeLanguageText" style="width: 50%; height: 40%;">
+          <div class="languageColumn" id="EscapeLanguageText" style="width: 55%; height: 40%;">
             <div class="languageSettings">
-              <div class="languageIcon" id="es1">
+              <div class="languageIcon" id="es1" style="left: 70%;">
                 <div class="icon" style="background-image: url('../static/html/assets/icons/mexicanAlienWhite.png');" ></div>
                 <div class="flag" style="background-image: url('../static/html/assets/icons/ES_NU.png');"></div>
               </div>
-              <div class="languageIcon" id="fr1">
-                <div class="icon" style="background-image: url('../static/html/assets/icons/frenchAlienWhite.png');" ></div>
-                <div class="flag" style="background-image: url('../static/html/assets/icons/FR_NU.png');"></div>
-              </div>
-              <div class="languageIcon" id="en1">
+              <div class="languageIcon" id="en1" style="top: 40%;">
                 <div class="icon" style="background-image: url('../static/html/assets/icons/englishAlienWhite.png');" ></div>
                 <div class="flag" style="background-image: url('../static/html/assets/icons/BR_NU.png');"></div>
+              </div>
+              <div class="languageIcon" id="fr1" style="right: 70%;">
+                <div class="icon" style="background-image: url('../static/html/assets/icons/frenchAlienWhite.png');" ></div>
+                <div class="flag" style="background-image: url('../static/html/assets/icons/FR_NU.png');"></div>
               </div>
             </div>
             <div class="separator"></div>
@@ -804,21 +883,96 @@
   </div>
     <div class="loggedAs">
       Currently logged as :
-      <div class="userInfoCont">
-        <div class="profilePic"><img id="loggedPlayerPicture" src="{% static 'html/assets/icons/ES_NU.png' %}"></div>
-        <div id="loggedPlayerUsername">Player</div>
+      <div id="escapeUserContainer" class="userInfoCont">
+        <div class="profilePic">
+          <img id="escapeProfileImg" src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        AtomiK
       </div>
     </div>
       <div class="redButton" id="disconnectButton" style="margin-top: -30px;width: 35%; height: 8%;">Disconnect</div>
     </div>
     </div>
+  </div>
+
+  <!-- RGPD PAGE -->          
+  <div class="rgpdPage page">
+      <div class="hologram-background hologram-container no-before holoPerspective d-flex flex-column justify-content-evenly align-items-center" style="height: 70%; width: 50%; top: 40%;">
+      <div id="RGPDTitle" class="d-flex justify-content-center align-items-center">
+        PRIVACY POLICY
+      </div>
+       <div id="RGPDText">
+        The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing and user consent. You can modify your data, delete your profile at any time in going in the planete profile. Your data is automatically deleted one year after your last connection. For any reclamation you can go to the CNIL website. 
+        </div>
+        <div id="RGPDBack" class="planetBackButton" style="height: 15%; width: 40%;">Back</div>
+      </div>
+  </div>
     
     <!-- GAME STUFF -->
   <div class="bluebar glow"></div>
-  <div id="startScreen"class=startScreen>
+  <div id="startScreen" class="startScreen">
     <div id="startGameText">press e to start</div>
-  </div>
+    <div id="startPlayer1Cont" class="startPlayerCont">
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img id=startpp1 src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        <div id="startUsername1Text" class="text-white" style="transform: scaleX(-1)">AtomiK</div>
+      </div>
+    </div>
+    <div id="startPlayer2Cont" class="startPlayerCont">
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img id=startpp2 src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        <div id="startUsername2Text" class="text-white">AtomiK</div>
+      </div>
+    </div>
+</div>
+
   <div class="gameUI">
+    <div id="leftControls" class="leftControlsUI">
+      <div class="control">
+          <img id="leftLeft" src="{% static 'game/assets/keys/key_a.png' %}" style="width: 50px; height: 50px;">
+          <span id=leftLeftText style="color: white;">Left</span>
+      </div>
+      <div class="control">
+          <img id="leftRight" src="{% static 'game/assets/keys/key_d.png' %}" style="width: 50px; height: 50px;">
+          <span id=leftRightText style="color: white;">Right</span>
+      </div>
+      <div class="control">
+        <img id="leftPower" src="{% static 'game/assets/keys/key_w.png' %}" style="width: 50px; height: 50px;">
+        <span id=leftPowerText style="color: white;">Powerup</span>
+      </div>
+    </div>
+    <div id="rightControls" class="rightControlsUI">
+      <div class="control">
+          <span id=rightLeftText style="color: white;">Left</span>
+          <img id="rightLeft" src="{% static 'game/assets/keys/left_key.png' %}" style="width: 50px; height: 50px;">
+      </div>
+      <div class="control">
+          <span id=rightRightText style="color: white;">Right</span>
+          <img id="rightRight" src="{% static 'game/assets/keys/right_key.png' %}" style="width: 50px; height: 50px;">
+      </div>
+      <div class="control">
+        <span id=rightPowerText style="color: white;">Powerup</span>
+        <img id="rightPower" src="{% static 'game/assets/keys/up_key.png' %}" style="width: 50px; height: 50px;">
+      </div>
+    </div>
+    <div id="topControls" class="topControlsUI">
+      <div class="topControl">
+          <img src="{% static 'game/assets/keys/leftClick_key.png' %}" style="width: 50px; height: 50px;">
+          <span id=topBullet1Text style="color: white;">Bullet</span>
+      </div>
+      <div class="topControl">
+          <img src="{% static 'game/assets/keys/centerClick_key.png' %}" style="width: 50px; height: 50px;">
+          <span id=topOrbText style="color: white;">Orb</span>
+      </div>
+      <div class="topControl">
+        <img src="{% static 'game/assets/keys/rightClick_key.png' %}" style="width: 50px; height: 50px;">
+        <span id=topBullet2Text style="color: white;">Bullet</span>
+      </div>
+    </div>
     <div class="scoreUI">
       <div class="centerRectangle glow" style="border-color: rgb(171, 31, 0); box-shadow: rgb(171, 31, 0);">
         <div class="speedbar"></div>
@@ -880,12 +1034,11 @@
 
 
 
-  <div id="fps-counter" style="position: fixed; top: 10px; left: 10%; background: rgba(0, 0, 0, 0.5); color: white; padding: 5px;"></div>
+  <div id="fps-counter" style="position: fixed; top: 10px; left: 30%; background: rgba(0, 0, 0, 0.5); color: white; padding: 5px;"></div>
 
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/7/Stats.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-shadow@0.0.2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <script type="module" src="{% static 'html/js/main.js' %}"></script>

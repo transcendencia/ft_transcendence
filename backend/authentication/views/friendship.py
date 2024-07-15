@@ -23,16 +23,16 @@ from ..serializers import UserSerializer, SignupSerializer, UserListSerializer
 def send_friend_request(request):
     if request.method == 'POST':
         sender = request.user
-        receiver_name = request.data.get('receiver_name')
+        receiver_id = request.data.get('receiver_id')
         try:
-            receiver = User.objects.get(username=receiver_name)
+            receiver = User.objects.get(id=receiver_id)
         except User.DoesNotExist:
             raise ValidationError("Receiver user does not exist")
 
         if receiver == sender:
             raise ValidationError("Cannot send friend request to yourself")
 
-        print(sender.username, receiver.username)
+        # print(sender.username, receiver.)
         friend_request, created = FriendRequest.objects.get_or_create(sender=sender, receiver=receiver)
 
         if created:
@@ -76,6 +76,7 @@ def return_friends_list(request):
     friends_requests = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
 
     received_request_list = []
+    user_in_received_request_list = []
     friends = []
     sent_request_list = []
     user_in_list = []
@@ -83,11 +84,14 @@ def return_friends_list(request):
 
     for req in friends_requests:
         if req.status == 'pending' and req.receiver == request.user:
+            user = UserListSerializer(req.sender, many=False).data
             user_pair = { 
-                'user' : UserListSerializer(req.sender, many=False).data,
+                'user' : user,
                 'request_id' : req.id,
             }
+            user_in_received_request_list.append(user)
             received_request_list.append(user_pair)
+            user_in_received_request_list.append(user)
             user_in_list.append(req.sender.id)
         
         if req.status == 'accepted' and (req.receiver == request.user or req.sender == request.user):
@@ -110,9 +114,12 @@ def return_friends_list(request):
     
     all_users = User.objects.exclude(id__in=user_in_list).exclude(id=request.user.id).exclude(username="bot")
     other_user_list = UserListSerializer(all_users, many=True).data
-    user_not_friend = other_user_list + received_request_list
+    user_not_friend = other_user_list + user_in_received_request_list
+    # Scuriser si il toruve pas le bot
     bot = UserSerializer(User.objects.get(username="bot")).data
     
+    # print(received_request_list)
+    print(friends)  
     return Response({
         'received_request_list': received_request_list, 
         'friends': friends, 

@@ -90,6 +90,7 @@ def add_game(request):
     game.save()
     
     createUserStat(player1, game, data['user1'])
+    createUserStat(player2, game, data['user2'])
     # user1 = data['user1']
     # user2 = data['user2']
     # user3 = data.get('user3', None)
@@ -119,7 +120,6 @@ def createUserStat(user, game, userStat):
     modeGame=game.modeGame,
     mapGame=game.mapGame,
     gameTime=game.gameTime)
-    
   new_stat.save()
 
   return JsonResponse({'status': 'success'})

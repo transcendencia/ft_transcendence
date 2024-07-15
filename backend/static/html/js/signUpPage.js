@@ -1,31 +1,39 @@
 import * as THREE from 'three';
-import { camera } from './main.js';
+import { camera, landedOnPlanet } from './main.js';
 import { showPage } from './showPages.js';
 import { currentLanguage, getTranslatedText } from './translatePages.js';
+import { emptyLoginField } from './loginPage.js';
 
 export let inCockpit = false;
 
-export function moveCameraToFrontOfCockpit() {
-    const targetPosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z + 9); // Define the target position for the camera
-    const duration = 1000; // Define the duration of the animation in milliseconds
+const backPosition = new THREE.Vector3(0, 4.5, -1295); // Define the target position for the camera
+const frontPosition = new THREE.Vector3(0, 4.5, -1304); // Define the target position for the camera
 
+export function moveCameraToFrontOfCockpit(page) {1
+    const duration = 1000; // Define the duration of the animation in milliseconds
+    console.log(backPosition);
     const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
-        .to(targetPosition, duration) // Set the target position and duration
+        .to(backPosition, duration) // Set the target position and duration
         .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
         .start(); // Start the animation
-    showPage('signUpPage');
+    if (page === 'signUpPage')
+        showPage('signUpPage', 'signUp');
+    else if (page === 'rgpdPage')
+        showPage('rgpdPage', 'default');
+    emptyLoginField();
     inCockpit = true;
 }
 
+
 export function moveCameraToBackOfCockpit() {
-    const targetPosition = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z - 9); // Define the target position for the camera
     const duration = 1000; // Define the duration of the animation in milliseconds
-    
+    console.log(frontPosition);
     const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
-    .to(targetPosition, duration) // Set the target position and duration
+    .to(frontPosition, duration) // Set the target position and duration
     .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
     .start(); // Start the animation
     showPage('loginPage');
+    emptySignUpField();
     inCockpit = false;
 }
 
@@ -38,9 +46,29 @@ backToLoginButton.addEventListener('click', function() {
 
 var submitChangeButton = document.getElementById("submitSignUp");
 submitChangeButton.addEventListener("click", handleSignup);
+const RGPDPage = document.querySelector(".rgpdPage");
 // Add event listener to the sign-up form
 // const signupForm = document.getElementById('signupForm');
 // signupForm.addEventListener('submit', handleSignup);
+
+//Add event listner to display RGPG page
+const RGPDPolicy = document.getElementById('RGPDPolicy');
+RGPDPolicy.addEventListener('click', function() {
+    RGPDPage.classList.add("perspectived");
+    showPage('rgpdPage');
+});
+
+
+//Add event listner to display sign-up page
+const RGPDBack = document.getElementById('RGPDBack');
+RGPDBack.addEventListener('click', function() {
+    if (landedOnPlanet) {
+        blockingPanel.classList.remove('show');
+        blockingPanel.classList.remove('show');
+        showPage('none');
+    }
+    else {showPage('signUpPage');}
+});
 
 // Handle form submission
 function handleSignup(event) {
@@ -75,4 +103,11 @@ function handleSignup(event) {
     .catch(error => {
         console.error('There was a problem with the sign-up:', error);
     });
+}
+
+export function emptySignUpField() {
+    document.getElementById('usernameSignUpInput').value = '';
+    document.getElementById('passwordSignUpInput').value = '';
+    document.getElementById('confirmPasswordSignUpInput').value = '';
+    document.getElementById('messageContainerSignup').innerText = '';
 }

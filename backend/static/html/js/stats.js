@@ -1,4 +1,6 @@
 import { getCookie } from './loginPage.js';
+import { getTranslatedText } from './translatePages.js';
+
 
 class DoughnutGraph {
 	constructor(chartId, title, backgroundColors, cutoutPercentage = '50%') {
@@ -31,14 +33,17 @@ class DoughnutGraph {
 		  ctx.fillStyle = chart.config.options.plugins.centerText.fontColor;
 		  ctx.textAlign = 'center';
 		  ctx.textBaseline = 'middle';
-		  if (title === 'Accuracy') {
-			const result = (this.dataStats[0] / (this.dataStats[0] + this.dataStats[1]) * 100).toFixed(1);
-			ctx.fillText(result + '%', left + width / 2, top + height / 2);
+		  if (title === 'Accuracy' || title === 'Win%') {
+			if (this.dataStats[0] + this.dataStats[1] === 0)
+				ctx.fillText('0%', left + width / 2, top + height / 2);
+			else
+			{
+				const result = (this.dataStats[0] / (this.dataStats[0] + this.dataStats[1]) * 100).toFixed(1);
+				ctx.fillText(result + '%', left + width / 2, top + height / 2);
+			}
 		  }
 		  else if (title === 'Modes played' || title === 'Maps played')
 			ctx.fillText('', left + width / 2, top + height / 2);
-		  else
-		  	ctx.fillText(this.dataStats[0] + '%', left + width / 2, top + height / 2);
 		}
 	  };
   
@@ -48,7 +53,7 @@ class DoughnutGraph {
 		options: {
 		  layout: {
 			padding: {
-			  top: 30, // Add padding to move the doughnut chart up
+			  top: 30,
 			  bottom: 10
 			}
 		  },
@@ -66,11 +71,11 @@ class DoughnutGraph {
 				family: 'Space'
 			  },
 			  padding: {
-				top: 0, // Remove top padding for title
-				bottom: 10 // Adjust bottom padding for title
+				top: 0,
+				bottom: 10
 			  },
 			  align: 'center',
-			  position: 'top', // Ensure the title is positioned at the top
+			  position: 'top',
 			},
 			legend: {
 			  display: true,
@@ -126,9 +131,16 @@ export function chooseStats(stat) {
     const stat1 = document.getElementById('statsBlock1');
     const stat2 = document.getElementById('statsBlock2');
     const stat3 = document.getElementById('statsBlock3');
-    removeClasses(stat1);
-    removeClasses(stat2);
-    removeClasses(stat3);
+	const stat4 = document.getElementById('statsBlock4');
+	const stat5 = document.getElementById('statsBlock5');
+	const stat6 = document.getElementById('statsBlock6');
+
+	removeClasses(stat4);
+	removeClasses(stat5);
+	removeClasses(stat6);
+	removeClasses(stat1);
+	removeClasses(stat2);
+	removeClasses(stat3);
 
     if (stat === 1) {
         if (stat2.style.display === 'flex') {
@@ -188,6 +200,21 @@ export function chooseStats(stat) {
             }, 250);
         }
     }
+	else if (stat === 4) {
+		stat5.style.display = 'none';
+		stat6.style.display = 'none';
+		stat4.style.display = 'flex';
+	}
+	else if (stat === 5) {
+		stat4.style.display = 'none';
+		stat6.style.display = 'none';
+		stat5.style.display = 'flex';
+	}
+	else if (stat === 6) {
+		stat4.style.display = 'none';
+		stat5.style.display = 'none';
+		stat6.style.display = 'flex';
+	}
 }
 
 function convertTime(time) {
@@ -198,34 +225,60 @@ function convertTime(time) {
 	return `${hours}hrs ${minutes}min ${seconds}sec`;
 }
 
+function updateBasicStats(data) {
+	const basicStats = document.getElementById('winLoseTexts1');
+	basicStats.innerHTML = `
+	<div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.nbrMatch}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.nbrWin}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.nbrLose}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.nbrGoal}</div>
+	`;
+	const basicStats2 = document.getElementById('winLoseTexts2');
+	basicStats2.innerHTML = `
+	<div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.nbrMatch}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.nbrWin}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.nbrLose}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.nbrGoal}</div>
+	`;
+}
+
 function updateStats3(data)
 {
-	const currentWinstreak = document.getElementById('currentWinstreak');
-	const highestWinstreak = document.getElementById('highestWinstreak');
-	const dashNumber = document.getElementById('dashNumber');
-	const powerUpsNumber = document.getElementById('powerUpsNumber');
-	const nemesis = document.getElementById('nemesis');
-	const friendsNumber = document.getElementById('friendsNumber');
-	const timePlayed = document.getElementById('timePlayed');
-	const dateOfCreation = document.getElementById('dateOfCreation');
+	const statValues = document.querySelectorAll('.statValue');
 
-	currentWinstreak.textContent = data.currentStreak;
-	highestWinstreak.textContent = data.maxStreak;
-	dashNumber.textContent = data.totalDashes;
-	powerUpsNumber.textContent = data.totalPowerUpsUsed;
-	nemesis.textContent = 'le bocal';
-	friendsNumber.textContent = '0';
-	timePlayed.textContent = convertTime(data.totalGameTime);
-	dateOfCreation.textContent = '2021-06-01';
+	let scoreRatio;
+	if (data.totalPointsTaken === null)
+		scoreRatio = 0;
+	else
+		scoreRatio = (data.nbrGoal / data.totalPointsTaken).toFixed(2);
+
+	const values = [
+		data.currentStreak,
+		data.maxStreak,
+		data.totalDashes,
+		data.totalPowerUpsUsed,
+		scoreRatio,
+		data.nbrFriends,
+		convertTime(data.totalGameTime),
+		data.userInfo.created_at.split('T')[0]
+	]		
+
+	statValues.forEach((stat, index) => {
+		stat.textContent = values[index % 8];
+	});
 }
 
 const winLostChart = new DoughnutGraph('winLostStat', 'Win%', ['#5dffa990', '#ff5d5d90']);
 const mapChart = new DoughnutGraph('mapStat', 'Maps played', ['#ff5f02bb', '#1f15efbb', '#ccfbfbbb', '#000030bb']);
 const modeChart = new DoughnutGraph('gameModeStat', 'Modes played', ['#5dffa990', '#ff5d5d90', '#ff5f02bb']);
 const accuracy = new DoughnutGraph('accuracyStat', 'Accuracy', ['#5dffa990', '#ff5d5d90']);
+const winLostChart2 = new DoughnutGraph('winLostStat2', 'Win%', ['#5dffa990', '#ff5d5d90']);
+const mapChart2 = new DoughnutGraph('mapStat2', 'Maps played', ['#ff5f02bb', '#1f15efbb', '#ccfbfbbb', '#000030bb']);
+const modeChart2 = new DoughnutGraph('gameModeStat2', 'Modes played', ['#5dffa990', '#ff5d5d90', '#ff5f02bb']);
+const accuracy2 = new DoughnutGraph('accuracyStat2', 'Accuracy', ['#5dffa990', '#ff5d5d90']);
 
 export function getUserStats(userId) {
-  const token = localStorage.getItem('host_auth_token');
+  const token = sessionStorage.getItem('host_auth_token');
   fetch(`get_stats/${userId}`, {
     method: 'GET',
     headers: {
@@ -242,10 +295,14 @@ export function getUserStats(userId) {
   .then(data => {
     mapChart.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
 	modeChart.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
-	console.log("data", data);
-    winLostChart.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);
+    winLostChart.updateData([data.nbrWin, data.nbrLose], ['Win', 'Lost']);
 	accuracy.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
+    mapChart2.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
+	modeChart2.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
+    winLostChart2.updateData([data.nbrWin, data.nbrLose], ['Win', 'Lost']);
+	accuracy2.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
 	updateStats3(data);
+	updateBasicStats(data);
   })
   .catch(error => {
     console.error('Error fetching user stats:', error);

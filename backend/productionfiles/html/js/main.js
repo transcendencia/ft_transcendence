@@ -1,10 +1,11 @@
 import * as THREE from 'three';
-import { showPage } from './showPages.js';
-import {spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets } from "./planets.js";
+import { initPage, showPage } from './showPages.js';
+import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
+import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
-import {cancelLanding, landedOnPlanet, togglePanelDisplay, togglePlanet, triggerInfiniteAnim} from "./enterPlanet.js"
+import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
+import { getProfileInfo } from "./userManagement.js";
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
@@ -12,12 +13,11 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-import { gameStarted, switchToGame, displayRemovePlayerVisual} from './arenaPage.js';
+import { gameStarted, resetArenaPage} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-
-
+import { updateUserStatus, test_back } from "./userManagement.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -42,28 +42,34 @@ scene.traverse(obj => {
 
 const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
-camera.position.set(0, 1, -495);
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
-export function toggleLobbyStart() {
-    lobbyStart = !lobbyStart;
+export function toggleLobbyStart(state = false) {
+    if (state === true)
+        lobbyStart = false;
+    else
+        lobbyStart = !lobbyStart;
 }
 
-    // LIGHTING
-    const pointLight = new THREE.PointLight(0xffffff, 1)
-    pointLight.castShadow = true;
-    pointLight.position.copy(sun.position);
-    pointLight.scale.set(10, 10, 10);
-    
-    const pointLight2 = new THREE.PointLight(0xffffff, 1.5)
-    pointLight2.castShadow = true;
-    pointLight2.position.set(0,5,-1300);
-    
-    const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
-    spaceShipPointLight.castShadow = true;
-    const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
-    const lightHelper = new THREE.PointLightHelper(pointLight);
-    scene.add(pointLight, ambientLight, lightHelper, spaceShipPointLight, pointLight2);
+// LIGHTING
+const pointLight = new THREE.PointLight(0xffffff, 1)
+pointLight.castShadow = true;
+pointLight.position.copy(sun.position);
+pointLight.scale.set(10, 10, 10);
+
+export const bluelight = new THREE.PointLight(0x0000ff, 1.5)
+bluelight.castShadow = true;
+bluelight.position.set(0,5,-1300);
+
+export const whitelight = new THREE.PointLight(0xffffff, 1.5)
+bluelight.castShadow = true;
+bluelight.position.set(0,5,-1300);
+
+const spaceShipPointLight = new THREE.PointLight(0xffffff, 0.5)
+spaceShipPointLight.castShadow = true;
+const ambientLight = new THREE.AmbientLight(0Xffffff, 1);
+const lightHelper = new THREE.PointLightHelper(pointLight);
+scene.add(ambientLight, spaceShipPointLight, bluelight);
 
 
 class LobbyVisuals
@@ -71,8 +77,12 @@ class LobbyVisuals
     constructor(scene, camera, renderer)
     {
         this.scene = scene;
+        this.textLoaded = false;
         this.camera = camera;
         this.renderer = renderer;
+        // this.renderer.physicallyCorrectLights = true;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.currentGraphics = 'medium';
         this.composer;
         this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
@@ -91,6 +101,47 @@ class LobbyVisuals
         this.bloomPass.radius = 0.8;
         this.stars = [];
         this.addStars(1000);
+        this.textMesh;
+
+        const fontLoader = new THREE.FontLoader();
+        fontLoader.load('https://threejs.org/examples/fonts/optimer_bold.typeface.json', (font) => {
+            const textGeometry = new THREE.TextGeometry('42', {
+                font: font,
+                size: 50, // Adjusted size
+                height: 22, // Adjusted height
+                curveSegments: 62,
+                bevelEnabled: true,
+                bevelThickness: 0.1, // Reduced bevel thickness
+                bevelSize: 0.2, // Reduced bevel size
+                bevelOffset: 0,
+                bevelSegments: 3 // Adjusted bevel segments
+            });
+            textGeometry.computeBoundingBox();
+            const boundingBox = textGeometry.boundingBox;
+        
+            const textWidth = boundingBox.max.x - boundingBox.min.x;
+            const textHeight = boundingBox.max.y - boundingBox.min.y;
+            const textDepth = boundingBox.max.z - boundingBox.min.z;
+          
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                metalness: 1,
+                roughness: 0,
+                envMap: this.spaceCubeMapTexture
+            });
+
+            this.textMesh = new THREE.Mesh(textGeometry, material);
+            // Create a pivot object and add the text to it
+            const pivot = new THREE.Object3D();
+            pivot.add(this.textMesh);
+        
+            // Offset the text position so that its center is at the pivot point
+            this.textMesh.position.set(-textWidth / 2, -textHeight / 2, -textDepth / 2);
+            // Add the pivot to the scene
+            this.scene.add(pivot);
+            this.textLoaded = true;
+            this.text = pivot;
+        });
     }
     addStar() {
         const geometry = new THREE.SphereGeometry(1.125, 12, 12);
@@ -151,7 +202,8 @@ class LobbyVisuals
     }
     activateSpeedEffect()
     {
-        //tween animation to augment camera fov
+        if (!lobbyStart)
+            return;
         new TWEEN.Tween(this.camera)
         .to({fov: 75}, 100)
         .easing(TWEEN.Easing.Quadratic.Out)
@@ -189,15 +241,15 @@ const minimapHeight = 200;
 
 // Create an orthographic camera for the minimap
 const minimapCamera = new THREE.OrthographicCamera(
-    minimapWidth * 12,  // left
-    -minimapWidth * 12,   // right
-    -minimapHeight * 12,  // top
-    minimapHeight * 12, // bottom
+    minimapWidth * 8,  // left
+    -minimapWidth * 8,   // right
+    -minimapHeight * 8,  // top
+    minimapHeight * 8, // bottom
     1,                // near
     4000              // far
     );
      
-    minimapCamera.position.set(sun.position.x + 200, sun.position.y + 500, sun.position.z);
+    minimapCamera.position.set(sun.position.x, sun.position.y + 500, sun.position.z);
     
     const minimapRenderer = new THREE.WebGLRenderer();
     minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
@@ -209,29 +261,23 @@ const minimapCamera = new THREE.OrthographicCamera(
     minimapContainer.appendChild(minimapRenderer.domElement);
 
     const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
-    const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000045 }); 
+    const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x00000000 }); 
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
-    minimapBG.position.set(-200, -600, 0); 
+    minimapBG.position.set(0, -600, 0);
     minimapBG.lookAt(minimapCamera.position); // Make the plane face the camera
     scene.add(minimapBG);
 
     minimapBG.layers.set(1);
     minimapCamera.layers.enable(1);
     camera.layers.enable(2);
-    const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
-    const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const playerMarker = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    playerMarker.scale.set(20,20,20);
-    scene.add(playerMarker);
-    // const camera1Helper = new THREE.CameraHelper(minimapCamera);
-
+    minimapCamera.lookAt(sun.position);
+    
 function renderMinimap() {
     if (!spaceShip)
         return;
-    playerMarker.position.x = spaceShip.position.x;
-    playerMarker.position.z = spaceShip.position.z;
-    playerMarker.position.y = 500;
-    minimapCamera.lookAt(sun.position);
+    marker.position.x = spaceShip.position.x;
+    marker.position.z = spaceShip.position.z;
+    marker.quaternion.copy(spaceShip.quaternion);
     minimapRenderer.render(scene, minimapCamera);
 }
 
@@ -244,16 +290,15 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
     userInfoCont.childNodes[1].textContent = user.username;
 }
 
-function disconnectLoggedGuest(userInfoCont) {
-    lsCont.removeChild(userInfoCont);
-}
+import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
 
-function displayUsersLogged() {
-    userList.forEach(user => {
+export function displayUsersLogged(user, token) {
+    
+    // guestLoggedIn.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
         const userInfoCont = document.createElement('div');
-        userInfoCont.classList.add('userInfoCont', 'log');
+        userInfoCont.classList.add('userInfoCont', 'log', 'hover-enabled');
 
         const profilePic = document.createElement('div');
         profilePic.classList.add('profilePic');
@@ -268,16 +313,11 @@ function displayUsersLogged() {
         lsCont.appendChild(userInfoCont);
         // if (user.isHost)
         //     return;
-        userInfoCont.addEventListener('mouseenter', function () {
-            displayRemovePlayerVisual(userInfoCont, img, profilePic);
-        });
-        userInfoCont.addEventListener('mouseleave', function () {
-            resetUserInfoLoggedVisual(userInfoCont, img, profilePic, user);
-        });
+
         userInfoCont.addEventListener('click', function () {
-            disconnectLoggedGuest(userInfoCont);
+            disconnectLoggedGuest(userInfoCont, user, token);
         });
-    });
+    // });
 }
 
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -290,17 +330,19 @@ let rsContVisible = false;
 const structure = document.querySelector(".structure");
 const escapeBG = document.querySelector(".escapeBG");
 
+export function swipeLeftSideContainer(endPos) {
+    leftSideContainer.style.left = endPos;
+}
+
 export function toggleRSContainerVisibility() {
     if (rsContVisible) {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '-50%';
-
         rsContVisible = false;
     } else {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '0%';
-        leftSideContainer.style.transition = 'left 0.5s ease-in-out';
-        leftSideContainer.style.left = '0%';
+        swipeLeftSideContainer('0%');
         rsContVisible = true;
     }
 }
@@ -336,8 +378,6 @@ export const outlinePass = new OutlinePass(
     camera.getWorldDirection(cameraDirection);
     
 
-    
-
 function planetMovement() {
     planets.forEach((planet) => {
         planet.mesh.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), planet.orbitSpeed);
@@ -361,6 +401,11 @@ function planetMovement() {
             planet.orbitMesh.rotation.y += planet.orbitSpeed + 0.01;
         }
     });
+    if (sun && lobbyVisuals.textLoaded)
+    {
+        sun.rotation.y += 0.001;
+        lobbyVisuals.text.rotation.y += 0.01;
+    }
 }
 
 export function startAnimation() {
@@ -396,23 +441,43 @@ export function startAnimation() {
             lobbyStart = true;
             cancelLanding();
             toggleRSContainerVisibility();
+            scene.remove(bluelight);
+            scene.add(whitelight);
         });
         anim1.chain(anim2, anim3);
         anim1.start();
     }
+    
+export function createUserBadge(hostData, elementId) {
+    const elem = document.getElementById(elementId);
+    elem.innerHTML = `
+    <div class="profilePic">
+      <img src="${hostData.profile_info.profile_picture}">
+    </div>
+    ${hostData.profile_info.username}
+  `;
+}
 
-export function toggleEscapeContainerVisibility() {
-    togglePause();
+export function displayHostEscapePage() {
+    getProfileInfo(sessionStorage.getItem("host_id")).then(data => createUserBadge(data, "escapeUserContainer"))
+}
+
+export function toggleEscapeContainerVisibility(disconnect = false) {
+    if (!disconnect) {
+        getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
+        .catch(error => console.error('Failed to retrieve profile info:', error));    
+    }
     if (targetBlur !== 0) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
+        escapeContainerVisible = true;
     }
     else {
         escapeBG.style.animation = 'rollBG 0.2s ease backwards'
         structure.style.animation = 'headerUp 0.5s ease 0.2s backwards'
+        escapeContainerVisible = false;
     }
 }
-
 let pauseGame = false;
 
 export function togglePause() {
@@ -420,37 +485,57 @@ export function togglePause() {
     pauseGame ? pauseGame = false : pauseGame = true;
 }
 
-import { getUserStatus } from './userManagement.js';
+const blockingPanel = document.getElementById('blockingPanel');
+const pwWindow = document.querySelector(".enterPasswordWindow");
+const deleteWindow = document.getElementById("validateDelete");
 
-let firstPauseTriggered = false;
+// handle window resize
+window.addEventListener('resize', () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    composer.setSize(width, height);
+    composer.setPixelRatio(window.devicePixelRatio);
+    composer.render();
+    minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
+    minimapCamera.left = -minimapWidth * 8;
+    minimapCamera.right = minimapWidth * 8;
+    minimapCamera.top = minimapHeight * 8;
+    minimapCamera.bottom = -minimapHeight * 8;
+    minimapCamera.updateProjectionMatrix();
+    composer.render();
+});
 
 document.addEventListener('keydown', (event) => {
-    if (event.target.tagName === 'INPUT')
-        return;
-    if (event.key === 'e' && !lobbyStart) {
-        // const token = localStorage.getItem('host_auth_token');
-        // console.log(token);
-        // if (token) {
-            showPage('none');
-            startAnimation();
-            displayUsersLogged();
-        // }
-        // localStorage.clear();
+    if (event.key === 'p')
+        console.log(camera.position);
+    if (event.key === 'Enter') {
+        if (window.location.hash === "#signUpPage") 
+            document.getElementById("submitSignUp").click();
+        const pwWindow = document.querySelector(".enterPasswordWindow");
+        if (window.getComputedStyle(pwWindow).display === 'flex')
+            document.getElementById("arenaLogInButton").click()
     }
-    if (event.key === 't')
-        getUserStatus(96);
-    if (event.key === 'e' && inRange && !gameStarted)
-        togglePlanet();
     if (event.key === 'Escape') {
-        if (gameState.inGame)
+        if (gameState.inGame && !gameState.arena.game.isPlaying)
+            return;
+        if (gameState.inGame && gameState.arena.game.isPlaying)
         {
+            displayHostEscapePage();
             toggleEscapeContainerVisibility();
+            togglePause();
             toggleBlurDisplay(false);
             pauseGame ? pauseGame = false : pauseGame = true;
             return;
         }
-        if (landedOnPlanet) {
+        else if (landedOnPlanet) {
             togglePlanet();
+            blockingPanel.classList.remove('show');
+            pwWindow.classList.remove('showRectangle')
+            deleteWindow.classList.remove('showRectangle')
+            showPage('none');
             returnToHost();
             return;
         }
@@ -458,24 +543,34 @@ document.addEventListener('keydown', (event) => {
             moveCameraToBackOfCockpit();
             return;
         }
-        if (lobbyStart) {
+        else if (lobbyStart) {
             toggleRSContainerVisibility();
             toggleBlurDisplay(true);
+            displayHostEscapePage();
             toggleEscapeContainerVisibility();
+            togglePause();
             resetOutlineAndText();
-            pauseGame ? pauseGame = false : pauseGame = true;
+            togglePause();
+            pauseGame = !pauseGame;
         }
     }
+    if (event.target.tagName === 'INPUT')
+        return;
+    if (event.key === 'e' && inRange && !gameStarted)
+        togglePlanet();
 });
 
+
+
+let escapeContainerVisible = false;
 let targetBlur = 0;
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);
 const verticalBlur = new ShaderPass(VerticalBlurShader);
-horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-horizontalBlur.renderToScreen = true; // Render to a texture
-verticalBlur.renderToScreen = true; // Render to the screen
+horizontalBlur.uniforms['tDiffuse'].value = null;
+verticalBlur.uniforms['tDiffuse'].value = null;
+horizontalBlur.renderToScreen = true;
+verticalBlur.renderToScreen = true;
 horizontalBlur.uniforms.h.value = targetBlur;
 verticalBlur.uniforms.v.value = targetBlur;
 composer.addPass(horizontalBlur);
@@ -504,7 +599,6 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
 // composer.addPass(bloomPass);
 
 function update() {
-    // displayRay();
     if (pauseGame)
         return;
     if (lobbyStart && !landedOnPlanet) 
@@ -519,9 +613,17 @@ function update() {
 return;
 }
 
+let fpsInterval = 1000 / 75; // 75 FPS
+let stats = new Stats();
+let lastUpdateTime = performance.now();
+
+
 function animate()
 {
     requestAnimationFrame( animate )
+    let now = performance.now();
+    let elapsed = now - lastUpdateTime;
+    if (elapsed < fpsInterval) return; // Skip if too big FPS
     if (gameStarted)
         return;
     TWEEN.update();
@@ -534,6 +636,10 @@ function animate()
     mixer2.update(0.025);
     mixer3.update(0.025);
     // renderer.render(scene, camera);
+
+    stats.update();
+    lastUpdateTime = now - (elapsed % fpsInterval);
+    stats.time = performance.now();
 }
 
 const checkModelsLoaded = setInterval(() => {
@@ -542,6 +648,7 @@ const checkModelsLoaded = setInterval(() => {
         animate();
         camMovement();
         initializeCamera();
+        initPage();
     }
 }, 100);
 

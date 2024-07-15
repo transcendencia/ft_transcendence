@@ -11,7 +11,6 @@ then
     echo "PostgreSQL started"
 fi
 
-# python manage.py makemigrations
 python manage.py makemigrations
 python manage.py makemigrations authentication
 python manage.py migrate
@@ -37,5 +36,18 @@ if not User.objects.filter(username=USER_USERNAME).exists():
     user.save()
 EOF
 
+
+#mkdir /cert
+#openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /cert/key.pem -out /cert/cert.pem -subj "/CN=localhost"
+#uvicorn backend.asgi:application --host 0.0.0.0 --port 8000 --ssl-keyfile /cert/key.pem --ssl-certfile /cert/cert.pem
+
+# Ajouter les tâches cron
+python manage.py crontab add
+
+# Démarrer le service cron
+service cron start
+
+# Afficher les tâches cron pour confirmation
+python manage.py crontab show
+
 python manage.py runserver 0.0.0.0:8000
-# uvicorn backend.asgi:application --host 0.0.0.0 --port 8000
