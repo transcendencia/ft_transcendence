@@ -18,6 +18,14 @@ export function moveCameraToFrontOfCockpit(page) {1
         .start(); // Start the animation
     if (page === 'signUpPage')
         showPage('signUpPage', 'signUp');
+    const selectedPage = document.querySelector('.signUpPage');
+    const hologramContainer = selectedPage.querySelector('.hologram-container');
+    
+    if (hologramContainer) {
+        hologramContainer.classList.remove('open');
+        void hologramContainer.offsetWidth;
+        hologramContainer.classList.add('open');
+    }
     else if (page === 'rgpdPage')
         showPage('rgpdPage', 'default');
     emptyLoginField();

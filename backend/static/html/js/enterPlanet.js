@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
-import { resetOutline, resetOutlineAndText, planetInRange, getPlanetIntersection } from "./planetIntersection.js";
-import { initUserPlanet } from './userPage.js';
 import { resetTournament, tournamentState } from '../../tournament/js/newTournament.js';
 import { initArenaPlanet, initTournamentPlanet, resetArenaPage } from './arenaPage.js';
+import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
+import { initUserPlanet } from './userPage.js';
 
 export let landedOnPlanet = false;
 let planetPanel = document.querySelectorAll(".planetPanel");
@@ -53,14 +53,12 @@ export function togglePanelDisplay() {
     if (landedOnPlanet && planetInRange.name == "tournament") {
         if (tournamentState === 2)
             resetTournament();
-        // else
-        //    addEventListenersToPlusButtons();
-        initTournamentPlanet();
         anim = setTimeout(function () {triggerInfiniteAnim(imagesTournament[0], imagesTournament[1])}, 2000);
         planetPanel[2].style.animation = "roll 2s forwards";
         imagesTournament[0].style.animation = "moveImageRight 2s forwards";
         imagesTournament[1].style.animation = "moveImageLeft 2s forwards";
         background[2].style.animation = "expandBG 2s forwards";
+        initTournamentPlanet();
     } else {
         imagesTournament[0].style.animation = "moveImageRightreverse 1s forwards";
         imagesTournament[1].style.animation = "moveImageLeftreverse 1s forwards";

@@ -42,12 +42,11 @@ EOF
 #uvicorn backend.asgi:application --host 0.0.0.0 --port 8000 --ssl-keyfile /cert/key.pem --ssl-certfile /cert/cert.pem
 
 # Ajouter les tâches cron
-python manage.py crontab add
-
 # Démarrer le service cron
-service cron start
+
+
 
 # Afficher les tâches cron pour confirmation
-python manage.py crontab show
+#python manage.py runserver 0.0.0.0:8000
 
-python manage.py runserver 0.0.0.0:8000
+exec python manage.py runserver 0.0.0.0:8000

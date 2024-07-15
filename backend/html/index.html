@@ -258,14 +258,15 @@
         </div>
       </div>
     </div>
+
     <div class="enterPasswordWindow">
       <div class="userInfoCont">
         <div class="profilePic">
           <img src="{% static 'html/assets/icons/ES_NU.png' %}">
         </div>
-        AtomiK
+        Player
       </div>
-      <div class="validateDeleteText">Enter your password</div>
+      <div id="enterPasswordText" class="validateDeleteText">Enter your password</div>
       <div class="changeInfoBar" style="height: 20%;">
         <input id="enterPasswordInput" name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" type="password" placeholder="Password"></input>
       </div>
@@ -275,6 +276,30 @@
       <div type="submit" id="arenaLogInButton" class="validateDeleteButton">Log in</div>
       </div>
     </div>
+
+    <div class="enterPasswordWindow">
+      <div class="userInfoCont">
+        <div class="profilePic">
+          <img src="{% static 'html/assets/icons/ES_NU.png' %}">
+        </div>
+        Player
+      </div>
+      <div id="showAliasText" class="validateDeleteText">This is your alias for the tournament:</div>
+      <div id="aliasText" class="validateDeleteText">Alias</div>
+      <!-- <div class="changeInfoBar" style="height: 20%;"> -->
+      <!-- </div> -->
+      <div class="buttonContainer" style="height: 10%;">
+      <div id="aliasLogInButton" class="validateDeleteButton">Ok</div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
 
     <!-- USER PLANET -->
     <div class="planetPanel">
@@ -497,7 +522,7 @@
                       <div id="RGPDPolicyInUserPage" class="actionCont tinyBlueShadowfilter" style="font-size: 20px; font-family: 'space'">
                         PRIVACY POLICY
                       </div> 
-                      <div id="downloadButton" class="actionCont tinyBlueShadowfilter" style="font-size: 20px; font-family: 'space'">
+                      <div id="downloadButton" class="actionCont tinyRedShadowfilter" style="font-size: 20px; font-family: 'space'">
                         DOWNLOAD DATA
                       </div>
                     </div>
@@ -551,22 +576,20 @@
           <div id="trnmtTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Tournament </div>
         </div>
         <div class="secondLineTournament">
-          <div id="leftColumn" class="leftColumn">
+          <div id="leftColumn" class="leftColumn before-launch">
             <div id="trnmtUserlistText" class="before-launch" style="font-size: 20px; font-family: 'space'; color: white"> User List </div>
             <div id="userlistTournamentPage" class="userlistBackground before-launch"></div>
-            <h2 id="next-match" class="matchInfo" style="display:none;"></h2>
-            <p id="match" class="matchInfo" style="display:none;"></p>
-            <div id="launchMatch" class="startTournamentButton" style="display:none;"></div>
             <div id="trnmtBackButton" class="planetBackButton" style="width: 90%">Back</div>
           </div>
-          <!-- when the tournament is launch -->
         <div id="midColumn" class="rightColumn">
           <div class="addPlayerToTournament before-launch">
             <div class="elemContTournament">
               <div class="addPlayer">
-              <div class="userInfoContTournament">
-                <div class="profilePic"><img id="player1TournamentPicture"></div>
-                <div id="player1TournamentUsername"></div>
+              <div class="userInfoCont">
+                <div class="profilePic">
+                  <img id="player1TournamentPicture" src="{% static 'html/assets/icons/ES_NU.png' %}">
+                </div>
+                <div id="player1TournamentUsername">Player</div>
               </div>
               <div class="playerText"> Player 1 </div>
               </div>
@@ -642,12 +665,12 @@
             <div class="rightColumnBottomRight before-launch">
               <div class="switch"  id="thirdPlayertoggleSwitch">
                 <div class="slider"></div>
-              </div> 
-              <p id="thirdPlayerText" style="padding-left: 10px;">Third Player</p>
+              </div>
+              <div id="thirdPlayerText" class="basicText" style="padding-left: 10px;">Third Player</div> 
             </div>
           </div>
           <!-- when the tournament is launch -->
-          <div id="bracket" class="theme theme-dark" style="display:none;">
+          <div id="bracket" class="topTournament theme theme-dark" style="display:none;">
             <div class="bracket">
               <div class="column one">
                 <div id="A1-A2-match" class="match">
@@ -804,6 +827,14 @@
             </div>        
           </div>
             </div>
+          </div>
+          <div id="bottomTournament" class="bottomTournament" style="display: none;">
+            <div id="trnmtBackButton" class="planetBackButton" style="width: 20%; height: 50%;">Back</div>
+            <div class="matchInfo">
+              <div id="next-match" class="basicText" style="padding-left: 20px;"></div>
+              <div id="match" class="basicText" style="padding-left: 20px;"></div>
+            </div>
+            <div id="launchMatch" class="startTournamentButton"></div>
           </div>
         </div>
         </div>
