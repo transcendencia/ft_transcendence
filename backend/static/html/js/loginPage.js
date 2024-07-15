@@ -178,7 +178,7 @@ export async function handleLogin(formData) {
             console.log("login status", data.status);
             if (data.status === "success") {
 
-                console.log("hostLoggedIn", hostLoggedIn);
+                // console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
 
                     sessionStorage.setItem("hostLoggedIn", 'true');
@@ -188,7 +188,7 @@ export async function handleLogin(formData) {
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
                     get_friends_list();
-                    console.log("host id:", sessionStorage.getItem("host_id"));
+                    // console.log("host id:", sessionStorage.getItem("host_id"));
                     getProfileInfo(sessionStorage.getItem("host_id"))
                     .then(data => {
                         populateProfileInfo(data);
