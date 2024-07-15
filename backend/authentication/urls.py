@@ -3,6 +3,7 @@ from .views import authentication, tournament, updateUserInfo, gameInfo, friends
 
 from .views.updateUserInfo import UserStatusView, UserLanguageView, UserInfoView, UserGraphicModeView
 from .views.friendship import FriendRequestView, FriendListView
+from .views.stats import StatsView
 
 urlpatterns = [
 	path('', authentication.index, name='index'),
@@ -11,7 +12,6 @@ urlpatterns = [
     path('login_page/', authentication.login_page, name='login_page'),
     path('signup/', authentication.signup, name='signup'),
     
-
     #updateUserInfo.py
     path('user/language/', UserLanguageView.as_view(), name='update_language'),
     path('user/status/', UserStatusView.as_view(), name='update_status'),
@@ -28,10 +28,9 @@ urlpatterns = [
     #friendship.py
     path('friend_request/', FriendRequestView.as_view(), name='friend_request'),
     path('friends_list/', FriendListView.as_view(), name='friend_list'),
-    # path('return_friends_list/', friendship.return_friends_list, name="return_friends_list"),
 
     #stats.py
-    path('get_stats/<int:userId>', stats.get_stats, name="get_stats"),
+    path('get_stats/<int:userId>', StatsView.as_view(), name="get_stats"),
 
     #tounament.py
     path('tournament/', tournament.result, name='result'),
