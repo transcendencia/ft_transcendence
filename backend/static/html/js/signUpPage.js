@@ -2,20 +2,33 @@ import * as THREE from 'three';
 import { camera, landedOnPlanet } from './main.js';
 import { showPage } from './showPages.js';
 import { currentLanguage, getTranslatedText } from './translatePages.js';
-
+import { emptyLoginField } from './loginPage.js';
 
 export let inCockpit = false;
 
 const backPosition = new THREE.Vector3(0, 4.5, -1295); // Define the target position for the camera
 const frontPosition = new THREE.Vector3(0, 4.5, -1304); // Define the target position for the camera
-export function moveCameraToFrontOfCockpit() {1
+
+export function moveCameraToFrontOfCockpit(page) {1
     const duration = 1000; // Define the duration of the animation in milliseconds
     console.log(backPosition);
     const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
         .to(backPosition, duration) // Set the target position and duration
         .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
         .start(); // Start the animation
-    showPage('signUpPage');
+    if (page === 'signUpPage')
+        showPage('signUpPage', 'signUp');
+    const selectedPage = document.querySelector('.signUpPage');
+    const hologramContainer = selectedPage.querySelector('.hologram-container');
+    
+    if (hologramContainer) {
+        hologramContainer.classList.remove('open');
+        void hologramContainer.offsetWidth;
+        hologramContainer.classList.add('open');
+    }
+    else if (page === 'rgpdPage')
+        showPage('rgpdPage', 'default');
+    emptyLoginField();
     inCockpit = true;
 }
 
@@ -28,6 +41,7 @@ export function moveCameraToBackOfCockpit() {
     .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
     .start(); // Start the animation
     showPage('loginPage');
+    emptySignUpField();
     inCockpit = false;
 }
 
@@ -40,6 +54,7 @@ backToLoginButton.addEventListener('click', function() {
 
 var submitChangeButton = document.getElementById("submitSignUp");
 submitChangeButton.addEventListener("click", handleSignup);
+const RGPDPage = document.querySelector(".rgpdPage");
 // Add event listener to the sign-up form
 // const signupForm = document.getElementById('signupForm');
 // signupForm.addEventListener('submit', handleSignup);
@@ -47,20 +62,20 @@ submitChangeButton.addEventListener("click", handleSignup);
 //Add event listner to display RGPG page
 const RGPDPolicy = document.getElementById('RGPDPolicy');
 RGPDPolicy.addEventListener('click', function() {
-    console.log("on capte dans signup");
+    RGPDPage.classList.add("perspectived");
     showPage('rgpdPage');
 });
+
 
 //Add event listner to display sign-up page
 const RGPDBack = document.getElementById('RGPDBack');
 RGPDBack.addEventListener('click', function() {
     if (landedOnPlanet) {
-        blockingPanel.style.visibility = 'hidden';
+        blockingPanel.classList.remove('show');
+        blockingPanel.classList.remove('show');
         showPage('none');
     }
-        
-    else
-        showPage('signUpPage');
+    else {showPage('signUpPage');}
 });
 
 // Handle form submission
@@ -96,4 +111,11 @@ function handleSignup(event) {
     .catch(error => {
         console.error('There was a problem with the sign-up:', error);
     });
+}
+
+export function emptySignUpField() {
+    document.getElementById('usernameSignUpInput').value = '';
+    document.getElementById('passwordSignUpInput').value = '';
+    document.getElementById('confirmPasswordSignUpInput').value = '';
+    document.getElementById('messageContainerSignup').innerText = '';
 }

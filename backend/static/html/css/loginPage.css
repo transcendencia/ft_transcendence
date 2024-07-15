@@ -7,20 +7,111 @@
     overflow: hidden; /* Ensure text input doesn't overflow */
     border-radius: 5px;
     width :80%;
-    height: 99%;
-    transition: opacity 1s;
+    height: 100%;
+    transition: opacity 1s, visibility 0s 1s;
     opacity: 0;
-    visibility: hidden; /* Hide the element */
+    visibility: hidden;
+    gap: 100px
 }
 
 /* .loginPage * {
     border: 5px solid wheat; 
 } */
 
-.inputContainer {
-    margin-top: -40px;
-    height: 40%;
-    transform: scale(1.5);
+
+.hologram-background {
+    width: 600px;
+    height: 400px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+.holoPerspective {
+    transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg);
+}
+
+.hologram-container {
+    text-shadow: 0 0 5px rgb(0, 64, 255);
+    background-color: rgba(0, 64, 255, 0.1);
+    border: 2px solid rgb(0, 64, 255);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgb(0, 64, 255), inset 0 0 20px rgb(0, 64, 255);
+}
+
+.open {
+    animation: openAnimation 3s forwards;
+}
+
+@keyframes openAnimation {
+    0% {
+        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(0);
+    }
+    100% {
+        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(1);
+    }
+}
+
+.hologram-textBar {
+    text-shadow: 0 0 5px rgb(0, 64, 255);
+    background-color: rgba(0, 13, 51, 0.683);
+    /* backdrop-filter: blur(10px); */
+    border: 2px solid rgb(0, 64, 255);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgb(0, 64, 255), inset 0 0 20px rgb(0, 64, 255);
+}
+
+.hologram-content {
+    padding: 20px;
+    text-shadow: 0 0 5px rgb(0, 64, 255);
+    position: relative;
+    transform: scaleY(1.2);
+    z-index: 5;
+}
+
+.hologram-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 2px,
+        rgba(0, 42, 255, 0.1) 2px,
+        rgba(0, 42, 255, 0.1) 4px
+    );
+    background-size: 100% 4px;
+    animation: scan 4s linear infinite;
+    z-index: 2;
+}
+
+.hologram-container.no-before::before {
+    content: none !important;
+    background: none !important;
+    animation: none !important;
+}
+
+@keyframes scan {
+    100% {
+        transform: translateY(-100%);
+    }
+    0% {
+        transform: translateY(100%);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: rotateX(-30deg) translateY(-5px) translate(-50%, -50%) scale(1.3);
+    }
+    50% {
+        transform: rotateX(-30deg) translateY(5px) translate(-50%, -50%) scale(1.3) ;
+    }
 }
 
 .newToTheGame {
@@ -33,25 +124,25 @@
 }
 
 .actionCont {
-    margin-left: 10px;
     height: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: rgb(182, 221, 254);
+    color: rgb(42, 159, 255);
     font-size: 12px;
     z-index: 5;
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
 .littleMsgCont {
+    margin-top: 5px;
     font-size: 12px;
     font-family: "Space";
     text-shadow: none;
 }
 
 .actionCont:hover {
-    color: rgb(117, 190, 255);
+    color: rgb(0, 102, 192);
 }
 
 .separator {
@@ -70,6 +161,18 @@
     color: red;
 }
 
+.languageCont{
+    position: fixed;
+    transform: translate(-50%, -50%);
+    height: 20%;
+    width: 40%;
+    top: 92%;
+    left: 50%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: space-around;
+}
+
 .languageColumn {
     display: flex;
     flex-direction: column;
@@ -85,18 +188,21 @@
 }
 
 .languageSettings {
-    width: 75%;
+    width: 90%;
     height: 80%;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    inline-size: min-content;
 }
 
 .languageIcon {
-    margin: 0px 30px 0px 30px;
+    position: absolute;
     border-radius: 5px;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+    min-height: 70px;
     background-color: rgb(20, 20, 20);
     display: flex;
     justify-content: center;
@@ -105,7 +211,6 @@
     border: solid 5px white;
     transition: box-shadow 0.5s ease, border-color 0.5s ease;
     overflow: hidden;
-    flex-shrink: 0;
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
@@ -132,8 +237,13 @@
 }
 
 .title {
-    font-size: 80px;
+    text-shadow: 0 0 10px rgb(0, 64, 255);
+    font-size: 60px;
     font-family: "Space";
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: white;
     display: flex;
     flex-direction: column; /* Display children vertically */
@@ -141,11 +251,6 @@
     align-items: center;
     overflow: hidden; /* Ensure text input doesn't overflow */
     border-radius: 5px;
-    text-shadow: 
-        -5px -5px 0 black,  
-         5px -5px 0 black,
-        -5px  5px 0 black,
-         5px  5px 0 black;
     height: 25%;
 }
 
@@ -155,31 +260,22 @@
     font-size: 25px; /* Adjust font size as needed */
     font-family: "Space";
     text-align: center;
-    text-shadow: 
-        -2px -2px 0 black,  
-         2px -2px 0 black,
-        -2px  2px 0 black,
-         2px  2px 0 black;
 }
 
 .title img {
     margin: -200px;
-    transform: scale(0.25);
+    transform: scale(0.2);
+    filter: drop-shadow(0 0 30px rgb(0, 64, 255));
 }
 
 .textBar {
     margin: 0px 10px 5px 10px;
-    top: 50%;
-    left: 50%;
-    height: 43px * 1.8; /* Double the height */
-    width: 452px * 1.8; /* Double the width */
     background-color: rgba(20, 20, 20, 0.9);
     border-radius: 2px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden; /* Ensure text input doesn't overflow */
-    flex-shrink: 0 0 auto;
 }
 
 .test {
@@ -195,8 +291,8 @@
 
 .text-input {
     position: absolute;
-    width: 80%; /* Match the width of the container */
-    height: 30%; /* Automatically adjust height based on content */
+    width: 95%; /* Match the width of the container */
+    height: auto; /* Automatically adjust height based on content */
     background: none;
     border: none;
     color: white; /* Set text color to white */

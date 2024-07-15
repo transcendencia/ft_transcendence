@@ -13,6 +13,18 @@
     flex-shrink: 0;
 }
 
+.rgpd-policy {
+    font-size: 20px;
+    font-family: 'space';
+    color: white;
+}
+
+.downloadButton{
+    font-size: 15px;
+    font-family: 'space';
+    color: rgb(242, 239, 244);   
+}
+
 .deleteAccountButton {
     border: 4px solid #ff3737;
     background-color: #ff373771;
@@ -45,7 +57,10 @@
     left: 50%;
     position: fixed;
     transform: translate(-50%, -50%);
-    background-color: rgba(12, 0, 124, 0.489);
+    background-color: rgba(6, 0, 60, 0.6);
+    transition: opacity 1s, visibility 1s;
+    opacity: 0;
+    visibility: hidden;
 }
 
 .submitChangeButton {
@@ -87,27 +102,6 @@
     text-decoration: none; /* Supprimer la sous-ligne */
     display: inline-block; /* Alignement en ligne */
     margin: 4px 2px; /* Marge */
-    
-    
-    
-    
-    
-    
-    
-    
-    /* position: absolute;
-    opacity: 0;
-    left: 0;
-    top: 0;
-    border: 4px solid #3777ff;
-    /* height: 8%;
-    width: 40%; */
-    /* height: 50px; 
-    width: 350px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;  */
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
@@ -176,23 +170,25 @@
     overflow: hidden;
     flex-shrink: 0;
     position: absolute;
-    z-index: 9999;
+    z-index: 5;
 }
 
 .anonymousInfos {
     display: none;
     background-color: #000f61;
     border: 4px solid #3777ff;
-    border-radius: 5px;
+    border-radius: 15px;
     align-items: center;
     justify-content: space-evenly;
     flex-direction: column;
-    height: 35%;
-    width: 60%;
+    height: 15%;
+    width: 30%;
+    top: 10%;
+    left: 65%;
     overflow: hidden;
     flex-shrink: 0;
     position: absolute;
-    z-index: 9999;
+    z-index: 9;
 }
 
 .validateDeleteText {
@@ -226,7 +222,8 @@
 }
 
 .showRectangle {
-    display: flex;
+    display: flex !important;
+    z-index: 5 !important;
 }
 
 .changeInfoMessage {
@@ -248,10 +245,8 @@
 .toggle-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 40px;
     vertical-align: middle;
-    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
-
 }
 
 .switch {
@@ -292,8 +287,8 @@
 .modifyPage .toggle-container,
 .modifyPage .changeInfoBar,
 .modifyPage .profilePicContainer {
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin-bottom: 4px;
+    margin-top: 4px;
 }
 
 
@@ -303,4 +298,15 @@
 
 .info-icon:hover {
     cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
+.info-icon:hover + .anonymousInfos {
+    display: flex;
+}
+
+.privacyAndDownloadCont {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
 }

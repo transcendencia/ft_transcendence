@@ -1,13 +1,13 @@
 import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
-import { moveCameraToBackOfCockpit }  from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, lobbyVisuals, toggleBlurDisplay, toggleRSContainerVisibility, toggleEscapeContainerVisibility, togglePause, lobbyStart, toggleLobbyStart } from "./main.js";
-import { updateUserLanguage, updateUserStatus, get_friends_list, get_user_list, getProfileInfo } from "./userManagement.js";
-import { resetOutlineAndText, resetOutline } from "./planetIntersection.js";
+import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight} from "./main.js";
+import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
+import { resetOutline } from "./planetIntersection.js";
+import { togglePlanet } from "./enterPlanet.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -26,7 +26,7 @@ let graphicsIcons = document.querySelectorAll('.graphicsIcon');
 const signupHereButton = document.querySelector('.actionCont');
 
 if (signupHereButton.addEventListener('click', function() {
-    moveCameraToFrontOfCockpit();
+    moveCameraToFrontOfCockpit('signUpPage');
 }));
 
 graphicsIcons.forEach(function(icon) {
@@ -110,7 +110,7 @@ languageIcons.forEach(function(icon) {
         });
         
         // Send POST request to change user language in the back if user is logged in
-        const token = localStorage.getItem('host_auth_token');
+        const token = sessionStorage.getItem('host_auth_token');
         if (token && currentLanguage !== icon.id) {
             updateUserLanguage(icon.id);
         }
@@ -152,12 +152,13 @@ function handleLoginSubmit(event) {
 }
 
 // Handle form submission
+// Should I change it with a patch request
 export async function handleLogin(formData) {
-    if (localStorage.getItem("hostLoggedIn") === null) {
-        localStorage.setItem("hostLoggedIn", 'false');
+    if (sessionStorage.getItem("hostLoggedIn") === null) {
+        sessionStorage.setItem("hostLoggedIn", 'false');
     }
 
-    const hostLoggedIn = localStorage.getItem("hostLoggedIn");
+    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn");
 
     formData.append('hostLoggedIn', hostLoggedIn);
     if (hostLoggedIn === 'false') {
@@ -176,33 +177,43 @@ export async function handleLogin(formData) {
         .then(data => {
             let guest_token = null;
             console.log(data.status);
-            if (data.status === "succes") {
-                console.log("hostLoggedIn", hostLoggedIn);
+            if (data.status === "success") {
 
+                // console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
-                    //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
 
-                    localStorage.setItem("hostLoggedIn", 'true');
-                    localStorage.setItem("host_auth_token", data.token);
-                    localStorage.setItem("host_id", data.id);
+                    sessionStorage.setItem("hostLoggedIn", 'true');
+                    sessionStorage.setItem("host_auth_token", data.token);
+                    sessionStorage.setItem("host_id", data.id);
                     
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
                     get_friends_list();
-                    getProfileInfo();
+                    // console.log("host id:", sessionStorage.getItem("host_id"));
+                    getProfileInfo(sessionStorage.getItem("host_id"))
+                    .then(data => {
+                        populateProfileInfos(data);
+                        createUserBadge(data, "playersConnHostBadge")
+                    })
+                    .catch(error => {
+                        console.error('Failed to retrieve profile info:', error);
+                    });
+                    
                     TranslateAllTexts();
                     getGameInfo();
                     changeGraphics(data.graphic_mode);
                     updateGraphicsIcon(data.graphic_mode);
                     showPage('none');
                     startAnimation();
-            // }
+                    emptyLoginField();
                 } else {
                     guest_token = data.token;
                 }
                 resolve(guest_token);
             } else {
-                document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
+                const messageContainerId = hostLoggedIn ? 'messageContainer' : 'errorLogGuest';
+
+                document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
                 resolve(null);
             }
         })
@@ -269,8 +280,15 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
     historyContainer.appendChild(matchBlock);
 }
 
+export function clearMatchBlocks() {
+    const hostHistory = document.getElementById('hostHistory');
+    const searchedUserHistory = document.getElementById('searchedUserHistory');
+    hostHistory.innerHTML = '';
+    searchedUserHistory.innerHTML = '';
+}
+
 export function getGameInfo() {
-	const token = localStorage.getItem('host_auth_token');
+	const token = sessionStorage.getItem('host_auth_token');
 		fetch('get_game_user/', {
 		    method: 'GET',
 			headers: {
@@ -321,9 +339,10 @@ export function getGameInfo() {
 }
 
 // Logout
-var disconnectButton = document.getElementById("disconnectButton");
+const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
-    handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token')); 
+    handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
+    toggleEscapeContainerVisibility();
 });
 
 function resetHTMLelements(){
@@ -334,72 +353,68 @@ function resetHTMLelements(){
     document.getElementById('c1').style.display = 'none';
 }
 
+
 function handleLogout(userId, token) {
     // Disconnect all the guest
-    if (userId === localStorage.getItem('host_id')) {
-        // console.log(guestLoggedIn);
-        guestLoggedIn.forEach(user => {
-            console.log(user);
-            updateUserStatus('offline', user[1]);
-        });
-    }
-    guestLoggedIn.splice(0, guestLoggedIn.length);
-    const lsCont = document.getElementById('lsCont');
-    lsCont.innerHTML = `
-        <div class="tinyRedShadowfilter">
-            Players Connected
-        </div>
-    `;
+    logoutGuest(userId);
 
     // Disconnect the host
     updateUserStatus('offline', token)
     .then(() => {
-        localStorage.clear();
+        sessionStorage.clear();
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
-    // const hostLoggedIn = localStorage.getItem("hostLoggedIn")
-    // console.log(hostLoggedIn)
-    // if (hostLoggedIn === 'true') {
-    //     // localStorage.setItem('hostLoggedIn', 'false');
-    //     localStorage.clear();
-    //     console.log(localStorage.getItem("hostLoggedIn"));
-    // }
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
+        toggleEscapeContainerVisibility(true);
         toggleGameStarted();
+        if (gameState.arena.game.user2.isBot)
+            gameState.arena.bot.deactivateBot();
         resetHTMLelements();
     }
-    togglePause();
-    spaceShip.position.set(0, 0, -1293.5);
+    else
+        togglePause();
     spaceShip.rotation.set(0, 0, 0);
+    spaceShip.position.set(0, 0, -1293.5);
     setTimeout(() => {
         toggleBlurDisplay(true);
-        toggleEscapeContainerVisibility();
+        toggleEscapeContainerVisibility(true);
         resetOutline();
         spaceShipInt.visible = true;
         showPage('loginPage');
         toggleLobbyStart();
+        swipeLeftSideContainer('-40%');
+        scene.add(bluelight);
+        scene.remove(whitelight);
     }, 50);
 };
 
+export function logoutGuest(userId) {
+    if (userId === sessionStorage.getItem('host_id')) {
+        guestLoggedIn.forEach(user => {
+            updateUserStatus('offline', user[1]);
+        });
+    }
+    guestLoggedIn.splice(0, guestLoggedIn.length);
+}
+
 window.addEventListener('beforeunload', function (event) {
-    // event.preventDefault();
-    const token = localStorage.getItem('host_auth_token');
+    const token = sessionStorage.getItem('host_auth_token');
     if (token)
-        handleLogout(localStorage.getItem('host_id'), token);
-    
-    // event.returnValue = '';
+        handleLogout(sessionStorage.getItem('host_id'), token);
 });
 
-// window.addEventListener('unload', function (event) {
-//     handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
+// window.addEventListener('beforeunload', function () {
+//     if (sessionStorage.getItem('host_auth_token')) 
+//         handleLogout(sessionStorage.getItem('host_id'), token);
 // });
 
-// document.onvisibilitychange = function() {
-//     if (document.visibilityState === 'hidden') {
-//         handleLogout(localStorage.getItem('host_id'), localStorage.getItem('host_auth_token'));
-//     }
-// };
+export function emptyLoginField() {
+    document.getElementById('messageContainer').innerText = '';
+    document.getElementById('usernameLoginInput').value = '';
+    document.getElementById('passwordLoginInput').value = '';
+}
+
