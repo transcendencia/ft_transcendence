@@ -133,7 +133,10 @@ function translateEscapePageTexts() {
     graphics3.textContent = getTranslatedText('graphicsText3');
     currentlyLoggedAs.childNodes[0].textContent = getTranslatedText('loggedAs');
     graphicsTitle.childNodes[4].textContent = getTranslatedText('graphicsTitle');
-    disconnectButton.textContent = getTranslatedText('disconnect');
+    if (disconnectButton.textContent === 'Disconnect' || disconnectButton.textContent === 'Deconnecter' || disconnectButton.textContent === 'Desconectar')
+        disconnectButton.textContent = getTranslatedText('disconnect');
+    else
+        disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
 }
 
 const RGPDTitle = document.getElementById('RGPDTitle');
