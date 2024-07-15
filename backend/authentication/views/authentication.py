@@ -23,15 +23,12 @@ logger = logging.getLogger(__name__)
 def index(request):
   return render(request, 'index.html')
 
-#to move 
-def rgpd(request):
-  return render(request, 'rgpd.html')
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_page(request):
   try:
-    print(request.data)
+    # print ("data", request.data)
+
     username = request.POST.get("username")
     usernameLower = username.lower()
     password = request.POST.get("password")
@@ -45,24 +42,29 @@ def login_page(request):
 
     logger.debug(f'Username received: {usernameLower}, Host logged in: {isHostLoggedIn}')
 
+    if usernameLower == 'bot':
+      return Response({'status': "failure", 'msg_code': "loginFailed"})
+    print(f'username: {username}, password: {password}')
     user = authenticate(username=usernameLower, password=password)
     if user is not None:
-      print("user status in login:", user.status)
+      print(f'status {user.status}')
       if user.status == "offline":
         updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
 
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({
-          'status': "succes", 
+          'status': "success", 
           'token': token.key, 
           'msg_code': "loginSuccessful",
           'language': user.language, 
           'id': user.id, 
           'graphic_mode': user.graphic_mode})
-      else:
+      else: 
+        print("user already logged in")
         return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"})
     else:
+      print("login failed")
       return  Response({'status': "failure", 'msg_code': "loginFailed"})
   except Exception as e:
       print(str(e))
@@ -92,6 +94,7 @@ def signup(request):
     user = User(username=user_data['username'], language=new_language)
     user.set_password(user_data['password'])
     user.save()
+    logger.debug("User created successfully with username: %s", user.username)
     return Response({'status': "success", "msg_code": "successfulSignup"}, status=status.HTTP_200_OK)
   
   first_error = next(iter(serializer.errors.values()))[0]

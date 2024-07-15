@@ -8,6 +8,17 @@
     justify-content: flex-start;
     align-items: center;
     position: relative;
+    opacity: 1;
+    transition: opacity 0.3s ease-out, max-height 0.3s ease-out, margin 0.3s ease-out;
+    max-height: 8%;
+    opacity: 1;
+}
+
+.userTile.removing {
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .imgContainer {
@@ -78,7 +89,7 @@
 }
 
 .DefaultTile {
-	border-color: rgb(32, 44, 180);
+	border-color: #3777ff;
     background-color: rgb(15, 25, 105);
     color: #3777ff;
 }

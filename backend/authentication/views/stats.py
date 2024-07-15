@@ -1,172 +1,105 @@
-import os
 
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.db.models import Sum, Q
 from django.shortcuts import get_object_or_404
-from django.db.models import Sum, F, FloatField, ExpressionWrapper, Case, When
-
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import authentication_classes
 
-from ..models import User, UserStat
-from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
+from ..models import User, UserStat, FriendRequest
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_stats(request, userId):
-  try:
-    # est ce que c ok ???? get_or_404
-    user = get_object_or_404(User, id=userId)
-    gameWon = UserStat.objects.filter(player=user, isWinner=True)
-    nbrGameWon = gameWon.count()
-    allGames = UserStat.objects.filter(player=user).order_by('date')
-    nbrGames = allGames.count()
+class StatsView(APIView):
+    authentication_classes = [TokenAuthentication]
 
-    mapPercentages = {}
-    modePercentages = {}
+    def get(self, request, userId):
+        try:
+            user = get_object_or_404(User, id=userId)
+            all_games = UserStat.objects.filter(player=user).order_by('date')
+            nbr_match = all_games.count()
 
-    # Win rate
-    percentageGameWon = round((nbrGameWon * 100) / user.nbr_match, 1) if user.nbr_match > 0 else 0
-    percentageGameLost = round(100 - percentageGameWon, 1)
+            sums = all_games.aggregate(totalPointsTaken=Sum('pointsTaken'), totalBounces=Sum('nbBounces'), totalDashes=Sum('nbDashes'), totalPoweredUsed=Sum('nbPoweredUsed'), totalGameTime=Sum('gameTime'))
+            
+            totalPointsTaken = sums['totalPointsTaken'] or 0
+            totalBounces = sums['totalBounces'] or 0
+            totalDashes = sums['totalDashes'] or 0
+            totalPowerUpsUsed = sums['totalPoweredUsed'] or 0
+            totalGameTime = sums['totalGameTime'] or 0
 
-    # Dashes / PoweredUsed
-    sums = allGames.aggregate(totalDashes=Sum('nbDashes'), totalPoweredUsed=Sum('nbPoweredUsed'), totalGameTime=Sum('gameTime'))
+            nbr_friends = FriendRequest.objects.filter((Q(receiver=user) | Q(sender=user)) & Q(status="accepted")).count()
 
-    totalGameTime = sums['totalGameTime'] or 0
-    totalDashes = sums['totalDashes'] or 0
-    totalPowerUpsUsed = sums['totalPoweredUsed'] or 0
+            max_streak, current_streak = self.get_streaks(all_games)
 
-    total = totalDashes + totalPowerUpsUsed
-    if total > 0:
-      dashesPercentage = (totalDashes / total) * 100
-      poweredUsedPercentage = (totalPowerUpsUsed / total) * 100
-    else:
-      dashesPercentage = 0
-      poweredUsedPercentage = 0
+            return Response({
+                'userInfo': self.get_user_info(user),
+                'totalDashes':totalDashes,
+                'totalPowerUpsUsed': totalPowerUpsUsed,
+                'maxStreak': max_streak,
+                'currentStreak': current_streak,
+                'mapPercentages': self.get_map_percentages(all_games, nbr_match),
+                'modePercentages': self.get_mode_percentages(all_games, nbr_match),
+                'totalPointsTaken': totalPointsTaken,
+                'totalBounces': totalBounces,
+                'totalGameTime': totalGameTime,
+                'nbrGoal': user.nbr_goals,
+                'nbrWin': user.nbr_match_win,
+                'nbrLose': user.nbr_match_lost,
+                'nbrMatch': nbr_match,
+                'nbrFriends': nbr_friends,
+            })
 
-    # Efficiency rate
-    allGames_annotated = allGames.annotate(
-      efficiency_ratio=ExpressionWrapper(
-        F('pointsScored') / 
-        Case(
-            When(pointsTaken__gt=0, then=F('pointsTaken')),
-            default=1.0,
-            output_field=FloatField()
-        ),
-        output_field=FloatField()
-      )
-    )
+        except User.DoesNotExist:
+            return Response({'status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
 
-    # efficiencyRatios = list(allGames_annotated.values_list('efficiency_ratio', flat=True))
-    # totalEficiency = allGames_annotated.aggregate(totalEfficiency=Sum('efficiency_ratio'))
+    def get_user_info(self, user):
+        return {
+            'username': user.username,
+            'alias': user.alias,
+            'profilePicture': user.profile_picture.url,
+            'created_at': user.created_at,
+        }
+  
+    def get_streaks(self, all_games):
+        max_streak = 0
+        current_streak = 0
+        for game in all_games:
+            if game.isWinner:
+                current_streak += 1
+                max_streak = max(max_streak, current_streak)
+            else:
+                current_streak = 0
+        return max_streak, current_streak
 
-    # Total points taken
-    totalPointsTaken = allGames.aggregate(totalPointsTaken=Sum('pointsTaken'))['totalPointsTaken'] or 0
+    def get_map_percentages(self, all_games, nbr_match):
+        map_counts = {
+            'oceanMap': 0,
+            'spaceMap': 0,
+            'dragonMap': 0,
+            'skyMap': 0
+        }
+        for game in all_games:
+            if game.mapGame in map_counts:
+                map_counts[game.mapGame] += 1
 
-    # Total balls bounced
-    totalBounces = allGames.aggregate(totalBounces=Sum('nbBounces'))['totalBounces'] or 0
+        return {
+          'oceanMap': round((map_counts['oceanMap'] / nbr_match) * 100, 1) if nbr_match > 0 else 0,
+          'spaceMap': round((map_counts['spaceMap'] / nbr_match) * 100, 1) if nbr_match > 0 else 0,
+          'dragonMap': round((map_counts['dragonMap'] / nbr_match) * 100, 1) if nbr_match > 0 else 0,
+          'skyMap': round((map_counts['skyMap'] / nbr_match) * 100, 1) if nbr_match > 0 else 0
+        }
 
-    # Current streak
-    maxStreak = 0
-    currentStreak = 0
-
-    for game in allGames:
-      if game.isWinner:
-        currentStreak += 1
-        if currentStreak > maxStreak:
-          maxStreak = currentStreak
-      else:
-          currentStreak = 0
-    
-    spaceMap = 0
-    dragonMap = 0
-    skyMap = 0
-    oceanMap = 0
-    classicMode = 0
-    spinOnlyMode = 0
-    powerlessMode = 0
-
-    for game in allGames:
-      
-      # Map counter
-      if game.mapGame == "oceanMap":
-        oceanMap += 1 
-      elif game.mapGame == "spaceMap":
-          spaceMap += 1
-      elif game.mapGame == "dragonMap":
-          dragonMap += 1
-      elif game.mapGame == "skyMap":
-          skyMap += 1
-      
-      # Mode counter
-      if game.modeGame == "CLASSIC":
-        classicMode += 1
-      elif game.modeGame == "SPIN ONLY":
-        spinOnlyMode += 1
-      elif game.modeGame == "POWERLESS":
-        powerlessMode += 1
-    
-    # Map percentage
-    oceanMapPercentage = round((oceanMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    spaceMapPercentage = round((spaceMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    dragonMapPercentage = round((dragonMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    skyMapPercentage = round((skyMap / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-
-    # Mode percantage
-    classicModePercentage = round((classicMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    spinOnlyModePercentage = round((spinOnlyMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-    powerlessModePercentage = round((powerlessMode / nbrGames) * 100, 1) if user.nbr_match > 0 else 0
-
-    mapPercentages = {
-      "oceanMap": oceanMapPercentage,
-      "spaceMap": spaceMapPercentage,
-      "dragonMap": dragonMapPercentage,
-      "skyMap": skyMapPercentage
-    }
-
-    modePercentages = {
-      "classicMode": classicModePercentage,
-      "spinOnlyMode": spinOnlyModePercentage,
-      "powerlessMode": powerlessModePercentage
-    }
-
-    # Bounces and points taken
-    sums = allGames.aggregate(totalBounces=Sum('nbBounces'), totalPointsTaken=Sum('pointsTaken'))
-
-    totalBounces = sums['totalBounces']
-    totalPointsTaken = sums['totalPointsTaken']
-    if totalBounces is not None and totalPointsTaken is not None:
-      if totalPointsTaken != 0:
-        efficiency = round((totalBounces / totalPointsTaken), 1)
-      else:
-        efficiency = -1
-    else:
-      efficiency = -1
-
-    return Response({
-      'percentageGameWon': percentageGameWon, 
-      'percentageGameLost': percentageGameLost,
-      'totalDashes': totalDashes,
-      'totalPowerUpsUsed': totalPowerUpsUsed,
-      'dashesPercentage': dashesPercentage,
-      'poweredUsedPercentage': poweredUsedPercentage,
-      'nbrGames': nbrGames,
-      'maxStreak': maxStreak,
-      'currentStreak': currentStreak,
-      'mapPercentages': mapPercentages,
-      'modePercentages' : modePercentages,
-      'efficiency' : efficiency,
-      'totalPointsTaken': totalPointsTaken,
-      'totalBounces': totalBounces,
-      'totalGameTime': totalGameTime,
-      'nbrGoal': user.nbr_goals,
-      'nbrWin': user.nbr_match_win,
-      'nbrLose': user.nbr_match_lost,
-      'nbrMatch': user.nbr_match
-    })
-
-  except User.DoesNotExist:
-    return Response({'status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
+    def get_mode_percentages(self, all_games, nbr_match):
+        mode_counts = {
+            'CLASSIC': 0,
+            'SPIN ONLY': 0,
+            'POWERLESS': 0
+        }
+        
+        for game in all_games:
+            if game.modeGame in mode_counts:
+                mode_counts[game.modeGame] += 1
+        
+        return {
+            'classicMode': round((mode_counts['CLASSIC'] / nbr_match) * 100, 1) if nbr_match > 0 else 0,
+            'spinOnlyMode': round((mode_counts['SPIN ONLY'] / nbr_match) * 100, 1) if nbr_match > 0 else 0,
+            'powerlessMode': round((mode_counts['POWERLESS'] / nbr_match) * 100, 1) if nbr_match > 0 else 0
+        }

@@ -43,19 +43,6 @@
     0% {box-shadow: 0 0 10px #ffffff00; }
 }
 
-.friendBg {
-    background-color: rgba(14, 255, 110, 0.5) !important;
-}
-
-.botBg {
-    background-color: rgba(164, 67, 255, 0.500) !important;
-}
-
-.defaultBg {
-    background-color: rgba(90, 142, 255, 0.500) !important;
-}
-
-
 .plusPlayer {
     font-family: "computer";
     font-size: 150px;
@@ -71,10 +58,20 @@
     z-index: 90;
 }
 
-.plusPlayer:hover {
-    background-color: rgb(50,50,50);
-    cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+.plusPlayer.clicked {
+    animation: clicked 2s ease-in-out infinite;
+}
 
+@keyframes clicked {
+    50% {transform: scale(1);}
+    0%, 100% {transform: scale(1.1);}
+}
+
+.plusPlayer.clicked,
+.plusPlayer.hover-enabled:hover {
+    background-color: rgb(80,80,80);
+    cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+    transform: scale(1.1);
 }
 
 .movingSpaceShip1 {
@@ -266,11 +263,10 @@
     background-color: #000f61;
     border: 4px solid #3777ff;
     border-radius: 5px;
-    /* display: flex; */
     align-items: center;
     justify-content: space-evenly;
     flex-direction: column; /* Stack elements vertically */
-    height: 30%;
+    height: 40%;
     width: 60%;
     overflow: hidden;
     flex-shrink: 0;

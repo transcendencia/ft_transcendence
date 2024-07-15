@@ -7,14 +7,22 @@
     border-radius: 5px;
     width: 80%;
     height: 99%;
-    transition: opacity 0.5s 0.75s;
+    transition: opacity 1s, visibility 0s 1s;
     opacity: 0;
-    visibility: hidden; /* Hide the element */
+    visibility: hidden;
 }
 
 .show {
     visibility: visible !important; /* Show the element */
     opacity: 1 !important;
+}
+
+.show.default {
+    transition: opacity 1s, visibility 0s !important;
+}
+
+.show.signUp {
+    transition: opacity 1s 0.75s, visibility 0s !important;
 }
 
 .signUpHeader {
@@ -30,21 +38,12 @@
 }
 
 .perspective {
-    top: 5%;
-    transform: perspective(800px) rotateX(-40deg) rotateY(0deg) scale(1.2);
-    position: fixed;
-    width: 100%;
-    height: 60%;
-    margin: 0;
+    width: 70%;
+    height: 80%;
     text-align: center;
     font-size: 70px;
     font-family: "Space";
     color: white;
-    display: flex;
-    flex-direction: column; /* Display children vertically */
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* Ensure text input doesn't overflow */
 }
 
 .perspective2 {
@@ -67,7 +66,7 @@
 
 
 .perspective3 {
-    background-color: rgb(0, 255, 255);
+    /* background-color: rgb(0, 255, 255); */
     top: 60%;
     transform: perspective(800px) rotateX(30deg) rotateY(0deg) scale(1.3);
     position: fixed;
@@ -127,3 +126,23 @@
 .signupMessageCont.success {
     color: #060706;
 }
+
+/* .hologram-button {
+    text-shadow: 0 0 5px rgb(255, 0, 0);
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 2px solid rgb(255, 0, 0);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgb(255, 0, 0), inset 0 0 20px rgb(255, 0, 0)
+}
+
+.hologram-button:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    box-shadow: 0 0 30px rgb(255, 0, 0), inset 0 0 30px rgb(255, 0, 0);
+}
+.hologram-content {
+    color: rgb(255, 0, 0);
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+} */
