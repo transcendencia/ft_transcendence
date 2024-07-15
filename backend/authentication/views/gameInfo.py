@@ -21,15 +21,6 @@ from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer
 
 import json
 
-
-def game_list(request):
-  allGames = Game.objects.all()
-  template = loader.get_template('addPlayer.html')
-  context = {
-    'allGames': allGames,
-  }
-  return HttpResponse(template.render(context, request))
-
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])

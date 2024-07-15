@@ -1,33 +1,35 @@
 
 words = [
-    "DESK", "CHAIR", "SOFA", "SHELF", "CLOCK", "WATCH", "PHONE", "EMAIL", 
-    "RADIO", "MOUSE", "BOARD", "PAPER", "PENCIL", "BOOKS", "NOTES", "FILES", 
-    "STUDY", "SCHOOL", "CLASS", "TEACH", "LEARN", "PLANS", "GOALS", "DREAM", 
-    "SKILL", "VOICE", "SPEAK", "WRITE", "READS", "COUNT", "INDEX", "CLOUD", 
-    "STORM", "RAINY", "SUNNY", "WINDY", "DRIZZ", "SLEET", "SNOWY", "FLOOD", 
-    "THUND", "FLASH", "BIRDS", "CRANE", "DUCKS", "EAGLE", "FINCH", "GOOSE", 
-    "HERON", "IBIS", "JAY", "KIWI", "LARK", "MIDGE", "NIGHT", "OWL", "PEAF", 
-    "QUAIL", "ROBIN", "SWAN", "GOLD", "URIAL", "PINK", "WEAVE", "XENUS", 
-    "YEEL", "ZEBRA", "ALGAE", "BAMBO", "CACTU", "DAISY", "ELM", "FERN", 
-    "GRASS", "HOLLY", "IRIS", "JUNIP", "KELP", "LILAC", "MAPLE", "NASTU", 
-    "OAK", "PALM", "QUEEN", "ROSE", "SEED", "THORN", "GREEN", "RUBY", 
-    "WILLO", "RED", "YUCCA", "ZINNI", "ACTOR", "AGENT", "ANGEL"
+    "desk", "chair", "sofa", "shelf", "clock", "watch", "phone", "email", 
+    "radio", "mouse", "board", "paper", "pencil", "books", "notes", "files", 
+    "study", "school", "class", "teach", "learn", "plans", "goals", "dream", 
+    "skill", "voice", "speak", "write", "reads", "count", "index", "cloud", 
+    "storm", "rainy", "sunny", "windy", "drizz", "sleet", "snowy", "flood", 
+    "thund", "flash", "birds", "crane", "ducks", "eagle", "finch", "goose", 
+    "heron", "ibis", "jay", "kiwi", "lark", "midge", "night", "owl", "peaf", 
+    "quail", "robin", "swan", "gold", "urial", "pink", "weave", "xenus", 
+    "yeel", "zebra", "algae", "bambo", "cactu", "daisy", "elm", "fern", 
+    "grass", "holly", "iris", "junip", "kelp", "lilac", "maple", "nastu", 
+    "oak", "palm", "queen", "rose", "seed", "thorn", "green", "ruby", 
+    "willo", "red", "yucca", "zinni", "actor", "agent", "angel"
 ]
 
+
 items = [
-    "APPLE", "BANANA", "ORANGE", "MOUNTAIN", "RIVER", "OCEAN", "SKY",
-    "CLOUD", "STONE", "TREE", "FLOWER", "BREEZE", "SUN", "MOON", "STAR",
-    "WORLD", "HOUSE", "GRAPE", "BERRY", "PEACH", "PLUMB", "CHAIR", 
-    "TABLE", "WATER", "EARTH", "PLANT", "BLOOM", "SPACE", "LIGHT", 
-    "SOUND", "SHINE", "SHADE", "FIELD", "FRUIT", "DRINK", "SMILE", 
-    "HAPPY", "GLORY", "PRIDE", "PEACE", "QUIET", "BLISS", "GRACE", 
-    "HONOR", "HUMOR", "LAUGH", "GLASS", "PLATE", "SPOON", "KNIFE", 
-    "FORCE", "CLEAN", "QUICK", "BRAVE", "BOLD", "CLEAR", "SOLID", 
-    "SWEET", "GRAIN", "FLOUR", "BREAD", "TOAST", "BRAND", "LOGIC", 
-    "ARRAY", "CODE", "BATCH", "INPUT", "OUTPUT", "VISIT", "MONEY", 
-    "PRICE", "VALUE", "POWER", "WIND", "RHYME", "MUSIC", "SONG", 
-    "BEACH", "WAVES", "TIDES", "CORAL", "SHORE", "DOCK", "BOATS", 
-    "SAILS", "LAKE", "POND", "BROOK", "CREEK", "HILLS", "CLIFF", 
-    "RIDGE", "PEAK", "VALLEY", "CAVES", "WOODS"
+    "apple", "banana", "orange", "mountain", "river", "ocean", "sky",
+    "cloud", "stone", "tree", "flower", "breeze", "sun", "moon", "star",
+    "world", "house", "grape", "berry", "peach", "plumb", "chair", 
+    "table", "water", "earth", "plant", "bloom", "space", "light", 
+    "sound", "shine", "shade", "field", "fruit", "drink", "smile", 
+    "happy", "glory", "pride", "peace", "quiet", "bliss", "grace", 
+    "honor", "humor", "laugh", "glass", "plate", "spoon", "knife", 
+    "force", "clean", "quick", "brave", "bold", "clear", "solid", 
+    "sweet", "grain", "flour", "bread", "toast", "brand", "logic", 
+    "array", "code", "batch", "input", "output", "visit", "money", 
+    "price", "value", "power", "wind", "rhyme", "music", "song", 
+    "beach", "waves", "tides", "coral", "shore", "dock", "boats", 
+    "sails", "lake", "pond", "brook", "creek", "hills", "cliff", 
+    "ridge", "peak", "valley", "caves", "woods"
 ]
+
 

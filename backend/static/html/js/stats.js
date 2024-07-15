@@ -1,4 +1,6 @@
 import { getCookie } from './loginPage.js';
+import { getTranslatedText } from './translatePages.js';
+
 
 class DoughnutGraph {
 	constructor(chartId, title, backgroundColors, cutoutPercentage = '50%') {
@@ -10,11 +12,6 @@ class DoughnutGraph {
 	  this.position = 'bottom';
 	  if (title === 'Modes played' || title === 'Maps played')
 		cutoutPercentage = '0%';
-	  if (title === 'Win%')
-		{
-			if (this.dataStats[0] + this.dataStats[1] === 0)
-				this.dataStats = [0, 0];
-		}
 	  this.data = {
 		labels: ['Label 1', 'Label 2'],
 		datasets: [{
@@ -36,7 +33,7 @@ class DoughnutGraph {
 		  ctx.fillStyle = chart.config.options.plugins.centerText.fontColor;
 		  ctx.textAlign = 'center';
 		  ctx.textBaseline = 'middle';
-		  if (title === 'Accuracy') {
+		  if (title === 'Accuracy' || title === 'Win%') {
 			if (this.dataStats[0] + this.dataStats[1] === 0)
 				ctx.fillText('0%', left + width / 2, top + height / 2);
 			else
@@ -47,8 +44,6 @@ class DoughnutGraph {
 		  }
 		  else if (title === 'Modes played' || title === 'Maps played')
 			ctx.fillText('', left + width / 2, top + height / 2);
-		  else
-		  	ctx.fillText(this.dataStats[0] + '%', left + width / 2, top + height / 2);
 		}
 	  };
   
@@ -58,7 +53,7 @@ class DoughnutGraph {
 		options: {
 		  layout: {
 			padding: {
-			  top: 30, // Add padding to move the doughnut chart up
+			  top: 30,
 			  bottom: 10
 			}
 		  },
@@ -76,11 +71,11 @@ class DoughnutGraph {
 				family: 'Space'
 			  },
 			  padding: {
-				top: 0, // Remove top padding for title
-				bottom: 10 // Adjust bottom padding for title
+				top: 0,
+				bottom: 10
 			  },
 			  align: 'center',
-			  position: 'top', // Ensure the title is positioned at the top
+			  position: 'top',
 			},
 			legend: {
 			  display: true,
@@ -140,12 +135,12 @@ export function chooseStats(stat) {
 	const stat5 = document.getElementById('statsBlock5');
 	const stat6 = document.getElementById('statsBlock6');
 
-    removeClasses(stat1);
-    removeClasses(stat2);
-    removeClasses(stat3);
 	removeClasses(stat4);
 	removeClasses(stat5);
 	removeClasses(stat6);
+	removeClasses(stat1);
+	removeClasses(stat2);
+	removeClasses(stat3);
 
     if (stat === 1) {
         if (stat2.style.display === 'flex') {
@@ -230,19 +225,42 @@ function convertTime(time) {
 	return `${hours}hrs ${minutes}min ${seconds}sec`;
 }
 
+function updateBasicStats(data) {
+	const basicStats = document.getElementById('winLoseTexts1');
+	basicStats.innerHTML = `
+	<div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.nbrMatch}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.nbrWin}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.nbrLose}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.nbrGoal}</div>
+	`;
+	const basicStats2 = document.getElementById('winLoseTexts2');
+	basicStats2.innerHTML = `
+	<div class="basicStats"> ${getTranslatedText('winLoseText1')} : ${data.nbrMatch}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText2')} : ${data.nbrWin}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText3')} : ${data.nbrLose}</div>
+	<div class="basicStats"> ${getTranslatedText('winLoseText4')} : ${data.nbrGoal}</div>
+	`;
+}
+
 function updateStats3(data)
 {
 	const statValues = document.querySelectorAll('.statValue');
+
+	let scoreRatio;
+	if (data.totalPointsTaken === null)
+		scoreRatio = 0;
+	else
+		scoreRatio = (data.nbrGoal / data.totalPointsTaken).toFixed(2);
 
 	const values = [
 		data.currentStreak,
 		data.maxStreak,
 		data.totalDashes,
 		data.totalPowerUpsUsed,
-		'le bocal',
-		'0',
+		scoreRatio,
+		data.nbrFriends,
 		convertTime(data.totalGameTime),
-		'2021-06-01'
+		data.userInfo.created_at.split('T')[0]
 	]		
 
 	statValues.forEach((stat, index) => {
@@ -260,7 +278,7 @@ const modeChart2 = new DoughnutGraph('gameModeStat2', 'Modes played', ['#5dffa99
 const accuracy2 = new DoughnutGraph('accuracyStat2', 'Accuracy', ['#5dffa990', '#ff5d5d90']);
 
 export function getUserStats(userId) {
-  const token = localStorage.getItem('host_auth_token');
+  const token = sessionStorage.getItem('host_auth_token');
   fetch(`get_stats/${userId}`, {
     method: 'GET',
     headers: {
@@ -277,13 +295,14 @@ export function getUserStats(userId) {
   .then(data => {
     mapChart.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
 	modeChart.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
-    winLostChart.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);
+    winLostChart.updateData([data.nbrWin, data.nbrLose], ['Win', 'Lost']);
 	accuracy.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
     mapChart2.updateData([data.mapPercentages.dragonMap, data.mapPercentages.oceanMap, data.mapPercentages.skyMap, data.mapPercentages.spaceMap], ['dragon', 'ocean', 'sky', 'space']);
 	modeChart2.updateData([data.modePercentages.classicMode, data.modePercentages.powerlessMode, data.modePercentages.spinOnlyMode], ['classic', 'powerless', 'spinOnly']);
-    winLostChart2.updateData([data.percentageGameWon, data.percentageGameLost], ['Win', 'Lost']);
+    winLostChart2.updateData([data.nbrWin, data.nbrLose], ['Win', 'Lost']);
 	accuracy2.updateData([data.totalBounces, data.totalPointsTaken], ['Hits', 'Misses']);
 	updateStats3(data);
+	updateBasicStats(data);
   })
   .catch(error => {
     console.error('Error fetching user stats:', error);
