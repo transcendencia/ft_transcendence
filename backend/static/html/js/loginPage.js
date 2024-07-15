@@ -4,7 +4,7 @@ import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight} from "./main.js";
+import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, toggleRSContainerVisibility} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
 import { resetOutline } from "./planetIntersection.js";
 import { togglePlanet } from "./enterPlanet.js";
@@ -353,7 +353,7 @@ function resetHTMLelements(){
 }
 
 
-function handleLogout(userId, token) {
+export function handleLogout(userId, token, arrowKey = false) {
     // Disconnect all the guest
     logoutGuest(userId);
 
@@ -365,6 +365,8 @@ function handleLogout(userId, token) {
     .catch(error => {
         console.error('Erreur :', error);
     });
+    spaceShip.rotation.set(0, 0, 0);
+    spaceShip.position.set(0, 0, -1293.5);
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
@@ -374,15 +376,14 @@ function handleLogout(userId, token) {
             gameState.arena.bot.deactivateBot();
         resetHTMLelements();
     }
-    else
-        togglePause();
-    spaceShip.rotation.set(0, 0, 0);
-    spaceShip.position.set(0, 0, -1293.5);
+    else if (arrowKey)
+        toggleRSContainerVisibility();
+    else togglePause();
     setTimeout(() => {
-        toggleBlurDisplay(true);
-        toggleEscapeContainerVisibility(true);
-        resetOutline();
+        if (!arrowKey)
+            toggleBlurDisplay(true);
         spaceShipInt.visible = true;
+        resetOutline();
         showPage('loginPage');
         toggleLobbyStart();
         swipeLeftSideContainer('-40%');
