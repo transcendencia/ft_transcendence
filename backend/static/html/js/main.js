@@ -548,6 +548,8 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         if (gameState.inGame && !gameState.arena.game.isPlaying)
             return;
+        if (gameState.loading)
+            return;
         if (gameState.inGame && gameState.arena.game.isPlaying)
         {
             displayHostEscapePage();
