@@ -94,6 +94,9 @@ buttonHeaders.forEach((buttonHeader, index) => {
 });
 
 export function resetTournament() {
+  if (tournamentState === 1)
+      return ;
+  console.log("reset Tournament Cast");
   document.querySelectorAll('.before-launch').forEach(function(el) {
     el.style.display = 'flex';
   });
@@ -103,7 +106,6 @@ export function resetTournament() {
   bottomTournamentElement.style.display = "none";
   midColumn.style.width = '80%';
   addedPlayerBadges.forEach(obj => {
-    console.log("tournament obj:", obj);
 		resetToPlusButton(obj.userBadge, plusButtonsTournament[obj.plusClicked - 1]);
 	});
   playerNb = 0;
@@ -112,11 +114,6 @@ export function resetTournament() {
   tournamentPlayer.length = 1;
 
   tournamentState = 0;
-
-  //gamemodeCounterTournament = 0;
-  // mapCounterTournament = 0;
-  // botDifficultyTournament = 1;
-  
   round = 1;
   thirdPlayerMode = false;
   getProfileInfo(sessionStorage.getItem("host_id"))
@@ -157,7 +154,6 @@ backButtonTournamentPage.addEventListener('click', () => {togglePlanet()});
 
   export function askForAlias(user){
     aliasWindow.classList.toggle("showRectangle");
-    console.log("user", user);
     const aliasText = document.getElementById('aliasText');
     if (user.alias === null)
       aliasText.textContent = user.username;
