@@ -373,7 +373,7 @@ function handleLogout(userId, token) {
     {
         resetGameEscape();
         setTimeout(() => {
-            gameState.arena.displayBackPanel();
+            gameState.arena.displayBackPanel(true);
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
         }, 250);
