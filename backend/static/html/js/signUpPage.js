@@ -35,7 +35,6 @@ export function moveCameraToFrontOfCockpit(page) {1
 
 export function moveCameraToBackOfCockpit() {
     const duration = 1000; // Define the duration of the animation in milliseconds
-    console.log(frontPosition);
     const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
     .to(frontPosition, duration) // Set the target position and duration
     .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
