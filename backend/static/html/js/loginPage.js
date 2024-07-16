@@ -163,6 +163,8 @@ function handleLoginSubmit(event) {
 // Handle form submission
 // Should I change it with a patch request
 export async function handleLogin(formData) {
+    console.log("error: ", localStorage.getItem("error"));
+    console.log("token: ", localStorage.getItem("tokenUpdateStatus"));
     if (sessionStorage.getItem("hostLoggedIn") === null) {
         sessionStorage.setItem("hostLoggedIn", 'false');
     }
@@ -220,9 +222,6 @@ export async function handleLogin(formData) {
                     
                     startAnimation();
 
-                    setTimeout(() => {
-                        submitButton.disabled = false;
-                    }, 2000);
                     emptyLoginField();
                 } else {
                     guest_token = data.token;
@@ -424,16 +423,12 @@ export function logoutGuest(userId) {
     guestLoggedIn.splice(0, guestLoggedIn.length);
 }
 
-window.addEventListener('beforeunload', function (event) {
+window.addEventListener('beforeunload', async function (event) {
+    // event.preventDefault();
     const token = sessionStorage.getItem('host_auth_token');
-    if (token)
-        handleLogout(sessionStorage.getItem('host_id'), token);
+    handleLogout(sessionStorage.getItem('host_id'), token);
+    sessionStorage.clear();
 });
-
-// window.addEventListener('beforeunload', function () {
-//     if (sessionStorage.getItem('host_auth_token')) 
-//         handleLogout(sessionStorage.getItem('host_id'), token);
-// });
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';

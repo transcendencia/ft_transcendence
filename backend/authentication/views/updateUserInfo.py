@@ -44,13 +44,10 @@ class UserStatusView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request):
-        print(request.user.username, " status before changed:", request.user.status)
-        if request.data.get('status') == 'offline':  # a checker
+        if request.data.get('status') == 'offline' and request.user.is_host:  # a checker
             request.user.is_host = False
-        print(request.data.get('status'))
         request.user.status = request.data.get('status')
         request.user.save()
-        print(request.user.username, "status after changed:", request.user.status)
         return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
       
     def get(self, request, userId):
