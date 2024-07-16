@@ -218,9 +218,9 @@ export async function handleLogin(formData) {
 
                     setTimeout(() => {
                         const submitButton = document.getElementById('loginButton');
-                        submitButton.disabled = true;
+                        submitButton.disabled = false;
                     }, 2000);
-                    
+                    emptyLoginField();
                 } else {
                     guest_token = data.token;
                 }
