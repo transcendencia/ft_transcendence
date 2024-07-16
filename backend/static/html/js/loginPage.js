@@ -147,9 +147,18 @@ loginForm.addEventListener('submit', handleLoginSubmit);
 function handleLoginSubmit(event) {
     event.preventDefault();
 
+    // const formData = new FormData(this);
+    // handleLogin(formData);
+
+
     const formData = new FormData(this);
-    handleLogin(formData);
+
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+
+    handleLogin(formData)
 }
+
 
 // Handle form submission
 // Should I change it with a patch request
@@ -158,7 +167,7 @@ export async function handleLogin(formData) {
         sessionStorage.setItem("hostLoggedIn", 'false');
     }
 
-    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn");
+    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn")
 
     formData.append('hostLoggedIn', hostLoggedIn);
     if (hostLoggedIn === 'false') {
@@ -204,8 +213,14 @@ export async function handleLogin(formData) {
                     changeGraphics(data.graphic_mode);
                     updateGraphicsIcon(data.graphic_mode);
                     showPage('none');
+                    
                     startAnimation();
-                    emptyLoginField();
+
+                    setTimeout(() => {
+                        const submitButton = document.getElementById('loginButton');
+                        submitButton.disabled = true;
+                    }, 2000);
+                    
                 } else {
                     guest_token = data.token;
                 }
@@ -220,7 +235,7 @@ export async function handleLogin(formData) {
         .catch(error => {
             console.error('Erreur :', error);
             reject(error);
-        });
+        })
     });
 }
 
