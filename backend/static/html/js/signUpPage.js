@@ -61,7 +61,7 @@ const RGPDPage = document.querySelector(".rgpdPage");
 //Add event listner to display RGPG page
 const RGPDPolicy = document.getElementById('RGPDPolicy');
 RGPDPolicy.addEventListener('click', function() {
-    RGPDPage.classList.add("perspectived");
+    RGPDPage.classList.add("holoPerspective");
     showPage('rgpdPage');
 });
 

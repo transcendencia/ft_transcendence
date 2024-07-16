@@ -166,9 +166,15 @@ const RGPDPage = document.querySelector(".rgpdPage");
 
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
 RGPDPolicy.addEventListener('click', function() {
-  blockingPanel.classList.add('show');
-  RGPDPage.classList.remove("perspectived");
+  deleteBlockingPanel.classList.add('show');
+  RGPDPage.classList.remove("holoPerspective");
   showPage('rgpdPage');
+});
+
+const RGPDBack = document.getElementById('RGPDBack');
+RGPDBack.addEventListener('click', function() {
+  deleteBlockingPanel.classList.remove('show');
+  showPage('modifyPage');
 });
 
 const infoButton = document.getElementById("infoButton");
