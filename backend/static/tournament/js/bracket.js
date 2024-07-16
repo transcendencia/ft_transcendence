@@ -270,6 +270,15 @@ export function printBracket(tournamentPlayer, currentMatch, thirdPlayerMode) {
   const C1C2matchElement = document.getElementById("C1-C2-match");
 
   export function updateBracket(tournamentPlayer, winner_name, currentMatch, nbMatch, round){ 
+    if (round >= 3 && currentMatch[nbMatch][5]){
+      let tmp = currentMatch[nbMatch][0];
+      let tmpScore = currentMatch[nbMatch][2];
+      
+      currentMatch[nbMatch][0] = currentMatch[nbMatch][1];
+      currentMatch[nbMatch][1] = tmp;
+      currentMatch[nbMatch][2] = currentMatch[nbMatch][3];
+      currentMatch[nbMatch][3] = tmpScore
+    }
     if (round == 2){
       if (nbMatch == 0){
         let ul = document.getElementById("B1_name");
@@ -324,7 +333,7 @@ export function printBracket(tournamentPlayer, currentMatch, thirdPlayerMode) {
         ul.textContent = currentMatch[nbMatch][3];
       }
     }
-    if (round == 3){
+    else if (round == 3){
       if (nbMatch == 0){
         let ul = document.getElementById("C1_name");
         ul.textContent = winner_name;
@@ -350,7 +359,7 @@ export function printBracket(tournamentPlayer, currentMatch, thirdPlayerMode) {
         ul.textContent = currentMatch[nbMatch][3];
       }
     }
-    if (round == 4){
+    else if (round == 4){
       if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
           C1C2matchElement.classList.add("winner-top");
         else
