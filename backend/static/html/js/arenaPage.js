@@ -334,7 +334,6 @@ async function isListsChanged() {
 export function resetArenaPage() {
 	plusClicked = 0;
 	addedPlayerBadges.forEach(obj => {
-		console.log("arena obj:", obj);
 		resetToPlusButton(obj.userBadge, plusButtonsArena[obj.plusClicked - 1]);
 	});
 	playerNb = 0;
@@ -615,14 +614,17 @@ export function toggleGameStarted() {
 }
 
 export function endGame(isTournament) {
-	let token = sessionStorage.getItem('host_auth_token');
-	updateUserStatus('online', token);
+	console.log("all guestLoggedIn:", guestLoggedIn);
+	let hostId = sessionStorage.getItem('host_id');
+	if (hostId === gameState.arena.game.user1.id  || hostId === gameState.arena.game.user3.id  || (player3 && hostId === gameState.arena.game.user3.id )){
+		let token = sessionStorage.getItem('host_auth_token');
+		updateUserStatus('online', token);
+	}
 	for(let i = 0; i < guestLoggedIn.length; i++) {
-		console.log("lets check:", guestLoggedIn[i][0].id, gameState.arena.game.user2.id)
-		if (guestLoggedIn[i][0].id === gameState.arena.game.user2.id || guestLoggedIn[i][0].id === gameState.arena.game.user3.id) {
-			console.log("les id des gens:", guestLoggedIn[i][0].id, gameState.arena.game.user2.id, gameState.arena.game.user3.id);
+		if (guestLoggedIn[i][0].id === gameState.arena.game.user1.id || guestLoggedIn[i][0].id === gameState.arena.game.user2.id || guestLoggedIn[i][0].id === gameState.arena.game.user3.id) {
 			token = guestLoggedIn[i][1];
 			updateUserStatus('online', token);
+			console.log("guest logged in:", guestLoggedIn[i]);
 		}
 	}
 	gameStarted = false;
@@ -680,16 +682,21 @@ export function switchToGame(gameState, player1, player2, player3, isTournament)
 
 export function    initGame(gameState, player1, player2, player3, isTournament) {
 	// prepare for initialization
+	console.log("all guests logged in Initgame:", guestLoggedIn);
 	console.log("players", player1, player2, player3);
 	gameState.loading = true;
 	gameState.inLobby = false;
 	setTimeout(() => {
-		let token = sessionStorage.getItem('host_auth_token');
-		updateUserStatus('in_game', token);
+		let hostId = sessionStorage.getItem('host_id');
+		if (hostId === player1.playerId || hostId === player2.playerId || (player3 && hostId === player3.playerId)){
+			let token = sessionStorage.getItem('host_auth_token');
+			updateUserStatus('in_game', token);
+		}
 		for(let i = 0; i < guestLoggedIn.length; i++) {
-			if (guestLoggedIn[i][0].id === player2.playerId || (player3 && guestLoggedIn[i][0].id === player3.playerId)) {
-				token = guestLoggedIn[i][1];
+			if (guestLoggedIn[i][0].id === player1.playerId || guestLoggedIn[i][0].id === player2.playerId || (player3 && guestLoggedIn[i][0].id === player3.playerId)) {
+				const token = guestLoggedIn[i][1];
 				updateUserStatus('in_game', token);
+				console.log("guestLoggedIn:", guestLoggedIn[i]);
 			}
 		}
 	  gameState.arena.game.hasToBeInitialized = true;

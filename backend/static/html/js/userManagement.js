@@ -46,8 +46,6 @@ export function updateUserLanguage(new_language) {
 
 
 export async function updateUserStatus(status, token) {
-    console.log("token", token);
-
     try {
         const response = await fetch('/user/status/', {
             method: 'POST',

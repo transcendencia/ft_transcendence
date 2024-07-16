@@ -51,8 +51,6 @@ export function togglePanelDisplay() {
     }
 
     if (landedOnPlanet && planetInRange.name == "tournament") {
-        if (tournamentState === 2)
-            resetTournament();
         anim = setTimeout(function () {triggerInfiniteAnim(imagesTournament[0], imagesTournament[1])}, 2000);
         planetPanel[2].style.animation = "roll 2s forwards";
         imagesTournament[0].style.animation = "moveImageRight 2s forwards";
