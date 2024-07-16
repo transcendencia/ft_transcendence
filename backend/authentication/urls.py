@@ -28,6 +28,7 @@ urlpatterns = [
     #friendship.py
     path('friend_request/', FriendRequestView.as_view(), name='friend_request'),
     path('friends_list/', FriendListView.as_view(), name='friend_list'),
+    path('friends_list/', FriendListView.as_view(), name='friend_list'),
 
     #stats.py
     path('get_stats/<int:userId>', StatsView.as_view(), name="get_stats"),
