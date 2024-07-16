@@ -10,7 +10,6 @@ export function showPage(pageId, transition = 'default') {
         page.classList.remove('signUp');
     });
     // Show the selected page
-    console.log(pageId);
     if (pageId === 'none') 
         return;
     window.location.hash = `#${pageId}`;
@@ -31,9 +30,8 @@ export function initPage() {
     else moveCameraToBackOfCockpit();
 }
 
-window.addEventListener('load', initPage);
-
 addEventListener("hashchange", () => {
+    console.log(window.location.hash, oldLocation);
     if (lobbyStart) {
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), true);
         return;
@@ -48,6 +46,8 @@ addEventListener("hashchange", () => {
         RGPDPage.classList.add("perspectived");
     } else if (window.location.hash === '#signUpPage' && oldLocation === '#rgpdPage') {
         showPage('signUpPage');
+    } else if (window.location.hash === '#galaxy' && oldLocation === '#galaxy') {
+        moveCameraToBackOfCockpit();
     }
     oldLocation = window.location.hash;
 });

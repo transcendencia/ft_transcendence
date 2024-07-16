@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { initPage, showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets, atmosphere } from "./planets.js";
+import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
@@ -290,6 +290,7 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
 }
 
 import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
+import { getTranslatedText } from './translatePages.js';
 
 export function displayUsersLogged(user, token) {
     
@@ -326,8 +327,8 @@ renderer.render(scene, camera);
 const rightSideContainer = document.getElementById("rsCont");
 const leftSideContainer = document.getElementById("lsCont");
 let rsContVisible = false;
-const structure = document.querySelector(".structure");
-const escapeBG = document.querySelector(".escapeBG");
+export const structure = document.querySelector(".structure");
+export const escapeBG = document.querySelector(".escapeBG");
 
 export function swipeLeftSideContainer(endPos) {
     leftSideContainer.style.left = endPos;
@@ -420,6 +421,7 @@ export function startAnimation() {
     
     target = -1200;
     duration = 500;
+    window.location.hash = '#galaxy';
     let anim2 = new TWEEN.Tween(spaceShip.position)
     .to({z: target}, duration)
     .easing(TWEEN.Easing.Cubic.InOut)
@@ -465,6 +467,12 @@ export function displayHostEscapePage() {
 let escapeContainerVisible = false;
 
 export function toggleEscapeContainerVisibility(disconnect = false) {
+    const disconnectButton = document.getElementById('disconnectButton');
+    if (gameState.inGame)
+        disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
+    else
+        disconnectButton.textContent = getTranslatedText("disconnect");
+
     if (!disconnect) {
         getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
         .catch(error => console.error('Failed to retrieve profile info:', error));    
@@ -492,6 +500,8 @@ const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
 const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const deleteWindow = document.getElementById("validateDelete");
 
+
+
 // handle window resize
 window.addEventListener('resize', () => {
     const width = window.innerWidth;
@@ -510,6 +520,15 @@ window.addEventListener('resize', () => {
     minimapCamera.updateProjectionMatrix();
     composer.render();
 });
+
+export function resetGameEscape()
+{
+    displayHostEscapePage();
+    toggleEscapeContainerVisibility();
+    togglePause();
+    toggleBlurDisplay(false);
+    pauseGame ? pauseGame = false : pauseGame = true;
+}
 
 function panelRemove(){
     blockingPanel.classList.remove('show');
@@ -573,6 +592,10 @@ document.addEventListener('keydown', (event) => {
 
 
 let targetBlur = 0;
+
+export function removeContainerVisible() {
+    escapeContainerVisible = false;
+}
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);
 const verticalBlur = new ShaderPass(VerticalBlurShader);

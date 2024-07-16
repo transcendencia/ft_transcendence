@@ -93,6 +93,7 @@ class StatsView(APIView):
             'SPIN ONLY': 0,
             'POWERLESS': 0
         }
+        
         for game in all_games:
             if game.modeGame in mode_counts:
                 mode_counts[game.modeGame] += 1
