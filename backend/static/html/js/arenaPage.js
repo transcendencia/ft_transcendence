@@ -66,7 +66,6 @@ export function resetGlow() {
 userlistTitle.textContent = getTranslatedText('userlist');
 
 export function resetAddingMode(mode) {
-	console.log(mode);
 	if (mode === 'arena') {
 		setCssClassToArray('add', 'hover-enabled', plusButtonsArena);
 		setCssClassToArray('remove', 'clicked', plusButtonsArena);
@@ -80,6 +79,7 @@ export function resetAddingMode(mode) {
 	profileAdded[botID] = false;
 	userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").classList.remove('hovered')});
 }
+
 export function setAddingMode(plusButton, i, arena) {
 	if (arena)
 		setCssClassToArray('remove', 'hover-enabled', plusButtonsArena);
@@ -89,7 +89,8 @@ export function setAddingMode(plusButton, i, arena) {
 	userlistTitle.textContent = getTranslatedText('chooseProfile');
 	Glow(arena, plusClicked);
 	userTiles.forEach(tile => {
-		if (!(isBotId(tile.user.id) && arena && plusClicked === 1)) 
+		// if (isBotId(tile.user.id) && (!arena || (arena && plusClicked !== 1))) 
+		if (!(isBotId(tile.user.id) && arena && plusClicked === 1))
 			tile.HTMLelement.querySelector(".textContainer").classList.add('hovered')
 	});
 }
@@ -111,7 +112,7 @@ plusButtonsArena.forEach((plusButton, i) => {
 	});
 });
 
-let profileAdded = [];
+export let profileAdded = [];
 
 function isBotId(id) {
 	return (id === botID)
@@ -175,10 +176,11 @@ function addClickListenerToNewUserBadge(userBadge, plusButton, tile) {
 
 const blockingPanel = document.getElementById('blockingPanel');
 const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const validatePasswordButton = document.getElementById("arenaLogInButton");
 const backPasswordButton = document.getElementById("arenaBackLogInButton");
 let userClickedId = -1; // To store the index of the tile that was clicked
-let addedPlayerBadges = [];
+export let addedPlayerBadges = [];
 
 export function putUserInMatch(plusButtonsArray, mode) {
 	updateListAndResetTimer();
@@ -192,14 +194,18 @@ export function putUserInMatch(plusButtonsArray, mode) {
 	addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked, username: tile.user.username});
 	const plusButton = plusButtonsArray[plusClicked - 1];
 	plusButton.parentNode.replaceChild(userBadge.userInfoCont, plusButton);
-
+	let thirdPlayer = 0;
+	if (plusClicked === 1)
+		thirdPlayer = 1;
 	resetGlow();
 	resetAddingMode(mode);
 	addClickListenerToNewUserBadge(userBadge, plusButton, tile, userClickedId);
-
-	if (mode === 'tournament')
+	if (mode === 'tournament'){
 		addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
-	else addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture);
+	}
+	else {
+		addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, thirdPlayer);
+	}
 }
 
 function updateListAndResetTimer() {
@@ -213,10 +219,14 @@ import { displayUsersLogged } from './main.js';
 
 export let guestLoggedIn = [];
 
+let isValidating = false;
+
 validatePasswordButton.addEventListener('click', async function() {
+	if (isValidating)
+		return;
+	isValidating = true;
+	validatePasswordButton.style.pointerEvents = 'none';
 	if (guestLoggedIn.length < 7) {
-		// console.log(guestLoggedIn.length);
-		// console.log("je log un guest");
 		let guest = userTiles.get(userClickedId).user;
 		const password = document.getElementById("enterPasswordInput");
 		const formData = new FormData();
@@ -235,15 +245,18 @@ validatePasswordButton.addEventListener('click', async function() {
 				document.getElementById('enterPasswordInput').value = '';
 				document.getElementById('errorLogGuest').innerHTML = '';
 				pwWindow.classList.remove("showRectangle");
-				blockingPanel.classList.remove('show');
-
+				if (planetInRange.name === 'arena')
+					blockingPanel.classList.remove('show');
 			} else {
 				console.log("Erreur dans le login");
 			}
 		} catch (error) {
 			console.error('Erreur lors de la connexion :', error);
+		} finally {
+			isValidating = false;
+            validatePasswordButton.style.pointerEvents = '';
 		}
-0	}
+	}
 	else console.log("Too many guest");
 });
 
@@ -254,10 +267,9 @@ backPasswordButton.addEventListener('click', function() {
 	document.getElementById('errorLogGuest').innerText = '';
 });
 
-function addEventListenerToTile(tile) {
+function addEventListenerToTile(tile, arena) {
 	tile.HTMLelement.addEventListener('click', function() {
-	console.log("tile was clicked :", tile.user)
-	if (!plusClicked || isBotId(tile.user.id) && plusClicked === 1)
+	if (!plusClicked || isBotId(tile.user.id) && planetInRange.name === "arena" && plusClicked === 1)
 		return;
 	if (isBotId(tile.user.id) || (tile.user.status === 'online' && isGuest(tile.user.id))) {
 		userClickedId = tile.user.id;
@@ -270,7 +282,9 @@ function addEventListenerToTile(tile) {
 	blockingPanel.classList.add("show");
 	userClickedId = tile.user.id;
 	const userBadge = createUserInfoObject(tile);
+	const userBadgeAlias = createUserInfoObject(tile);
 	pwWindow.replaceChild(userBadge.userInfoCont, pwWindow.querySelector('.userInfoCont'));
+	aliasWindow.replaceChild(userBadgeAlias.userInfoCont, aliasWindow.querySelector('.userInfoCont'));
 	});
   }
 
@@ -320,11 +334,13 @@ async function isListsChanged() {
 export function resetArenaPage() {
 	plusClicked = 0;
 	addedPlayerBadges.forEach(obj => {
+		console.log("arena obj:", obj);
 		resetToPlusButton(obj.userBadge, plusButtonsArena[obj.plusClicked - 1]);
 	});
 	playerNb = 0;
 	profileAdded = [];
 	addedPlayerBadges = [];
+	matchPlayer.length = 1;
 	resetAddingMode("arena");
 }
   
@@ -442,8 +458,7 @@ export function createUserTile(user, type) {
 	});
   
 	userListBackground.appendChild(userTile);
-	addEventListenerToTile(userTiles.get(user.id));
-  
+	addEventListenerToTile(userTiles.get(user.id));  
 	return userTile;
 }
 
@@ -544,7 +559,7 @@ function toggleGamemode(buttonHeader, imgIndex) {
 		gamemodeCounter++;    
 		if (gamemodeCounter === 3) // 0 = classic 1 = powerless 2= spin only 
 			gamemodeCounter = 0;
-	} 
+	}
 	if (gamemodeCounter === 0)
 		buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('gamemodeNameText1');
 	else if (gamemodeCounter === 1)
@@ -617,6 +632,11 @@ export function endGame(isTournament) {
 		user3 = gameState.arena.game.user3.id
 	if (isTournament){
 		planetPanel[2].style.visibility = 'visible';
+		// if (gameState.arena)
+		console.log("user1:", gameState.arena.game.user1);
+		console.log("user2:", gameState.arena.game.user2);
+		console.log("leftScore:", gameState.arena.game.leftScore);
+		console.log("rightScore:", gameState.arena.game.rightScore);
 		createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
 		afterGameTournament(gameState.arena.game.leftScore, gameState.arena.game.rightScore);
 	}
@@ -704,11 +724,13 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
 	  // const 
 	  gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
 	  gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
-	  if (playerNb === 2) {
+	  if (player3){
+		console.log("adding a third player:", player3);
 		gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
 		gameState.arena.game.thirdPlayer = true;
 	  }
-	  else gameState.arena.game.thirdPlayer = false;
+	  else
+	  	gameState.arena.game.thirdPlayer = false;
 	  gameState.arena.game.tournamentGame = isTournament;
 	  gameState.arena.loadingScreen.loadingComplete();
 	}, 250);
@@ -729,6 +751,7 @@ const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
     let player2;
     let player3;
+	console.log("matchPlayer", matchPlayer);
     if (matchPlayer.length < 2 || (matchPlayer.length < 3 && matchPlayer[1].thirdPlayer))
         return;
     if (matchPlayer.length === 2){

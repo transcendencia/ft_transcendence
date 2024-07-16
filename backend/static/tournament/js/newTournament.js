@@ -5,7 +5,8 @@ import { switchToGame } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket } from "./bracket.js";
 import { getProfileInfo, populateProfileInfos, getUserStatus } from "../../html/js/userManagement.js";
 import { putUserInMatch } from "../../html/js/arenaPage.js";
-
+import { togglePlanet } from "../../html/js/enterPlanet.js";
+import { addedPlayerBadges, resetToPlusButton, profileAdded } from "../../html/js/arenaPage.js";
 
 export let gamemodeCounterTournament = 0;
 export let mapCounterTournament = 0;
@@ -101,14 +102,23 @@ export function resetTournament() {
   nextMatchElement.style.display = "block";
   bottomTournamentElement.style.display = "none";
   midColumn.style.width = '80%';
+  addedPlayerBadges.forEach(obj => {
+    console.log("tournament obj:", obj);
+		resetToPlusButton(obj.userBadge, plusButtonsTournament[obj.plusClicked - 1]);
+	});
   playerNb = 0;
+  profileAdded.length = 0;
+  addedPlayerBadges.length = 0;
+  tournamentPlayer.length = 1;
+
   tournamentState = 0;
-  gamemodeCounterTournament = 0;
-  mapCounterTournament = 0;
-  botDifficultyTournament = 1;
+
+  //gamemodeCounterTournament = 0;
+  // mapCounterTournament = 0;
+  // botDifficultyTournament = 1;
+  
   round = 1;
   thirdPlayerMode = false;
-  plusClickedTournament = false;
   getProfileInfo(sessionStorage.getItem("host_id"))
   .then(data => {
       populateProfileInfos(data);
@@ -119,8 +129,6 @@ export function resetTournament() {
 
 //add user to tournaments
 
-let profileAddedToTournament = [];
-let plusClickedTournament = false;
 const botID = 0;
 let playerNb = 0;
 export let tournamentState = 0;
@@ -140,14 +148,14 @@ plusButtonsTournament.forEach((plusButton, i) => {
 	});
 });
 
-const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+const blockingPanel = document.getElementById('blockingPanel');
 const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
-let tempTileIndexTournament = -1;
 const validateAliasButton = document.getElementById("aliasLogInButton");
 
+const backButtonTournamentPage = document.getElementById("trnmtBackButton");
+backButtonTournamentPage.addEventListener('click', () => {togglePlanet()});
 
   export function askForAlias(user){
-    pwWindow.classList.remove("showRectangle");
     aliasWindow.classList.toggle("showRectangle");
     console.log("user", user);
     const aliasText = document.getElementById('aliasText');
@@ -181,7 +189,9 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
 
 
   export function toggleThirdPlayerMode() {
-    
+    if (thirdPlayerMode === false)
+      thirdPlayerMode = true;
+    else thirdPlayerMode = false;
   }
 
   function getRandomNumber(tournamentPlayer, player1, player2) {
@@ -227,6 +237,7 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
     }
     //put matchup in currentMatch variable
     for (let i = 0; i < playersInTournament.length; i += 2) {
+      let inverted = 0;
       if (i + 1 >= playersInTournament.length){
         currentMatch.push([
           { myRef: playersInTournament[i] },
@@ -234,6 +245,7 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
           -1,
           -1,
           "",
+          inverted,
         ]);
       }
       else{
@@ -241,6 +253,7 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
           const tmp = playersInTournament[i];
           playersInTournament[i] = playersInTournament[i + 1];
           playersInTournament[i + 1] = tmp;
+          inverted = 1;
         }
         if (thirdPlayerMode){
           let thirdPlayer = getRandomNumber(tournamentPlayer, playersInTournament[i].username, playersInTournament[i + 1].username);
@@ -250,6 +263,7 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
             -1,
             -1,
             { myRef: tournamentPlayer[thirdPlayer]},
+            inverted,
           ]);
         }
         else{
@@ -259,6 +273,7 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
             -1,
             -1,
             "",
+            inverted,
           ]);
         }
       }
@@ -339,7 +354,7 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
     makeMatchup();
     document.querySelectorAll('.before-launch').forEach(function(el) {
       el.style.display = 'none';
-   });
+    });
     launchMatchElement.style.display = "flex";
     bracketElement.style.display = "inline";
     bottomTournamentElement.style.display = "flex";
@@ -376,7 +391,7 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
     }
     else{
       winner_name = currentMatch[nbMatch][1].myRef.username;
-      currentMatch[nbMatch][0].myRef.round ++;
+      currentMatch[nbMatch][1].myRef.round ++;
     }
     updateBracket(tournamentPlayer, winner_name, currentMatch, nbMatch, round);
     nextMatch();
@@ -393,9 +408,9 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
     }
     const player1Status = getUserStatus(currentMatch[nbMatch][0].myRef.playerId);
     const player2Status = getUserStatus(currentMatch[nbMatch][1].myRef.playerId);
-    if (player1Status === undefined)//if (player1Status === undefined || player1Status === "offline"){
+    if (player1Status === undefined || player1Status === "offline")
       afterGameTournament(0, 3);
-    else if (player2Status === undefined) //if (player2Status === undefined || player2Status === "offline"){
+    else if (player2Status === undefined || player2Status === "offline")
       afterGameTournament(3, 0);
     else if (currentMatch[nbMatch][0].myRef.playerId === currentMatch[nbMatch][1].myRef.playerId)
       afterGameTournament(3, 0);

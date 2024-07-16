@@ -430,6 +430,7 @@ function createUserTile(user, type, reqId) {
   userTile.appendChild(loupeContainer);
   userListBackground.appendChild(userTile);
 }
+
 function filterAndSortLists(data, query) {
   let requestList = data.received_request_list;
   let friendList = data.friends;

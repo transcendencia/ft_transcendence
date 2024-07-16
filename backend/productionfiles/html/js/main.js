@@ -486,7 +486,8 @@ export function togglePause() {
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
-const pwWindow = document.querySelector(".enterPasswordWindow");
+const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const deleteWindow = document.getElementById("validateDelete");
 
 // handle window resize
@@ -508,13 +509,20 @@ window.addEventListener('resize', () => {
     composer.render();
 });
 
+function panelRemove(){
+    blockingPanel.classList.remove('show');
+    pwWindow.classList.remove('showRectangle');
+    aliasWindow.classList.remove('showRectangle');
+    deleteWindow.classList.remove('showRectangle');
+}
+
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
     if (event.key === 'Enter') {
         if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();
-        const pwWindow = document.querySelector(".enterPasswordWindow");
+        // const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
     }
@@ -532,9 +540,7 @@ document.addEventListener('keydown', (event) => {
         }
         else if (landedOnPlanet) {
             togglePlanet();
-            blockingPanel.classList.remove('show');
-            pwWindow.classList.remove('showRectangle')
-            deleteWindow.classList.remove('showRectangle')
+            panelRemove();
             showPage('none');
             returnToHost();
             return;
