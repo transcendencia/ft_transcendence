@@ -107,7 +107,9 @@ export function initUserPlanet() {
     else if (pageDisplayed === "modifyPage")
     {
       const modifyPage = document.getElementById('userInfoForm');
-      modifyPage.style.visibility = 'hidden';
+      setTimeout(() => {
+        modifyPage.style.visibility = 'hidden';
+      }, 1000);
       returnToHost();
     }
     else if (pageDisplayed === "searchedProfile")
