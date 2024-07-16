@@ -59,9 +59,8 @@ document.addEventListener('keypress', (event) => {
 
 let distance = 10.5;
 let height = 4.5;
-let moveSpeed = 8;
+let moveSpeed = 20;
 let rotSpeed = 0.10;
-const tolerance = 0.01; 
 
 
 function rotateSpaceShipAnim(targetRot) {

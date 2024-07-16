@@ -17,7 +17,6 @@ import { gameStarted, resetArenaPage} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-import { updateUserStatus, test_back } from "./userManagement.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -273,7 +272,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     minimapCamera.lookAt(sun.position);
     
 function renderMinimap() {
-    if (!spaceShip)
+    if (!spaceShip || !marker)
         return;
     marker.position.x = spaceShip.position.x;
     marker.position.z = spaceShip.position.z;
@@ -463,12 +462,14 @@ export function displayHostEscapePage() {
     .catch(error => console.error('Failed to retrieve profile info:', error)); 
 }
 
+let escapeContainerVisible = false;
+
 export function toggleEscapeContainerVisibility(disconnect = false) {
     if (!disconnect) {
         getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
         .catch(error => console.error('Failed to retrieve profile info:', error));    
     }
-    if (targetBlur !== 0) {
+    if (!escapeContainerVisible) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
         escapeContainerVisible = true;
@@ -569,7 +570,8 @@ document.addEventListener('keydown', (event) => {
 
 
 
-let escapeContainerVisible = false;
+
+
 let targetBlur = 0;
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);

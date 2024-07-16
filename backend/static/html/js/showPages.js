@@ -31,6 +31,8 @@ export function initPage() {
     else moveCameraToBackOfCockpit();
 }
 
+window.addEventListener('load', initPage);
+
 addEventListener("hashchange", () => {
     if (lobbyStart) {
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), true);

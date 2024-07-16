@@ -460,14 +460,17 @@ export function createUserBadge(hostData, elementId) {
 
 export function displayHostEscapePage() {
     getProfileInfo(sessionStorage.getItem("host_id")).then(data => createUserBadge(data, "escapeUserContainer"))
+    .catch(error => console.error('Failed to retrieve profile info:', error)); 
 }
+
+let escapeContainerVisible = false;
 
 export function toggleEscapeContainerVisibility(disconnect = false) {
     if (!disconnect) {
         getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
         .catch(error => console.error('Failed to retrieve profile info:', error));    
     }
-    if (targetBlur !== 0) {
+    if (!escapeContainerVisible) {
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
         escapeContainerVisible = true;
@@ -486,7 +489,8 @@ export function togglePause() {
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
-const pwWindow = document.querySelector(".enterPasswordWindow");
+const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const deleteWindow = document.getElementById("validateDelete");
 
 // handle window resize
@@ -508,13 +512,20 @@ window.addEventListener('resize', () => {
     composer.render();
 });
 
+function panelRemove(){
+    blockingPanel.classList.remove('show');
+    pwWindow.classList.remove('showRectangle');
+    aliasWindow.classList.remove('showRectangle');
+    deleteWindow.classList.remove('showRectangle');
+}
+
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
     if (event.key === 'Enter') {
         if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();
-        const pwWindow = document.querySelector(".enterPasswordWindow");
+        // const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
     }
@@ -532,9 +543,7 @@ document.addEventListener('keydown', (event) => {
         }
         else if (landedOnPlanet) {
             togglePlanet();
-            blockingPanel.classList.remove('show');
-            pwWindow.classList.remove('showRectangle')
-            deleteWindow.classList.remove('showRectangle')
+            panelRemove();
             showPage('none');
             returnToHost();
             return;
@@ -562,7 +571,8 @@ document.addEventListener('keydown', (event) => {
 
 
 
-let escapeContainerVisible = false;
+
+
 let targetBlur = 0;
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);
