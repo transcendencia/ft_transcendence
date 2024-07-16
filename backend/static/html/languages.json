@@ -56,6 +56,7 @@
         "graphicsText3": "Detailed",
         "loggedAs": "Currently logged as :",
         "disconnect": "Disconnect",
+        "escapeBackToLobby": "Back to lobby",
 
         "userlist": "User list",
         "chooseProfile": "Choose a profile",
@@ -180,6 +181,7 @@
         "graphicsText3": "Detallado",
         "loggedAs": "conectado como :",
         "disconnect": "Desconectar",
+        "escapeBackToLobby": "Vuelta al lobby",
         
         "userlist": "Lista de usuarios",
         "chooseProfile": "Elige un perfil",
@@ -302,6 +304,7 @@
         "graphicsText3": "Detaille",
         "loggedAs": "Connecte en tant que :",
         "disconnect": "Deconnecter",
+        "escapeBackToLobby": "Retour lobby",
 
         "userlist": "Liste des utilisateurs",
         "chooseProfile": "Choisis un profile",

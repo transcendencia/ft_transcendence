@@ -9,7 +9,6 @@ export function showPage(pageId, transition = 'default') {
         page.classList.remove('signUp');
     });
     // Show the selected page
-    console.log(pageId);
     if (pageId === 'none') return;
     window.location.hash = `#${pageId}`;
     sessionStorage.setItem('currentPage', pageId); // Store current page in sessionStorage
@@ -24,7 +23,6 @@ let oldLocation = window.location.hash || '#loginPage';
 export function initPage() {
     const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
     window.location.hash = `#${lastPage}`;
-    console.log('yo', lastPage);
     if (lastPage === 'signUpPage' || lastPage === 'rgpdPage')
         moveCameraToFrontOfCockpit(lastPage, 'signUp');
     else moveCameraToBackOfCockpit();

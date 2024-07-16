@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { initPage, showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets, atmosphere } from "./planets.js";
+import { sun, planets } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
@@ -291,6 +291,7 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
 }
 
 import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
+import { getTranslatedText } from './translatePages.js';
 
 export function displayUsersLogged(user, token) {
     
@@ -327,8 +328,8 @@ renderer.render(scene, camera);
 const rightSideContainer = document.getElementById("rsCont");
 const leftSideContainer = document.getElementById("lsCont");
 let rsContVisible = false;
-const structure = document.querySelector(".structure");
-const escapeBG = document.querySelector(".escapeBG");
+export const structure = document.querySelector(".structure");
+export const escapeBG = document.querySelector(".escapeBG");
 
 export function swipeLeftSideContainer(endPos) {
     leftSideContainer.style.left = endPos;
@@ -460,9 +461,16 @@ export function createUserBadge(hostData, elementId) {
 
 export function displayHostEscapePage() {
     getProfileInfo(sessionStorage.getItem("host_id")).then(data => createUserBadge(data, "escapeUserContainer"))
+    .catch(error => console.error('Failed to retrieve profile info:', error)); 
 }
 
 export function toggleEscapeContainerVisibility(disconnect = false) {
+    const disconnectButton = document.getElementById('disconnectButton');
+    if (gameState.inGame)
+        disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
+    else
+        disconnectButton.textContent = getTranslatedText("disconnect");
+
     if (!disconnect) {
         getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
         .catch(error => console.error('Failed to retrieve profile info:', error));    
@@ -486,8 +494,11 @@ export function togglePause() {
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
-const pwWindow = document.querySelector(".enterPasswordWindow");
+const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const deleteWindow = document.getElementById("validateDelete");
+
+
 
 // handle window resize
 window.addEventListener('resize', () => {
@@ -508,13 +519,29 @@ window.addEventListener('resize', () => {
     composer.render();
 });
 
+export function resetGameEscape()
+{
+    displayHostEscapePage();
+    toggleEscapeContainerVisibility();
+    togglePause();
+    toggleBlurDisplay(false);
+    pauseGame ? pauseGame = false : pauseGame = true;
+}
+
+function panelRemove(){
+    blockingPanel.classList.remove('show');
+    pwWindow.classList.remove('showRectangle');
+    aliasWindow.classList.remove('showRectangle');
+    deleteWindow.classList.remove('showRectangle');
+}
+
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
     if (event.key === 'Enter') {
         if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();
-        const pwWindow = document.querySelector(".enterPasswordWindow");
+        // const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
     }
@@ -532,9 +559,7 @@ document.addEventListener('keydown', (event) => {
         }
         else if (landedOnPlanet) {
             togglePlanet();
-            blockingPanel.classList.remove('show');
-            pwWindow.classList.remove('showRectangle')
-            deleteWindow.classList.remove('showRectangle')
+            panelRemove();
             showPage('none');
             returnToHost();
             return;
@@ -564,6 +589,10 @@ document.addEventListener('keydown', (event) => {
 
 let escapeContainerVisible = false;
 let targetBlur = 0;
+
+export function removeContainerVisible() {
+    escapeContainerVisible = false;
+}
 
 const horizontalBlur = new ShaderPass(HorizontalBlurShader);
 const verticalBlur = new ShaderPass(VerticalBlurShader);
