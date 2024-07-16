@@ -23,7 +23,6 @@ let oldLocation = window.location.hash || '#loginPage';
 export function initPage() {
     const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
     window.location.hash = `#${lastPage}`;
-    console.log('yo', lastPage);
     if (lastPage === 'signUpPage' || lastPage === 'rgpdPage')
         moveCameraToFrontOfCockpit(lastPage, 'signUp');
     else moveCameraToBackOfCockpit();
