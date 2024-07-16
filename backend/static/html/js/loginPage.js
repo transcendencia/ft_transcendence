@@ -168,6 +168,7 @@ export async function handleLogin(formData) {
     }
 
     const hostLoggedIn = sessionStorage.getItem("hostLoggedIn")
+    const submitButton = document.getElementById('loginButton');
 
     formData.append('hostLoggedIn', hostLoggedIn);
     if (hostLoggedIn === 'false') {
@@ -217,23 +218,24 @@ export async function handleLogin(formData) {
                     startAnimation();
 
                     setTimeout(() => {
-                        const submitButton = document.getElementById('loginButton');
                         submitButton.disabled = false;
                     }, 2000);
                     emptyLoginField();
                 } else {
                     guest_token = data.token;
+                    submitButton.disabled = false;
                 }
                 resolve(guest_token);
             } else {
                 const messageContainerId = hostLoggedIn ? 'messageContainer' : 'errorLogGuest';
-
+                submitButton.disabled = false;
                 document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
                 resolve(null);
             }
         })
         .catch(error => {
             console.error('Erreur :', error);
+            submitButton.disabled = false;
             reject(error);
         })
     });
