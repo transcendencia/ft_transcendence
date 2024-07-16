@@ -33,6 +33,10 @@
     transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg);
 }
 
+.noPerspective {
+    transform: translate(-50%, -50%);
+}
+
 .hologram-container {
     text-shadow: 0 0 5px rgb(0, 64, 255);
     background-color: rgba(0, 64, 255, 0.1);

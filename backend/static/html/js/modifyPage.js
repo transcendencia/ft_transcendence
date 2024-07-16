@@ -54,7 +54,6 @@ function handleChangeInfoForm(event) {
 
 const deleteAccountButton = document.querySelector(".deleteAccountButton");
 const deleteBlockingPanel = document.getElementById('deleteBlockingPanel');
-const blockingPanel = document.getElementById('blockingPanel');
 
 document.getElementById('profile-pic').addEventListener('change', function() {
   let fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
@@ -162,13 +161,19 @@ export function getRandomUsername() {
   });
 };
 
-const RGPDPage = document.querySelector(".rgpdPage");
-
+const RGPDPage = document.getElementById('RGPDPage');
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
 RGPDPolicy.addEventListener('click', function() {
-  blockingPanel.classList.add('show');
-  RGPDPage.classList.remove("perspectived");
+  deleteBlockingPanel.classList.add('show');
   showPage('rgpdPage');
+  RGPDPage.classList.add("noPerspective");
+  RGPDPage.classList.remove("holoPerspective");
+});
+
+const RGPDBack = document.getElementById('RGPDBack');
+RGPDBack.addEventListener('click', function() {
+  deleteBlockingPanel.classList.remove('show');
+  showPage('modifyPage');
 });
 
 const infoButton = document.getElementById("infoButton");
