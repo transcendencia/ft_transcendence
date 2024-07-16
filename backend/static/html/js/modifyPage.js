@@ -41,7 +41,7 @@ function handleChangeInfoForm(event) {
       getProfileInfo(sessionStorage.getItem("host_id"))
         .then(data => {
             populateProfileInfos(data);
-            
+            createUserBadge(data, "playersConnHostBadge");  
         })
 
     else changeInfoMessage.classList.toggle("errorMessage");
