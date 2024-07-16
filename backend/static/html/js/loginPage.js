@@ -417,4 +417,3 @@ export function emptyLoginField() {
     document.getElementById('usernameLoginInput').value = '';
     document.getElementById('passwordLoginInput').value = '';
 }
-
