@@ -186,6 +186,9 @@ export async function handleLogin(formData) {
         .then(response => response.json())
         .then(data => {
             let guest_token = null;
+            console.log("hostLoggedIn", (hostLoggedIn === 'true'));
+            const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
+            console.log("messageContainerId", messageContainerId);
             console.log(data.status);
             if (data.status === "success") {
 
@@ -227,8 +230,8 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
-                const messageContainerId = hostLoggedIn ? 'messageContainer' : 'errorLogGuest';
                 submitButton.disabled = false;
+
                 document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
                 resolve(null);
             }
