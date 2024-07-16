@@ -151,6 +151,22 @@ function handleLoginSubmit(event) {
     handleLogin(formData);
 }
 
+function removeLastUserInfoConts() {
+    const container = document.getElementById('lsCont');
+    const hostBadge = document.getElementById('playersConnHostBadge');
+    let currentElement = container.lastElementChild;
+
+    while (currentElement && currentElement !== hostBadge) {
+        if (currentElement.classList.contains('userInfoCont')) {
+            const elementToRemove = currentElement;
+            currentElement = currentElement.previousElementSibling;
+            container.removeChild(elementToRemove);
+        } else {
+            break;
+        }
+    }
+}
+
 // Handle form submission
 // Should I change it with a patch request
 export async function handleLogin(formData) {
@@ -193,7 +209,8 @@ export async function handleLogin(formData) {
                     getProfileInfo(sessionStorage.getItem("host_id"))
                     .then(data => {
                         populateProfileInfos(data);
-                        createUserBadge(data, "playersConnHostBadge")
+                        createUserBadge(data, "playersConnHostBadge");
+                        removeLastUserInfoConts();
                     })
                     .catch(error => {
                         console.error('Failed to retrieve profile info:', error);
@@ -378,7 +395,8 @@ export function handleLogout(userId, token, arrowKey = false) {
     }
     else if (arrowKey)
         toggleRSContainerVisibility();
-    else togglePause();
+    else 
+        togglePause();
     setTimeout(() => {
         if (!arrowKey)
             toggleBlurDisplay(true);
