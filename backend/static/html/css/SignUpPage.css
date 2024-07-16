@@ -21,7 +21,7 @@
     transition: opacity 1s, visibility 0s !important;
 }
 
-.show.signUp {
+.show.delay {
     transition: opacity 1s 0.75s, visibility 0s !important;
 }
 
@@ -139,3 +139,23 @@
 .signupMessageCont.success {
     color: #060706;
 }
+
+/* .hologram-button {
+    text-shadow: 0 0 5px rgb(255, 0, 0);
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 2px solid rgb(255, 0, 0);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgb(255, 0, 0), inset 0 0 20px rgb(255, 0, 0)
+}
+
+.hologram-button:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    box-shadow: 0 0 30px rgb(255, 0, 0), inset 0 0 30px rgb(255, 0, 0);
+}
+.hologram-content {
+    color: rgb(255, 0, 0);
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+} */

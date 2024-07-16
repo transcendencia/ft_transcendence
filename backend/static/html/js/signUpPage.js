@@ -17,7 +17,7 @@ export function moveCameraToFrontOfCockpit(page) {1
         .start(); // Start the animation
         emptyLoginField();
         inCockpit = true;
-        if (page === 'signUpPage') {
+        if (page === 'signUpPage' && window.location.hash === '#rgpdPage') {
             const selectedPage = document.querySelector('.signUpPage');
             const hologramContainer = selectedPage.querySelector('.hologram-container');
             if (hologramContainer) {
@@ -25,10 +25,13 @@ export function moveCameraToFrontOfCockpit(page) {1
                 void hologramContainer.offsetWidth;
                 hologramContainer.classList.add('open');
             }
-            showPage('signUpPage', 'signUp');
+            showPage('signUpPage', 'delay');
         }
         else if (page === 'rgpdPage')
             showPage('rgpdPage', 'default');
+        else {
+            showPage('signUpPage');
+        }
 }
 
 
