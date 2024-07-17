@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { initPage, showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets } from "./planets.js";
+import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
@@ -549,6 +549,8 @@ document.addEventListener('keydown', (event) => {
     }
     if (event.key === 'Escape') {
         if (gameState.inGame && !gameState.arena.game.isPlaying)
+            return;
+        if (gameState.loading)
             return;
         if (gameState.inGame && gameState.arena.game.isPlaying)
         {
