@@ -728,6 +728,8 @@ class Arena extends THREE.Mesh {
     {
         if (!this.isAnimatingCamera)
         {   
+            this.paddleLeft.position.x = this.position.x;
+            this.paddleRight.position.x = this.position.x;
             this.isAnimatingCamera = true;
             const duration = 5000;
             // Create tweens for each property
