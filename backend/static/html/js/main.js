@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { initPage, showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets } from "./planets.js";
+import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
@@ -326,15 +326,17 @@ renderer.render(scene, camera);
 
 const rightSideContainer = document.getElementById("rsCont");
 const leftSideContainer = document.getElementById("lsCont");
-let rsContVisible = false;
+export let rsContVisible = false;
 export const structure = document.querySelector(".structure");
 export const escapeBG = document.querySelector(".escapeBG");
 
 export function swipeLeftSideContainer(endPos) {
+    console.trace("here");
     leftSideContainer.style.left = endPos;
 }
 
 export function toggleRSContainerVisibility() {
+    console.trace(rsContVisible);
     if (rsContVisible) {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '-50%';
@@ -444,6 +446,8 @@ export function startAnimation() {
             toggleRSContainerVisibility();
             scene.remove(bluelight);
             scene.add(whitelight);
+            const submitButton = document.getElementById('loginButton');
+            submitButton.disabled = false;
         });
         anim1.chain(anim2, anim3);
         anim1.start();
@@ -464,16 +468,15 @@ export function displayHostEscapePage() {
     .catch(error => console.error('Failed to retrieve profile info:', error)); 
 }
 
-let escapeContainerVisible = false;
+export let escapeContainerVisible = false;
 
-export function toggleEscapeContainerVisibility(disconnect = false) {
+export function toggleEscapeContainerVisibility() {
     const disconnectButton = document.getElementById('disconnectButton');
     if (gameState.inGame)
         disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
     else
         disconnectButton.textContent = getTranslatedText("disconnect");
-
-    if (!disconnect) {
+    if (!escapeContainerVisible) {
         getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
         .catch(error => console.error('Failed to retrieve profile info:', error));    
     }
@@ -492,7 +495,16 @@ let pauseGame = false;
 
 export function togglePause() {
     gameState.togglePause();
-    pauseGame ? pauseGame = false : pauseGame = true;
+    if (!pauseGame) {
+        console.log("pause");
+        cancelAnimationFrame(animationFrame);
+    }
+    else {
+        console.log("unpause");
+        lastUpdateTime = performance.now();
+        animate();
+    }
+    pauseGame = !pauseGame;
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
@@ -527,7 +539,6 @@ export function resetGameEscape()
     toggleEscapeContainerVisibility();
     togglePause();
     toggleBlurDisplay(false);
-    pauseGame ? pauseGame = false : pauseGame = true;
 }
 
 function panelRemove(){
@@ -550,17 +561,18 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         if (gameState.inGame && !gameState.arena.game.isPlaying)
             return;
+        if (gameState.loading)
+            return;
         if (gameState.inGame && gameState.arena.game.isPlaying)
         {
             displayHostEscapePage();
             toggleEscapeContainerVisibility();
             togglePause();
             toggleBlurDisplay(false);
-            pauseGame ? pauseGame = false : pauseGame = true;
             return;
         }
         else if (landedOnPlanet) {
-            togglePlanet();
+            togglePlanet(/* toggleRsContainer: */ true);
             panelRemove();
             showPage('none');
             returnToHost();
@@ -577,14 +589,12 @@ document.addEventListener('keydown', (event) => {
             toggleEscapeContainerVisibility();
             togglePause();
             resetOutlineAndText();
-            togglePause();
-            pauseGame = !pauseGame;
         }
     }
     if (event.target.tagName === 'INPUT')
         return;
     if (event.key === 'e' && inRange && !gameStarted)
-        togglePlanet();
+        togglePlanet(/* toggleRsContainer: */ true);
 });
 
 
@@ -631,8 +641,6 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
 // composer.addPass(bloomPass);
 
 function update() {
-    if (pauseGame)
-        return;
     if (lobbyStart && !landedOnPlanet) 
         spaceShipMovement();
     camMovement();
@@ -648,11 +656,11 @@ return;
 let fpsInterval = 1000 / 75; // 75 FPS
 let stats = new Stats();
 let lastUpdateTime = performance.now();
-
+export let animationFrame;
 
 function animate()
 {
-    requestAnimationFrame( animate )
+    animationFrame = requestAnimationFrame( animate )
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
     if (elapsed < fpsInterval) return; // Skip if too big FPS
