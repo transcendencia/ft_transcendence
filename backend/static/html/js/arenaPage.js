@@ -12,7 +12,6 @@ userlistTitle.textContent = getTranslatedText('userlist');
 
 export let plusClicked = 0;
 const botID = 1;
-let playerNb = 0;
 
 export const blue = '#3777ff';
 export const purple = 'rgb(164, 67, 255)'
@@ -162,7 +161,6 @@ export function createUserInfoObject(tile, hoverEnabled = false) {
 
 function addClickListenerToNewUserBadge(userBadge, plusButton, tile) {
 	userBadge.userInfoCont.addEventListener('click', function() {
-		playerNb--;
 		profileAdded[tile.user.id] = false;
 		console.log(plusButton);
 		resetToPlusButton(userBadge.userInfoCont, plusButton);
@@ -186,7 +184,6 @@ export function putUserInMatch(plusButtonsArray, mode) {
 	const textCont = tile.HTMLelement.querySelector(".textContainer");
 
 	profileAdded[tile.user.id] = true;
-	playerNb++;
 	
 	const userBadge = createUserInfoObject(tile, true);
 	addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked, username: tile.user.username});
@@ -335,7 +332,6 @@ export function resetArenaPage() {
 	addedPlayerBadges.forEach(obj => {
 		resetToPlusButton(obj.userBadge, plusButtonsArena[obj.plusClicked - 1]);
 	});
-	playerNb = 0;
 	profileAdded = [];
 	addedPlayerBadges = [];
 	matchPlayer.length = 1;
@@ -646,7 +642,6 @@ export async function endGame(isTournament) {
 	document.getElementById('c3').style.display = 'none';
 	document.getElementById('c1').style.display = 'none';
 	gameState.arena.game.resetUsers();
-	console.log("test");
 	refreshUserListIfChanged();
 }
 
@@ -676,6 +671,35 @@ export function switchToGame(gameState, player1, player2, player3, isTournament)
 	initGame(gameState, player1, player2, player3, isTournament);
 }
 
+function initGameMode(gameState, isTournament){
+	let gamemodeCounterTmp = gamemodeCounter;
+	let mapCounterTmp = mapCounter;  
+	let botDifficultyTmp = botDifficulty;
+	if (isTournament){
+	  gamemodeCounterTmp = gamemodeCounterTournament;
+	  mapCounterTmp = mapCounterTournament;  
+	  botDifficultyTmp = botDifficultyTournament;
+	}
+	if (gamemodeCounterTmp === 0) {
+		gameState.arena.game.powerUpsActivated = true;
+		gameState.arena.game.effectsOnly = false;
+	}
+	else if (gamemodeCounterTmp === 1) {
+		gameState.arena.game.powerUpsActivated = false;
+		gameState.arena.game.effectsOnly = false;
+	}
+	else if (gamemodeCounterTmp === 2) {
+		gameState.arena.game.powerUpsActivated = true;
+		gameState.arena.game.effectsOnly = true;
+	}
+	const modeList = ["CLASSIC", "POWERLESS", "SPIN ONLY"];
+	gameState.arena.game.gameMode = modeList[gamemodeCounterTmp];
+	const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
+	gameState.arena.game.map = mapList[mapCounterTmp];
+	const difficultyList = ["easy", "medium", "hard"];
+	gameState.arena.bot.difficulty = difficultyList[botDifficultyTmp];
+}
+
 export function    initGame(gameState, player1, player2, player3, isTournament) {
 	// prepare for initialization
 	gameState.loading = true;
@@ -694,38 +718,11 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
 		}
 	  gameState.arena.game.hasToBeInitialized = true;
 	  // choose gameMode
-	  if (isTournament){
-		gamemodeCounter = gamemodeCounterTournament;
-		mapCounter = mapCounterTournament;  
-		botDifficulty = botDifficultyTournament;
-	  }
-	  if (gamemodeCounter === 0) {
-		  gameState.arena.game.powerUpsActivated = true;
-		  gameState.arena.game.effectsOnly = false;
-	  }
-	  else if (gamemodeCounter === 1) {
-		  gameState.arena.game.powerUpsActivated = false;
-		  gameState.arena.game.effectsOnly = false;
-	  }
-	  else if (gamemodeCounter === 2) {
-		  gameState.arena.game.powerUpsActivated = true;
-		  gameState.arena.game.effectsOnly = true;
-	  }
-	  const modeList = ["CLASSIC", "POWERLESS", "SPIN ONLY"];
-	  gameState.arena.game.gameMode = modeList[gamemodeCounter];
-	  // choose map
-	  const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
-	  gameState.arena.game.map = mapList[mapCounter];
-	  // choose bot difficulty
-	  const difficultyList = ["easy", "medium", "hard"];
-	  gameState.arena.bot.difficulty = difficultyList[botDifficulty];
-
+	  initGameMode(gameState, isTournament);
 	  // add players
-	  // const 
 	  gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
 	  gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
 	  if (player3){
-		console.log("adding a third player:", player3);
 		gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
 		gameState.arena.game.thirdPlayer = true;
 	  }

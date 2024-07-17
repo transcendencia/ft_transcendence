@@ -1,12 +1,10 @@
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { gameState } from "../../game/js/main.js";
-import { resetAddingMode, setAddingMode, plusClicked} from "../../html/js/arenaPage.js";
-import { switchToGame } from "../../html/js/arenaPage.js";
-import { printBracket, updateBracket, resetBracket } from "./bracket.js";
 import { getProfileInfo, populateProfileInfos, getUserStatus } from "../../html/js/userManagement.js";
-import { putUserInMatch } from "../../html/js/arenaPage.js";
 import { togglePlanet } from "../../html/js/enterPlanet.js";
-import { addedPlayerBadges, resetToPlusButton, profileAdded } from "../../html/js/arenaPage.js";
+import { resetAddingMode, setAddingMode, plusClicked} from "../../html/js/arenaPage.js";
+import { addedPlayerBadges, resetToPlusButton, profileAdded, putUserInMatch, switchToGame } from "../../html/js/arenaPage.js";
+import { printBracket, updateBracket, resetBracket, updateElementDisplayAndText } from "./bracket.js";
 
 export let gamemodeCounterTournament = 0;
 export let mapCounterTournament = 0;
@@ -107,13 +105,11 @@ export function resetTournament() {
   addedPlayerBadges.forEach(obj => {
 		resetToPlusButton(obj.userBadge, plusButtonsTournament[obj.plusClicked - 1]);
 	});
-  playerNb = 0;
   profileAdded.length = 0;
   addedPlayerBadges.length = 0;
   tournamentPlayer.length = 0;
   tournamentState = 0;
   round = 1;
-  thirdPlayerMode = false;
   getProfileInfo(sessionStorage.getItem("host_id"))
   .then(data => {
       populateProfileInfos(data);
@@ -125,7 +121,6 @@ export function resetTournament() {
 //add user to tournaments
 
 const botID = 0;
-let playerNb = 0;
 export let tournamentState = 0;
 
 const leftColumn = document.querySelector(".leftColumn");
@@ -206,7 +201,7 @@ cancelTournamentButton.addEventListener('click', () => {
   let currentMatch = [];
   let round = 1;
   let nbMatch;
-  let thirdPlayerMode = false; //must be removed to use the real variable
+  let thirdPlayerMode = false;
 
   function addPlayerToCurrentMatch(player1, player2, player3, inverted){
     currentMatch.push([
@@ -219,41 +214,54 @@ cancelTournamentButton.addEventListener('click', () => {
     ]);
   }
 
-  function makeMatchup() {
-    const ul = document.getElementById("match");
-    // ul.innerHTML = "";
-    let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
-    let j = 0;
-    nbMatch = 0;
-    currentMatch = [];
-    //put final position for players who lost
+  function putFinalPosiionWhenLost(playersInTournament){
     if (round != 1){
       tournamentPlayer.forEach(function(player){
         if (player.round + 1 === round)
           player.position = playersInTournament.length + 1;
       })
     }
-    //put final position for the winner
-    if (playersInTournament.length == 1){
-      tournamentState = 2;
-      tournamentPlayer.forEach(function(player){
-        if (player.position === 0)
-          player.position = 1;
-      })
-      nextMatchElement.style.display = "none";
-      ul.textContent = playersInTournament[0].username + " has won the tournament!";
-      launchMatchElement.style.display = "none";
-      cancelTournamentButton.style.display = "none";
+
+  }
+
+  function endTournament(playersInTournament, matchElement){
+    tournamentState = 2;
+    tournamentPlayer.forEach(function(player){
+      if (player.position === 0)
+        player.position = 1;
+    })
+    nextMatchElement.style.display = "none";
+    matchElement.textContent = playersInTournament[0].username + " has won the tournament!";
+    launchMatchElement.style.display = "none";
+    cancelTournamentButton.style.display = "none";
+  }
+
+  function printNextMatch(){
+    const matchElement = document.getElementById("match");
+    if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
+      matchElement.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
+    else if (currentMatch[nbMatch][0])
+      matchElement.textContent = currentMatch[nbMatch][0].myRef.username;
+  }
+
+  function makeMatchup() {
+    const ul = document.getElementById("match");
+    let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
+    let j = 0;
+    nbMatch = 0;
+    currentMatch = [];
+    putFinalPosiionWhenLost(playersInTournament);
+    if (playersInTournament.length == 1){ //end the tournament
+      endTournament(playersInTournament, ul);
       return ;
     }
     //put matchup in currentMatch variable
     for (let i = 0; i < playersInTournament.length; i += 2) {
       let inverted = 0;
-      if (i + 1 >= playersInTournament.length){
+      if (i + 1 >= playersInTournament.length)
         addPlayerToCurrentMatch({ myRef: playersInTournament[i] }, "", "", inverted);
-      }
       else{
-        if (playersInTournament[i].username === "bot"){
+        if (playersInTournament[i].username === "bot"){ //the bot will be the player on the right
           const tmp = playersInTournament[i];
           playersInTournament[i] = playersInTournament[i + 1];
           playersInTournament[i + 1] = tmp;
@@ -269,30 +277,22 @@ cancelTournamentButton.addEventListener('click', () => {
       }
       j ++;
     }
-    if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
-      ul.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
-    else if (currentMatch[nbMatch][0])
-      ul.textContent = currentMatch[nbMatch][0].myRef.username;
+    printNextMatch();
     if (round > 1){
       for (let i = 0; i < currentMatch.length; i ++) {
         if (thirdPlayerMode){
           if (round === 2){
-            if (i === 0){
-              let ul = document.getElementById("third-B1_name");
-              ul.textContent = currentMatch[0][4].myRef.username;
-            }
+            if (i === 0)
+              updateElementDisplayAndText("third-B1_name", currentMatch[0][4].myRef.username);
             else if (i === 1){
-              let ul = document.getElementById("third-B2_name");
               if (currentMatch[1][4])
-                ul.textContent = currentMatch[1][4].myRef.username;
+                updateElementDisplayAndText("third-B2_name", currentMatch[1][4].myRef.username);
               else
-                ul.textContent = "...";
+                updateElementDisplayAndText("third-B2_name", "...");
             }
           }
-          else if (round === 3){
-            let ul = document.getElementById("third-C1_name");
-            ul.textContent = currentMatch[0][4].myRef.username;
-          }
+          else if (round === 3)
+            updateElementDisplayAndText("third-C1_name", currentMatch[0][4].myRef.username);
         }
       }
     }
@@ -318,18 +318,11 @@ cancelTournamentButton.addEventListener('click', () => {
 
   launchTournamentElement.addEventListener("click", function() {
     if (countNonBotPlayer(tournamentPlayer) < 3){
-      const ul = document.getElementById("error_msg");
-      ul.textContent = getTranslatedText('ErrorMinus');
-      return ;
-    }
-    else if (tournamentPlayer.length > 8){
-      const ul = document.getElementById("error_msg");
-      ul.textContent = getTranslatedText('ErrorTooMany');
+      updateElementDisplayAndText("error_msg", getTranslatedText('ErrorMinus'));
       return ;
     }
     tournamentState = 1;
-    const ul = document.getElementById("error_msg");
-    ul.textContent = "";
+    updateElementDisplayAndText("error_msg", "");
     tournamentPlayer.forEach(function(player){
       player.order = -1;
     });
@@ -360,15 +353,11 @@ cancelTournamentButton.addEventListener('click', () => {
   function nextMatch() {
     nbMatch ++;
     let ul = document.getElementById("match");
-    // ul.innerHTML = "";
     if (nbMatch >= currentMatch.length){
       makeMatchup();
       return ; 
     }
-    else if (currentMatch[nbMatch][0] && currentMatch[nbMatch][1])
-      ul.textContent = currentMatch[nbMatch][0].myRef.username + " vs " + currentMatch[nbMatch][1].myRef.username;
-    else if (currentMatch[nbMatch][0])
-      ul.textContent = currentMatch[nbMatch][0].myRef.username;
+    printNextMatch();
   }
 
   export function  afterGameTournament(leftScore, rightScore) {

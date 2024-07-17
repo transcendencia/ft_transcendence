@@ -77,7 +77,6 @@
         "thirdPlayer": "Third Player",
         "removePlayer": "Remove player",
         "ErrorMinus": "Not enough players",
-        "ErrorTooMany": "Too many players",
         "nextMatch": "Next match:",
         "launchMatch": "Start match",
 
@@ -203,7 +202,6 @@
         "thirdPlayer": "Tercer jugador",
         "removePlayer": "Eliminar",
         "ErrorMinus": "No hay suficiente jugador",
-        "ErrorTooMany": "Demasiados jugadores",
         "nextMatch": "Proximo partido:",
         "launchMatch": "Empezar partido",
         
@@ -330,7 +328,6 @@
         "thirdPlayer": "Troisieme joueur",
         "removePlayer": "Supprimer",
         "ErrorMinus": "Pas assez de joueurs",
-        "ErrorTooMany": "Trop de joueurs",
         "nextMatch": "Prochain match:",
         "launchMatch": "Commencer le match",
 

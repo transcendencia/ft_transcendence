@@ -5,8 +5,6 @@ const thirdA4Element = document.getElementById("third-A4");
 const thirdB1Element = document.getElementById("third-B1");
 const thirdB2Element = document.getElementById("third-B2");
 const thirdC1Element = document.getElementById("third-C1");
-
-
 const A1Element = document.getElementById("A1");
 const A2Element = document.getElementById("A2");
 const A3Element = document.getElementById("A3");
@@ -31,231 +29,152 @@ const secondTopElement = document.getElementById("second-top");
 const secondBotElement = document.getElementById("second-bot");
 const secondLineElement = document.getElementById("second-line");
 
+export function resetBracket() {
+  const ids = [
+    "A1_name", "A2_name", "A3_name", "A4_name", "A5_name", "A6_name", "A7_name", "A8_name",
+    "B1_name", "B2_name", "B3_name", "B4_name",
+    "C1_name", "C2_name",
+    "third-A1_name", "third-A2_name", "third-A3_name", "third-A4_name", "third-B1_name", "third-B2_name", "third-C1_name",
+    "A1_score", "A2_score", "A3_score", "A4_score", "A5_score", "A6_score", "A7_score", "A8_score",
+    "B1_score", "B2_score", "B3_score", "B4_score", "C1_score", "C2_score"
+  ];
 
-export function resetBracket(){
-  let ul = document.getElementById("A1_name");
-  ul.textContent = '';
-  ul = document.getElementById("A2_name");
-  ul.textContent = '';
-  ul = document.getElementById("A3_name");
-  ul.textContent = '';
-  ul = document.getElementById("A4_name");
-  ul.textContent = '';
-  ul = document.getElementById("A5_name");
-  ul.textContent = '';
-  ul = document.getElementById("A6_name");
-  ul.textContent = '';
-  ul = document.getElementById("A7_name");
-  ul.textContent = '';
-  ul = document.getElementById("A8_name");
-  ul.textContent = '';
-  ul = document.getElementById("B1_name");
-  ul.textContent = '';
-  ul = document.getElementById("B2_name");
-  ul.textContent = '';
-  ul = document.getElementById("B3_name");
-  ul.textContent = '';
-  ul = document.getElementById("B4_name");
-  ul.textContent = '';
-  ul = document.getElementById("C1_name");
-  ul.textContent = '';
-  ul = document.getElementById("C2_name");
-  ul.textContent = '';
-  ul = document.getElementById("third-A1_name");
-  ul.textContent = '';
-  ul = document.getElementById("third-A2_name");
-  ul.textContent = '';
-  ul = document.getElementById("third-A3_name");
-  ul.textContent = '';
-  ul = document.getElementById("third-A4_name");
-  ul.textContent = '';
-  ul = document.getElementById("third-B1_name");
-  ul.textContent = '';
-  ul = document.getElementById("third-B2_name");
-  ul.textContent = '';
-  ul = document.getElementById("third-C1_name");
-  ul.textContent = '';
-  ul = document.getElementById("A1_score");
-  ul.textContent = '';
-  ul = document.getElementById("A2_score");
-  ul.textContent = '';
-  ul = document.getElementById("A3_score");
-  ul.textContent = '';
-  ul = document.getElementById("A4_score");
-  ul.textContent = '';
-  ul = document.getElementById("A5_score");
-  ul.textContent = '';
-  ul = document.getElementById("A6_score");
-  ul.textContent = '';
-  ul = document.getElementById("A7_score");
-  ul.textContent = '';
-  ul = document.getElementById("A8_score");
-  ul.textContent = '';
-  ul = document.getElementById("B1_score");
-  ul.textContent = '';
-  ul = document.getElementById("B2_score");
-  ul.textContent = '';
-  ul = document.getElementById("B3_score");
-  ul.textContent = '';
-  ul = document.getElementById("B4_score");
-  ul.textContent = '';
-  ul = document.getElementById("C1_score");
-  ul.textContent = '';
-  ul = document.getElementById("C2_score");
-  ul.textContent = '';
+  ids.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.textContent = '';
+    }
+  });
 
-  A1A2matchElement.className = '';
-  A1A2matchElement.classList.add("match");
-  A3A4matchElement.className = '';
-  A3A4matchElement.classList.add("match");
-  A5A6matchElement.className = '';
-  A5A6matchElement.classList.add("match");
-  A7A8matchElement.className = '';
-  A7A8matchElement.classList.add("match");
-  B1B2matchElement.className = '';
-  B1B2matchElement.classList.add("match");
-  B3B4matchElement.className = '';
-  B3B4matchElement.classList.add("match");
-  C1C2matchElement.className = '';
-  C1C2matchElement.classList.add("match");
+  const matchElements = [
+    { element: A1A2matchElement, className: "match" },
+    { element: A3A4matchElement, className: "match" },
+    { element: A5A6matchElement, className: "match" },
+    { element: A7A8matchElement, className: "match" },
+    { element: B1B2matchElement, className: "match" },
+    { element: B3B4matchElement, className: "match" },
+    { element: C1C2matchElement, className: "match" },
+  ];
 
-  A1Element.style.display = "none";
-  A2Element.style.display = "none";
-  A3Element.style.display = "none";
-  A4Element.style.display = "none";
-  A5Element.style.display = "none";
-  A6Element.style.display = "none";
-  A7Element.style.display = "none";
-  A8Element.style.display = "none";
-  B1Element.style.display = "none";
-  B2Element.style.display = "none";
-  B3Element.style.display = "none";
-  B4Element.style.display = "none";
-  C1Element.style.display = "none";
-  C2Element.style.display = "none";
-  thirdA1Element.style.display = "none";
-  thirdA2Element.style.display = "none";
-  thirdA3Element.style.display = "none";
-  thirdA4Element.style.display = "none";
-  thirdB1Element.style.display = "none";
-  thirdB2Element.style.display = "none";
-  thirdC1Element.style.display = "none";
-  firstTopTopElement.style.display = "none";
-  firstTopBotElement.style.display = "none";
-  firstSecondTopElement.style.display = "none";
-  firstBotTopElement.style.display = "none";
-  firstBotBotElement.style.display = "none";
-  firstSecondBotElement.style.display = "none";
-  secondTopElement.style.display = "none";
-  secondBotElement.style.display = "none";
-  secondLineElement.style.display = "none";
+  matchElements.forEach(({ element, className }) => {
+    element.className = '';
+    element.classList.add(className);
+  });
+
+  const elementsToHide = [
+    A1Element, A2Element, A3Element, A4Element, A5Element, A6Element, A7Element, A8Element,
+    B1Element, B2Element, B3Element, B4Element,
+    C1Element, C2Element,
+    thirdA1Element, thirdA2Element, thirdA3Element, thirdA4Element, thirdB1Element, thirdB2Element, thirdC1Element,
+    firstTopTopElement, firstTopBotElement, firstSecondTopElement, firstBotTopElement, firstBotBotElement, firstSecondBotElement,
+    secondTopElement, secondBotElement, secondLineElement
+  ];
+
+  elementsToHide.forEach(element => {
+    element.style.display = "none";
+  });
+}
+
+function updateBracketGap(thirdPlayerMode){
+  if (!thirdPlayerMode){
+    document.querySelectorAll('.match').forEach(function(el) {
+      el.style.height = "62px";
+    });
+    document.querySelectorAll('.match-bottom').forEach(function(el) {
+      el.style.borderRadius = "0 0 5px 5px";
+    });
+  }
+  else {
+    document.querySelectorAll('.match').forEach(function(el) {
+      el.style.height = "93px";
+    });
+    document.querySelectorAll('.match-bottom').forEach(function(el) {
+      el.style.borderRadius = "0 0 0px 0px";
+    });
+  }
+}
+
+export function updateElementDisplayAndText(elementId, textContent, element = null) {
+  if (element)
+    element.style.display = "flex";
+  const ul = document.getElementById(elementId);
+  ul.textContent = textContent;
+}
+
+function display4PlayersBracket(thirdPlayerMode){
+  B1Element.style.display = "flex";
+  B2Element.style.display = "flex";
+  if (thirdPlayerMode)
+    thirdB1Element.style.display = "flex";
+  firstTopTopElement.style.display = "block";
+  firstTopBotElement.style.display = "block";
+  firstSecondTopElement.style.display = "block";
+}
+
+function display8PlayersBracket(thirdPlayerMode){
+  B3Element.style.display = "flex";
+  B4Element.style.display = "flex";
+  if (thirdPlayerMode)
+    thirdB2Element.style.display = "flex";
+  C1Element.style.display = "flex";
+  C2Element.style.display = "flex";
+  if (thirdPlayerMode)
+    thirdC1Element.style.display = "flex";
+  firstBotTopElement.style.display = "block";
+  firstSecondBotElement.style.display = "block";
+  secondTopElement.style.display = "block";
+  secondBotElement.style.display = "block";
+  secondLineElement.style.display = "block";
 }
 
 export function printBracket(tournamentPlayer, currentMatch, thirdPlayerMode) {
-    if (!thirdPlayerMode){
-      document.querySelectorAll('.match').forEach(function(el) {
-        el.style.height = "62px";
-      });
-      document.querySelectorAll('.match-bottom').forEach(function(el) {
-        el.style.borderRadius = "0 0 5px 5px";
-      });
-    }
-    else {
-      document.querySelectorAll('.match').forEach(function(el) {
-        el.style.height = "93px";
-      });
-      document.querySelectorAll('.match-bottom').forEach(function(el) {
-        el.style.borderRadius = "0 0 0px 0px";
-      });
-    }
+    updateBracketGap(thirdPlayerMode); 
     if (tournamentPlayer.length > 0){
-      A1Element.style.display = "flex";
-      let ul = document.getElementById("A1_name");
-      ul.textContent = currentMatch[0][0].myRef.username;
-      A2Element.style.display = "flex";
-      ul = document.getElementById("A2_name");
-      ul.textContent = currentMatch[0][1].myRef.username;
+      updateElementDisplayAndText("A1_name", currentMatch[0][0].myRef.username, A1Element);
+      updateElementDisplayAndText("A2_name", currentMatch[0][1].myRef.username, A2Element);
       if (thirdPlayerMode){
-        thirdA1Element.style.display = "flex";
-        ul = document.getElementById("third-A1_name");
-        ul.textContent = currentMatch[0][4].myRef.username;
+        updateElementDisplayAndText("third-A1_name", currentMatch[0][4].myRef.username, thirdA1Element);
       }
     }
     if (tournamentPlayer.length > 2){
-      A3Element.style.display = "flex";
-      let ul = document.getElementById("A3_name");
-      ul.textContent = currentMatch[1][0].myRef.username;
-      A4Element.style.display = "flex";
-      ul = document.getElementById("A4_name");
+      updateElementDisplayAndText("A3_name", currentMatch[1][0].myRef.username, A3Element);
       if (tournamentPlayer.length > 3)
-        ul.textContent = currentMatch[1][1].myRef.username;
+        updateElementDisplayAndText("A4_name", currentMatch[1][1].myRef.username, A4Element);
       else
-        ul.textContent = "...";
+        updateElementDisplayAndText("A4_name", "...", A4Element);
       if (thirdPlayerMode){
-        thirdA2Element.style.display = "flex";
-        ul = document.getElementById("third-A2_name");
         if (tournamentPlayer.length > 3)
-          ul.textContent = currentMatch[1][4].myRef.username;
+          updateElementDisplayAndText("third-A2_name", currentMatch[1][4].myRef.username, thirdA2Element);
         else
-          ul.textContent = "...";
+          updateElementDisplayAndText("third-A2_name", "...", thirdA2Element);
       }
-      B1Element.style.display = "flex";
-      B2Element.style.display = "flex";
-      if (thirdPlayerMode)
-        thirdB1Element.style.display = "flex";
-      firstTopTopElement.style.display = "block";
-      firstTopBotElement.style.display = "block";
-      firstSecondTopElement.style.display = "block";
+      display4PlayersBracket(thirdPlayerMode);
     }
     if (tournamentPlayer.length > 4){
-      A5Element.style.display = "flex";
-      let ul = document.getElementById("A5_name");
-      ul.textContent = currentMatch[2][0].myRef.username;
-      A6Element.style.display = "flex";
-      ul = document.getElementById("A6_name");
+      updateElementDisplayAndText("A5_name", currentMatch[2][0].myRef.username, A5Element);
       if (tournamentPlayer.length > 5)
-        ul.textContent = currentMatch[2][1].myRef.username;
+        updateElementDisplayAndText("A6_name", currentMatch[2][1].myRef.username, A6Element);
       else
-        ul.textContent = "...";
+        updateElementDisplayAndText("A6_name", "...", A6Element);
       if (thirdPlayerMode){
-        thirdA3Element.style.display = "flex";
-        ul = document.getElementById("third-A3_name");
         if (tournamentPlayer.length > 5)
-          ul.textContent = currentMatch[2][4].myRef.username;
+          updateElementDisplayAndText("third-A3_name", currentMatch[2][4].myRef.username, thirdA3Element);
         else
-          ul.textContent = "...";
+          updateElementDisplayAndText("third-A3_name", "...", thirdA3Element);
       }
-      B3Element.style.display = "flex";
-      B4Element.style.display = "flex";
-      if (thirdPlayerMode)
-        thirdB2Element.style.display = "flex";
-      C1Element.style.display = "flex";
-      C2Element.style.display = "flex";
-      if (thirdPlayerMode)
-        thirdC1Element.style.display = "flex";
-      firstBotTopElement.style.display = "block";
-      firstSecondBotElement.style.display = "block";
-      secondTopElement.style.display = "block";
-      secondBotElement.style.display = "block";
-      secondLineElement.style.display = "block";
+      display8PlayersBracket(thirdPlayerMode);
     }
     if (tournamentPlayer.length > 6){
-      A7Element.style.display = "flex";
-      let ul = document.getElementById("A7_name");
-      ul.textContent = currentMatch[3][0].myRef.username;
-      A8Element.style.display = "flex";
-      ul = document.getElementById("A8_name");
+      updateElementDisplayAndText("A7_name", currentMatch[3][0].myRef.username, A7Element);      
       if (tournamentPlayer.length > 7)
-        ul.textContent = currentMatch[3][1].myRef.username;
+        updateElementDisplayAndText("A8_name", currentMatch[3][1].myRef.username, A8Element);
       else
-        ul.textContent = "...";
+        updateElementDisplayAndText("A8_name", "...", A8Element);
       if (thirdPlayerMode){
-        thirdA4Element.style.display = "flex";
-        ul = document.getElementById("third-A4_name");
         if (tournamentPlayer.length > 7)
-          ul.textContent = currentMatch[3][4].myRef.username;
+          updateElementDisplayAndText("third-A4_name", currentMatch[3][4].myRef.username, thirdA4Element);
         else
-          ul.textContent = "...";
+          updateElementDisplayAndText("third-A4_name", "...", thirdA4Element);
       }
       firstBotBotElement.style.display = "block";
     }
@@ -281,92 +200,71 @@ export function printBracket(tournamentPlayer, currentMatch, thirdPlayerMode) {
     }
     if (round == 2){
       if (nbMatch == 0){
-        let ul = document.getElementById("B1_name");
-        ul.textContent = winner_name;
+        updateElementDisplayAndText("B1_name", winner_name);
         if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
           A1A2matchElement.classList.add("winner-top");
         else
           A1A2matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("A1_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("A2_score");
-        ul.textContent = currentMatch[nbMatch][3];
+        updateElementDisplayAndText("A1_score", currentMatch[nbMatch][2]);
+        updateElementDisplayAndText("A2_score", currentMatch[nbMatch][3]);
       }
       else if (nbMatch == 1){
-        let ul = document.getElementById("B2_name");
-        ul.textContent = winner_name;
+        updateElementDisplayAndText("B2_name", winner_name);
         if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
           A3A4matchElement.classList.add("winner-top");
         else
           A3A4matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("A3_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("A4_score");
-        ul.textContent = currentMatch[nbMatch][3];
+        updateElementDisplayAndText("A3_score", currentMatch[nbMatch][2]);    
+        updateElementDisplayAndText("A4_score", currentMatch[nbMatch][3]);
       }
       else if (nbMatch == 2){
-        let ul = document.getElementById("B3_name");
-        ul.textContent = winner_name;
+        updateElementDisplayAndText("B3_name", winner_name);
         if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
           A5A6matchElement.classList.add("winner-top");
         else
           A5A6matchElement.classList.add("winner-bottom");
         if (tournamentPlayer.length === 5){
-          ul = document.getElementById("B4_name");
-          ul.textContent = "...";
+          updateElementDisplayAndText("B4_name", "...");
         }
-        ul = document.getElementById("A5_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("A6_score");
-        ul.textContent = currentMatch[nbMatch][3];
+        updateElementDisplayAndText("A5_score", currentMatch[nbMatch][2]);
+        updateElementDisplayAndText("A6_score", currentMatch[nbMatch][3]);
       }
       else if (nbMatch == 3){
-        let ul = document.getElementById("B4_name");
-        ul.textContent = winner_name;
+        updateElementDisplayAndText("B4_name", winner_name);
         if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
           A7A8matchElement.classList.add("winner-top");
         else
           A7A8matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("A7_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("A8_score");
-        ul.textContent = currentMatch[nbMatch][3];
+        updateElementDisplayAndText("A7_score", currentMatch[nbMatch][2]);
+        updateElementDisplayAndText("A8_score", currentMatch[nbMatch][3]);
       }
     }
     else if (round == 3){
       if (nbMatch == 0){
-        let ul = document.getElementById("C1_name");
-        ul.textContent = winner_name;
+        updateElementDisplayAndText("C1_name", winner_name);
         if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
           B1B2matchElement.classList.add("winner-top");
         else
           B1B2matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("B1_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("B2_score");
-        ul.textContent = currentMatch[nbMatch][3];
+        updateElementDisplayAndText("B1_score", currentMatch[nbMatch][2]);
+        updateElementDisplayAndText("B2_score", currentMatch[nbMatch][3]);
       }
       else if (nbMatch == 1){
-        let ul = document.getElementById("C2_name");
-        ul.textContent = winner_name;
+        updateElementDisplayAndText("C2_name", winner_name);
         if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
           B3B4matchElement.classList.add("winner-top");
         else
           B3B4matchElement.classList.add("winner-bottom");
-        ul = document.getElementById("B3_score");
-        ul.textContent = currentMatch[nbMatch][2];
-        ul = document.getElementById("B4_score");
-        ul.textContent = currentMatch[nbMatch][3];
+        updateElementDisplayAndText("B3_score", currentMatch[nbMatch][2]);
+        updateElementDisplayAndText("B4_score", currentMatch[nbMatch][3]);
       }
     }
     else if (round == 4){
       if (currentMatch[nbMatch][2] > currentMatch[nbMatch][3])
-          C1C2matchElement.classList.add("winner-top");
-        else
-          C1C2matchElement.classList.add("winner-bottom");
-      let ul = document.getElementById("C1_score");
-      ul.textContent = currentMatch[nbMatch][2];
-      ul = document.getElementById("C2_score");
-      ul.textContent = currentMatch[nbMatch][3];
+        C1C2matchElement.classList.add("winner-top");
+      else
+        C1C2matchElement.classList.add("winner-bottom");
+      updateElementDisplayAndText("C1_score", currentMatch[nbMatch][2]);
+      updateElementDisplayAndText("C2_score", currentMatch[nbMatch][3]);
     }
   }
