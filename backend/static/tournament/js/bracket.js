@@ -152,6 +152,8 @@ export function resetBracket(){
 }
 
 export function printBracket(tournamentPlayer, currentMatch, thirdPlayerMode) {
+    console.log("tournamentPlayer", tournamentPlayer);
+    console.log("currentMatch", currentMatch);
     if (!thirdPlayerMode){
       document.querySelectorAll('.match').forEach(function(el) {
         el.style.height = "62px";

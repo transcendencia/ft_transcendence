@@ -4,7 +4,7 @@ import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight} from "./main.js";
+import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape } from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
 import { resetOutline } from "./planetIntersection.js";
 import { togglePlanet } from "./enterPlanet.js";
@@ -152,6 +152,7 @@ function handleLoginSubmit(event) {
 }
 
 // Handle form submission
+// Should I change it with a patch request
 export async function handleLogin(formData) {
     if (sessionStorage.getItem("hostLoggedIn") === null) {
         sessionStorage.setItem("hostLoggedIn", 'false');
@@ -177,8 +178,9 @@ export async function handleLogin(formData) {
             let guest_token = null;
             console.log(data.status);
             if (data.status === "success") {
+
+                // console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
-                    //passer avec session storage et id pour avoir plusieur personne de connecter sur plusieur fenetre
 
                     sessionStorage.setItem("hostLoggedIn", 'true');
                     sessionStorage.setItem("host_auth_token", data.token);
@@ -187,11 +189,16 @@ export async function handleLogin(formData) {
                     setCurrentLanguage(data.language.slice(0, 2));
                     setEscapeLanguageVisual();
                     get_friends_list();
+                    // console.log("host id:", sessionStorage.getItem("host_id"));
                     getProfileInfo(sessionStorage.getItem("host_id"))
                     .then(data => {
                         populateProfileInfos(data);
                         createUserBadge(data, "playersConnHostBadge")
                     })
+                    .catch(error => {
+                        console.error('Failed to retrieve profile info:', error);
+                    });
+                    
                     TranslateAllTexts();
                     getGameInfo();
                     changeGraphics(data.graphic_mode);
@@ -204,11 +211,9 @@ export async function handleLogin(formData) {
                 }
                 resolve(guest_token);
             } else {
-                console.log("failed login", data);
-                if (hostLoggedIn === 'false')
-                    document.getElementById('messageContainer').innerText = getTranslatedText(data.msg_code);
-                else if (hostLoggedIn === 'true')
-                    document.getElementById('errorLogGuest').innerText = getTranslatedText(data.msg_code);
+                const messageContainerId = hostLoggedIn ? 'messageContainer' : 'errorLogGuest';
+
+                document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
                 resolve(null);
             }
         })
@@ -337,7 +342,8 @@ export function getGameInfo() {
 const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
     handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
-    toggleEscapeContainerVisibility();
+    if (!gameState.inGame)
+        toggleEscapeContainerVisibility();
 });
 
 function resetHTMLelements(){
@@ -349,11 +355,21 @@ function resetHTMLelements(){
 }
 
 
+
 function handleLogout(userId, token) {
     // Disconnect all the guest
     if (gameState.inGame)
-        togglePlanet();
+    {
+        resetGameEscape();
+        setTimeout(() => {
+            gameState.arena.displayBackPanel();
+            gameState.arena.thirdPlayer.deactivateThirdPlayer();
+            gameState.arena.idleCameraAnimation();
+        }, 250);
+        return;
+    }
     logoutGuest(userId);
+
     // Disconnect the host
     updateUserStatus('offline', token)
     .then(() => {
@@ -362,17 +378,7 @@ function handleLogout(userId, token) {
     .catch(error => {
         console.error('Erreur :', error);
     });
-    if (gameState.inGame) {
-        gameState.inGame = false;
-        gameState.inLobby = true;
-        toggleEscapeContainerVisibility(true);
-        toggleGameStarted();
-        if (gameState.arena.game.user2.isBot)
-            gameState.arena.bot.deactivateBot();
-        resetHTMLelements();
-    }
-    else
-        togglePause();
+    togglePause();
     spaceShip.rotation.set(0, 0, 0);
     spaceShip.position.set(0, 0, -1293.5);
     setTimeout(() => {
@@ -383,6 +389,7 @@ function handleLogout(userId, token) {
         showPage('loginPage');
         toggleLobbyStart();
         swipeLeftSideContainer('-40%');
+        gameState.paused = false;
         scene.add(bluelight);
         scene.remove(whitelight);
     }, 50);

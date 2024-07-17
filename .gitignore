@@ -9,12 +9,16 @@ venv/
 
 #pycache
 /backend/backend/__pycache__/
+/backend/authentication/__pycache__
+/backend/authentication/view/__pycache__
+
 
 #production files
 backend/productionfiles/
 backend/authentication/migrations/
 backend/migrations/
 backend/authentication/migrations/0001_initial.py
+backend/logs
 
 backend/debug.log
 backend/errors.log

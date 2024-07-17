@@ -214,6 +214,5 @@ for (let i = 0; i < modelsData.length; i++) {
 
 
 export function allModelsLoaded() {
-    console.log(modelsData.every(model => model.loaded), spaceShipLoaded, spaceShipIntLoaded, markerLoaded)
     return modelsData.every(model => model.loaded) && spaceShipLoaded && spaceShipIntLoaded && markerLoaded;
 }

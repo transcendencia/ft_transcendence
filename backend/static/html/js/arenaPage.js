@@ -168,9 +168,7 @@ function addClickListenerToNewUserBadge(userBadge, plusButton, tile) {
 		resetToPlusButton(userBadge.userInfoCont, plusButton);
 		updateListAndResetTimer();
 		removeUserFromMatch(tile.user.id);
-		console.log("before", addedPlayerBadges, tile.user.username);
 		addedPlayerBadges = addedPlayerBadges.filter(badge => badge.username !== tile.user.username);
-		console.log("after", addedPlayerBadges, tile.user.username);
 	});
 }
 
@@ -236,6 +234,7 @@ validatePasswordButton.addEventListener('click', async function() {
 			let guestToken = await handleLogin(formData);
 			
 			if (guestToken) {
+
 				guestLoggedIn.push([guest, guestToken]);
 				if (planetInRange.name === 'arena')
 					putUserInMatch(plusButtonsArena, 'arena');
@@ -268,6 +267,7 @@ backPasswordButton.addEventListener('click', function() {
 });
 
 function addEventListenerToTile(tile, arena) {
+	console.log(tile.user.username, tile.user.status);
 	tile.HTMLelement.addEventListener('click', function() {
 	if (!plusClicked || isBotId(tile.user.id) && planetInRange.name === "arena" && plusClicked === 1)
 		return;
@@ -350,7 +350,7 @@ export function resetArenaPage() {
   }
 
   const userTiles = new Map();
-  
+   
 let userListBackground;
 
 export async function RenderAllUsersInList() {
@@ -358,7 +358,7 @@ export async function RenderAllUsersInList() {
 	const users = await get_friends_list();
 	const sortedNewFriends = users.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
 	const sortedNewUserNotFriend = users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
-  
+
 	const availableFriends = sortedNewFriends.filter(obj => isAvailable(obj.user)).map(obj => obj.user);
 	const availableNotFriends = sortedNewUserNotFriend.filter(user => isAvailable(user));
 	
@@ -456,6 +456,7 @@ export function createUserTile(user, type) {
 	  type: type
 	});
   
+	// console.log("userTiles:", userTiles);
 	userListBackground.appendChild(userTile);
 	addEventListenerToTile(userTiles.get(user.id));  
 	return userTile;
@@ -615,16 +616,15 @@ export function toggleGameStarted() {
 
 export function endGame(isTournament) {
 	console.log("all guestLoggedIn:", guestLoggedIn);
-	let hostId = sessionStorage.getItem('host_id');
-	if (hostId === gameState.arena.game.user1.id  || hostId === gameState.arena.game.user3.id  || (player3 && hostId === gameState.arena.game.user3.id )){
-		let token = sessionStorage.getItem('host_auth_token');
+	const hostId = sessionStorage.getItem('host_id');
+	if (hostId == gameState.arena.game.user1.id  || hostId == gameState.arena.game.user2.id  || (hostId == gameState.arena.game.user3.id )){
+		const token = sessionStorage.getItem('host_auth_token');
 		updateUserStatus('online', token);
 	}
 	for(let i = 0; i < guestLoggedIn.length; i++) {
 		if (guestLoggedIn[i][0].id === gameState.arena.game.user1.id || guestLoggedIn[i][0].id === gameState.arena.game.user2.id || guestLoggedIn[i][0].id === gameState.arena.game.user3.id) {
-			token = guestLoggedIn[i][1];
+			const token = guestLoggedIn[i][1];
 			updateUserStatus('online', token);
-			console.log("guest logged in:", guestLoggedIn[i]);
 		}
 	}
 	gameStarted = false;
@@ -635,10 +635,6 @@ export function endGame(isTournament) {
 	if (isTournament){
 		planetPanel[2].style.visibility = 'visible';
 		// if (gameState.arena)
-		console.log("user1:", gameState.arena.game.user1);
-		console.log("user2:", gameState.arena.game.user2);
-		console.log("leftScore:", gameState.arena.game.leftScore);
-		console.log("rightScore:", gameState.arena.game.rightScore);
 		createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
 		afterGameTournament(gameState.arena.game.leftScore, gameState.arena.game.rightScore);
 	}
@@ -652,6 +648,8 @@ export function endGame(isTournament) {
 	document.getElementById('c3').style.display = 'none';
 	document.getElementById('c1').style.display = 'none';
 	gameState.arena.game.resetUsers();
+	console.log("test");
+	refreshUserListIfChanged();
 }
 
 export function rematchGame() {
@@ -688,9 +686,10 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
 	gameState.inLobby = false;
 	setTimeout(() => {
 		let hostId = sessionStorage.getItem('host_id');
-		if (hostId === player1.playerId || hostId === player2.playerId || (player3 && hostId === player3.playerId)){
+		if (hostId == player1.playerId || hostId == player2.playerId || (player3 && hostId == player3.playerId)){
 			let token = sessionStorage.getItem('host_auth_token');
 			updateUserStatus('in_game', token);
+			console.log("host is know in game");
 		}
 		for(let i = 0; i < guestLoggedIn.length; i++) {
 			if (guestLoggedIn[i][0].id === player1.playerId || guestLoggedIn[i][0].id === player2.playerId || (player3 && guestLoggedIn[i][0].id === player3.playerId)) {

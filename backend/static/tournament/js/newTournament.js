@@ -96,7 +96,6 @@ buttonHeaders.forEach((buttonHeader, index) => {
 export function resetTournament() {
   if (tournamentState === 1)
       return ;
-  console.log("reset Tournament Cast");
   document.querySelectorAll('.before-launch').forEach(function(el) {
     el.style.display = 'flex';
   });
@@ -111,8 +110,7 @@ export function resetTournament() {
   playerNb = 0;
   profileAdded.length = 0;
   addedPlayerBadges.length = 0;
-  tournamentPlayer.length = 1;
-
+  tournamentPlayer.length = 0;
   tournamentState = 0;
   round = 1;
   thirdPlayerMode = false;
@@ -150,7 +148,9 @@ const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const validateAliasButton = document.getElementById("aliasLogInButton");
 
 const backButtonTournamentPage = document.getElementById("trnmtBackButton");
+const backButtonLaunchTournamentPage = document.getElementById("trnmtLaunchBackButton");
 backButtonTournamentPage.addEventListener('click', () => {togglePlanet()});
+backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet()});
 
   export function askForAlias(user){
     aliasWindow.classList.toggle("showRectangle");
@@ -208,7 +208,9 @@ backButtonTournamentPage.addEventListener('click', () => {togglePlanet()});
   function makeMatchup() {
     const ul = document.getElementById("match");
     // ul.innerHTML = "";
+    console.log("tournamentPlayer", tournamentPlayer);
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
+    console.log("playersInTournament", playersInTournament);
     let j = 0;
     nbMatch = 0;
     currentMatch = [];
