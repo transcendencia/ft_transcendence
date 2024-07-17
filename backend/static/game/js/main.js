@@ -847,7 +847,7 @@ class Arena extends THREE.Mesh {
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
         this.paddleRight.animatePaddle(this);
-        if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling)
+        if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling && this.game.rightScore < this.game.maxScore && this.game.leftScore < this.game.maxScore)
         {
             this.ball.speedX = 0;
             this.ball.acceleration = 0;
