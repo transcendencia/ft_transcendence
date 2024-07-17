@@ -444,6 +444,8 @@ export function startAnimation() {
             toggleRSContainerVisibility();
             scene.remove(bluelight);
             scene.add(whitelight);
+            const submitButton = document.getElementById('loginButton');
+            submitButton.disabled = false;
             document.getElementById('usernameLoginInput').disabled = false;
             document.getElementById('passwordLoginInput').disabled = false;
         });
