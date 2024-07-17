@@ -91,6 +91,7 @@
         "winLoseText4": "Goals",
         "statisticsText": "Statistics",
         "backButton": "Back",
+        "cancelTournamentButton": "Cancel Tournament",
 
         "changeInfo": "Only fill in information you want to change",
         "changeUsernameInput": "Username",
@@ -216,6 +217,7 @@
         "winLoseText4": "Goles",
         "statisticsText": "Estadisticas",
         "backButton": "volver",
+        "cancelTournamentButton": "Cancelar torneo",
 
         "changeInfo": "Complete solo la informacion que desea cambiar",
         "changeUsernameInput": "Nombre de usuario",
@@ -342,6 +344,7 @@
         "winLoseText4": "Buts",
         "statisticsText": "Statistiques",
         "backButton": "Retour",
+        "cancelTournamentButton": "Annuler le tournoi",
 
         "changeInfo": "Remplissez uniquement les informations que vous souhaitez modifier",
         "changeUsernameInput": "Nom d'utilisateur",
@@ -375,7 +378,7 @@
         "enterPasswordText": "Entrer votre mot de passe",
         "enterPasswordInput": "Mot de passe",
         "arenaBackLogInButton": "Retour",
-        "arenaLogInButton": "Connection",
+        "arenaLogInButton": "Connexion",
         "showAliasText": "Voici votre alias pour le tournoi:",
         "aliasLogInButton": "D'accord"
     }

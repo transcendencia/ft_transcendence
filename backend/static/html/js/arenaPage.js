@@ -267,7 +267,6 @@ backPasswordButton.addEventListener('click', function() {
 });
 
 function addEventListenerToTile(tile, arena) {
-	console.log(tile.user.username, tile.user.status);
 	tile.HTMLelement.addEventListener('click', function() {
 	if (!plusClicked || isBotId(tile.user.id) && planetInRange.name === "arena" && plusClicked === 1)
 		return;
@@ -614,17 +613,16 @@ export function toggleGameStarted() {
 	gameStarted = !gameStarted;
 }
 
-export function endGame(isTournament) {
-	console.log("all guestLoggedIn:", guestLoggedIn);
+export async function endGame(isTournament) {
 	const hostId = sessionStorage.getItem('host_id');
 	if (hostId == gameState.arena.game.user1.id  || hostId == gameState.arena.game.user2.id  || (hostId == gameState.arena.game.user3.id )){
 		const token = sessionStorage.getItem('host_auth_token');
-		updateUserStatus('online', token);
+		await updateUserStatus('online', token);
 	}
 	for(let i = 0; i < guestLoggedIn.length; i++) {
-		if (guestLoggedIn[i][0].id === gameState.arena.game.user1.id || guestLoggedIn[i][0].id === gameState.arena.game.user2.id || guestLoggedIn[i][0].id === gameState.arena.game.user3.id) {
+		if (guestLoggedIn[i][0].id == gameState.arena.game.user1.id || guestLoggedIn[i][0].id == gameState.arena.game.user2.id || guestLoggedIn[i][0].id == gameState.arena.game.user3.id) {
 			const token = guestLoggedIn[i][1];
-			updateUserStatus('online', token);
+			await updateUserStatus('online', token);
 		}
 	}
 	gameStarted = false;
@@ -680,8 +678,6 @@ export function switchToGame(gameState, player1, player2, player3, isTournament)
 
 export function    initGame(gameState, player1, player2, player3, isTournament) {
 	// prepare for initialization
-	console.log("all guests logged in Initgame:", guestLoggedIn);
-	console.log("players", player1, player2, player3);
 	gameState.loading = true;
 	gameState.inLobby = false;
 	setTimeout(() => {
@@ -689,13 +685,11 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
 		if (hostId == player1.playerId || hostId == player2.playerId || (player3 && hostId == player3.playerId)){
 			let token = sessionStorage.getItem('host_auth_token');
 			updateUserStatus('in_game', token);
-			console.log("host is know in game");
 		}
 		for(let i = 0; i < guestLoggedIn.length; i++) {
 			if (guestLoggedIn[i][0].id === player1.playerId || guestLoggedIn[i][0].id === player2.playerId || (player3 && guestLoggedIn[i][0].id === player3.playerId)) {
 				const token = guestLoggedIn[i][1];
 				updateUserStatus('in_game', token);
-				console.log("guestLoggedIn:", guestLoggedIn[i]);
 			}
 		}
 	  gameState.arena.game.hasToBeInitialized = true;

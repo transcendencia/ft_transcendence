@@ -149,8 +149,13 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
 
 const backButtonTournamentPage = document.getElementById("trnmtBackButton");
 const backButtonLaunchTournamentPage = document.getElementById("trnmtLaunchBackButton");
+const cancelTournamentButton = document.getElementById("cancelTournamentButton");
 backButtonTournamentPage.addEventListener('click', () => {togglePlanet()});
 backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet()});
+cancelTournamentButton.addEventListener('click', () => {
+  tournamentState = 2;
+  togglePlanet();
+});
 
   export function askForAlias(user){
     aliasWindow.classList.toggle("showRectangle");
@@ -170,9 +175,8 @@ backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet()})
   const tournamentPlayer = [];
 
   export function addUserToTournament(playerId, username, profile_picture) {
-    if (tournamentPlayer.some(player=> player.username === username && player.username !== "bot")){
+    if (tournamentPlayer.some(player=> player.username === username && player.username !== "bot"))
       return ;
-    }
     tournamentPlayer.push({
       playerId: playerId,
       username: username,
@@ -182,7 +186,6 @@ backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet()})
       round: 1,
     });
   }
-
 
   export function toggleThirdPlayerMode() {
     if (thirdPlayerMode === false)
@@ -205,12 +208,21 @@ backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet()})
   let nbMatch;
   let thirdPlayerMode = false; //must be removed to use the real variable
 
+  function addPlayerToCurrentMatch(player1, player2, player3, inverted){
+    currentMatch.push([
+      player1,
+      player2,
+      -1,
+      -1,
+      player3,
+      inverted,
+    ]);
+  }
+
   function makeMatchup() {
     const ul = document.getElementById("match");
     // ul.innerHTML = "";
-    console.log("tournamentPlayer", tournamentPlayer);
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
-    console.log("playersInTournament", playersInTournament);
     let j = 0;
     nbMatch = 0;
     currentMatch = [];
@@ -231,20 +243,14 @@ backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet()})
       nextMatchElement.style.display = "none";
       ul.textContent = playersInTournament[0].username + " has won the tournament!";
       launchMatchElement.style.display = "none";
+      cancelTournamentButton.style.display = "none";
       return ;
     }
     //put matchup in currentMatch variable
     for (let i = 0; i < playersInTournament.length; i += 2) {
       let inverted = 0;
       if (i + 1 >= playersInTournament.length){
-        currentMatch.push([
-          { myRef: playersInTournament[i] },
-          "",
-          -1,
-          -1,
-          "",
-          inverted,
-        ]);
+        addPlayerToCurrentMatch({ myRef: playersInTournament[i] }, "", "", inverted);
       }
       else{
         if (playersInTournament[i].username === "bot"){
@@ -255,24 +261,10 @@ backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet()})
         }
         if (thirdPlayerMode){
           let thirdPlayer = getRandomNumber(tournamentPlayer, playersInTournament[i].username, playersInTournament[i + 1].username);
-          currentMatch.push([
-            { myRef: playersInTournament[i] },
-            { myRef: playersInTournament[i + 1] },
-            -1,
-            -1,
-            { myRef: tournamentPlayer[thirdPlayer]},
-            inverted,
-          ]);
+          addPlayerToCurrentMatch({ myRef: playersInTournament[i] }, { myRef: playersInTournament[i + 1] }, { myRef: tournamentPlayer[thirdPlayer] }, inverted);
         }
         else{
-          currentMatch.push([
-            { myRef: playersInTournament[i] },
-            { myRef: playersInTournament[i + 1] },
-            -1,
-            -1,
-            "",
-            inverted,
-          ]);
+          addPlayerToCurrentMatch({ myRef: playersInTournament[i] }, { myRef: playersInTournament[i + 1] }, "", inverted);
         }
       }
       j ++;
@@ -354,6 +346,7 @@ backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet()})
       el.style.display = 'none';
     });
     launchMatchElement.style.display = "flex";
+    cancelTournamentButton.style.display = "flex";
     bracketElement.style.display = "inline";
     bottomTournamentElement.style.display = "flex";
     midColumn.style.width = "100%";

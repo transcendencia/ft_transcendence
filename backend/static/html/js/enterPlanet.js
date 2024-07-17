@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
-import { resetTournament, tournamentState } from '../../tournament/js/newTournament.js';
+import { resetTournament } from '../../tournament/js/newTournament.js';
 import { initArenaPlanet, initTournamentPlanet, resetArenaPage } from './arenaPage.js';
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
 import { initUserPlanet } from './userPage.js';
