@@ -1,4 +1,4 @@
-import { togglePlanet } from './enterPlanet.js';
+import { togglePlanet, checkEach5Sec } from './enterPlanet.js';
 import { returnToHost } from './userPage.js';
 import { toggleLobbyStart, createUserBadge } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
@@ -85,6 +85,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
         });
       }
       guestLoggedIn.splice(0, guestLoggedIn.length);
+      clearInterval(checkEach5Sec);
       sessionStorage.clear();
       return response.json();
   })

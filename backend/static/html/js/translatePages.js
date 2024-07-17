@@ -99,7 +99,7 @@ const confirmPassword = document.getElementById('confirmPassword');
 const signUpTitle = document.getElementById('signUpTitle');
 const createAccountText = document.getElementById('createAccountText');
 const SignUpButton = document.querySelectorAll('.actionCont')[1];
-const backToLoginButton = document.querySelector('.backButton');
+const backToLoginButton = document.querySelector('.hologram-button');
 const signupHereButton = document.querySelector('.actionCont');
 
 function translateLoginPageTexts() {
