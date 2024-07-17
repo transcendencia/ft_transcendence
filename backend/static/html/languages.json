@@ -27,7 +27,7 @@
 
 
         "RGPDTitle" : "Privacy Policy",
-        "RGPDText": "The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing is user consent. You can modify your data, delete your profile at any time by going in the planete profile. For any reclamation you can go to the CNIL website.",
+        "RGPDText": "Your data is only used for the proper functioning of the tournament. Your profile is deleted after two years after the last login. You can modify, download the collected data, or delete your profile, at any time, from the planete profile. For more information go to the CNIL website.",
         "RGPDCreate": "By making you accept the",
         "RGPDPolicy" : "privacy policy",
         "RGPDBack" : "Back",
@@ -154,7 +154,7 @@
         "invalid":"Contraseña no idéntica",
 
         "RGPDTitle" : "Politica de privacidad",
-        "RGPDText" : "La organizacion ft_transcendance solo recoge los datos necesarios para el buen funcionamiento de los torneos y no los comunica a ningún otro organismo. La base legal del tratamiento de datos es el consentimiento de los usuarios. Puede editar sus datos, eliminar su perfil en cualquier momento en la planeta perfil. Para cualquier consulta puede visitar el sitio web de la CNIL.",
+        "RGPDText" : "Tus datos solo sirven para el buen funcionamiento del torneo. Tu perfil se elimina después de dos años después de la última conexión. Puede editar, descargar los datos recopilados, o eliminar su perfil, en cualquier momento, desde el planeta perfil. Para más información, visite el sitio web de la CNIL.",
         "RGPDCreate": "Al aceptarte a ti mismo la",
         "RGPDPolicy" : "política de confidencialidad",
         "RGPDBack" : "Volver", 
