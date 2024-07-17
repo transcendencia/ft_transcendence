@@ -2,49 +2,6 @@ import { getCookie } from './loginPage.js';
 import { getTranslatedText} from "./translatePages.js";
 import { setHostAsPlayerOne} from "./arenaPage.js";
 
-export function updateUserGraphicMode(graphicMode) {
-	const token = sessionStorage.getItem('host_auth_token');
-    return fetch('change_graphic_mode/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ graphicMode: graphicMode })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erreur lors du changement graphique');
-        }
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
-    });
-}
-
-export function updateUserLanguage(new_language) {
-    const token = sessionStorage.getItem('host_auth_token');
-    fetch('change_language/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ language: new_language })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erreur lors de la modification de la langue');
-        }
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
-    });
-}
-
-
 export async function updateUserStatus(status, token) {
     try {
         const response = await fetch('/user/status/', {
@@ -68,15 +25,6 @@ export async function updateUserStatus(status, token) {
     }
 }
 
-// export  function getUserStatus(userId) {
-//     return fetch('get_status/${userId}', {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type':
-//         }
-//     })
-// }
-
 export function getUserStatus(userId) {
     const token = sessionStorage.getItem('host_auth_token');
     return fetch(`/user/status/${userId}/`, {
@@ -99,28 +47,6 @@ export function getUserStatus(userId) {
     .catch(error => {
         console.error('Erreur lors de la récupération du status :', error.message);
     });
-}
-
-export async function get_friends_list() {
-    const token = sessionStorage.getItem('host_auth_token');
-    
-    try {
-        const response = await fetch('return_friends_list/', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Token ${token}`,
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error:', error);
-        throw error;
-    }
 }
 
 export function get_user_list() {
@@ -161,8 +87,9 @@ export function populateProfileInfos(data) {
 }
 
 export function getProfileInfo(userId) {
+    // console.log("userId:", userId);
     const token = sessionStorage.getItem('host_auth_token');
-    return fetch(`get_profile_info/${userId}/`, {
+    return fetch(`user_info/${userId}/`, {
         method: 'GET',
         headers: {
             'Authorization': `Token ${token}`,
@@ -179,10 +106,11 @@ export function getProfileInfo(userId) {
     });
 }
 
+// FRIEND REQUEST
 export function send_request(id) {
 
     const token = sessionStorage.getItem('host_auth_token');
-    fetch('send_friend_request/', {
+    fetch('friend_request/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -204,8 +132,8 @@ export function send_request(id) {
 export async function accept_friend_request(id) {
     const token = sessionStorage.getItem('host_auth_token');
     console.log("id", id);
-    await fetch('accept_friend_request/', {
-        method: 'POST',
+    await fetch('friend_request/', {
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`,
@@ -225,8 +153,8 @@ export async function accept_friend_request(id) {
 
 export async function delete_friend_request(id) {
     const token = sessionStorage.getItem('host_auth_token');
-    await fetch('reject_friend_request/', {
-        method: 'POST',
+    await fetch('friend_request/', {
+        method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`,
@@ -244,6 +172,73 @@ export async function delete_friend_request(id) {
     });
 }
 
+export async function get_friends_list() {
+    const token = sessionStorage.getItem('host_auth_token');
+    
+    try {
+        const response = await fetch('friends_list/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Token ${token}`,
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        // console.log(data);
+        return data;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
+// UPDATE
+// Passer en requete PATCH
+export function updateUserGraphicMode(graphicMode) {
+	const token = sessionStorage.getItem('host_auth_token');
+    return fetch('user/graphic_mode/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ graphicMode: graphicMode })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors du changement graphique');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+}
+
+// Passer en requete PATCH
+export function updateUserLanguage(new_language) {
+    const token = sessionStorage.getItem('host_auth_token');
+    fetch('user/language/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ language: new_language })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la modification de la langue');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+}
 export function test_back() {
     console.log("test back");
     // SIGN UP

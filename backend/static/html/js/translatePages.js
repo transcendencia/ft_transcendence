@@ -68,6 +68,7 @@ const trnmtbotDifficultyLevelText = document.getElementById('trnmtBotDifficultyL
 const trnmtStartText = document.getElementById('launch');
 const trnmtThirdPlayerText = document.getElementById('thirdPlayerText');
 const trnmtBackButton = document.getElementById('trnmtBackButton');
+const trnmtLaunchBackButton = document.getElementById('trnmtLaunchBackButton');
 const trnmtNextMatch = document.getElementById('next-match');
 const trnmtLaunchMatch = document.getElementById('launchMatch');
 
@@ -86,6 +87,7 @@ function translateTournamentPageTexts() {
     trnmtStartText.textContent = getTranslatedText('start');
     trnmtThirdPlayerText.textContent = getTranslatedText('thirdPlayer');
     trnmtBackButton.textContent = getTranslatedText('backButton');
+    trnmtLaunchBackButton.textContent = getTranslatedText('backButton');
     trnmtNextMatch.textContent = getTranslatedText('nextMatch');
     trnmtLaunchMatch.textContent = getTranslatedText('launchMatch');
 }
@@ -133,7 +135,10 @@ function translateEscapePageTexts() {
     graphics3.textContent = getTranslatedText('graphicsText3');
     currentlyLoggedAs.childNodes[0].textContent = getTranslatedText('loggedAs');
     graphicsTitle.childNodes[4].textContent = getTranslatedText('graphicsTitle');
-    disconnectButton.textContent = getTranslatedText('disconnect');
+    if (disconnectButton.textContent === 'Disconnect' || disconnectButton.textContent === 'Deconnecter' || disconnectButton.textContent === 'Desconectar')
+        disconnectButton.textContent = getTranslatedText('disconnect');
+    else
+        disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
 }
 
 const RGPDTitle = document.getElementById('RGPDTitle');
