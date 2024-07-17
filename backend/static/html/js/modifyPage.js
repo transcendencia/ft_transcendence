@@ -67,6 +67,17 @@ document.getElementById('deleteAccountCancel').addEventListener("click", functio
   deleteBlockingPanel.classList.remove('show');
 });
 
+function returnToLoginPageInSpaceship() {
+  spaceShip.position.set(0, 0, -1293.5);
+  spaceShip.rotation.set(0, 0, 0);
+
+  setTimeout(() => {
+      toggleLobbyStart(true);
+      spaceShipInt.visible = true;
+      showPage('loginPage');
+  }, 25);
+}
+
 document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
   const token = sessionStorage.getItem('host_auth_token');
   document.getElementById("validateDelete").classList.remove("showRectangle");
@@ -96,14 +107,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   document.getElementById("validateDelete").classList.remove("showRectangle");
   togglePlanet(true);
   returnToHost();
-  spaceShip.position.set(0, 0, -1293.5);
-  spaceShip.rotation.set(0, 0, 0);
-
-  setTimeout(() => {
-      toggleLobbyStart(true);
-      spaceShipInt.visible = true;
-      showPage('loginPage');
-  }, 25);
+  returnToLoginPageInSpaceship();
 });
 
 deleteAccountButton.addEventListener("click", deleteAccount);
