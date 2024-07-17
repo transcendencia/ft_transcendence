@@ -368,9 +368,13 @@ export function getGameInfo() {
 // Logout
 const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
-    handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
     if (!gameState.inGame)
+    {
+        handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
         toggleEscapeContainerVisibility();
+    }
+    else
+        handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
 });
 
 function resetHTMLelements(){
@@ -384,9 +388,9 @@ function resetHTMLelements(){
 
 
 
-function handleLogout(userId, token) {
+function handleLogout(userId, token, disconnect = true) {
     // Disconnect all the guest
-    if (gameState.inGame)
+    if (gameState.inGame && disconnect === false)
     {
         resetGameEscape();
         setTimeout(() => {
