@@ -101,7 +101,7 @@ export function cancelLanding()
     landedOnPlanet = false;
 }
 
-export function togglePlanet(deleteAccount = false) {
+export function togglePlanet(toggleRsContainer = false) {
     if (!landedOnPlanet)
         landedOnPlanet = true;
     else {
@@ -114,7 +114,7 @@ export function togglePlanet(deleteAccount = false) {
         resetRotations();
         landedOnPlanet = false;
     }
-    if (deleteAccount != true)
+    if (toggleRsContainer === true)
         toggleRSContainerVisibility();
     resetOutlineAndText();
     toggleBlurDisplay();

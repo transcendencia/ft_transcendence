@@ -3,8 +3,6 @@ import { getTranslatedText} from "./translatePages.js";
 import { setHostAsPlayerOne} from "./arenaPage.js";
 
 export async function updateUserStatus(status, token) {
-    console.log("token", token);
-
     try {
         const response = await fetch('/user/status/', {
             method: 'POST',
@@ -13,7 +11,8 @@ export async function updateUserStatus(status, token) {
                 'Authorization': `Token ${token}`,
                 'X-CSRFToken': getCookie('csrftoken')
             },
-            body: JSON.stringify({ status: status })
+            body: JSON.stringify({ status: status }),
+            keepalive: true,
         });
 
         if (!response.ok) {

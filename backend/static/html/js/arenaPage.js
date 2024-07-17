@@ -289,7 +289,7 @@ import { get_friends_list, updateUserStatus } from "./userManagement.js";
 import { planetInRange } from "./planetIntersection.js";
 
 const backButtonArenaPage = document.getElementById("arenaBackButton");
-backButtonArenaPage.addEventListener('click', () => {togglePlanet()});
+backButtonArenaPage.addEventListener('click', () => {togglePlanet(/* toggleRsContainer: */ true)});
 
 let previousUserList = [];
 
@@ -599,7 +599,7 @@ export function toggleGameStarted() {
 	gameStarted = !gameStarted;
 }
 
-export function endGame(isTournament) {
+export function endGame(isTournament, backToLobby = false) {
 	let token = sessionStorage.getItem('host_auth_token');
 	updateUserStatus('online', token);
 	for(let i = 0; i < guestLoggedIn.length; i++) {
@@ -617,12 +617,16 @@ export function endGame(isTournament) {
 		user3 = gameState.arena.game.user3.id
 	if (isTournament){
 		planetPanel[2].style.visibility = 'visible';
-		createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
-		afterGameTournament(gameState.arena.game.leftScore, gameState.arena.game.rightScore);
+		if (!backToLobby)
+		{
+			createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "tournament", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
+			afterGameTournament(gameState.arena.game.leftScore, gameState.arena.game.rightScore);
+		}
 	}
 	else{
 		planetPanel[0].style.visibility = 'visible';
-		createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
+		if (!backToLobby)
+			createGame(gameState.arena.game.user1.id, gameState.arena.game.user2.id, user3, gameState.arena.game.leftScore, gameState.arena.game.rightScore, "arena", gameState.arena.game.gameMode, gameState.arena.game.map, gameState.arena.game.user1, gameState.arena.game.user2, gameState.arena.game.user3, gameState.arena.game.gameTime);
 	}
 	rsContainer.style.visibility = 'visible';
 	gameUI.style.visibility = 'hidden';

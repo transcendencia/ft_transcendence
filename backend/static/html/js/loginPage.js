@@ -4,9 +4,12 @@ import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape , toggleRSContainerVisibility} from "./main.js";
+import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape , toggleRSContainerVisibility, escapeContainerVisible} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
-import { resetOutline } from "./planetIntersection.js";
+import { planetInRange, resetOutline } from "./planetIntersection.js";
+import { rsContVisible } from "./main.js";
+import { checkEach5Sec, landedOnPlanet, togglePlanet } from "./enterPlanet.js";
+import { returnToHost } from "./userPage.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -146,8 +149,20 @@ loginForm.addEventListener('submit', handleLoginSubmit);
 function handleLoginSubmit(event) {
     event.preventDefault();
 
+    // const formData = new FormData(this);
+    // handleLogin(formData);
+
+
     const formData = new FormData(this);
-    handleLogin(formData);
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+
+    handleLogin(formData)
+}
+
+function reactivateLoginFields() {
+    document.getElementById('usernameLoginInput').disabled = false;
+    document.getElementById('passwordLoginInput').disabled = false;
 }
 
 function removeLastUserInfoConts() {
@@ -169,11 +184,14 @@ function removeLastUserInfoConts() {
 // Handle form submission
 // Should I change it with a patch request
 export async function handleLogin(formData) {
+    document.getElementById('usernameLoginInput').disabled = true;
+    document.getElementById('passwordLoginInput').disabled = true;
     if (sessionStorage.getItem("hostLoggedIn") === null) {
         sessionStorage.setItem("hostLoggedIn", 'false');
     }
 
-    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn");
+    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn")
+    const submitButton = document.getElementById('loginButton');
 
     formData.append('hostLoggedIn', hostLoggedIn);
     if (hostLoggedIn === 'false') {
@@ -191,12 +209,17 @@ export async function handleLogin(formData) {
         .then(response => response.json())
         .then(data => {
             let guest_token = null;
+            console.log("hostLoggedIn", (hostLoggedIn === 'true'));
+            const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
+            console.log("messageContainerId", messageContainerId);
             console.log(data.status);
             if (data.status === "success") {
-
+                console.log("%c in success if : ", 'color: blue;');
+                
                 // console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
 
+                    //ici
                     sessionStorage.setItem("hostLoggedIn", 'true');
                     sessionStorage.setItem("host_auth_token", data.token);
                     sessionStorage.setItem("host_id", data.id);
@@ -220,23 +243,29 @@ export async function handleLogin(formData) {
                     changeGraphics(data.graphic_mode);
                     updateGraphicsIcon(data.graphic_mode);
                     showPage('none');
+                    
                     startAnimation();
+
                     emptyLoginField();
                 } else {
                     guest_token = data.token;
+                    submitButton.disabled = false;
                 }
                 resolve(guest_token);
             } else {
-                const messageContainerId = hostLoggedIn ? 'messageContainer' : 'errorLogGuest';
+                submitButton.disabled = false;
 
                 document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
+                reactivateLoginFields()
                 resolve(null);
             }
         })
         .catch(error => {
             console.error('Erreur :', error);
+            submitButton.disabled = false;
+            reactivateLoginFields()
             reject(error);
-        });
+        })
     });
 }
 
@@ -355,12 +384,6 @@ export function getGameInfo() {
 }
 
 // Logout
-const disconnectButton = document.getElementById("disconnectButton");
-disconnectButton.addEventListener("click", () => {
-    handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
-    if (!gameState.inGame)
-        toggleEscapeContainerVisibility();
-});
 
 function resetHTMLelements(){
     document.querySelector(".gameUI").style.visibility = 'hidden';
@@ -370,57 +393,122 @@ function resetHTMLelements(){
     document.getElementById('c1').style.display = 'none';
 }
 
-
-export function handleLogout(userId, token, arrowKey) {
-    // Disconnect all the guest
-    if (gameState.inGame)
-    {
+export async function handleLogout(userId, token, disconnect = true) {
+    if (gameState.inGame && disconnect === false) {
         resetGameEscape();
-        setTimeout(() => {
-            gameState.arena.displayBackPanel();
+        await new Promise(resolve => setTimeout(() => {
+            gameState.arena.displayBackPanel(true);
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
-        }, 250);
+            resolve();
+        }, 250));
         return;
     }
-    logoutGuest(userId);
 
-    // Disconnect the host
-    updateUserStatus('offline', token)
-    .then(() => {
-        sessionStorage.clear();
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
-    });
-    spaceShip.rotation.set(0, 0, 0);
-    spaceShip.position.set(0, 0, -1293.5);
+    
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
         toggleEscapeContainerVisibility(true);
         toggleGameStarted();
-        if (gameState.arena.game.user2.isBot)
-            gameState.arena.bot.deactivateBot();
+        if (gameState.arena.game.user2.isBot) {
+                gameState.arena.bot.deactivateBot();
+        }
         resetHTMLelements();
     }
-    else if (arrowKey)
+    if (rsContVisible)
         toggleRSContainerVisibility();
-    else 
+    if (escapeContainerVisible) {
         togglePause();
-    setTimeout(() => {
-        if (!arrowKey)
-            toggleBlurDisplay(true);
-        spaceShipInt.visible = true;
-        resetOutline();
+        toggleBlurDisplay(true);
+        toggleEscapeContainerVisibility();
+    }
+    if (landedOnPlanet) {
+        console.log(planetInRange, escapeContainerVisible);
+        if (planetInRange.name === "settings")
+            returnToHost();
+        clearInterval(checkEach5Sec);
+        togglePlanet(/* toggleRsContainer: */ false);
+    }
+    
+    setSpaceShipToLoginState();
+    gameState.paused = false;
+
+    await new Promise(resolve => {
         showPage('loginPage');
-        toggleLobbyStart();
         swipeLeftSideContainer('-40%');
-        gameState.paused = false;
-        scene.add(bluelight);
-        scene.remove(whitelight);
-    }, 50);
-};
+        logoutGuest(userId);
+        updateUserStatus('offline', token);
+        reactivateLoginFields();
+        sessionStorage.clear();
+        resolve();
+        setTimeout(() => {
+            toggleLobbyStart();
+        }, 50);
+    });
+}
+
+const disconnectButton = document.getElementById("disconnectButton");
+disconnectButton.addEventListener("click", async () => {
+    if (!gameState.inGame)
+    {
+        await handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
+        setSpaceShipToLoginState();
+        toggleEscapeContainerVisibility();
+    }
+    else
+        handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
+});
+
+function printXYZofVector(vector) {
+    console.log("x: ", vector.x, "y: ", vector.y, "z: ", vector.z);
+}
+
+export function setSpaceShipToLoginState() {
+    console.log("before");
+    printXYZofVector(spaceShip.position);
+    printXYZofVector(spaceShip.rotation);
+    spaceShip.rotation.set(0, 0, 0);
+    spaceShip.position.set(0, 0, -1293.5);
+    spaceShipInt.visible = true;
+    scene.add(bluelight);
+    scene.remove(whitelight);
+    console.log("before");
+    printXYZofVector(spaceShip.position);
+    printXYZofVector(spaceShip.rotation);
+}
+
+// export async function handleLogout(userId, token) {
+//     logoutGuest(userId);
+//     await updateUserStatus('offline', token);
+//     sessionStorage.clear();
+//     reactivateLoginFields();
+//     await new Promise(resolve => {
+//     if (rsContVisible)
+//         toggleRSContainerVisibility();
+//     if (escapeContainerVisible)
+//         togglePause();
+//     if (planetInRange) {
+//         clearInterval(checkEach5Sec);
+//         togglePlanet();
+//     }
+//     setTimeout(() => {   
+//         console.log(!!planetInRange, escapeContainerVisible);
+//         if (planetInRange || escapeContainerVisible)
+//             toggleBlurDisplay(true);
+//         resetPlanetOutline();
+//         showPage('loginPage');
+//         toggleLobbyStart();
+//         swipeLeftSideContainer('-40%');
+//         gameState.paused = false;
+//         scene.add(bluelight);
+//         scene.remove(whitelight);
+//         resolve();
+//         }, 250);
+//     });
+// }
+
+
 
 export function logoutGuest(userId) {
     if (userId === sessionStorage.getItem('host_id')) {
@@ -431,16 +519,12 @@ export function logoutGuest(userId) {
     guestLoggedIn.splice(0, guestLoggedIn.length);
 }
 
-window.addEventListener('beforeunload', function (event) {
+window.addEventListener('beforeunload', async function (event) {
+    // event.preventDefault();
     const token = sessionStorage.getItem('host_auth_token');
-    if (token)
-        handleLogout(sessionStorage.getItem('host_id'), token);
+    handleLogout(sessionStorage.getItem('host_id'), token);
+    sessionStorage.clear();
 });
-
-// window.addEventListener('beforeunload', function () {
-//     if (sessionStorage.getItem('host_auth_token')) 
-//         handleLogout(sessionStorage.getItem('host_id'), token);
-// });
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';

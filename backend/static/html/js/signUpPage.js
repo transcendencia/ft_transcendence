@@ -46,7 +46,7 @@ export function moveCameraToBackOfCockpit() {
     inCockpit = false;
 }
 
-const backToLoginButton = document.querySelector('.backButton');
+const backToLoginButton = document.querySelector('.hologram-button');
 
 backToLoginButton.addEventListener('click', function() {
     moveCameraToBackOfCockpit();
@@ -55,7 +55,8 @@ backToLoginButton.addEventListener('click', function() {
 
 var submitChangeButton = document.getElementById("submitSignUp");
 submitChangeButton.addEventListener("click", handleSignup);
-const RGPDPage = document.querySelector(".rgpdPage");
+const RGPDPage = document.getElementById('RGPDPage');
+
 // Add event listener to the sign-up form
 // const signupForm = document.getElementById('signupForm');
 // signupForm.addEventListener('submit', handleSignup);
@@ -63,8 +64,9 @@ const RGPDPage = document.querySelector(".rgpdPage");
 //Add event listner to display RGPG page
 const RGPDPolicy = document.getElementById('RGPDPolicy');
 RGPDPolicy.addEventListener('click', function() {
-    RGPDPage.classList.add("perspectived");
     showPage('rgpdPage');
+    RGPDPage.classList.add("holoPerspective");
+    RGPDPage.classList.remove("noPerspective");
 });
 
 
