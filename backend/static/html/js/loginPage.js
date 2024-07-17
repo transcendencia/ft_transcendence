@@ -147,14 +147,23 @@ loginForm.addEventListener('submit', handleLoginSubmit);
 function handleLoginSubmit(event) {
     event.preventDefault();
 
+    // const formData = new FormData(this);
+    // handleLogin(formData);
+
+
     const formData = new FormData(this);
-    handleLogin(formData);
+
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+
+    handleLogin(formData)
 }
 
 function reactivateLoginFields() {
     document.getElementById('usernameLoginInput').disabled = false;
     document.getElementById('passwordLoginInput').disabled = false;
 }
+
 // Handle form submission
 // Should I change it with a patch request
 export async function handleLogin(formData) {
@@ -164,7 +173,8 @@ export async function handleLogin(formData) {
         sessionStorage.setItem("hostLoggedIn", 'false');
     }
 
-    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn");
+    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn")
+    const submitButton = document.getElementById('loginButton');
 
     formData.append('hostLoggedIn', hostLoggedIn);
     if (hostLoggedIn === 'false') {
@@ -182,7 +192,10 @@ export async function handleLogin(formData) {
         .then(response => response.json())
         .then(data => {
             let guest_token = null;
-            console.log('%c' + data.status, 'color: red;');
+            console.log("hostLoggedIn", (hostLoggedIn === 'true'));
+            const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
+            console.log("messageContainerId", messageContainerId);
+            console.log(data.status);
             if (data.status === "success") {
                 console.log("%c in success if : ", 'color: blue;');
                 
@@ -212,15 +225,18 @@ export async function handleLogin(formData) {
                     changeGraphics(data.graphic_mode);
                     updateGraphicsIcon(data.graphic_mode);
                     showPage('none');
+                    
                     startAnimation();
+
                     emptyLoginField();
                 } else {
                     guest_token = data.token;
+                    submitButton.disabled = false;
                 }
                 resolve(guest_token);
             } else {
+                submitButton.disabled = false;
 
-                const messageContainerId = hostLoggedIn ? 'messageContainer' : 'errorLogGuest';
                 document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
                 reactivateLoginFields()
                 resolve(null);
@@ -228,9 +244,10 @@ export async function handleLogin(formData) {
         })
         .catch(error => {
             console.error('Erreur :', error);
+            submitButton.disabled = false;
             reactivateLoginFields()
             reject(error);
-        });
+        })
     });
 }
 
@@ -416,16 +433,12 @@ export function logoutGuest(userId) {
     guestLoggedIn.splice(0, guestLoggedIn.length);
 }
 
-window.addEventListener('beforeunload', function (event) {
+window.addEventListener('beforeunload', async function (event) {
+    // event.preventDefault();
     const token = sessionStorage.getItem('host_auth_token');
-    if (token)
-        handleLogout(sessionStorage.getItem('host_id'), token);
+    handleLogout(sessionStorage.getItem('host_id'), token);
+    sessionStorage.clear();
 });
-
-// window.addEventListener('beforeunload', function () {
-//     if (sessionStorage.getItem('host_auth_token')) 
-//         handleLogout(sessionStorage.getItem('host_id'), token);
-// });
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';

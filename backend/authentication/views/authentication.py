@@ -14,6 +14,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from ..models import User
 from ..serializers import UserSerializer, SignupSerializer
@@ -27,7 +28,6 @@ def index(request):
 @permission_classes([AllowAny])
 def login_page(request):
   try:
-    # print ("data", request.data)
 
     username = request.POST.get("username")
     usernameLower = username.lower()
