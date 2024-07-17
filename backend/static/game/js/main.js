@@ -1260,14 +1260,14 @@ class Arena extends THREE.Mesh {
         const winningScreen = document.querySelector('.winning-screen');
         winningScreen.classList.remove('visible');
     }
-    displayBackPanel()
+    displayBackPanel(backToLobby = false)
     {
         this.resetUI();
         if (this.game.user2.isBot)
             this.bot.deactivateBot();
         this.gameState.inGame = false;
         this.gameState.inLobby = true;
-        endGame(this.game.tournamentGame);
+        endGame(this.game.tournamentGame, backToLobby);
         const winningScreen = document.querySelector('.winning-screen');
         winningScreen.classList.remove('visible');
         scoreUI[0].style.opacity = 0;

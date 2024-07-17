@@ -159,12 +159,16 @@ function handleLoginSubmit(event) {
     handleLogin(formData)
 }
 
+function reactivateLoginFields() {
+    document.getElementById('usernameLoginInput').disabled = false;
+    document.getElementById('passwordLoginInput').disabled = false;
+}
 
 // Handle form submission
 // Should I change it with a patch request
 export async function handleLogin(formData) {
-    console.log("error: ", localStorage.getItem("error"));
-    console.log("token: ", localStorage.getItem("tokenUpdateStatus"));
+    document.getElementById('usernameLoginInput').disabled = true;
+    document.getElementById('passwordLoginInput').disabled = true;
     if (sessionStorage.getItem("hostLoggedIn") === null) {
         sessionStorage.setItem("hostLoggedIn", 'false');
     }
@@ -193,10 +197,12 @@ export async function handleLogin(formData) {
             console.log("messageContainerId", messageContainerId);
             console.log(data.status);
             if (data.status === "success") {
-
+                console.log("%c in success if : ", 'color: blue;');
+                
                 // console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
 
+                    //ici
                     sessionStorage.setItem("hostLoggedIn", 'true');
                     sessionStorage.setItem("host_auth_token", data.token);
                     sessionStorage.setItem("host_id", data.id);
@@ -232,12 +238,14 @@ export async function handleLogin(formData) {
                 submitButton.disabled = false;
 
                 document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
+                reactivateLoginFields()
                 resolve(null);
             }
         })
         .catch(error => {
             console.error('Erreur :', error);
             submitButton.disabled = false;
+            reactivateLoginFields()
             reject(error);
         })
     });
@@ -375,13 +383,14 @@ function resetHTMLelements(){
 
 
 
+
 function handleLogout(userId, token) {
     // Disconnect all the guest
     if (gameState.inGame)
     {
         resetGameEscape();
         setTimeout(() => {
-            gameState.arena.displayBackPanel();
+            gameState.arena.displayBackPanel(true);
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
         }, 250);
@@ -393,6 +402,7 @@ function handleLogout(userId, token) {
     updateUserStatus('offline', token)
     .then(() => {
         sessionStorage.clear();
+        reactivateLoginFields(); 
     })
     .catch(error => {
         console.error('Erreur :', error);
