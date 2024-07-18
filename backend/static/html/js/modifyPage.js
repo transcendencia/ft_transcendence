@@ -178,7 +178,6 @@ RGPDPolicy.addEventListener('click', function() {
 const RGPDBack = document.getElementById('RGPDBack');
 RGPDBack.addEventListener('click', function() {
   deleteBlockingPanel.classList.remove('show');
-  showPage('modifyPage');
 });
 
 const infoButton = document.getElementById("infoButton");
