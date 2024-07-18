@@ -24,7 +24,7 @@
 .imgContainer {
     margin-right: -15px;
     border-radius: 50px;
-    border: 4px solid rgba(55, 118, 255, 0.39);
+    border: 4px solid #3777ff;
     height: 100%;
     width: 20%;
     display: flex;
@@ -95,7 +95,7 @@
 }
 
 .darkDefaultTile {
-	border-color: rgb(32, 44, 180);
+	border-color: #3777ff;
     background-color: rgb(9, 18, 81);
     color: #3777ff;
 }

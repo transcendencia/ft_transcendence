@@ -137,7 +137,7 @@ function setupPlanets(models) {
 	scene.add(atmosphere);
 	// scene.add(box);
 	const planetData = [
-		{name: 'arena', distance: 1200, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80},
+		{name: 'arena', distance: 1300, scale: 100, mesh: models['arena'], orbitMesh: models['arenaRing'], hitboxSize: 80},
 		{name: 'settings', distance: 600, scale: 50, mesh: models['settings'], orbitMesh: models['settingsRing'], hitboxSize: 40},
 		{name: 'tournament', distance: 900, scale: 80, mesh: models['tournament'], orbitMesh: null, hitboxSize: 90},
 	]
