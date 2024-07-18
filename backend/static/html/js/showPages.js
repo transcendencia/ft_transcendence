@@ -13,6 +13,7 @@ export function showPage(pageId, transition = 'default') {
     // Show the selected page
     if (pageId === 'none') 
         return;
+
     window.location.hash = `#${pageId}`;
     sessionStorage.setItem('currentPage', pageId); // Store current page in sessionStorage
     pageId = '.' + pageId;
