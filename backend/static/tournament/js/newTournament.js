@@ -91,6 +91,8 @@ buttonHeaders.forEach((buttonHeader, index) => {
     });
 });
 
+
+
 export function resetTournament() {
   if (tournamentState === 1)
       return ;
@@ -121,7 +123,11 @@ export function resetTournament() {
 //add user to tournaments
 
 const botID = 0;
-export let tournamentState = 0;
+let tournamentState = 0;
+
+export function changeTournamentStatus(){
+  tournamentState = 2;
+}
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
@@ -379,6 +385,33 @@ cancelTournamentButton.addEventListener('click', () => {
       gameState.arena.game.resetUsers();
   }
 
+  function checkPlayerStatus(){
+    const player1Status = getUserStatus(currentMatch[nbMatch][0].myRef.playerId);
+    const player2Status = getUserStatus(currentMatch[nbMatch][1].myRef.playerId);
+    player1Status.then(status => {
+      if (status === "offline")
+        afterGameTournament(0, 3);
+    }).catch(error => {
+      afterGameTournament(0, 3);
+    });
+    player2Status.then(status => {
+      if (status === "offline")
+        afterGameTournament(3, 0);
+    }).catch(error => {
+      afterGameTournament(3, 0);
+    });
+
+    return Promise.all([player1Status, player2Status]).then(([status1, status2]) => {
+      if (status1 === "offline" || status2 === "offline")
+          return 1;
+      return 0;
+    }).catch(error => {
+      return 1;
+    });
+  }
+
+  
+
   function findWinner(){
     // afterGameTournament(3,0);
     // return;
@@ -386,13 +419,9 @@ cancelTournamentButton.addEventListener('click', () => {
       afterGameTournament(3, 0);
       return;
     }
-    const player1Status = getUserStatus(currentMatch[nbMatch][0].myRef.playerId);
-    const player2Status = getUserStatus(currentMatch[nbMatch][1].myRef.playerId);
-    if (player1Status === undefined || player1Status === "offline")
-      afterGameTournament(0, 3);
-    else if (player2Status === undefined || player2Status === "offline")
-      afterGameTournament(3, 0);
-    else if (currentMatch[nbMatch][0].myRef.playerId === currentMatch[nbMatch][1].myRef.playerId)
+    if (checkPlayerStatus())
+      return;
+    if (currentMatch[nbMatch][0].myRef.playerId === currentMatch[nbMatch][1].myRef.playerId)
       afterGameTournament(3, 0);
     else
       switchToGame(gameState, currentMatch[nbMatch][0].myRef, currentMatch[nbMatch][1].myRef, currentMatch[nbMatch][4].myRef, true);
