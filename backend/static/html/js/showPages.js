@@ -1,9 +1,8 @@
-import { lobbyStart } from "./main.js";
+import { escapeContainerVisible, lobbyStart } from "./main.js";
 import { moveCameraToBackOfCockpit, moveCameraToFrontOfCockpit } from "./signUpPage.js";
-import { handleLogout } from "./loginPage.js";
+import { handleLogout, isLoggingOut } from "./loginPage.js";
 
 export function showPage(pageId, transition = 'default') {
-    console.trace("here");
     var pages = document.querySelectorAll('.page');
     pages.forEach(function(page) {
         page.classList.remove('show'); 
@@ -32,9 +31,8 @@ export function initPage() {
 }
 
 addEventListener("hashchange", () => {
-    console.log(window.location.hash, oldLocation);
-    if (lobbyStart) {
-        handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false, true);
+    if (lobbyStart && !isLoggingOut) {
+        handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
     }
     if (window.location.hash === '#loginPage' && oldLocation === '#signUpPage') {
