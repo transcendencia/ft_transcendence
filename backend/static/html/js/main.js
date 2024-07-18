@@ -331,12 +331,10 @@ export const structure = document.querySelector(".structure");
 export const escapeBG = document.querySelector(".escapeBG");
 
 export function swipeLeftSideContainer(endPos) {
-    console.trace("here");
     leftSideContainer.style.left = endPos;
 }
 
 export function toggleRSContainerVisibility() {
-    console.trace(rsContVisible);
     if (rsContVisible) {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '-50%';
@@ -472,15 +470,14 @@ export let escapeContainerVisible = false;
 
 export function toggleEscapeContainerVisibility() {
     const disconnectButton = document.getElementById('disconnectButton');
-    if (gameState.inGame)
-        disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
-    else
-        disconnectButton.textContent = getTranslatedText("disconnect");
     if (!escapeContainerVisible) {
         getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
         .catch(error => console.error('Failed to retrieve profile info:', error));    
     }
     if (!escapeContainerVisible) {
+        if (gameState.inGame)
+            disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
+        else disconnectButton.textContent = getTranslatedText("disconnect");
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
         escapeContainerVisible = true;
@@ -641,15 +638,13 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
 // composer.addPass(bloomPass);
 
 function update() {
-    if (lobbyStart && !landedOnPlanet) 
+    if (lobbyStart && !landedOnPlanet) {
         spaceShipMovement();
+        updateRay();
+        getPlanetIntersection();
+    } 
     camMovement();
     planetMovement();
-    if (lobbyStart) {
-        updateRay();
-    if (!landedOnPlanet)
-        getPlanetIntersection();
-}
 return;
 }
 
