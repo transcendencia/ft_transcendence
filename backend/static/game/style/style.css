@@ -63,7 +63,14 @@ body {
     }
 }
 
-
+.dg.main {
+    background-color: #0092fb !important;
+    color: #fcf9f8 !important;
+    /* font-size: 13px !important; */
+    font-family: 'space' !important;
+    width: 56% !important;
+    opacity: 0.9 !important;
+}
 .flag {
     background-size: 50%;
     position: absolute;
