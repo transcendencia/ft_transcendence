@@ -1,6 +1,6 @@
 import { lobbyStart, setLobbyStart } from "./main.js";
 import { moveCameraToBackOfCockpit, moveCameraToFrontOfCockpit } from "./signUpPage.js";
-import { handleLogout, isLoggingOut } from "./loginPage.js";
+import { backToLobby, handleLogout, isLoggingOut } from "./loginPage.js";
 import { gameState } from "../../game/js/main.js";
 
 export function showPage(pageId, transition = 'default', changeHash = true) {
@@ -37,9 +37,10 @@ window.addEventListener("load", function() {
 });
 
 addEventListener("hashchange", () => {
-    if (gameState.loading || gameState.inGame)
+    console.log(window.location.hash, oldLocation, lobbyStart, isLoggingOut);
+    if (gameState.loading)
         return;
-    if (lobbyStart && !isLoggingOut) {
+    if (lobbyStart && !isLoggingOut  && !gameState.inGame) {
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
     }
@@ -55,12 +56,7 @@ addEventListener("hashchange", () => {
         showPage('signUpPage');
     } else if (window.location.hash === '#galaxy' && (oldLocation === '#rgpdPage' || oldLocation === "#signUpPage"))
         moveCameraToBackOfCockpit();
+    else if (window.location.hash === '#galaxy' && oldLocation === '#game')
+        backToLobby(/*historyArrow: */true);
     oldLocation = window.location.hash;
-});
-
-window.addEventListener("popstate", function(event) {
-    if (gameState.loading || gameState.inGame) {
-        event.preventDefault();
-        alert("Cannot navigate while in game or loading.");
-    }
 });

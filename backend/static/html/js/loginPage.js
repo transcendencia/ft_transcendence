@@ -396,8 +396,9 @@ function resetHTMLelements(){
 
 export let isLoggingOut = false;
 
-export function backToLobby() {
-    resetGameEscape();
+export function backToLobby(historyArrow = false) {
+    if (!historyArrow)
+        resetGameEscape();
     gameState.arena.displayBackPanel(true);
     gameState.arena.thirdPlayer.deactivateThirdPlayer();
     gameState.arena.idleCameraAnimation();
