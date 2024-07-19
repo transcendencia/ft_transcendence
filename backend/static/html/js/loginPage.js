@@ -405,32 +405,10 @@ export function backToLobby() {
 
 
 export async function handleLogout(userId, token) {
-    if (isLoggingOut) 
+    if (!userId || !token || isLoggingOut) 
         return;
     isLoggingOut = true;
 
-    // if (gameState.inGame) {
-    //     resetGameEscape();
-    //     await new Promise(resolve => setTimeout(() => {
-    //         gameState.arena.displayBackPanel(true);
-    //         gameState.arena.thirdPlayer.deactivateThirdPlayer();
-    //         gameState.arena.idleCameraAnimation();
-    //         resolve();
-    //     }, 250));
-    //     isLoggingOut = false;
-    //     return;
-    // }
-    if (gameState.inGame) {
-        gameState.inGame = false;
-        gameState.inLobby = true;
-        toggleEscapeContainerVisibility(true);
-        toggleGameStarted();
-        if (gameState.arena.game.user2.isBot) {
-            gameState.arena.bot.deactivateBot();
-        }
-        resetHTMLelements();
-    }
-    
     await new Promise(resolve => {
         gameState.paused = false;
         if (rsContVisible)
@@ -456,6 +434,7 @@ export async function handleLogout(userId, token) {
         setTimeout(() => {
             toggleLobbyStart();
             resolve();
+            gameState.paused = false;
         }, 50);
     });
     isLoggingOut = false;
@@ -471,7 +450,6 @@ export function setSpaceShipToLoginState() {
 
 const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
-    
     if (gameState.inGame)
         backToLobby();
     else
@@ -482,6 +460,27 @@ function printXYZofVector(vector) {
     console.log("x: ", vector.x, "y: ", vector.y, "z: ", vector.z);
 }
 
+// function logoutUser(token) {
+//     fetch('logout/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Token ${token}`,
+//             'X-CSRFToken': getCookie('csrftoken')
+//         },
+//         body: formData
+//     })
+//     .then(response => {
+//         if (!response.ok) 
+//             return response.json().then(err => Promise.reject(err));
+//         return response.json();
+//     })
+//     .then(data => {
+//     })
+//     .catch(error => {
+//         console.error('There was a problem with the sign-up:', error);
+//     });
+// }
 
 export function logoutGuest(userId) {
     if (userId === sessionStorage.getItem('host_id')) {

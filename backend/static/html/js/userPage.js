@@ -46,7 +46,7 @@ export async function userListChanged() {
   return searchListChanged;
 }
 
-function refreshUserList() {
+export function refreshUserList() {
   if (searchQuery === '')
       renderFriendList();
   else RenderUsersSearched(searchQuery);
