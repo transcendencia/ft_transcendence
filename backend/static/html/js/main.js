@@ -20,6 +20,11 @@ import { gameState } from '../../game/js/main.js';
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
+
+export function setLobbyStart(value) {
+    lobbyStart = value;
+}
+
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c4'),
     antialias: true,
@@ -548,7 +553,7 @@ function panelRemove(){
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
-        console.log(camera.position);
+        console.log(lobbyStart);
     if (event.key === 'Enter') {
         if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();

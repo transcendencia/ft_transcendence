@@ -170,7 +170,7 @@ const RGPDPage = document.getElementById('RGPDPage');
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
 RGPDPolicy.addEventListener('click', function() {
   deleteBlockingPanel.classList.add('show');
-  showPage('rgpdPage');
+  showPage('rgpdPage', 'default', /*changeHash:*/ false);
   RGPDPage.classList.add("noPerspective");
   RGPDPage.classList.remove("holoPerspective");
 });
