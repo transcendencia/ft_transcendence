@@ -3,6 +3,8 @@ import { getTranslatedText} from "./translatePages.js";
 import { setHostAsPlayerOne} from "./arenaPage.js";
 
 export async function updateUserStatus(status, token) {
+    if (!token || !status)
+        return;
     try {
         const response = await fetch('/user/status/', {
             method: 'POST',
@@ -19,7 +21,7 @@ export async function updateUserStatus(status, token) {
             throw new Error('Erreur lors du logout');
         } else {
             const data = await response.json();
-            console.log(`User ${data.user_id} status updated to ${data.status}`);
+            // console.log(`User ${data.user_id} status updated to ${data.status}`);
         }
     } catch (error) {
         console.error('Erreur :', error);
