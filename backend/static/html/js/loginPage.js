@@ -396,22 +396,30 @@ function resetHTMLelements(){
 
 export let isLoggingOut = false;
 
-export async function handleLogout(userId, token, disconnect = true) {
+export function backToLobby() {
+    resetGameEscape();
+    gameState.arena.displayBackPanel(true);
+    gameState.arena.thirdPlayer.deactivateThirdPlayer();
+    gameState.arena.idleCameraAnimation();
+}
+
+
+export async function handleLogout(userId, token) {
     if (isLoggingOut) 
         return;
     isLoggingOut = true;
 
-    if (gameState.inGame && disconnect === false) {
-        resetGameEscape();
-        await new Promise(resolve => setTimeout(() => {
-            gameState.arena.displayBackPanel(true);
-            gameState.arena.thirdPlayer.deactivateThirdPlayer();
-            gameState.arena.idleCameraAnimation();
-            resolve();
-        }, 250));
-        isLoggingOut = false;
-        return;
-    }
+    // if (gameState.inGame) {
+    //     resetGameEscape();
+    //     await new Promise(resolve => setTimeout(() => {
+    //         gameState.arena.displayBackPanel(true);
+    //         gameState.arena.thirdPlayer.deactivateThirdPlayer();
+    //         gameState.arena.idleCameraAnimation();
+    //         resolve();
+    //     }, 250));
+    //     isLoggingOut = false;
+    //     return;
+    // }
     if (gameState.inGame) {
         gameState.inGame = false;
         gameState.inLobby = true;
@@ -463,7 +471,11 @@ export function setSpaceShipToLoginState() {
 
 const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
-    handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), !gameState.inGame);
+    
+    if (gameState.inGame)
+        backToLobby();
+    else
+        handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'));
 });
 
 function printXYZofVector(vector) {
