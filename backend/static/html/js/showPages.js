@@ -1,18 +1,20 @@
-import { escapeContainerVisible, lobbyStart } from "./main.js";
+import { lobbyStart, setLobbyStart } from "./main.js";
 import { moveCameraToBackOfCockpit, moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { handleLogout, isLoggingOut } from "./loginPage.js";
+import { gameState } from "../../game/js/main.js";
 
-export function showPage(pageId, transition = 'default') {
+export function showPage(pageId, transition = 'default', changeHash = true) {
     var pages = document.querySelectorAll('.page');
     pages.forEach(function(page) {
         page.classList.remove('show'); 
         page.classList.remove('default');
         page.classList.remove('signUp');
     });
-    // Show the selected page
+    // console.trace("showPage :", pageId);
     if (pageId === 'none') 
         return;
-    window.location.hash = `#${pageId}`;
+    if (changeHash)
+        window.location.hash = `#${pageId}`;
     sessionStorage.setItem('currentPage', pageId); // Store current page in sessionStorage
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
@@ -24,25 +26,41 @@ let oldLocation = window.location.hash || '#loginPage';
 
 export function initPage() {
     const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
-    window.location.hash = `#${lastPage}`;
     if (lastPage === 'signUpPage' || lastPage === 'rgpdPage')
         moveCameraToFrontOfCockpit(lastPage, 'signUp');
     else moveCameraToBackOfCockpit();
 }
 
+window.addEventListener("load", function() {
+    const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
+    window.location.hash = `#${lastPage}`;
+});
+
 addEventListener("hashchange", () => {
+    if (gameState.loading || gameState.inGame)
+        return;
     if (lobbyStart && !isLoggingOut) {
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
     }
     if (window.location.hash === '#loginPage' && oldLocation === '#signUpPage') {
         moveCameraToBackOfCockpit();
-    } else if (window.location.hash === '#signUpPage' && oldLocation === '#loginPage') {
+    } else if (window.location.hash === '#signUpPage' && (oldLocation === '#loginPage' || oldLocation === '#galaxy')) {
         moveCameraToFrontOfCockpit('signUpPage');
     } else if (window.location.hash === '#rgpdPage' && oldLocation === '#signUpPage') {
         moveCameraToFrontOfCockpit('rgpdPage');
+        const RGPDPage = document.querySelector(".rgpdPage");
+        RGPDPage.classList.add("perspectived");
     } else if (window.location.hash === '#signUpPage' && oldLocation === '#rgpdPage') {
         showPage('signUpPage');
-    }
+    } else if (window.location.hash === '#galaxy' && (oldLocation === '#rgpdPage' || oldLocation === "#signUpPage"))
+        moveCameraToBackOfCockpit();
     oldLocation = window.location.hash;
+});
+
+window.addEventListener("popstate", function(event) {
+    if (gameState.loading || gameState.inGame) {
+        event.preventDefault();
+        alert("Cannot navigate while in game or loading.");
+    }
 });

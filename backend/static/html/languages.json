@@ -12,7 +12,7 @@
         "signUpTitle": "Sign up",
         "createAnAccount": "Create an account",
         "confirmPassword": "Confirm password",
-        "backToLogin": "Back to login",
+        "backToLogin": "Back",
         "successfulSignup": "User created You may now log in",
         "unique": "A user with that username already exists.",
         "unique_alias": "A user with that alias already exists.",
