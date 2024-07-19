@@ -345,11 +345,12 @@ export function toggleRSContainerVisibility() {
         rightSideContainer.style.right = '-50%';
         swipeLeftSideContainer('-40%');
         rsContVisible = false;
+        swipeLeftSideContainer('-40%');
     } else {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '0%';
-        swipeLeftSideContainer('0%');
         rsContVisible = true;
+        swipeLeftSideContainer('0%');
     }
 }
 
