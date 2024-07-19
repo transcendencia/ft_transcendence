@@ -5,7 +5,7 @@ import { afterGameTournament, botDifficultyTournament, addUserToTournament } fro
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
 import { askForAlias } from "../../tournament/js/newTournament.js";
-import {userListChanged} from "./userPage.js";
+import {userListChanged, refreshUserList } from "./userPage.js";
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
