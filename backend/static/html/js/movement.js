@@ -12,8 +12,13 @@ let aKeyPressed = false;
 let sKeyPressed = false;
 let dKeyPressed = false;
 let aKeyIsPressed = false;
+let altKeyPressed = false;
 
 document.addEventListener('keydown', (event) => {
+    if (altKeyPressed)
+        return;
+    if (event.key === 'Alt')
+        altKeyPressed = true;
     if (event.key === 'ArrowLeft')
         leftArrowPressed = true;
     if (event.key === 'ArrowRight')
@@ -50,6 +55,8 @@ document.addEventListener('keyup', (event) => {
         sKeyPressed = false;    
     if (event.key === 'd')
         dKeyPressed = false;
+    if (event.key === 'Alt')
+        altKeyPressed = false;
 });
 
 document.addEventListener('keypress', (event) => {
