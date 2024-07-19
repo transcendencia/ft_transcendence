@@ -30,7 +30,7 @@ statsButtons.forEach((button, index) => {
 let previousFriendList = [];
 let previousSearchList = [];
 
-async function userListChanged() {
+export async function userListChanged() {
   const newData = await get_friends_list();
   if (searchQuery === '') {
     const friendList = filterAndSortLists(newData, '');

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { camera, landedOnPlanet } from './main.js';
 import { showPage } from './showPages.js';
 import { currentLanguage, getTranslatedText } from './translatePages.js';
-import { emptyLoginField } from './loginPage.js';
+import { emptyLoginField, getCookie } from './loginPage.js';
 
 export let inCockpit = false;
 
@@ -50,9 +50,6 @@ backToLoginButton.addEventListener('click', function() {
     moveCameraToBackOfCockpit();
 });
 
-
-var submitChangeButton = document.getElementById("submitSignUp");
-submitChangeButton.addEventListener("click", handleSignup);
 const RGPDPage = document.getElementById('RGPDPage');
 
 // Add event listener to the sign-up form
@@ -68,7 +65,6 @@ RGPDPolicy.addEventListener('click', function() {
 });
 
 
-//Add event listner to display sign-up page
 const RGPDBack = document.getElementById('RGPDBack');
 RGPDBack.addEventListener('click', function() {
     if (landedOnPlanet) {
@@ -79,39 +75,53 @@ RGPDBack.addEventListener('click', function() {
     else {showPage('signUpPage');}
 });
 
-// Handle form submission
-function handleSignup(event) {
+const signUpForm = document.getElementById('signupForm');
+signUpForm.addEventListener('submit', handleSignUp);
+
+function handleSignUp(event) {
     event.preventDefault();
     
-    var form = document.getElementById("signupForm");
-    var formData = new FormData(form);
+    const submitButton = document.getElementById('submitSignUp');
+    submitButton.disabled = true;
+
+    let formData = new FormData(this);
     formData.append('language', currentLanguage);
-    // console.log(formData);
-    // const formData = new FormData(event.target);
+
     fetch('signup/', {
         method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
         body: formData
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+        if (!response.ok) 
+            return response.json().then(err => Promise.reject(err));
         return response.json();
     })
     .then(data => {
-        var signupMessageCont = document.querySelector('.signupMessageCont');
-        if (data.status == "success") {
-            signupMessageCont.classList.remove("failure");
-            signupMessageCont.classList.add("success");
-        } else {
-            signupMessageCont.classList.remove("success");
-            signupMessageCont.classList.add("failure");
-        }
+        changeColorMessage('.signupMessageCont', 'success');
         document.getElementById('messageContainerSignup').innerText = getTranslatedText(data.msg_code);
+        submitButton.disabled = false;
     })
     .catch(error => {
+        changeColorMessage('.signupMessageCont', 'failure');
+        document.getElementById('messageContainerSignup').innerText = getTranslatedText(error.msg_code);
         console.error('There was a problem with the sign-up:', error);
+        submitButton.disabled = false;
     });
+}
+
+function changeColorMessage(msgCont, status) {
+    let signupMessageCont = document.querySelector(msgCont);
+
+    if (status === "success") {
+        signupMessageCont.classList.remove("failure");
+        signupMessageCont.classList.add("success");
+    } else if (status === "failure") {
+        signupMessageCont.classList.remove("success");
+        signupMessageCont.classList.add("failure");
+    }
 }
 
 export function emptySignUpField() {

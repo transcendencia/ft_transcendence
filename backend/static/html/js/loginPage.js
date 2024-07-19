@@ -187,18 +187,18 @@ export async function handleLogin(formData) {
     return new Promise((resolve, reject) => {
         fetch('login_page/', {
             method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
             body: formData
         })
         .then(response => response.json())
         .then(data => {
             let guest_token = null;
-            console.log("hostLoggedIn", (hostLoggedIn === 'true'));
             const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
-            console.log("messageContainerId", messageContainerId);
             console.log(data.status);
             if (data.status === "success") {
-                console.log("%c in success if : ", 'color: blue;');
-                
+
                 // console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
 
