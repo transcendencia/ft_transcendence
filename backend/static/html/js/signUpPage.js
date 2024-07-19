@@ -81,6 +81,7 @@ signUpForm.addEventListener('submit', handleSignUp);
 function handleSignUp(event) {
     event.preventDefault();
     
+    const messageContainer = document.getElementById('messageContainerSignup');
     const submitButton = document.getElementById('submitSignUp');
     submitButton.disabled = true;
 
@@ -101,19 +102,19 @@ function handleSignUp(event) {
     })
     .then(data => {
         changeColorMessage('.signupMessageCont', 'success');
-        document.getElementById('messageContainerSignup').innerText = getTranslatedText(data.msg_code);
+        messageContainer.innerText = getTranslatedText(data.msg_code);
         submitButton.disabled = false;
     })
     .catch(error => {
         changeColorMessage('.signupMessageCont', 'failure');
-        document.getElementById('messageContainerSignup').innerText = getTranslatedText(error.msg_code);
+        messageContainer.innerText = getTranslatedText(error.msg_code);
         console.error('There was a problem with the sign-up:', error);
         submitButton.disabled = false;
     });
 }
 
-function changeColorMessage(msgCont, status) {
-    let signupMessageCont = document.querySelector(msgCont);
+function changeColorMessage(messageContainer, status) {
+    let signupMessageCont = document.querySelector(messageContainer);
 
     if (status === "success") {
         signupMessageCont.classList.remove("failure");
