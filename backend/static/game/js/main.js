@@ -281,7 +281,8 @@ class LoadingScreen {
                     document.getElementById('c1').style.display = 'inline';
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
-                    console.log("allo");
+                    window.location.hash = '#game';
+                    console.log("alloa");
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;

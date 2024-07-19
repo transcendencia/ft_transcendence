@@ -57,8 +57,6 @@ document.addEventListener('keyup', (event) => {
         sKeyPressed = false;    
     if (event.key === 'd')
         dKeyPressed = false;
-    if (event.key === 'Alt')
-        altKeyPressed = false;
 });
 
 document.addEventListener('keypress', (event) => {
