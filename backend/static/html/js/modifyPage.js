@@ -7,6 +7,7 @@ import { getCookie } from './loginPage.js';
 import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
+import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '../../tournament/js/newTournament.js';
 
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
@@ -105,6 +106,8 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   });
 
   document.getElementById("validateDelete").classList.remove("showRectangle");
+  changeTournamentStatus();
+  resetTournament();
   togglePlanet(/* toggleRsContainer: */ false);
   returnToHost(/* updateStats: */ false);
   returnToLoginPageInSpaceship();

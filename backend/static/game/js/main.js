@@ -3674,7 +3674,7 @@ class Game {
     constructor() {
 
         // STUFF FOR ME, DONT TOUCH
-        this.maxScore = 3;
+        this.maxScore = 1;
         this.isOver = false;
         this.isPlaying = false;
 

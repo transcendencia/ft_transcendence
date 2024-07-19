@@ -209,7 +209,7 @@
     font-family: 'space'; 
     color: #3777ff;
     height: 50px; /* Utilisez des pixels pour une hauteur fixe */
-    width: 150px;
+    width: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
