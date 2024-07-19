@@ -706,6 +706,9 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
 
 	  // add players
 	  // const 
+	  gameState.arena.game.rightScore = 0;
+	  gameState.arena.game.leftScore = 0;
+	  gameState.arena.resetUI();
 	  gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
 	  gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
 	  if (playerNb === 2) {
