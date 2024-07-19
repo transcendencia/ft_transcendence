@@ -445,7 +445,7 @@ export async function handleLogout(userId, token) {
                 returnToHost();
             clearInterval(checkEach5Sec);
             togglePlanet(/* toggleRsContainer: */ false);
-        }        
+        }
         setSpaceShipToLoginState();
         showPage('loginPage');
         swipeLeftSideContainer('-40%');
@@ -456,6 +456,7 @@ export async function handleLogout(userId, token) {
         setTimeout(() => {
             toggleLobbyStart();
             resolve();
+            gameState.paused = false;
         }, 50);
     });
     isLoggingOut = false;
