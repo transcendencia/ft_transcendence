@@ -5,6 +5,7 @@ import { afterGameTournament, botDifficultyTournament, addUserToTournament } fro
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
 import { askForAlias } from "../../tournament/js/newTournament.js";
+import {userListChanged} from "./userPage.js";
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
@@ -599,7 +600,7 @@ export function toggleGameStarted() {
 	gameStarted = !gameStarted;
 }
 
-export function endGame(isTournament, backToLobby = false) {
+export async function endGame(isTournament, backToLobby = false) {
 	let token = sessionStorage.getItem('host_auth_token');
 	updateUserStatus('online', token);
 	for(let i = 0; i < guestLoggedIn.length; i++) {
@@ -634,6 +635,8 @@ export function endGame(isTournament, backToLobby = false) {
 	document.getElementById('c3').style.display = 'none';
 	document.getElementById('c1').style.display = 'none';
 	gameState.arena.game.resetUsers();
+	if (await userListChanged())
+    	refreshUserList();
 }
 
 export function rematchGame() {

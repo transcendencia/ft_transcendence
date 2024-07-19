@@ -541,8 +541,8 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(camera.position);
     if (event.key === 'Enter') {
-        if (window.location.hash === "#signUpPage") 
-            document.getElementById("submitSignUp").click();
+        // if (window.location.hash === "#signUpPage") 
+        //     document.getElementById("submitSignUp").click();
         // const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
