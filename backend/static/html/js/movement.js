@@ -12,8 +12,13 @@ let aKeyPressed = false;
 let sKeyPressed = false;
 let dKeyPressed = false;
 let aKeyIsPressed = false;
+let altKeyPressed = false;
 
 document.addEventListener('keydown', (event) => {
+    if (altKeyPressed)
+        return;
+    if (event.key === 'Alt')
+        altKeyPressed = true;
     if (event.key === 'ArrowLeft')
         leftArrowPressed = true;
     if (event.key === 'ArrowRight')
@@ -50,6 +55,8 @@ document.addEventListener('keyup', (event) => {
         sKeyPressed = false;    
     if (event.key === 'd')
         dKeyPressed = false;
+    if (event.key === 'Alt')
+        altKeyPressed = false;
 });
 
 document.addEventListener('keypress', (event) => {
@@ -59,9 +66,8 @@ document.addEventListener('keypress', (event) => {
 
 let distance = 10.5;
 let height = 4.5;
-let moveSpeed = 8;
+let moveSpeed = 20;
 let rotSpeed = 0.10;
-const tolerance = 0.01; 
 
 
 function rotateSpaceShipAnim(targetRot) {
@@ -122,6 +128,7 @@ function endBoost() {
 function spaceShipMovement() {
     if (!aKeyIsPressed)
         return;
+    
     if (upArrowPressed || wKeyPressed) {
         spaceShip.position.x += Math.sin(spaceShip.rotation.y) * moveSpeed;
         spaceShip.position.z += Math.cos(spaceShip.rotation.y) * moveSpeed;

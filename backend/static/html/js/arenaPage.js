@@ -290,7 +290,7 @@ import { get_friends_list, updateUserStatus } from "./userManagement.js";
 import { planetInRange } from "./planetIntersection.js";
 
 const backButtonArenaPage = document.getElementById("arenaBackButton");
-backButtonArenaPage.addEventListener('click', () => {togglePlanet()});
+backButtonArenaPage.addEventListener('click', () => {togglePlanet(/* toggleRsContainer: */ true)});
 
 let previousUserList = [];
 

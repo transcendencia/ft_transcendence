@@ -11,25 +11,27 @@ const frontPosition = new THREE.Vector3(0, 4.5, -1304); // Define the target pos
 
 export function moveCameraToFrontOfCockpit(page) {1
     const duration = 1000; // Define the duration of the animation in milliseconds
-    console.log(backPosition);
     const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
         .to(backPosition, duration) // Set the target position and duration
         .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
         .start(); // Start the animation
-    if (page === 'signUpPage')
-        showPage('signUpPage', 'signUp');
-    const selectedPage = document.querySelector('.signUpPage');
-    const hologramContainer = selectedPage.querySelector('.hologram-container');
-    
-    if (hologramContainer) {
-        hologramContainer.classList.remove('open');
-        void hologramContainer.offsetWidth;
-        hologramContainer.classList.add('open');
-    }
-    else if (page === 'rgpdPage')
-        showPage('rgpdPage', 'default');
-    emptyLoginField();
-    inCockpit = true;
+        emptyLoginField();
+        inCockpit = true;
+        if (page === 'signUpPage' && window.location.hash === '#rgpdPage') {
+            const selectedPage = document.querySelector('.signUpPage');
+            const hologramContainer = selectedPage.querySelector('.hologram-container');
+            if (hologramContainer) {
+                hologramContainer.classList.remove('open');
+                void hologramContainer.offsetWidth;
+                hologramContainer.classList.add('open');
+            }
+            showPage('signUpPage', 'delay');
+        }
+        else if (page === 'rgpdPage')
+            showPage('rgpdPage', 'default');
+        else {
+            showPage('signUpPage');
+        }
 }
 
 

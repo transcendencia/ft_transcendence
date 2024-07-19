@@ -21,8 +21,21 @@
     transition: opacity 1s, visibility 0s !important;
 }
 
-.show.signUp {
+.show.delay {
     transition: opacity 1s 0.75s, visibility 0s !important;
+}
+
+.open {
+    animation: openAnimation 0.5s 0.75s forwards;
+}
+
+@keyframes openAnimation {
+    0% {
+        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(0);
+    }
+    100% {
+        transform: translate(-50%, -50%) perspective(800px) rotateX(-55deg) scale(1);
+    }
 }
 
 .signUpHeader {
