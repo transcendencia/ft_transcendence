@@ -41,7 +41,7 @@ function handleChangeInfoForm(event) {
       getProfileInfo(sessionStorage.getItem("host_id"))
         .then(data => {
             populateProfileInfos(data);
-            
+            createUserBadge(data, "playersConnHostBadge");  
         })
 
     else changeInfoMessage.classList.toggle("errorMessage");
@@ -65,6 +65,17 @@ document.getElementById('deleteAccountCancel').addEventListener("click", functio
   document.getElementById("validateDelete").classList.remove("showRectangle");
   deleteBlockingPanel.classList.remove('show');
 });
+
+function returnToLoginPageInSpaceship() {
+  spaceShip.position.set(0, 0, -1293.5);
+  spaceShip.rotation.set(0, 0, 0);
+
+  setTimeout(() => {
+      toggleLobbyStart(true);
+      spaceShipInt.visible = true;
+      showPage('loginPage');
+  }, 25);
+}
 
 document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
   const token = sessionStorage.getItem('host_auth_token');
@@ -94,16 +105,9 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   });
 
   document.getElementById("validateDelete").classList.remove("showRectangle");
-  togglePlanet(true);
-  returnToHost();
-  spaceShip.position.set(0, 0, -1293.5);
-  spaceShip.rotation.set(0, 0, 0);
-
-  setTimeout(() => {
-      toggleLobbyStart(true);
-      spaceShipInt.visible = true;
-      showPage('loginPage');
-  }, 25);
+  togglePlanet(/* toggleRsContainer: */ false);
+  returnToHost(/* updateStats: */ false);
+  returnToLoginPageInSpaceship();
 });
 
 deleteAccountButton.addEventListener("click", deleteAccount);
