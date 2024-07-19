@@ -397,10 +397,10 @@ function resetHTMLelements(){
 export let isLoggingOut = false;
 
 export async function handleLogout(userId, token, disconnect = true) {
-    if (isLoggingOut) 
+    // console.log("handleLogout Called");
+    if (!userId || !token || isLoggingOut)
         return;
     isLoggingOut = true;
-
     if (gameState.inGame && disconnect === false) {
         resetGameEscape();
         await new Promise(resolve => setTimeout(() => {
@@ -469,7 +469,6 @@ disconnectButton.addEventListener("click", () => {
 function printXYZofVector(vector) {
     console.log("x: ", vector.x, "y: ", vector.y, "z: ", vector.z);
 }
-
 
 export function logoutGuest(userId) {
     if (userId === sessionStorage.getItem('host_id')) {
