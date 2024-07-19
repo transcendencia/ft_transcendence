@@ -237,7 +237,10 @@ cancelTournamentButton.addEventListener('click', () => {
         player.position = 1;
     })
     nextMatchElement.style.display = "none";
-    matchElement.textContent = playersInTournament[0].username + " has won the tournament!";
+    if (playersInTournament,length == 0)
+      matchElement.textContent = "..." + " has won the tournament!";
+    else
+      matchElement.textContent = playersInTournament[0].username + " has won the tournament!";
     launchMatchElement.style.display = "none";
     cancelTournamentButton.style.display = "none";
   }
@@ -257,7 +260,7 @@ cancelTournamentButton.addEventListener('click', () => {
     nbMatch = 0;
     currentMatch = [];
     putFinalPosiionWhenLost(playersInTournament);
-    if (playersInTournament.length == 1){ //end the tournament
+    if (playersInTournament.length == 1 || playersInTournament.length == 0){ //end the tournament
       endTournament(playersInTournament, ul);
       return ;
     }
@@ -358,7 +361,7 @@ cancelTournamentButton.addEventListener('click', () => {
 
   function nextMatch() {
     nbMatch ++;
-    let ul = document.getElementById("match");
+    // let ul = document.getElementById("match");
     if (nbMatch >= currentMatch.length){
       makeMatchup();
       return ; 
@@ -366,9 +369,15 @@ cancelTournamentButton.addEventListener('click', () => {
     printNextMatch();
   }
 
-  export function  afterGameTournament(leftScore, rightScore) {
+  export function  afterGameTournament(leftScore, rightScore, noWinner = false) {
     let winner_name;
 
+    if (noWinner){
+      updateBracket(tournamentPlayer, "...", currentMatch, nbMatch, round);
+      nextMatch();
+      if (gameState.arenaCreated) //if the game has never been launch
+        gameState.arena.game.resetUsers();
+    }
     currentMatch[nbMatch][2] = leftScore;
     currentMatch[nbMatch][3] = rightScore;
     if (leftScore > rightScore){
@@ -385,41 +394,40 @@ cancelTournamentButton.addEventListener('click', () => {
       gameState.arena.game.resetUsers();
   }
 
-  function checkPlayerStatus(){
+  async function checkPlayerStatus() {
     const player1Status = getUserStatus(currentMatch[nbMatch][0].myRef.playerId);
     const player2Status = getUserStatus(currentMatch[nbMatch][1].myRef.playerId);
-    player1Status.then(status => {
-      if (status === "offline")
-        afterGameTournament(0, 3);
-    }).catch(error => {
-      afterGameTournament(0, 3);
-    });
-    player2Status.then(status => {
-      if (status === "offline")
-        afterGameTournament(3, 0);
-    }).catch(error => {
-      afterGameTournament(3, 0);
-    });
 
     return Promise.all([player1Status, player2Status]).then(([status1, status2]) => {
-      if (status1 === "offline" || status2 === "offline")
+        console.log(status1, status2);
+        if (status1 === "offline" && status2 === "offline") {
+          afterGameTournament(0, 0, true);
           return 1;
-      return 0;
+        }
+        if (status1 === "offline") {
+          afterGameTournament(0, 3);
+          return 1;
+        }
+        if (status2 === "offline") {
+          afterGameTournament(3, 0);
+          return 1;
+        }
+        return 0;
     }).catch(error => {
-      return 1;
+        return 1;
     });
-  }
+}
 
-  
-
-  function findWinner(){
+  async function findWinner(){
     // afterGameTournament(3,0);
     // return;
+    console.log("findWinner");
     if (!currentMatch[nbMatch][1]){
       afterGameTournament(3, 0);
       return;
     }
-    if (checkPlayerStatus())
+    const status = await checkPlayerStatus();
+    if (status)
       return;
     if (currentMatch[nbMatch][0].myRef.playerId === currentMatch[nbMatch][1].myRef.playerId)
       afterGameTournament(3, 0);
