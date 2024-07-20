@@ -113,8 +113,14 @@ def signup(request):
 
 
 
-# class LogoutView(APIView):
-#   permission_classes = [IsAuthenticated]
+class LogoutView(APIView):
+  authentication_classes = [TokenAuthentication]
 
-#   def post(self, request):
-    
+  def post(self, request):
+    if request.data.get('status') == 'offline' and request.user.is_host:  # a checker
+      request.user.is_host = False
+    request.user.status = 'offline'
+    request.user.save()
+    request.user.auth_token.delete()
+    print("user status: ", request.user.status)
+    return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)

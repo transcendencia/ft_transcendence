@@ -583,6 +583,7 @@ document.addEventListener('keydown', (event) => {
         }
         else if (inCockpit) {
             moveCameraToBackOfCockpit();
+            document.getElementById('usernameLoginInput').focus();
             return;
         }
         else if (lobbyStart) {

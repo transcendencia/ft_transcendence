@@ -46,7 +46,7 @@ export function moveCameraToBackOfCockpit() {
     inCockpit = false;
 }
 
-const backToLoginButton = document.querySelector('.hologram-button');
+const backToLoginButton = document.querySelector('.backToLoginButton');
 
 backToLoginButton.addEventListener('click', function() {
     moveCameraToBackOfCockpit();
