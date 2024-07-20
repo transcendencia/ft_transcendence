@@ -428,7 +428,7 @@ export async function handleLogout(userId, token) {
         showPage('loginPage');
         swipeLeftSideContainer('-40%');
         logoutGuest(userId);
-        updateUserStatus('offline', token);
+        logoutUser(token);
         reactivateLoginFields();
         sessionStorage.clear();
         setTimeout(() => {
@@ -460,32 +460,35 @@ function printXYZofVector(vector) {
     console.log("x: ", vector.x, "y: ", vector.y, "z: ", vector.z);
 }
 
-// function logoutUser(token) {
-//     fetch('logout/', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Token ${token}`,
-//             'X-CSRFToken': getCookie('csrftoken')
-//         },
-//         body: formData
-//     })
-//     .then(response => {
-//         if (!response.ok) 
-//             return response.json().then(err => Promise.reject(err));
-//         return response.json();
-//     })
-//     .then(data => {
-//     })
-//     .catch(error => {
-//         console.error('There was a problem with the sign-up:', error);
-//     });
-// }
+async function logoutUser(token) {
+    console.log("logoutUser");
+    try {
+        const response = await fetch('/logout/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ status: status }),
+            keepalive: true,
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur lors du logout');
+        } else {
+            const data = await response.json();
+            // console.log(`User ${data.user_id} status updated to ${data.status}`);
+        }
+    } catch (error) {
+        console.error('Erreur :', error);
+    }
+}
 
 export function logoutGuest(userId) {
     if (userId === sessionStorage.getItem('host_id')) {
         guestLoggedIn.forEach(user => {
-            updateUserStatus('offline', user[1]);
+            logoutUser(user[1]);
         });
     }
     guestLoggedIn.splice(0, guestLoggedIn.length);
