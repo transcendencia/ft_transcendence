@@ -10,6 +10,7 @@ import { planetInRange, resetOutline } from "./planetIntersection.js";
 import { rsContVisible } from "./main.js";
 import { checkEach5Sec, landedOnPlanet, togglePlanet } from "./enterPlanet.js";
 import { returnToHost } from "./userPage.js";
+import { keyDown } from "../../game/js/main.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -387,7 +388,6 @@ export function getGameInfo() {
 
 function resetHTMLelements(){
     document.querySelector(".gameUI").style.visibility = 'hidden';
-    document.getElementsByClassName("bluebar")[0].style.opacity = 0;
     document.getElementById('c4').style.display = 'block';
     document.getElementById('c3').style.display = 'none';
     document.getElementById('c1').style.display = 'none';
@@ -397,12 +397,23 @@ function resetHTMLelements(){
 export let isLoggingOut = false;
 
 export function backToLobby(historyArrow = false) {
-    if (!historyArrow)
+    if (historyArrow) {
+        console.log("oui");
+        keyDown['e'] = true;
+        setTimeout(() => {
+            keyDown['e'] = false;
+            gameState.arena.displayBackPanel(true);
+            gameState.arena.thirdPlayer.deactivateThirdPlayer();
+            gameState.arena.idleCameraAnimation();
+        }, 10);
+    } else {
         resetGameEscape();
-    gameState.arena.displayBackPanel(true);
-    gameState.arena.thirdPlayer.deactivateThirdPlayer();
-    gameState.arena.idleCameraAnimation();
+        gameState.arena.displayBackPanel(true);
+        gameState.arena.thirdPlayer.deactivateThirdPlayer();
+        gameState.arena.idleCameraAnimation();
+    }
 }
+
 
 
 export async function handleLogout(userId, token) {
