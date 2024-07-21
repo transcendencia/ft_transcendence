@@ -37,10 +37,10 @@ window.addEventListener("load", function() {
 });
 
 addEventListener("hashchange", () => {
-    console.log(window.location.hash, oldLocation, lobbyStart, isLoggingOut);
+    console.log("info", window.location.hash, oldLocation, lobbyStart, isLoggingOut);
     if (gameState.loading)
         return;
-    if (lobbyStart && !isLoggingOut  && !gameState.inGame) {
+    if (lobbyStart && !gameState.inGame) {
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
     }
@@ -56,7 +56,9 @@ addEventListener("hashchange", () => {
         showPage('signUpPage');
     } else if (window.location.hash === '#galaxy' && (oldLocation === '#rgpdPage' || oldLocation === "#signUpPage"))
         moveCameraToBackOfCockpit();
-    else if (window.location.hash === '#galaxy' && oldLocation === '#game')
+    else if (window.location.hash === '#galaxy' && oldLocation === '#game'){
+        console.log("ouiii");
         backToLobby(/*historyArrow: */true);
+    }
     oldLocation = window.location.hash;
 });
