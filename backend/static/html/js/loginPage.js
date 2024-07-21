@@ -2,7 +2,7 @@ import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
-import { gameState } from "../../game/js/main.js";
+import { keyDown, swapToFullScreen, gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
 import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape , toggleRSContainerVisibility, escapeContainerVisible, lobbyStart} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
@@ -10,7 +10,6 @@ import { planetInRange, resetOutline } from "./planetIntersection.js";
 import { rsContVisible } from "./main.js";
 import { checkEach5Sec, landedOnPlanet, togglePlanet } from "./enterPlanet.js";
 import { returnToHost } from "./userPage.js";
-import { keyDown } from "../../game/js/main.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -398,19 +397,24 @@ export let isLoggingOut = false;
 
 export function backToLobby(historyArrow = false) {
     if (historyArrow) {
-        console.log("oui");
         keyDown['e'] = true;
         setTimeout(() => {
             keyDown['e'] = false;
             gameState.arena.displayBackPanel(true);
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
+            gameState.arena.swapToFullScreen();
         }, 10);
     } else {
         resetGameEscape();
         gameState.arena.displayBackPanel(true);
         gameState.arena.thirdPlayer.deactivateThirdPlayer();
         gameState.arena.idleCameraAnimation();
+        gameState.arena.swapToFullScreen();
+        gameState.arena.resetPoint();
+        gameState.arena.game.leftScore = 0;
+        gameState.arena.game.rightScore = 0;
+        gameState.arena.resetUI();
     }
 }
 
