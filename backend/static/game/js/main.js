@@ -24,7 +24,7 @@ import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 const fpsCounter = document.getElementById('fps-counter');
 
 let frameCount = 0;
-let lastTime = performance.now(); // Initialize lastTime here
+let lastTime = performance.now();
 
 function updateFpsCounter() {
     var currentTime = performance.now();
@@ -42,7 +42,7 @@ function updateFpsCounter() {
 // CAMERA RENDERER AND SCENE //
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000010);
-const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
+const aspectRatio = window.innerWidth / window.innerHeight;
 const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 2000);
 const cameraRight = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
 const cameraLeft = new THREE.PerspectiveCamera(95, aspectRatio / 2, 0.1, 1000 );
@@ -65,7 +65,7 @@ const renderer2 = new THREE.WebGLRenderer({ // Renderer for split screen
     antialias: true
 })
 renderer2.setPixelRatio(window.devicePixelRatio);
-renderer2.setSize(window.innerWidth / 2, window.innerHeight); // Set width to half of window width
+renderer2.setSize(window.innerWidth / 2, window.innerHeight);
 renderer2.render(scene, cameraLeft);
 
 let cubeLoader = new THREE.CubeTextureLoader();
@@ -106,16 +106,11 @@ const shaderBallMaterial = new THREE.MeshStandardMaterial({
 shaderBallMaterial.userData.shader = { uniforms: { uTime: { value: 0 } } };
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Set default cursor for body
     document.body.style.cursor = "url('../static/game/assets/cursor/default.cur'), auto";
-
-    // Set cursor for all links
     let links = document.querySelectorAll('backButton');
     links.forEach(function(link) {
         link.style.cursor = "url('../static/game/assets/cursor/pointer.cur'), pointer";
     });
-
-    // Set cursor for all buttons
     let buttons = document.querySelectorAll('button');
     buttons.forEach(function(button) {
         button.style.cursor = "url('../static/game/assets/cursor/pointer.cur'), pointer";
@@ -152,11 +147,11 @@ class LoadingScreen {
 
         const loader = new GLTFLoader();
         loader.load('../../static/game/models/spaceShip/scene.gltf', (gltf) => {
-            this.spaceShip = gltf.scene; // Assign the loaded model to this.spaceShip
-            this.spaceShip.scale.set(0.03, 0.03, 0.03); // Scale the spaceship
-            this.spaceShip.position.set(0, -1, 2); // Set the position of the spaceship
-            this.spaceShip.rotation.y = Math.PI; // Rotate the spaceship
-            this.scene.add(this.spaceShip); // Add the spaceship to the scene
+            this.spaceShip = gltf.scene;
+            this.spaceShip.scale.set(0.03, 0.03, 0.03);
+            this.spaceShip.position.set(0, -1, 2);
+            this.spaceShip.rotation.y = Math.PI;
+            this.scene.add(this.spaceShip);
         }, undefined, (error) => {
             console.error('An error occurred while loading the spaceship model:', error);
         });
@@ -194,7 +189,7 @@ class LoadingScreen {
         this.starSpeed = 2;
         this.loadingCompleted = false;
         this.scene.add(this.light, this.light2, this.light3, this.icoLight, this.light4);
-        this.stars = []; // Store all stars added to the scene
+        this.stars = [];
         this.addStars(2000);
 
     }
@@ -206,7 +201,7 @@ class LoadingScreen {
 
         star.position.set(x, y, z);
         this.scene.add(star);
-        this.stars.push(star); // Add the star to the stars array
+        this.stars.push(star);
     }
     addStars(numStars) {
         Array(numStars).fill().forEach(this.addStar.bind(this));
@@ -302,9 +297,9 @@ class LoadingScreen {
         this.ico2.rotation.x += this.xSpeedInitial;
         shaderBallMaterial.userData.shader.uniforms.uTime.value = performance.now() / 10000;
         this.stars.forEach(star => {
-            star.position.z += this.starSpeed; // Increase Z position by 0.01
+            star.position.z += this.starSpeed;
             if (star.position.z > 100) {
-                star.position.z = -100; // Reset position to -100
+                star.position.z = -100;
             }
         });
 
@@ -352,8 +347,8 @@ class LoadingScreen {
         this.light2.power = this.light2InitialPower;
         this.light3.power = this.light3InitialPower;
         this.icoLight.power = this.icoLightInitialPower;
-        this.spaceShip.scale.set(0.03, 0.03, 0.03); // Scale the spaceship
-        this.spaceShip.position.set(0, -1, 2); // Set the position of the spaceship
+        this.spaceShip.scale.set(0.03, 0.03, 0.03);
+        this.spaceShip.position.set(0, -1, 2);
         this.isAnimatingSpaceship = false;
         this.loadingCompleted = false;
     }
@@ -382,14 +377,6 @@ class LoadingScreen {
 
 const loadingScreen = new LoadingScreen();
 
-// HELPERS
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-const gridHelper = new THREE.GridHelper(1000, 500, 100,  0xAA00ff);
-const axesHelper = new THREE.AxesHelper(50); // Length of axes
-const rightHelper = new THREE.CameraHelper(cameraRight);
-const leftHelper = new THREE.CameraHelper(cameraLeft);
-// scene.add(axesHelper);
-// scene.add(gridHelper);
 
 // VIEW UTILS
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -499,7 +486,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         setTimeout(() => {
             keyDown['e'] = false;
         }, 10);
-        // stylish and (optional) functional code here 
     });
 });
 
@@ -586,18 +572,10 @@ function switchControlsVisibility(mode)
 class Arena extends THREE.Mesh {
     constructor(centerPosition, width, height, depth, loadingScreen, gameState)
     {
-        // Create geometry for the arena
         const geometry = new THREE.BoxGeometry(width, height, depth);
-        const textureLoader = new THREE.TextureLoader();
-        const arenaColor = 0x000000;
-        // Create material
         const material = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
-        // Call super constructor to set up mesh
         super(geometry, material);
-        
-        // Set position of the arena
         this.position.copy(centerPosition);
-        // Calculate left corner position based on the center and dimensions
         const halfWidth = width / 2;
         const halfHeight = height / 2;
         const halfDepth = depth / 2;
@@ -606,7 +584,6 @@ class Arena extends THREE.Mesh {
         const bottomCornerY = this.position.y - halfHeight;
         const nearCornerZ = this.position.z - halfDepth;
 
-        // Calculate and store coordinates of every corner
         this.leftCorner = new THREE.Vector3(leftCornerX, bottomCornerY, nearCornerZ);
         this.rightCorner = new THREE.Vector3(leftCornerX + width, bottomCornerY, nearCornerZ);
         this.topCorner = new THREE.Vector3(leftCornerX, bottomCornerY + height, nearCornerZ);
@@ -639,7 +616,7 @@ class Arena extends THREE.Mesh {
         this.viewPoint3 = new THREE.Vector3(this.position.x - this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
         this.viewPoint4 = new THREE.Vector3(this.position.x + this.width, this.position.y + this.height + this.width / 1.5, this.position.z - this.width * 1);
         this.defaultMaterial = material;
-        this.stars = []; // Store all stars added to the scene
+        this.stars = [];
 
         // POST PROCESSING
         this.renderPass1 = new RenderPass(this.scene, this.camera);
@@ -647,10 +624,10 @@ class Arena extends THREE.Mesh {
         this.bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
         this.horizontalBlur = new ShaderPass(HorizontalBlurShader);
         this.verticalBlur = new ShaderPass(VerticalBlurShader);
-        this.horizontalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-        this.verticalBlur.uniforms['tDiffuse'].value = null; // Set the input texture to null
-        this.horizontalBlur.renderToScreen = true; // Render to a texture
-        this.verticalBlur.renderToScreen = true; // Render to the screen
+        this.horizontalBlur.uniforms['tDiffuse'].value = null;
+        this.verticalBlur.uniforms['tDiffuse'].value = null;
+        this.horizontalBlur.renderToScreen = true;
+        this.verticalBlur.renderToScreen = true;
         this.horizontalBlur.uniforms.h.value = 0;
         this.verticalBlur.uniforms.v.value = 0;
         this.glitchLeft = new GlitchPass(64);
@@ -701,7 +678,7 @@ class Arena extends THREE.Mesh {
 
         star.position.set(x, y, z);
         this.scene.add(star);
-        this.stars.push(star); // Add the star to the stars array
+        this.stars.push(star);
     }
     addStars(numStars) {
         Array(numStars).fill().forEach(this.addStar.bind(this));
@@ -893,7 +870,8 @@ class Arena extends THREE.Mesh {
         }
         if (keyDown['e'])
         {
-            // cameraLeft.position.copy(this.position);
+            if (gameState.loading)
+                return;
             this.gameState.eKeyWasPressed = true;
             this.isAnimatingCamera = false;
             this.game.loserPaddle = this.paddleRight;
@@ -1295,50 +1273,40 @@ class Paddle extends THREE.Group {
     constructor(arena, left) {
         super();
 
-        // Calculate paddle dimensions based on arena size
         const paddleWidth = arena.width * 0.1; // 20% of arena width
         const paddleHeight = arena.length * 0.05; // 5% of arena height
         const paddleDepth = paddleHeight * 0.25; // 2% of arena depth
 
-       // Create geometry for the paddle
        const geometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
 
-       // Create material
        this.material = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
-       // Create paddle mesh
        this.paddleMesh = new THREE.Mesh(geometry, this.material);
 
-       // Add paddle mesh to the group
        this.add(this.paddleMesh);
 
-        // Store the model name
         if (left)
             this.modelName = '../../static/game/models/spaceShip/scene.gltf';
         else
             this.modelName = '../../static/game/models/spaceShip/scene.gltf';
         this.model;
-        // Load Blender model
         const loader = new GLTFLoader();
         loader.load(
             this.modelName,
             (gltf) => {
                 this.model = gltf.scene;
-                // Position the this.model relative to the paddle
                 if (!left) {
-                    this.model.position.set(0, 0, 2); // Adjust position as needed
+                    this.model.position.set(0, 0, 2);
                     this.model.rotation.y = Math.PI;
                 }
                 else
-                    this.model.position.set(0, 0, -2); // Adjust position as needed
+                    this.model.position.set(0, 0, -2);
                 if (left)
-                    this.model.scale.set(0.2, 0.2, 0.2); // Adjust scale as needed
+                    this.model.scale.set(0.2, 0.2, 0.2);
                 else
-                    this.model.scale.set(0.2, 0.2, 0.2); // Adjust scale as needed
-                // Add the this.model to the group
+                    this.model.scale.set(0.2, 0.2, 0.2);
+
                 this.add(this.model);
-                
-                // Now you can access the position of paddle.paddleMesh
             },
             undefined,
             (error) => {
@@ -1346,14 +1314,12 @@ class Paddle extends THREE.Group {
             }
         );
 
-        // Set position of the paddle mesh
         this.paddleMesh.position.set(0, 0, 0);
 
-        // Set position of the group (including both paddle mesh and model)
         const arenaTopY = arena.position.y + arena.height / 2;
         this.position.set(
             arena.position.x,
-            arenaTopY + paddleHeight / 2, // Adjust for paddle height
+            arenaTopY + paddleHeight / 2,
             arena.position.z + arena.width / 2
         );
         if (left)
@@ -1374,12 +1340,10 @@ class Paddle extends THREE.Group {
         this.width = paddleWidth;
         this.height = paddleHeight;
         this.depth = paddleDepth;
-        // Store arena reference
         this.arena = arena;
         this.scene = scene;
         this.left = left;
         this.canDash = true;
-        // Add other properties and methods as needed
         if (arena.graphics === 'low')
             this.particleNumber = 0;
         else if (arena.graphics === 'medium')
@@ -1424,10 +1388,10 @@ class Paddle extends THREE.Group {
             (gltf) => {
                 this.model = gltf.scene;
                 this.modelName = modelName;
-                // Position the this.model relative to the paddle
+            
                 if (!this.left)
                 {
-                    this.model.position.set(0, 0, position); // Adjust position as needed
+                    this.model.position.set(0, 0, position);
                     if (rotationFactor == -1)
                         this.model.rotation.y = -Math.PI;
                     else if (rotationFactor == 1)
@@ -1436,7 +1400,7 @@ class Paddle extends THREE.Group {
                     {
                         this.model.position.y -= 2;
                         this.model.rotation.z = Math.PI;
-                        // this.model.rotation.y = Math.PI / 2;
+                    
                     }
                     else if (rotationFactor == 2)
                         this.model.rotation.y = 0;       
@@ -1446,7 +1410,7 @@ class Paddle extends THREE.Group {
                 }
                 else
                 {
-                    this.model.position.set(0, 0, -position); // Adjust position as needed
+                    this.model.position.set(0, 0, -position);
                     if (rotationFactor == -1)
                         this.model.rotation.y = 0;
                     else if (rotationFactor == 1)
@@ -1456,7 +1420,7 @@ class Paddle extends THREE.Group {
                         this.model.position.y -= 2;
                         this.model.rotation.y = -Math.PI;
                         this.model.rotation.z = Math.PI;
-                        // this.model.rotation.y = - Math.PI / 2;
+                    
                     }
                     else if (rotationFactor == 2)
                         this.model.rotation.y = Math.PI;
@@ -1464,7 +1428,7 @@ class Paddle extends THREE.Group {
                         this.model.rotation.y = -Math.PI / 2;
                 }
 
-                this.model.scale.set(scale, scale, scale); // Adjust scale as needed
+                this.model.scale.set(scale, scale, scale);
                 this.add(this.model);
 
                 if (this.arena.dragonMap.mapActive || this.arena.skyMap.mapActive)
@@ -1525,6 +1489,7 @@ class Paddle extends THREE.Group {
     }
     animatePaddle(arena)
     {
+        // Detect dashes
         if (doubleKeyPress[this.rightKey] && this.canDash && arena.game.powerUpsActivated) {
             this.canDash = false;
             this.isDashingRight = true;
@@ -1697,8 +1662,6 @@ class Ball extends THREE.Mesh {
         // BALL CREATION
         const size = arena.width * 0.025;
         const geometry = new THREE.SphereGeometry(size, 16, 8);
-        const textureLoader = new THREE.TextureLoader();
-        // const texture = textureLoader.load('ball.jpg');
         const material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: false});
         super(geometry, material);
         this.light = new THREE.PointLight(0xffffff);
@@ -1771,16 +1734,11 @@ class Ball extends THREE.Mesh {
         return (this.position.z >= paddle1.position.z || this.position.z <= paddle2.position.z);
     }
     checkCollisionBoxSphere(box, sphere) {
-        // Get the bounding box of the box object
         let boxBox = new THREE.Box3().setFromObject(box.paddleMesh);
-    
-        // Get the bounding sphere of the sphere object
         let sphereSphere = new THREE.Sphere();
         sphere.geometry.computeBoundingSphere();
         sphereSphere.copy(sphere.geometry.boundingSphere);
         sphereSphere.applyMatrix4(sphere.matrixWorld);
-    
-        // Check for intersection between the box and sphere bounding volumes
         return boxBox.intersectsSphere(sphereSphere);
     }
     collisionWithLeftPaddle(paddle)
@@ -2453,9 +2411,9 @@ class SpaceMap {
         if (this.arena.graphics === 'low')
             return;
         this.arena.stars.forEach(star => {
-            star.position.z += 0.01; // Increase Z position by 0.01
+            star.position.z += 0.01;
             if (star.position.z > 4000) {
-                star.position.z = -4000; // Reset position to -100
+                star.position.z = -4000;
             }
         });
     }
@@ -2778,7 +2736,6 @@ class DragonMap {
         this.mixer;
         this.particleColor = new THREE.Color(0xffff00)
         this.modelName = '../../static/game/models/dragonglb.glb';
-          // LOAD THE GLB MODEL OF MOUNTAINS
         const loader = new GLTFLoader();
         loader.load( '../../static/game/models/cuvetteDarkMode.glb', ( gltf ) => {
             this.mountains = gltf.scene;
@@ -2786,7 +2743,6 @@ class DragonMap {
             this.mountains.position.set( 0, -this.arena.height * 120, 0 );
             this.mountains.rotation.y = Math.PI;
         });        
-        // LAVA MATERIAL
         const textureLoader = new THREE.TextureLoader();
 
         const cloudTexture = textureLoader.load( '../../static/game/assets/cloud.png' );
@@ -3043,42 +2999,42 @@ class DragonMap {
 
 class ThirdPlayer extends THREE.Group {
     constructor(arena) {
-        super(); // Call the parent constructor
+        super();
         this.arena = arena;
-        this.ball = undefined; // Initialize the ball as undefined initially
-        this.ballInitialPosition = new THREE.Vector3(1.5, 0, 0); // Set the initial position of the ball
+        this.ball = undefined;
+        this.ballInitialPosition = new THREE.Vector3(1.5, 0, 0);
         this.shootDirection = new THREE.Vector2(0, 0);
         this.leftShootDirection = new THREE.Vector2(0, 0);
         this.rightShootDirection = new THREE.Vector2(0, 0);
-        this.ballColor = new THREE.Color(0x31FBF3); // Set the color of the ball
-        this.bulletColor = new THREE.Color(0xffbb12); // Set the color of the bullets
+        this.ballColor = new THREE.Color(0x31FBF3);
+        this.bulletColor = new THREE.Color(0xffbb12);
         this.deactivatedPosition = new THREE.Vector3(0, -this.arena.height, 0);
         this.activatedPosition = new THREE.Vector3(-this.arena.width / 2 - 3, this.arena.height , 0);
-        // Define spaceship in the outer scope
+    
         let spaceship;
 
-        // Load the spaceship model asynchronously
+    
         const loader = new GLTFLoader();
         loader.load(
             '../../static/game/models/spaceShip/scene.gltf',
             (gltf) => {
-                spaceship = gltf.scene; // Assign the loaded model to spaceship
-                // Position the spaceship relative to the arena
+                spaceship = gltf.scene;
+            
                 spaceship.rotation.y = Math.PI / 2;
-                // spaceship.position.set(-this.arena.width / 2 - 2, this.arena.height, 0);
-                // Scale the spaceship as needed
+            
+            
                 spaceship.scale.set(0.4, 0.4, 0.4);
-                // Add the spaceship to the group
+            
                 this.add(spaceship);
                 this.position.copy(this.deactivatedPosition);
                 const bufferGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0.1, 0, 0)]);
-                const bufferMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }); // Make it invisible
+                const bufferMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
                 this.buffer = new THREE.Mesh(bufferGeometry, bufferMaterial);
-                this.bulletGeometry = new THREE.CylinderGeometry(0.25, 0.25, 1.5, 32, 1, false); // Adjust size and segments as needed
-                this.ballGeometry = new THREE.SphereGeometry(0.8, 32, 32); // Adjust size and segments as needed
-                const bulletLeftMaterial = new THREE.MeshBasicMaterial({ color: this.bulletColor , opacity: 1, transparent: true}); // Red color for the ball
-                const bulletRightMaterial = new THREE.MeshBasicMaterial({ color: this.bulletColor , opacity: 1, transparent: true}); // Red color for the ball
-                const ballMaterial = new THREE.MeshStandardMaterial({ color: this.ballColor, opacity: 1, transparent: true }); // Red color for the ball
+                this.bulletGeometry = new THREE.CylinderGeometry(0.25, 0.25, 1.5, 32, 1, false);
+                this.ballGeometry = new THREE.SphereGeometry(0.8, 32, 32);
+                const bulletLeftMaterial = new THREE.MeshBasicMaterial({ color: this.bulletColor , opacity: 1, transparent: true});
+                const bulletRightMaterial = new THREE.MeshBasicMaterial({ color: this.bulletColor , opacity: 1, transparent: true});
+                const ballMaterial = new THREE.MeshStandardMaterial({ color: this.ballColor, opacity: 1, transparent: true });
                 this.bulletLeft = new THREE.Mesh(this.bulletGeometry, bulletLeftMaterial);
                 this.bulletRight = new THREE.Mesh(this.bulletGeometry, bulletRightMaterial);
                 this.ballMesh = new THREE.Mesh(this.ballGeometry, ballMaterial);
@@ -3086,13 +3042,13 @@ class ThirdPlayer extends THREE.Group {
                 this.bulletRight.rotation.z = Math.PI / 2;
 
                 // Position the ball and bullets in front of the spaceship
-                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
-                this.bulletLeft.position.set(4, -0.5, -2); // Adjust position as needed
-                this.bulletRight.position.set(4, -0.5, 2); // Adjust position as needed
+                this.ballMesh.position.set(4.5, 0, 0);
+                this.bulletLeft.position.set(4, -0.5, -2);
+                this.bulletRight.position.set(4, -0.5, 2);
                 this.buffer.position.set(1, 0, 0);
-                // Add the ball and bullets to the group
+            
                 this.add(this.ballMesh, this.bulletLeft, this.bulletRight, this.buffer);
-                // this.add(this.ballMesh);
+            
                 this.direction = new THREE.Vector2(0, 0);
                 this.camera = arena.camera;
                 this.scene = arena.scene;
@@ -3103,7 +3059,7 @@ class ThirdPlayer extends THREE.Group {
                 this.bulletRightAttached = true;
                 this.isAnimating = false;
 
-                // Add event listener to track mouse movement
+            
                 window.addEventListener('mousemove', (event) => {
                     if (this.isPlaying)
                         this.monitorShipRotation(event);
@@ -3117,13 +3073,12 @@ class ThirdPlayer extends THREE.Group {
                         this.shootBullet(this.bulletRight);
                 });
                 window.addEventListener('contextmenu', (event) => {
-                    event.preventDefault(); // Prevent default context menu
+                    event.preventDefault();
                 });
             },
             undefined,
             (error) => {
                 console.error('Error loading model:', error);
-                // Handle the error appropriately
             }
         );
     }
@@ -3134,26 +3089,18 @@ class ThirdPlayer extends THREE.Group {
             this.rotation.y -= 0.1;
     }
     monitorShipRotation(event) {
-        // Calculate the position of the ship's center relative to the screen
         const shipPosition = new THREE.Vector3();
         this.getWorldPosition(shipPosition);
-
-        // Calculate the position of the mouse relative to the screen
         const mousePosition = new THREE.Vector3(
             (event.clientX / window.innerWidth) * 2 - 1,
             -(event.clientY / window.innerHeight) * 2 + 1,
             0.5
         );
-        // Unproject the mouse position to the world space using the parent's camera
         if (this.camera)
             mousePosition.unproject(this.camera);
-        // Calculate the direction vector from the ship's position to the mouse position
         const direction = new THREE.Vector3();
         direction.subVectors(mousePosition, shipPosition).normalize();
-
-        // Calculate the angle between the ship's forward direction and the direction vector to the mouse
         const angle = Math.atan2(direction.x, direction.z);
-        // Rotate the ship towards the mouse
         this.direction.set(direction.x, direction.z * 30);
         this.rotation.y = (angle * 52);
     }
@@ -3161,7 +3108,6 @@ class ThirdPlayer extends THREE.Group {
         if (this.ballAttached) {
             this.ballAttached = false;
             this.temporarilyDetachBall();
-            // calculate vector from ship to ball
             this.shootDirection = new THREE.Vector2(this.ballMesh.position.x - this.position.x, this.ballMesh.position.z - this.position.z).normalize();
             setTimeout(() => {
                 this.resetBall();
@@ -3211,19 +3157,19 @@ class ThirdPlayer extends THREE.Group {
             if (this.checkCollisionBallPaddle(this.arena.paddleLeft))
             {
                 this.arena.paddleLeft.swapPaddleControls();
-                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+                this.ballMesh.position.set(4.5, 0, 0);
                 this.ballMesh.material.opacity = 0;
             }
             if (this.checkCollisionBallPaddle(this.arena.paddleRight))
             {
                 this.arena.paddleRight.swapPaddleControls();
-                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+                this.ballMesh.position.set(4.5, 0, 0);
                 this.ballMesh.material.opacity = 0;
             }
             if (this.checkCollisionBallBall(this.arena.ball))
             {
                 this.arena.ball.invertMovement();
-                this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+                this.ballMesh.position.set(4.5, 0, 0);
                 this.ballMesh.material.opacity = 0;
             }
         }
@@ -3232,19 +3178,19 @@ class ThirdPlayer extends THREE.Group {
             if (this.checkCollisionBulletPaddle(this.bulletLeft, this.arena.paddleLeft))
             {
                 this.arena.paddleLeft.slowDown();
-                this.bulletLeft.position.set(4, -0.5, -2); // Adjust position as needed
+                this.bulletLeft.position.set(4, -0.5, -2);
                 this.bulletLeft.material.opacity = 0;
             }
             if (this.checkCollisionBulletPaddle(this.bulletLeft, this.arena.paddleRight))
             {
                 this.arena.paddleRight.slowDown();
-                this.bulletLeft.position.set(4, -0.5, -2); // Adjust position as needed
+                this.bulletLeft.position.set(4, -0.5, -2);
                 this.bulletLeft.material.opacity = 0;
             }
             if (this.checkCollisionBulletBall(this.bulletLeft))
             {
                 this.arena.ball.increaseSpeed();
-                this.bulletLeft.position.set(4, -0.5, -2); // Adjust position as needed
+                this.bulletLeft.position.set(4, -0.5, -2);
                 this.bulletLeft.material.opacity = 0;
             }
         }
@@ -3253,19 +3199,19 @@ class ThirdPlayer extends THREE.Group {
             if (this.checkCollisionBulletPaddle(this.bulletRight, this.arena.paddleLeft))
             {
                 this.arena.paddleLeft.slowDown();
-                this.bulletRight.position.set(4, -0.5, 2); // Adjust position as needed
+                this.bulletRight.position.set(4, -0.5, 2);
                 this.bulletRight.material.opacity = 0;
             }
             if (this.checkCollisionBulletPaddle(this.bulletRight, this.arena.paddleRight))
             {
                 this.arena.paddleRight.slowDown();
-                this.bulletRight.position.set(4, -0.5, 2); // Adjust position as needed
+                this.bulletRight.position.set(4, -0.5, 2);
                 this.bulletRight.material.opacity = 0;
             }
             if (this.checkCollisionBulletBall(this.bulletRight))
             {
                 this.arena.ball.increaseSpeed();
-                this.bulletRight.position.set(4, -0.5, 2); // Adjust position as needed
+                this.bulletRight.position.set(4, -0.5, 2);
                 this.bulletRight.material.opacity = 0;
             }
         }
@@ -3288,7 +3234,7 @@ class ThirdPlayer extends THREE.Group {
     resetBall() {
         this.ballAttached = true;
         this.ballMesh.material.opacity = 0;
-        this.ballMesh.position.set(4.5, 0, 0); // Adjust position as needed
+        this.ballMesh.position.set(4.5, 0, 0);
         this.add(this.ballMesh);
         new TWEEN.Tween(this.ballMesh.material)
         .to({opacity: 1}, 500)
@@ -3300,12 +3246,12 @@ class ThirdPlayer extends THREE.Group {
         if (bullet === this.bulletLeft)
         {
             this.bulletLeftAttached = true;
-            bullet.position.set(4, -0.5, -2); // Adjust position as needed
+            bullet.position.set(4, -0.5, -2);
         }
         else
         {
             this.bulletRightAttached = true;
-            bullet.position.set(4, -0.5, 2); // Adjust position as needed
+            bullet.position.set(4, -0.5, 2);
         }
         this.add(bullet);
         new TWEEN.Tween(bullet.material)
@@ -3408,7 +3354,7 @@ class Bot {
         this.powerUpEnabled = true;
         this.updatesToPowerUp = 0;
         this.dashEnabled = true;
-        this.intervalId = null; // Store interval ID
+        this.intervalId = null;
         this.gui;
     }
     activateBot() {
@@ -3460,7 +3406,6 @@ class Bot {
         this.gui.add(this, 'powerUpEnabled', true, false).name('Power Up Enabled').onChange((value) => {
             this.powerUpEnabled = value;
         });
-        //close gui
         this.gui.close();
     }
     deactivateGui() {
@@ -3683,12 +3628,10 @@ class UserStats {
 class Game {
     constructor() {
 
-        // STUFF FOR ME, DONT TOUCH
         this.maxScore = 3;
         this.isOver = false;
         this.isPlaying = false;
 
-        // INPUT (arenaPage.js)
         this.effectsOnly = false;
         this.powerUpsActivated = true;
         this.thirdPlayer = false;
@@ -3696,7 +3639,6 @@ class Game {
         this.tournamentGame = false;
         this.startingTime = 0;
         this.gameTime = 0;
-        // next variables are all to be inputed in string format
         this.user1Username = document.getElementById('username1Text');
         this.user2Username = document.getElementById('username2Text');
         this.user3Username = document.getElementById('username3Text');
@@ -3717,7 +3659,6 @@ class Game {
         this.loserPaddle;
         this.winnerPaddle;
         this.gameMode = 'classic';
-        // for each paddle
         this.paddleBounces;
         this.nbPowerUsed;
         this.nbDash;
@@ -3817,23 +3758,19 @@ class Particle {
         this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
         this.geometry.setAttribute('color', new THREE.BufferAttribute(this.colors, 3));
         
-        // Create particle material
         this.material = new THREE.PointsMaterial({
-            size: 0.1, // Adjust size as needed
-            vertexColors: THREE.VertexColors // Enable vertex colors
+            size: 0.1,
+            vertexColors: THREE.VertexColors
         });
         
-        // Create particle system
         this.particleSystem = new THREE.Points(this.geometry, this.material);
         this.scene.add(this.particleSystem);
         
-        // Initialize particle velocities
         this.initializeVelocities();
     }
     changeParticleSize(size)
     {
         this.material.size = size;
-        // update particle size
         this.scene.remove(this.particleSystem);
         const particleMaterial = new THREE.PointsMaterial({
             size: size, // Adjust size as needed
@@ -3919,9 +3856,9 @@ class Particle {
 function swapToSplitScreen() {
     thirdPlayerUI[0].style.opacity = 0;
     const targetWidth = window.innerWidth / 2;
-    const duration = 500; // Animation duration in milliseconds
+    const duration = 500;
     new TWEEN.Tween(renderer.domElement)
-        .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
+        .to({ width: targetWidth }, duration)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(() => {
             renderer.setSize(renderer.domElement.width, window.innerHeight);
@@ -3943,9 +3880,9 @@ function swapToSplitScreen() {
 export function swapToFullScreen()
 {
     const targetWidth = window.innerWidth;
-    const duration = 500; // Animation duration in milliseconds
+    const duration = 500;
     new TWEEN.Tween(renderer.domElement)
-        .to({ width: targetWidth }, duration) // Set width directly on renderer's canvas element
+        .to({ width: targetWidth }, duration) 
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(() => {
             renderer.setSize(renderer.domElement.width, window.innerHeight);
