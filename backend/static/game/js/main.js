@@ -281,7 +281,8 @@ class LoadingScreen {
                     document.getElementById('c1').style.display = 'inline';
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
-                    console.log("allo");
+                    window.location.hash = '#game';
+                    console.log("alloa");
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
@@ -397,7 +398,7 @@ controls.enableDamping = true;
 let lastKeyPressTime = {};
 let lastKeyUpTime = {};
 
-let keyDown = {
+export let keyDown = {
     'ArrowLeft': false,
     'ArrowRight': false,
     'ArrowUp': false,
@@ -476,7 +477,6 @@ document.addEventListener('keyup', (event) => {
 
 
 const scorePoints = document.getElementsByClassName("parallelogram");
-const blueBar = document.getElementsByClassName("bluebar");
 const scoreUI = document.getElementsByClassName("gameUI");
 const thirdPlayerUI = document.getElementsByClassName("profileCont3");
 
@@ -894,6 +894,7 @@ class Arena extends THREE.Mesh {
         if (keyDown['e'])
         {
             // cameraLeft.position.copy(this.position);
+            this.gameState.eKeyWasPressed = true;
             this.isAnimatingCamera = false;
             this.game.loserPaddle = this.paddleRight;
             this.game.winnerPaddle = this.paddleLeft;
@@ -970,7 +971,6 @@ class Arena extends THREE.Mesh {
         if (this.ball.leftScore(this.paddleRight) && !this.isBeingReset)
         {
             this.ball.particles.isActive = true;
-            this.ball.trailParticles.regroupTrail();
             this.addPoint('left');
             if (this.game.leftScore < this.game.maxScore && this.game.rightScore < this.game.maxScore)
                 this.resetPoint();
@@ -1135,6 +1135,7 @@ class Arena extends THREE.Mesh {
         this.ball.isRolling = false;
         this.ball.bounceCount = 0;
         this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
+        this.ball.trailParticles.regroupTrail();
         this.ball.position.copy(this.ball.startingPoint);
         this.ball.updateSpeedBar();
     }
@@ -1143,7 +1144,7 @@ class Arena extends THREE.Mesh {
         if (this.game.isOver)
             return;
         let duration = 1150;
-
+        this.ball.trailParticles.regroupTrail();
         this.thirdPlayer.deactivateThirdPlayer();
         switchControlsVisibility('hidden');
         loserPaddle.light.power = 0;
@@ -1270,11 +1271,21 @@ class Arena extends THREE.Mesh {
         this.gameState.inGame = false;
         this.gameState.inLobby = true;
         endGame(this.game.tournamentGame, backToLobby);
+        if (backToLobby)
+        {
+            gameState.arena.game.rightScore = 0;
+            gameState.arena.game.leftScore = 0;
+            gameState.arena.resetUI();
+        }
         const winningScreen = document.querySelector('.winning-screen');
         winningScreen.classList.remove('visible');
         scoreUI[0].style.opacity = 0;
         this.game.isOver = false;
         this.isBeingReset = false;
+    }
+    swapToFullScreen()
+    {
+        swapToFullScreen();
     }
 }
 
@@ -3735,6 +3746,7 @@ class GameState {
         this.inLobby = true;
         this.graphicsNeedToChange = false; 
         this.graphics = 'medium'; // (options = 'low', 'medium', 'high') (loginPage.js)
+        this.eKeyWasPressed = false;
 
     }
     switchLoadingToGame() {
@@ -3924,22 +3936,12 @@ function swapToSplitScreen() {
             camera.updateProjectionMatrix();
         })
         .onComplete(() => {
-            blueBar[0].style.transition = "opacity 2s ease";
-            blueBar[0].style.opacity = 0.2;
-            setTimeout(() => {
-                blueBar[0].style.display = 'block';
-            }, 2000);
         })
         .start();
 }
 
-function swapToFullScreen()
+export function swapToFullScreen()
 {
-    blueBar[0].style.transition = "opacity 0.5s ease";
-    blueBar[0].style.opacity = 0;
-    setTimeout(() => {
-        blueBar[0].style.display = 'none';
-    }, 500);
     const targetWidth = window.innerWidth;
     const duration = 500; // Animation duration in milliseconds
     new TWEEN.Tween(renderer.domElement)

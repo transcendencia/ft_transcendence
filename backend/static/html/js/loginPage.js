@@ -2,7 +2,7 @@ import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
-import { gameState } from "../../game/js/main.js";
+import { keyDown, swapToFullScreen, gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
 import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape , toggleRSContainerVisibility, escapeContainerVisible, lobbyStart} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
@@ -395,7 +395,6 @@ export function getGameInfo() {
 
 function resetHTMLelements(){
     document.querySelector(".gameUI").style.visibility = 'hidden';
-    document.getElementsByClassName("bluebar")[0].style.opacity = 0;
     document.getElementById('c4').style.display = 'block';
     document.getElementById('c3').style.display = 'none';
     document.getElementById('c1').style.display = 'none';
@@ -404,12 +403,29 @@ function resetHTMLelements(){
 
 export let isLoggingOut = false;
 
-export function backToLobby() {
-    resetGameEscape();
-    gameState.arena.displayBackPanel(true);
-    gameState.arena.thirdPlayer.deactivateThirdPlayer();
-    gameState.arena.idleCameraAnimation();
+export function backToLobby(historyArrow = false) {
+    if (historyArrow) {
+        keyDown['e'] = true;
+        setTimeout(() => {
+            keyDown['e'] = false;
+            gameState.arena.displayBackPanel(true);
+            gameState.arena.thirdPlayer.deactivateThirdPlayer();
+            gameState.arena.idleCameraAnimation();
+            gameState.arena.swapToFullScreen();
+        }, 10);
+    } else {
+        resetGameEscape();
+        gameState.arena.displayBackPanel(true);
+        gameState.arena.thirdPlayer.deactivateThirdPlayer();
+        gameState.arena.idleCameraAnimation();
+        gameState.arena.swapToFullScreen();
+        gameState.arena.resetPoint();
+        gameState.arena.game.leftScore = 0;
+        gameState.arena.game.rightScore = 0;
+        gameState.arena.resetUI();
+    }
 }
+
 
 
 export async function handleLogout(userId, token) {
@@ -431,7 +447,7 @@ export async function handleLogout(userId, token) {
                 returnToHost();
             clearInterval(checkEach5Sec);
             togglePlanet(/* toggleRsContainer: */ false);
-        }        
+        }
         setSpaceShipToLoginState();
         showPage('loginPage');
         swipeLeftSideContainer('-40%');

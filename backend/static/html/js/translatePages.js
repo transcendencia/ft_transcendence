@@ -68,6 +68,8 @@ const trnmtbotDifficultyLevelText = document.getElementById('trnmtBotDifficultyL
 const trnmtStartText = document.getElementById('launch');
 const trnmtThirdPlayerText = document.getElementById('thirdPlayerText');
 const trnmtBackButton = document.getElementById('trnmtBackButton');
+const trnmtLaunchBackButton = document.getElementById('trnmtLaunchBackButton');
+const cancelTournamentButton = document.getElementById('cancelTournamentButton');
 const trnmtNextMatch = document.getElementById('next-match');
 const trnmtLaunchMatch = document.getElementById('launchMatch');
 
@@ -86,6 +88,8 @@ function translateTournamentPageTexts() {
     trnmtStartText.textContent = getTranslatedText('start');
     trnmtThirdPlayerText.textContent = getTranslatedText('thirdPlayer');
     trnmtBackButton.textContent = getTranslatedText('backButton');
+    trnmtLaunchBackButton.textContent = getTranslatedText('backButton');
+    cancelTournamentButton.textContent = getTranslatedText('cancelTournamentButton');
     trnmtNextMatch.textContent = getTranslatedText('nextMatch');
     trnmtLaunchMatch.textContent = getTranslatedText('launchMatch');
 }
