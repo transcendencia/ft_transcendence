@@ -13,7 +13,6 @@ userlistTitle.textContent = getTranslatedText('userlist');
 
 export let plusClicked = 0;
 const botID = 1;
-let playerNb = 0;
 
 export const blue = '#3777ff';
 export const purple = 'rgb(164, 67, 255)'
@@ -67,7 +66,6 @@ export function resetGlow() {
 userlistTitle.textContent = getTranslatedText('userlist');
 
 export function resetAddingMode(mode) {
-	console.log(mode);
 	if (mode === 'arena') {
 		setCssClassToArray('add', 'hover-enabled', plusButtonsArena);
 		setCssClassToArray('remove', 'clicked', plusButtonsArena);
@@ -81,6 +79,7 @@ export function resetAddingMode(mode) {
 	profileAdded[botID] = false;
 	userTiles.forEach(tile => {tile.HTMLelement.querySelector(".textContainer").classList.remove('hovered')});
 }
+
 export function setAddingMode(plusButton, i, arena) {
 	if (arena)
 		setCssClassToArray('remove', 'hover-enabled', plusButtonsArena);
@@ -90,7 +89,8 @@ export function setAddingMode(plusButton, i, arena) {
 	userlistTitle.textContent = getTranslatedText('chooseProfile');
 	Glow(arena, plusClicked);
 	userTiles.forEach(tile => {
-		if (!(isBotId(tile.user.id) && arena && plusClicked === 1)) 
+		// if (isBotId(tile.user.id) && (!arena || (arena && plusClicked !== 1))) 
+		if (!(isBotId(tile.user.id) && arena && plusClicked === 1))
 			tile.HTMLelement.querySelector(".textContainer").classList.add('hovered')
 	});
 }
@@ -112,7 +112,7 @@ plusButtonsArena.forEach((plusButton, i) => {
 	});
 });
 
-let profileAdded = [];
+export let profileAdded = [];
 
 function isBotId(id) {
 	return (id === botID)
@@ -162,24 +162,22 @@ export function createUserInfoObject(tile, hoverEnabled = false) {
 
 function addClickListenerToNewUserBadge(userBadge, plusButton, tile) {
 	userBadge.userInfoCont.addEventListener('click', function() {
-		playerNb--;
 		profileAdded[tile.user.id] = false;
 		console.log(plusButton);
 		resetToPlusButton(userBadge.userInfoCont, plusButton);
 		updateListAndResetTimer();
 		removeUserFromMatch(tile.user.id);
-		console.log("before", addedPlayerBadges, tile.user.username);
 		addedPlayerBadges = addedPlayerBadges.filter(badge => badge.username !== tile.user.username);
-		console.log("after", addedPlayerBadges, tile.user.username);
 	});
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
 const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const validatePasswordButton = document.getElementById("arenaLogInButton");
 const backPasswordButton = document.getElementById("arenaBackLogInButton");
 let userClickedId = -1; // To store the index of the tile that was clicked
-let addedPlayerBadges = [];
+export let addedPlayerBadges = [];
 
 export function putUserInMatch(plusButtonsArray, mode) {
 	updateListAndResetTimer();
@@ -187,20 +185,23 @@ export function putUserInMatch(plusButtonsArray, mode) {
 	const textCont = tile.HTMLelement.querySelector(".textContainer");
 
 	profileAdded[tile.user.id] = true;
-	playerNb++;
 	
 	const userBadge = createUserInfoObject(tile, true);
 	addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked, username: tile.user.username});
 	const plusButton = plusButtonsArray[plusClicked - 1];
 	plusButton.parentNode.replaceChild(userBadge.userInfoCont, plusButton);
-
+	let thirdPlayer = 0;
+	if (plusClicked === 1)
+		thirdPlayer = 1;
 	resetGlow();
 	resetAddingMode(mode);
 	addClickListenerToNewUserBadge(userBadge, plusButton, tile, userClickedId);
-
-	if (mode === 'tournament')
+	if (mode === 'tournament'){
 		addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
-	else addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture);
+	}
+	else {
+		addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, thirdPlayer);
+	}
 }
 
 function updateListAndResetTimer() {
@@ -214,10 +215,14 @@ import { displayUsersLogged } from './main.js';
 
 export let guestLoggedIn = [];
 
+let isValidating = false;
+
 validatePasswordButton.addEventListener('click', async function() {
+	if (isValidating)
+		return;
+	isValidating = true;
+	validatePasswordButton.style.pointerEvents = 'none';
 	if (guestLoggedIn.length < 7) {
-		// console.log(guestLoggedIn.length);
-		// console.log("je log un guest");
 		let guest = userTiles.get(userClickedId).user;
 		const password = document.getElementById("enterPasswordInput");
 		const formData = new FormData();
@@ -227,6 +232,7 @@ validatePasswordButton.addEventListener('click', async function() {
 			let guestToken = await handleLogin(formData);
 			
 			if (guestToken) {
+
 				guestLoggedIn.push([guest, guestToken]);
 				if (planetInRange.name === 'arena')
 					putUserInMatch(plusButtonsArena, 'arena');
@@ -236,15 +242,18 @@ validatePasswordButton.addEventListener('click', async function() {
 				document.getElementById('enterPasswordInput').value = '';
 				document.getElementById('errorLogGuest').innerHTML = '';
 				pwWindow.classList.remove("showRectangle");
-				blockingPanel.classList.remove('show');
-
+				if (planetInRange.name === 'arena')
+					blockingPanel.classList.remove('show');
 			} else {
 				console.log("Erreur dans le login");
 			}
 		} catch (error) {
 			console.error('Erreur lors de la connexion :', error);
+		} finally {
+			isValidating = false;
+            validatePasswordButton.style.pointerEvents = '';
 		}
-0	}
+	}
 	else console.log("Too many guest");
 });
 
@@ -255,10 +264,9 @@ backPasswordButton.addEventListener('click', function() {
 	document.getElementById('errorLogGuest').innerText = '';
 });
 
-function addEventListenerToTile(tile) {
+function addEventListenerToTile(tile, arena) {
 	tile.HTMLelement.addEventListener('click', function() {
-	console.log("tile was clicked :", tile.user)
-	if (!plusClicked || isBotId(tile.user.id) && plusClicked === 1)
+	if (!plusClicked || isBotId(tile.user.id) && planetInRange.name === "arena" && plusClicked === 1)
 		return;
 	if (isBotId(tile.user.id) || (tile.user.status === 'online' && isGuest(tile.user.id))) {
 		userClickedId = tile.user.id;
@@ -271,7 +279,9 @@ function addEventListenerToTile(tile) {
 	blockingPanel.classList.add("show");
 	userClickedId = tile.user.id;
 	const userBadge = createUserInfoObject(tile);
+	const userBadgeAlias = createUserInfoObject(tile);
 	pwWindow.replaceChild(userBadge.userInfoCont, pwWindow.querySelector('.userInfoCont'));
+	aliasWindow.replaceChild(userBadgeAlias.userInfoCont, aliasWindow.querySelector('.userInfoCont'));
 	});
   }
 
@@ -323,9 +333,9 @@ export function resetArenaPage() {
 	addedPlayerBadges.forEach(obj => {
 		resetToPlusButton(obj.userBadge, plusButtonsArena[obj.plusClicked - 1]);
 	});
-	playerNb = 0;
 	profileAdded = [];
 	addedPlayerBadges = [];
+	matchPlayer.length = 1;
 	resetAddingMode("arena");
 }
   
@@ -336,7 +346,7 @@ export function resetArenaPage() {
   }
 
   const userTiles = new Map();
-  
+   
 let userListBackground;
 
 export async function RenderAllUsersInList() {
@@ -344,7 +354,7 @@ export async function RenderAllUsersInList() {
 	const users = await get_friends_list();
 	const sortedNewFriends = users.friends.sort((a, b) => a.user.username.localeCompare(b.user.username));
 	const sortedNewUserNotFriend = users.user_not_friend.sort((a, b) => a.username.localeCompare(b.username));
-  
+
 	const availableFriends = sortedNewFriends.filter(obj => isAvailable(obj.user)).map(obj => obj.user);
 	const availableNotFriends = sortedNewUserNotFriend.filter(user => isAvailable(user));
 	
@@ -442,9 +452,9 @@ export function createUserTile(user, type) {
 	  type: type
 	});
   
+	// console.log("userTiles:", userTiles);
 	userListBackground.appendChild(userTile);
-	addEventListenerToTile(userTiles.get(user.id));
-  
+	addEventListenerToTile(userTiles.get(user.id));  
 	return userTile;
 }
 
@@ -545,7 +555,7 @@ function toggleGamemode(buttonHeader, imgIndex) {
 		gamemodeCounter++;    
 		if (gamemodeCounter === 3) // 0 = classic 1 = powerless 2= spin only 
 			gamemodeCounter = 0;
-	} 
+	}
 	if (gamemodeCounter === 0)
 		buttonHeader.parentNode.querySelector('.buttonCont').textContent = getTranslatedText('gamemodeNameText1');
 	else if (gamemodeCounter === 1)
@@ -601,14 +611,15 @@ export function toggleGameStarted() {
 }
 
 export async function endGame(isTournament, backToLobby = false) {
-	let token = sessionStorage.getItem('host_auth_token');
-	updateUserStatus('online', token);
+	const hostId = sessionStorage.getItem('host_id');
+	if (hostId == gameState.arena.game.user1.id  || hostId == gameState.arena.game.user2.id  || (hostId == gameState.arena.game.user3.id )){
+		const token = sessionStorage.getItem('host_auth_token');
+		await updateUserStatus('online', token);
+	}
 	for(let i = 0; i < guestLoggedIn.length; i++) {
-		console.log("lets check:", guestLoggedIn[i][0].id, gameState.arena.game.user2.id)
-		if (guestLoggedIn[i][0].id === gameState.arena.game.user2.id || guestLoggedIn[i][0].id === gameState.arena.game.user3.id) {
-			console.log("les id des gens:", guestLoggedIn[i][0].id, gameState.arena.game.user2.id, gameState.arena.game.user3.id);
-			token = guestLoggedIn[i][1];
-			updateUserStatus('online', token);
+		if (guestLoggedIn[i][0].id == gameState.arena.game.user1.id || guestLoggedIn[i][0].id == gameState.arena.game.user2.id || guestLoggedIn[i][0].id == gameState.arena.game.user3.id) {
+			const token = guestLoggedIn[i][1];
+			await updateUserStatus('online', token);
 		}
 	}
 	gameStarted = false;
@@ -635,8 +646,7 @@ export async function endGame(isTournament, backToLobby = false) {
 	document.getElementById('c3').style.display = 'none';
 	document.getElementById('c1').style.display = 'none';
 	gameState.arena.game.resetUsers();
-	if (await userListChanged())
-    	refreshUserList();
+	refreshUserListIfChanged();
 }
 
 export function rematchGame() {
@@ -665,57 +675,67 @@ export function switchToGame(gameState, player1, player2, player3, isTournament)
 	initGame(gameState, player1, player2, player3, isTournament);
 }
 
+function initGameMode(gameState, isTournament){
+	let gamemodeCounterTmp = gamemodeCounter;
+	let mapCounterTmp = mapCounter;  
+	let botDifficultyTmp = botDifficulty;
+	if (isTournament){
+	  gamemodeCounterTmp = gamemodeCounterTournament;
+	  mapCounterTmp = mapCounterTournament;  
+	  botDifficultyTmp = botDifficultyTournament;
+	}
+	if (gamemodeCounterTmp === 0) {
+		gameState.arena.game.powerUpsActivated = true;
+		gameState.arena.game.effectsOnly = false;
+	}
+	else if (gamemodeCounterTmp === 1) {
+		gameState.arena.game.powerUpsActivated = false;
+		gameState.arena.game.effectsOnly = false;
+	}
+	else if (gamemodeCounterTmp === 2) {
+		gameState.arena.game.powerUpsActivated = true;
+		gameState.arena.game.effectsOnly = true;
+	}
+	const modeList = ["CLASSIC", "POWERLESS", "SPIN ONLY"];
+	gameState.arena.game.gameMode = modeList[gamemodeCounterTmp];
+	const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
+	gameState.arena.game.map = mapList[mapCounterTmp];
+	const difficultyList = ["easy", "medium", "hard"];
+	gameState.arena.bot.difficulty = difficultyList[botDifficultyTmp];
+}
+
 export function    initGame(gameState, player1, player2, player3, isTournament) {
 	// prepare for initialization
-	console.log("players", player1, player2, player3);
 	gameState.loading = true;
 	gameState.inLobby = false;
 	setTimeout(() => {
-		let token = sessionStorage.getItem('host_auth_token');
-		updateUserStatus('in_game', token);
+		let hostId = sessionStorage.getItem('host_id');
+		if (hostId == player1.playerId || hostId == player2.playerId || (player3 && hostId == player3.playerId)){
+			let token = sessionStorage.getItem('host_auth_token');
+			updateUserStatus('in_game', token);
+		}
 		for(let i = 0; i < guestLoggedIn.length; i++) {
-			if (guestLoggedIn[i][0].id === player2.playerId || (player3 && guestLoggedIn[i][0].id === player3.playerId)) {
-				token = guestLoggedIn[i][1];
+			if (guestLoggedIn[i][0].id === player1.playerId || guestLoggedIn[i][0].id === player2.playerId || (player3 && guestLoggedIn[i][0].id === player3.playerId)) {
+				const token = guestLoggedIn[i][1];
 				updateUserStatus('in_game', token);
 			}
 		}
 	  gameState.arena.game.hasToBeInitialized = true;
 	  // choose gameMode
-	  if (isTournament){
-		gamemodeCounter = gamemodeCounterTournament;
-		mapCounter = mapCounterTournament;  
-		botDifficulty = botDifficultyTournament;
-	  }
-	  if (gamemodeCounter === 0) {
-		  gameState.arena.game.powerUpsActivated = true;
-		  gameState.arena.game.effectsOnly = false;
-	  }
-	  else if (gamemodeCounter === 1) {
-		  gameState.arena.game.powerUpsActivated = false;
-		  gameState.arena.game.effectsOnly = false;
-	  }
-	  else if (gamemodeCounter === 2) {
-		  gameState.arena.game.powerUpsActivated = true;
-		  gameState.arena.game.effectsOnly = true;
-	  }
-	  const modeList = ["CLASSIC", "POWERLESS", "SPIN ONLY"];
-	  gameState.arena.game.gameMode = modeList[gamemodeCounter];
-	  // choose map
-	  const mapList = ["spaceMap", "oceanMap", "skyMap", "dragonMap"];
-	  gameState.arena.game.map = mapList[mapCounter];
-	  // choose bot difficulty
-	  const difficultyList = ["easy", "medium", "hard"];
-	  gameState.arena.bot.difficulty = difficultyList[botDifficulty];
-
+	  initGameMode(gameState, isTournament);
 	  // add players
 	  // const 
+	  gameState.arena.game.rightScore = 0;
+	  gameState.arena.game.leftScore = 0;
+	  gameState.arena.resetUI();
 	  gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
 	  gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);
-	  if (playerNb === 2) {
+	  if (player3){
 		gameState.arena.game.user3.setUser(player3.username, player3.playerId, player3.profile_picture);
 		gameState.arena.game.thirdPlayer = true;
 	  }
-	  else gameState.arena.game.thirdPlayer = false;
+	  else
+	  	gameState.arena.game.thirdPlayer = false;
 	  gameState.arena.game.tournamentGame = isTournament;
 	  gameState.arena.loadingScreen.loadingComplete();
 	}, 250);
@@ -736,6 +756,7 @@ const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
     let player2;
     let player3;
+	console.log("matchPlayer", matchPlayer);
     if (matchPlayer.length < 2 || (matchPlayer.length < 3 && matchPlayer[1].thirdPlayer))
         return;
     if (matchPlayer.length === 2){
