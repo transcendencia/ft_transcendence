@@ -44,8 +44,6 @@ class UserStatusView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request):
-        if request.data.get('status') == 'offline' and request.user.is_host:  # a checker
-            request.user.is_host = False
         request.user.status = request.data.get('status')
         request.user.save()
         return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
