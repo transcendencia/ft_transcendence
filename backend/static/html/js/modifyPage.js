@@ -117,35 +117,32 @@ function deleteAccount() {
   deleteBlockingPanel.classList.add('show');
 }
 
-// document.addEventListener('DOMContentLoaded', (event) => {
-  const toggleSwitch = document.getElementById('toggleSwitch');
-  let oldUsername;
-  let toggleSwitchClicked = false;
+const toggleSwitch = document.getElementById('toggleSwitch');
+let oldUsername;
+let toggleSwitchClicked = false;
 
-  toggleSwitch.addEventListener('click', function() {
-      this.classList.toggle('active');
-      if (this.classList.contains('active')) {
-        anonymousStatus = true;
-        if (!toggleSwitchClicked) {
-          toggleSwitchClicked = true;
-          oldUsername = document.getElementById('changeUsernameInput').value;
-        }
-        getRandomUsername();
+toggleSwitch.addEventListener('click', function() {
+    this.classList.toggle('active');
+    if (this.classList.contains('active')) {
+      anonymousStatus = true;
+      if (!toggleSwitchClicked) {
+        toggleSwitchClicked = true;
+        oldUsername = document.getElementById('changeUsernameInput').value;
       }
-      else {
-        anonymousStatus = false;
-        document.getElementById('changeUsernameInput').value = oldUsername;
-      }
-  });
-// });
+      getRandomUsername();
+    }
+    else {
+      anonymousStatus = false;
+      document.getElementById('changeUsernameInput').value = oldUsername;
+    }
+});
 
-// document.addEventListener('DOMContentLoaded', (event) => {
-  const thirdPlayerToggleSwitch = document.getElementById('thirdPlayertoggleSwitch');
-  thirdPlayerToggleSwitch.addEventListener('click', function() {
-      this.classList.toggle('active');
-      toggleThirdPlayerMode();
-  });
-// });
+const thirdPlayerToggleSwitch = document.getElementById('thirdPlayertoggleSwitch');
+thirdPlayerToggleSwitch.addEventListener('click', function() {
+    this.classList.toggle('active');
+    toggleThirdPlayerMode();
+});
+
 
 export function getRandomUsername() {
   const token = sessionStorage.getItem('host_auth_token');
