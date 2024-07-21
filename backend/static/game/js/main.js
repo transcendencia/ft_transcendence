@@ -281,7 +281,8 @@ class LoadingScreen {
                     document.getElementById('c1').style.display = 'inline';
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
-                    console.log("allo");
+                    window.location.hash = '#game';
+                    console.log("alloa");
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
@@ -397,7 +398,7 @@ controls.enableDamping = true;
 let lastKeyPressTime = {};
 let lastKeyUpTime = {};
 
-let keyDown = {
+export let keyDown = {
     'ArrowLeft': false,
     'ArrowRight': false,
     'ArrowUp': false,
@@ -476,7 +477,6 @@ document.addEventListener('keyup', (event) => {
 
 
 const scorePoints = document.getElementsByClassName("parallelogram");
-const blueBar = document.getElementsByClassName("bluebar");
 const scoreUI = document.getElementsByClassName("gameUI");
 const thirdPlayerUI = document.getElementsByClassName("profileCont3");
 
@@ -894,6 +894,7 @@ class Arena extends THREE.Mesh {
         if (keyDown['e'])
         {
             // cameraLeft.position.copy(this.position);
+            this.gameState.eKeyWasPressed = true;
             this.isAnimatingCamera = false;
             this.game.loserPaddle = this.paddleRight;
             this.game.winnerPaddle = this.paddleLeft;
@@ -3673,7 +3674,7 @@ class Game {
     constructor() {
 
         // STUFF FOR ME, DONT TOUCH
-        this.maxScore = 3;
+        this.maxScore = 1;
         this.isOver = false;
         this.isPlaying = false;
 
@@ -3735,6 +3736,7 @@ class GameState {
         this.inLobby = true;
         this.graphicsNeedToChange = false; 
         this.graphics = 'medium'; // (options = 'low', 'medium', 'high') (loginPage.js)
+        this.eKeyWasPressed = false;
 
     }
     switchLoadingToGame() {
@@ -3924,22 +3926,12 @@ function swapToSplitScreen() {
             camera.updateProjectionMatrix();
         })
         .onComplete(() => {
-            blueBar[0].style.transition = "opacity 2s ease";
-            blueBar[0].style.opacity = 0.2;
-            setTimeout(() => {
-                blueBar[0].style.display = 'block';
-            }, 2000);
         })
         .start();
 }
 
 function swapToFullScreen()
 {
-    blueBar[0].style.transition = "opacity 0.5s ease";
-    blueBar[0].style.opacity = 0;
-    setTimeout(() => {
-        blueBar[0].style.display = 'none';
-    }, 500);
     const targetWidth = window.innerWidth;
     const duration = 500; // Animation duration in milliseconds
     new TWEEN.Tween(renderer.domElement)

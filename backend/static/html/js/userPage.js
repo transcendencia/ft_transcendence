@@ -30,7 +30,7 @@ statsButtons.forEach((button, index) => {
 let previousFriendList = [];
 let previousSearchList = [];
 
-async function userListChanged() {
+export async function userListChanged() {
   const newData = await get_friends_list();
   if (searchQuery === '') {
     const friendList = filterAndSortLists(newData, '');
@@ -46,7 +46,7 @@ async function userListChanged() {
   return searchListChanged;
 }
 
-function refreshUserList() {
+export function refreshUserList() {
   if (searchQuery === '')
       renderFriendList();
   else RenderUsersSearched(searchQuery);
@@ -434,6 +434,7 @@ function createUserTile(user, type, reqId) {
   userTile.appendChild(loupeContainer);
   userListBackground.appendChild(userTile);
 }
+
 function filterAndSortLists(data, query) {
   let requestList = data.received_request_list;
   let friendList = data.friends;
