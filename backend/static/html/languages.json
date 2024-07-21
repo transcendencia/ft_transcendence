@@ -12,7 +12,7 @@
         "signUpTitle": "Sign up",
         "createAnAccount": "Create an account",
         "confirmPassword": "Confirm password",
-        "backToLogin": "Back to login",
+        "backToLogin": "Back",
         "successfulSignup": "User created You may now log in",
         "unique": "A user with that username already exists.",
         "unique_alias": "A user with that alias already exists.",
@@ -77,7 +77,6 @@
         "thirdPlayer": "Third Player",
         "removePlayer": "Remove player",
         "ErrorMinus": "Not enough players",
-        "ErrorTooMany": "Too many players",
         "nextMatch": "Next match:",
         "launchMatch": "Start match",
 
@@ -91,6 +90,7 @@
         "winLoseText4": "Goals",
         "statisticsText": "Statistics",
         "backButton": "Back",
+        "cancelTournamentButton": "Cancel Tournament",
 
         "changeInfo": "Only fill in information you want to change",
         "changeUsernameInput": "Username",
@@ -202,7 +202,6 @@
         "thirdPlayer": "Tercer jugador",
         "removePlayer": "Eliminar",
         "ErrorMinus": "No hay suficiente jugador",
-        "ErrorTooMany": "Demasiados jugadores",
         "nextMatch": "Proximo partido:",
         "launchMatch": "Empezar partido",
         
@@ -216,6 +215,7 @@
         "winLoseText4": "Goles",
         "statisticsText": "Estadisticas",
         "backButton": "volver",
+        "cancelTournamentButton": "Cancelar torneo",
 
         "changeInfo": "Complete solo la informacion que desea cambiar",
         "changeUsernameInput": "Nombre de usuario",
@@ -328,7 +328,6 @@
         "thirdPlayer": "Troisieme joueur",
         "removePlayer": "Supprimer",
         "ErrorMinus": "Pas assez de joueurs",
-        "ErrorTooMany": "Trop de joueurs",
         "nextMatch": "Prochain match:",
         "launchMatch": "Commencer le match",
 
@@ -342,6 +341,7 @@
         "winLoseText4": "Buts",
         "statisticsText": "Statistiques",
         "backButton": "Retour",
+        "cancelTournamentButton": "Annuler le tournoi",
 
         "changeInfo": "Remplissez uniquement les informations que vous souhaitez modifier",
         "changeUsernameInput": "Nom d'utilisateur",
@@ -375,7 +375,7 @@
         "enterPasswordText": "Entrer votre mot de passe",
         "enterPasswordInput": "Mot de passe",
         "arenaBackLogInButton": "Retour",
-        "arenaLogInButton": "Connection",
+        "arenaLogInButton": "Connexion",
         "showAliasText": "Voici votre alias pour le tournoi:",
         "aliasLogInButton": "D'accord"
     }

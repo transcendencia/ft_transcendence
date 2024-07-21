@@ -62,7 +62,7 @@ def get_game_user(request):
 def add_game(request):
   if request.method == 'POST':
     data = json.loads(request.body)
-        
+
     player1_id = data['player1']
     player2_id = data['player2']
     player3_id = data.get('player3', None)  # Optional
@@ -72,7 +72,7 @@ def add_game(request):
     modeGame = data['modeGame']
     mapGame = data['mapGame']
     gameTime = data['gameTime']
-    
+
     player1 = User.objects.get(id=player1_id)
     player2 = User.objects.get(id=player2_id)
     player3 = User.objects.get(id=player3_id) if player3_id else None
@@ -88,7 +88,7 @@ def add_game(request):
         gameTime=gameTime
     )
     game.save()
-    
+
     createUserStat(player1, game, data['user1'])
     createUserStat(player2, game, data['user2'])
     # user1 = data['user1']
@@ -97,7 +97,7 @@ def add_game(request):
     # print("user1", user1)
     # print("user2", user2)
     return JsonResponse({'status': 'success', 'game_id': game.id})
-  return JsonResponse({'status': 'fail'}, status=400)
+  return JsonResponse({'status': 'fail'}, status=405)
 
 def createUserStat(user, game, userStat):
   user.nbr_match += 1

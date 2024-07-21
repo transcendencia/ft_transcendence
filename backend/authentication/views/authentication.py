@@ -15,6 +15,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from django.contrib.auth.password_validation import validate_password
+from authentication.exceptions import PasswordValidationError
+from rest_framework.exceptions import ValidationError
 
 from ..models import User
 from ..serializers import UserSerializer, SignupSerializer
@@ -83,21 +88,33 @@ def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
     logger.debug(f'{user.username} status is {user.status} is host {user.is_host}')
 
 
-@api_view(['POST']) 
-@permission_classes([AllowAny])  
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def signup(request):
-  new_language = request.POST.get("language")
-  serializer = SignupSerializer(data=request.data)
+  try:
+      new_language = request.POST.get("language")
+      serializer = SignupSerializer(data=request.data)
 
-  if serializer.is_valid():
-    user_data = serializer.validated_data
-    user = User(username=user_data['username'], language=new_language)
-    user.set_password(user_data['password'])
-    user.save()
-    logger.debug("User created successfully with username: %s", user.username)
-    return Response({'status': "success", "msg_code": "successfulSignup"}, status=status.HTTP_200_OK)
-  
-  first_error = next(iter(serializer.errors.values()))[0]
-  first_error_code = first_error.code 
-  
-  return Response({'status': "failure", "msg_code": first_error_code})
+      if serializer.is_valid(raise_exception=True):
+          user_data = serializer.validated_data
+          user = User(username=user_data['username'], language=new_language)
+          user.set_password(user_data['password'])
+          user.save()
+          logger.debug("User created successfully with username: %s", user.username)
+          return Response({"msg_code": "successfulSignup"}, status=status.HTTP_201_CREATED)
+
+  except (ValidationError, PasswordValidationError) as e:
+      first_error = next(iter(e.detail.values()))[0]
+      first_error_code = getattr(first_error, 'code', 'validationError')
+      return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
+
+  except IntegrityError as e:
+      return Response({"msg_code": "unique"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# class LogoutView(APIView):
+#   permission_classes = [IsAuthenticated]
+
+#   def post(self, request):
+    

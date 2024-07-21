@@ -7,6 +7,7 @@ import { getCookie } from './loginPage.js';
 import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
+import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '../../tournament/js/newTournament.js';
 
 
 //import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
@@ -105,6 +106,8 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   });
 
   document.getElementById("validateDelete").classList.remove("showRectangle");
+  changeTournamentStatus();
+  resetTournament();
   togglePlanet(/* toggleRsContainer: */ false);
   returnToHost(/* updateStats: */ false);
   returnToLoginPageInSpaceship();
@@ -170,7 +173,7 @@ const RGPDPage = document.getElementById('RGPDPage');
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
 RGPDPolicy.addEventListener('click', function() {
   deleteBlockingPanel.classList.add('show');
-  showPage('rgpdPage');
+  showPage('rgpdPage', 'default', /*changeHash:*/ false);
   RGPDPage.classList.add("noPerspective");
   RGPDPage.classList.remove("holoPerspective");
 });
@@ -178,7 +181,6 @@ RGPDPolicy.addEventListener('click', function() {
 const RGPDBack = document.getElementById('RGPDBack');
 RGPDBack.addEventListener('click', function() {
   deleteBlockingPanel.classList.remove('show');
-  showPage('modifyPage');
 });
 
 const infoButton = document.getElementById("infoButton");

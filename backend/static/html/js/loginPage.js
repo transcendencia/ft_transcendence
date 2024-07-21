@@ -10,6 +10,7 @@ import { planetInRange, resetOutline } from "./planetIntersection.js";
 import { rsContVisible } from "./main.js";
 import { checkEach5Sec, landedOnPlanet, togglePlanet } from "./enterPlanet.js";
 import { returnToHost } from "./userPage.js";
+import { keyDown } from "../../game/js/main.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -204,18 +205,18 @@ export async function handleLogin(formData) {
     return new Promise((resolve, reject) => {
         fetch('login_page/', {
             method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
             body: formData
         })
         .then(response => response.json())
         .then(data => {
             let guest_token = null;
-            console.log("hostLoggedIn", (hostLoggedIn === 'true'));
             const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
-            console.log("messageContainerId", messageContainerId);
             console.log(data.status);
             if (data.status === "success") {
-                console.log("%c in success if : ", 'color: blue;');
-                
+
                 // console.log("hostLoggedIn", hostLoggedIn);
                 if (hostLoggedIn === 'false') {
 
@@ -387,7 +388,6 @@ export function getGameInfo() {
 
 function resetHTMLelements(){
     document.querySelector(".gameUI").style.visibility = 'hidden';
-    document.getElementsByClassName("bluebar")[0].style.opacity = 0;
     document.getElementById('c4').style.display = 'block';
     document.getElementById('c3').style.display = 'none';
     document.getElementById('c1').style.display = 'none';
@@ -396,41 +396,31 @@ function resetHTMLelements(){
 
 export let isLoggingOut = false;
 
-export function backToLobby() {
-    resetGameEscape();
-    gameState.arena.displayBackPanel(true);
-    gameState.arena.thirdPlayer.deactivateThirdPlayer();
-    gameState.arena.idleCameraAnimation();
+export function backToLobby(historyArrow = false) {
+    if (historyArrow) {
+        console.log("oui");
+        keyDown['e'] = true;
+        setTimeout(() => {
+            keyDown['e'] = false;
+            gameState.arena.displayBackPanel(true);
+            gameState.arena.thirdPlayer.deactivateThirdPlayer();
+            gameState.arena.idleCameraAnimation();
+        }, 10);
+    } else {
+        resetGameEscape();
+        gameState.arena.displayBackPanel(true);
+        gameState.arena.thirdPlayer.deactivateThirdPlayer();
+        gameState.arena.idleCameraAnimation();
+    }
 }
 
 
+
 export async function handleLogout(userId, token) {
-    if (isLoggingOut) 
+    if (!userId || !token || isLoggingOut) 
         return;
     isLoggingOut = true;
 
-    // if (gameState.inGame) {
-    //     resetGameEscape();
-    //     await new Promise(resolve => setTimeout(() => {
-    //         gameState.arena.displayBackPanel(true);
-    //         gameState.arena.thirdPlayer.deactivateThirdPlayer();
-    //         gameState.arena.idleCameraAnimation();
-    //         resolve();
-    //     }, 250));
-    //     isLoggingOut = false;
-    //     return;
-    // }
-    if (gameState.inGame) {
-        gameState.inGame = false;
-        gameState.inLobby = true;
-        toggleEscapeContainerVisibility(true);
-        toggleGameStarted();
-        if (gameState.arena.game.user2.isBot) {
-            gameState.arena.bot.deactivateBot();
-        }
-        resetHTMLelements();
-    }
-    
     await new Promise(resolve => {
         gameState.paused = false;
         if (rsContVisible)
@@ -472,7 +462,6 @@ export function setSpaceShipToLoginState() {
 
 const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.addEventListener("click", () => {
-    
     if (gameState.inGame)
         backToLobby();
     else
@@ -483,6 +472,27 @@ function printXYZofVector(vector) {
     console.log("x: ", vector.x, "y: ", vector.y, "z: ", vector.z);
 }
 
+// function logoutUser(token) {
+//     fetch('logout/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Token ${token}`,
+//             'X-CSRFToken': getCookie('csrftoken')
+//         },
+//         body: formData
+//     })
+//     .then(response => {
+//         if (!response.ok) 
+//             return response.json().then(err => Promise.reject(err));
+//         return response.json();
+//     })
+//     .then(data => {
+//     })
+//     .catch(error => {
+//         console.error('There was a problem with the sign-up:', error);
+//     });
+// }
 
 export function logoutGuest(userId) {
     if (userId === sessionStorage.getItem('host_id')) {
