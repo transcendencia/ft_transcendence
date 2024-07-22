@@ -280,3 +280,15 @@
 .enterPasswordWindow * {
     z-index: 5;
 }
+
+#arenaInfoIcon {
+    position: absolute;
+    top:4%;
+    left: 18%;
+
+}
+
+#arenaInfoIcon:hover {
+    cursor: url('../../game/assets/cursor/pointer.cur'), pointer;
+    
+}
