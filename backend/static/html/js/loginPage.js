@@ -165,6 +165,11 @@ function reactivateLoginFields() {
     document.getElementById('passwordLoginInput').disabled = false;
 }
 
+function disableLoginFields() {
+    document.getElementById('usernameLoginInput').disabled = true;
+    document.getElementById('passwordLoginInput').disabled = true;
+}
+
 function removeLastUserInfoConts() {
     const container = document.getElementById('lsCont');
     const hostBadge = document.getElementById('playersConnHostBadge');
@@ -184,24 +189,17 @@ function removeLastUserInfoConts() {
 // Handle form submission
 // Should I change it with a patch request
 export async function handleLogin(formData) {
-    document.getElementById('usernameLoginInput').disabled = true;
-    document.getElementById('passwordLoginInput').disabled = true;
-    if (sessionStorage.getItem("hostLoggedIn") === null) {
-        sessionStorage.setItem("hostLoggedIn", 'false');
-    }
+    disableLoginFields();
 
-    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn")
+    const hostLoggedIn = initializeHostLoggedIn();
     const submitButton = document.getElementById('loginButton');
 
-    formData.append('hostLoggedIn', hostLoggedIn);
-    if (hostLoggedIn === 'false') {
-        formData.append('language', currentLanguage);
-        formData.append('languageClicked', languageIconsClicked);
-    }
+    appendFormData(formData, hostLoggedIn);
 
     setlanguageIconsClicked(false);
+    const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         fetch('login_page/', {
             method: 'POST',
             headers: {
@@ -209,64 +207,74 @@ export async function handleLogin(formData) {
             },
             body: formData
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) 
+                return response.json().then(err => Promise.reject(err));
+            return response.json();
+        })
         .then(data => {
             let guest_token = null;
-            const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
             console.log(data.status);
-            if (data.status === "success") {
-
-                // console.log("hostLoggedIn", hostLoggedIn);
-                if (hostLoggedIn === 'false') {
-
-                    //ici
-                    sessionStorage.setItem("hostLoggedIn", 'true');
-                    sessionStorage.setItem("host_auth_token", data.token);
-                    sessionStorage.setItem("host_id", data.id);
-                    
-                    setCurrentLanguage(data.language.slice(0, 2));
-                    setEscapeLanguageVisual();
-                    get_friends_list();
-                    // console.log("host id:", sessionStorage.getItem("host_id"));
-                    getProfileInfo(sessionStorage.getItem("host_id"))
-                    .then(data => {
-                        populateProfileInfos(data);
-                        createUserBadge(data, "playersConnHostBadge");
-                        removeLastUserInfoConts();
-                    })
-                    .catch(error => {
-                        console.error('Failed to retrieve profile info:', error);
-                    });
-                    
-                    TranslateAllTexts();
-                    getGameInfo();
-                    changeGraphics(data.graphic_mode);
-                    updateGraphicsIcon(data.graphic_mode);
-                    showPage('none');
-                    
-                    startAnimation();
-
-                    emptyLoginField();
-                } else {
-                    guest_token = data.token;
-                    submitButton.disabled = false;
-                }
-                resolve(guest_token);
+            if (hostLoggedIn === 'false') {
+                handleHostLogin(data);
             } else {
+                guest_token = data.token;
                 submitButton.disabled = false;
-
-                document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
-                reactivateLoginFields()
-                resolve(null);
             }
+            resolve(guest_token);
         })
         .catch(error => {
             console.error('Erreur :', error);
             submitButton.disabled = false;
+            document.getElementById(messageContainerId).innerText = getTranslatedText(error.msg_code);
             reactivateLoginFields()
-            reject(error);
         })
     });
+}
+
+function initializeHostLoggedIn() {
+    if (sessionStorage.getItem("hostLoggedIn") === null) {
+        sessionStorage.setItem("hostLoggedIn", 'false');
+    }
+    return sessionStorage.getItem("hostLoggedIn");
+}
+
+function appendFormData(formData, hostLoggedIn) {
+    formData.append('hostLoggedIn', hostLoggedIn);
+    if (hostLoggedIn === 'false') {
+        formData.append('language', currentLanguage);
+        formData.append('languageClicked', languageIconsClicked);
+    }
+}
+
+function handleHostLogin(data){
+    sessionStorage.setItem("hostLoggedIn", 'true');
+    sessionStorage.setItem("host_auth_token", data.token);
+    sessionStorage.setItem("host_id", data.id);
+                
+    setCurrentLanguage(data.language.slice(0, 2));
+    setEscapeLanguageVisual();
+    
+    get_friends_list();
+    getProfileInfo(sessionStorage.getItem("host_id"))
+    .then(data => {
+        populateProfileInfos(data);
+        createUserBadge(data, "playersConnHostBadge");
+        removeLastUserInfoConts();
+    })
+    .catch(error => {
+        console.error('Failed to retrieve profile info:', error);
+    });
+    getGameInfo();
+                
+    changeGraphics(data.graphic_mode);
+    updateGraphicsIcon(data.graphic_mode);
+    
+    TranslateAllTexts();
+    showPage('none');
+    startAnimation();
+
+    emptyLoginField();
 }
 
 export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
@@ -477,7 +485,8 @@ function printXYZofVector(vector) {
 }
 
 async function logoutUser(token) {
-    console.log("logoutUser");
+    if (!token)
+        return;
     try {
         const response = await fetch('/logout/', {
             method: 'POST',
@@ -486,7 +495,6 @@ async function logoutUser(token) {
                 'Authorization': `Token ${token}`,
                 'X-CSRFToken': getCookie('csrftoken')
             },
-            body: JSON.stringify({ status: status }),
             keepalive: true,
         });
 
