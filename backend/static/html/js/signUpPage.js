@@ -18,6 +18,8 @@ export function moveCameraToFrontOfCockpit(page) {1
         emptyLoginField();
         inCockpit = true;
         if (page === 'signUpPage' && window.location.hash === '#rgpdPage') {
+
+            showPage('signUpPage', 'delay');
             const selectedPage = document.querySelector('.signUpPage');
             const hologramContainer = selectedPage.querySelector('.hologram-container');
             if (hologramContainer) {
@@ -25,12 +27,21 @@ export function moveCameraToFrontOfCockpit(page) {1
                 void hologramContainer.offsetWidth;
                 hologramContainer.classList.add('open');
             }
-            showPage('signUpPage', 'delay');
         }
         else if (page === 'rgpdPage')
             showPage('rgpdPage', 'default');
         else {
-            showPage('signUpPage');
+            showPage('signUpPage', 'signUp');
+
+            const selectedPage = document.querySelector('.signUpPage');
+            const hologramContainer = selectedPage.querySelector('.hologram-container');
+    
+            if (hologramContainer) {
+                hologramContainer.classList.remove('open');
+                void hologramContainer.offsetWidth;
+                hologramContainer.classList.add('open');
+            }
+
         }
 }
 
