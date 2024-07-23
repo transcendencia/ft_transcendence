@@ -1,7 +1,7 @@
 import os
 
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, F, FloatField, ExpressionWrapper, Case, When
 
@@ -10,35 +10,33 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
+from rest_framework import status
 
 from ..models import User, UserStat
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
-
+from ..utils.constants import UserStatus
 from .words import words, items
+from django.db import transaction
+from django.db.models import F
 
 import random
 #--------------------LANGUAGE--------------------
 class UserGraphicModeView(APIView):
   authentication_classes = [TokenAuthentication]
 
-  def post(self, request):
+  def patch(self, request):
     request.user.graphic_mode = request.data.get('graphicMode')
     request.user.save()
-    return Response({'user_id': request.user.id}, status=200)
+    return HttpResponse(status=status.HTTP_200_OK)
 
 class UserLanguageView(APIView):
   authentication_classes = [TokenAuthentication]
   
-  def post(self, request):
+  def patch(self, request):
     user = request.user
-
-    new_language = request.data.get("language")
-    if new_language != user.language:
-      user.language = new_language
-      user.save()
-      return Response({'user_id': user.id, 'languages': user.language}, status=200)
-    else:
-      return Response(status=400)
+    user.language = request.data.get("language")
+    user.save()
+    return HttpResponse(status=status.HTTP_200_OK)
 
 class UserStatusView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -46,7 +44,7 @@ class UserStatusView(APIView):
     def post(self, request):
         request.user.status = request.data.get('status')
         request.user.save()
-        return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
+        return HttpResponse(status=status.HTTP_200_OK)
       
     def get(self, request, userId):
         try:
@@ -108,7 +106,6 @@ def generate_unique_username(request):
             return Response({'username': username}, status=200)
     return Response(status=400)
 
-#SECURISER
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def delete_account(request):

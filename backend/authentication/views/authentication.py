@@ -23,6 +23,7 @@ from rest_framework.exceptions import ValidationError
 
 from ..models import User
 from ..serializers import UserSerializer, SignupSerializer
+from ..utils.constants import UserStatus
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,7 @@ def login_page(request):
       logger.warning(f"Authentication failed for user {username}")
       return  Response({'status': "failure", 'msg_code': "loginFailed"}, status=status.HTTP_401_UNAUTHORIZED)
 
-    if user.status != "offline":
+    if user.status != UserStatus.OFFLINE:
       logger.warning(f"User {username} already logged in")
       return Response({'status': "failure", 'msg_code': "userAlreadyLoggedIn"}, status=status.HTTP_409_CONFLICT)
         
@@ -72,7 +73,7 @@ def login_page(request):
 
 def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
     user.last_login_date = timezone.now()
-    user.status = 'online'
+    user.status = UserStatus.ONLINE
     
     if isHostLoggedIn == False:
         user.is_host = True
@@ -112,10 +113,10 @@ class LogoutView(APIView):
   authentication_classes = [TokenAuthentication]
 
   def post(self, request):
-    if request.data.get('status') == 'offline' and request.user.is_host:  # a checker
+    if request.data.get('status') == UserStatus.OFFLINE and request.user.is_host:  # a checker
       request.user.is_host = False
-    request.user.status = 'offline'
+    request.user.status = UserStatus.OFFLINE
     request.user.save()
     request.user.auth_token.delete()
-    print("user status: ", request.user.status)
+
     return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
