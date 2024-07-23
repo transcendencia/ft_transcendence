@@ -40,6 +40,7 @@ const player1Text = document.getElementById('player1Text');
 const player2Text = document.getElementById('player2Text');
 const player3Text = document.getElementById('player3Text');
 const arenaBackButton = document.getElementById('arenaBackButton');
+const arenaInfoText = document.getElementById('arenaInfoBox');
 
 
 function translateArenaPageTexts() {
@@ -55,6 +56,7 @@ function translateArenaPageTexts() {
     enabledText.textContent = getTranslatedText('gamemodeNameText1');
     startText.textContent = getTranslatedText('start');
     arenaBackButton.textContent = getTranslatedText('backButton');
+    arenaInfoText.textContent = getTranslatedText('arenaInfoText');
 }
 
 const trnmtPlayerTexts = document.getElementsByClassName('playerText');
