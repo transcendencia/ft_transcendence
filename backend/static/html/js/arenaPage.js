@@ -477,7 +477,20 @@ function isGuest(userId) {
 	return false;
 }
 
+let isInfoShow = false;
+const infoButton = document.getElementById("arenaInfoIcon");
+infoButton.addEventListener("mouseenter", displayInfo);
+infoButton.addEventListener("mouseleave", hideInfo);
 
+function displayInfo() {
+	isInfoShow = true;
+	document.getElementById("arenaInfoBox").classList.add("showRectangle");
+}
+
+function hideInfo() {
+	isInfoShow = false;
+	document.getElementById("arenaInfoBox").classList.remove("showRectangle");
+}
 
 
 
