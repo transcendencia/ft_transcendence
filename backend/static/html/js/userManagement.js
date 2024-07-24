@@ -14,7 +14,6 @@ export async function updateUserStatus(status, token) {
             'X-CSRFToken': getCookie('csrftoken')
         },
         body: JSON.stringify({ status: status }),
-        keepalive: true,
     })
     .then(response => {
         if (!response.ok) {

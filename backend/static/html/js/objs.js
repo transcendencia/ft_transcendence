@@ -86,9 +86,9 @@ function(gltf) {
         action1.play();
         setTimeout(() => {
             action1.crossFadeTo(action3, 1, true);
-            action3.play(); // Start the second animation
+            action3.play();
             setTimeout(() => {
-                action4.play(); // Start the second animation
+                action4.play();
                 action3.crossFadeTo(action4, 3, true);
             }, 7700);
         }, 1500);
@@ -122,10 +122,10 @@ function(gltf) {
         let action4 = mixer2.clipAction(gltf.animations[0]);
         action1.play();
         setTimeout(() => {
-            action3.play(); // Start the second animation
+            action3.play();
             action1.crossFadeTo(action3, 1, true);
             setTimeout(() => {
-                action4.play(); // Start the second animation
+                action4.play();
                 action3.crossFadeTo(action4, 3, true);
             }, 7700);
         }, 1100);

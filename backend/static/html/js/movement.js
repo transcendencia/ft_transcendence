@@ -142,7 +142,6 @@ function spaceShipMovement() {
             rotateSpaceShipAnim(0);
     }
     if (leftArrowPressed || aKeyPressed) {
-        // lobbyVisuals.afterImagePass.uniforms.damp.value = 0.5;
         if (downArrowPressed || sKeyPressed) {
             spaceShip.rotation.y -= 0.05;
         }
@@ -151,7 +150,6 @@ function spaceShipMovement() {
         rotateSpaceShipAnim(-0.80);
     }
     else if (rightArrowPressed || dKeyPressed) {
-        // lobbyVisuals.afterImagePass.uniforms.damp.value = 0.5;
         if (downArrowPressed || sKeyPressed)
             spaceShip.rotation.y += 0.05;
         else 
@@ -159,8 +157,6 @@ function spaceShipMovement() {
         rotateSpaceShipAnim(0.80);
 
     }
-    // else
-    //     lobbyVisuals.afterImagePass.uniforms.damp.value = 0.92;
     spaceShipPointLight.position.copy(spaceShip.position);
 }
 

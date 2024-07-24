@@ -228,8 +228,6 @@
 
 .changeInfoMessage {
     pointer-events: none;
-    color: white;
-    /* position: absolute; */
     display: flex;
     justify-content: center;
     text-align: center;
@@ -238,9 +236,25 @@
     font-family: 'Space'; /* Set font family */
 }
 
-.errorMessage {
+.changeInfoMessage.failure {
     color: red;
 }
+
+.changeInfoMessage.success {
+    color: white;
+}
+
+.linkPictureText {
+    pointer-events: none;
+    color: white;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-size:10px;
+    font-family: 'Space'; /* Set font family */
+}
+
 
 .toggle-container {
     display: flex;

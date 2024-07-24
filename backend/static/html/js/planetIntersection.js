@@ -8,7 +8,7 @@ enterPlanetText.textContent = '';
 
 const raycaster = new THREE.Raycaster();
 
-const rayLength = 3000; // Adjust as needed
+const rayLength = 3000;
 let rayEndPoint = new THREE.Vector3();
 
 export function updateRay() {

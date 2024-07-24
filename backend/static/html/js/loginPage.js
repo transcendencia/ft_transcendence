@@ -111,7 +111,6 @@ languageIcons.forEach(function(icon) {
             }
         });
         
-        // Send POST request to change user language in the back if user is logged in
         const token = sessionStorage.getItem('host_auth_token');
         if (token && currentLanguage !== icon.id) {
             updateUserLanguage(icon.id);
@@ -149,9 +148,6 @@ loginForm.addEventListener('submit', handleLoginSubmit);
 function handleLoginSubmit(event) {
     event.preventDefault();
 
-    // const formData = new FormData(this);
-    // handleLogin(formData);
-
 
     const formData = new FormData(this);
     const submitButton = this.querySelector('button[type="submit"]');
@@ -187,7 +183,6 @@ function removeLastUserInfoConts() {
 }
 
 // Handle form submission
-// Should I change it with a patch request
 export async function handleLogin(formData) {
     disableLoginFields();
 
@@ -484,29 +479,26 @@ function printXYZofVector(vector) {
     console.log("x: ", vector.x, "y: ", vector.y, "z: ", vector.z);
 }
 
-async function logoutUser(token) {
+export async function logoutUser(token) {
     if (!token)
         return;
-    try {
-        const response = await fetch('/logout/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            keepalive: true,
-        });
-
-        if (!response.ok) {
+   
+    await fetch('/logout/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        keepalive: true,
+    })
+    .then(response => {
+        if (!response.ok)
             throw new Error('Erreur lors du logout');
-        } else {
-            const data = await response.json();
-            // console.log(`User ${data.user_id} status updated to ${data.status}`);
-        }
-    } catch (error) {
-        console.error('Erreur :', error);
-    }
+    })
+    .catch(error => {
+        console.error('Error :', error);
+    });
 }
 
 export function logoutGuest(userId) {

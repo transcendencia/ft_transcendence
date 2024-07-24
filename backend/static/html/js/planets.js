@@ -10,10 +10,10 @@ class Planet {
 		this.hitboxSize = hitboxSize;
 		this.scale = scale;
 		this.orbitMesh = orbitMesh;
-		this.mesh = mesh; // Référence au modèle 3D de la planète
-        this.orbitSpeed = null; // Vitesse de l'orbite de la planète
+		this.mesh = mesh;
+        this.orbitSpeed = null;
 		this.initialAngle = null;
-		this.modelLoaded = false; // Angle initial pour la position de la planète
+		this.modelLoaded = false;
 		this.name = name;
 		this.trajectoryPoints = [];
 		this.hitboxColor = hitboxColor;
