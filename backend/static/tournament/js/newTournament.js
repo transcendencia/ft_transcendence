@@ -5,6 +5,7 @@ import { togglePlanet } from "../../html/js/enterPlanet.js";
 import { resetAddingMode, setAddingMode, plusClicked} from "../../html/js/arenaPage.js";
 import { addedPlayerBadges, resetToPlusButton, profileAdded, putUserInMatch, switchToGame } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket, updateElementDisplayAndText } from "./bracket.js";
+import { toggleRSContainerVisibility } from "../../html/js/main.js";
 
 export let gamemodeCounterTournament = 0;
 export let mapCounterTournament = 0;
@@ -152,9 +153,13 @@ const backButtonTournamentPage = document.getElementById("trnmtBackButton");
 const backButtonLaunchTournamentPage = document.getElementById("trnmtLaunchBackButton");
 const cancelTournamentButton = document.getElementById("cancelTournamentButton");
 backButtonTournamentPage.addEventListener('click', () => {togglePlanet()});
-backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet()});
+backButtonLaunchTournamentPage.addEventListener('click', () => {
+  toggleRSContainerVisibility();  
+  togglePlanet();
+});
 cancelTournamentButton.addEventListener('click', () => {
   tournamentState = 2;
+  toggleRSContainerVisibility();
   togglePlanet();
 });
 

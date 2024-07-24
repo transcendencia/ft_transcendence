@@ -6,15 +6,15 @@ import { emptyLoginField, getCookie } from './loginPage.js';
 
 export let inCockpit = false;
 
-const backPosition = new THREE.Vector3(0, 4.5, -1295); // Define the target position for the camera
-const frontPosition = new THREE.Vector3(0, 4.5, -1304); // Define the target position for the camera
+const backPosition = new THREE.Vector3(0, 4.5, -1295);
+const frontPosition = new THREE.Vector3(0, 4.5, -1304);
 
 export function moveCameraToFrontOfCockpit(page) {1
-    const duration = 1000; // Define the duration of the animation in milliseconds
-    const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
-        .to(backPosition, duration) // Set the target position and duration
-        .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
-        .start(); // Start the animation
+    const duration = 1000;
+    const cameraAnimation = new TWEEN.Tween(camera.position)
+        .to(backPosition, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
         emptyLoginField();
         inCockpit = true;
         if (page === 'signUpPage' && window.location.hash === '#rgpdPage') {
@@ -47,11 +47,11 @@ export function moveCameraToFrontOfCockpit(page) {1
 
 
 export function moveCameraToBackOfCockpit() {
-    const duration = 1000; // Define the duration of the animation in milliseconds
-    const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
-    .to(frontPosition, duration) // Set the target position and duration
-    .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
-    .start(); // Start the animation
+    const duration = 1000;
+    const cameraAnimation = new TWEEN.Tween(camera.position)
+    .to(frontPosition, duration)
+    .easing(TWEEN.Easing.Quadratic.Out)
+    .start();
     showPage('loginPage');
     emptySignUpField();
     inCockpit = false;
