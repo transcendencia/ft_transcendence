@@ -113,7 +113,9 @@ class LogoutView(APIView):
   authentication_classes = [TokenAuthentication]
 
   def post(self, request):
-    if request.data.get('status') == UserStatus.OFFLINE and request.user.is_host:  # a checker
+    print("request.user ", request.user.username, " ", request.user.is_host)
+    if request.user.is_host: 
+      print("coucou") # a checker
       request.user.is_host = False
     request.user.status = UserStatus.OFFLINE
     request.user.save()
