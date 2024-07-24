@@ -111,7 +111,6 @@ languageIcons.forEach(function(icon) {
             }
         });
         
-        // Send POST request to change user language in the back if user is logged in
         const token = sessionStorage.getItem('host_auth_token');
         if (token && currentLanguage !== icon.id) {
             updateUserLanguage(icon.id);
@@ -149,9 +148,6 @@ loginForm.addEventListener('submit', handleLoginSubmit);
 function handleLoginSubmit(event) {
     event.preventDefault();
 
-    // const formData = new FormData(this);
-    // handleLogin(formData);
-
 
     const formData = new FormData(this);
     const submitButton = this.querySelector('button[type="submit"]');
@@ -187,7 +183,6 @@ function removeLastUserInfoConts() {
 }
 
 // Handle form submission
-// Should I change it with a patch request
 export async function handleLogin(formData) {
     disableLoginFields();
 

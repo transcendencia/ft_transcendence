@@ -424,7 +424,6 @@ export async function RenderAllUsersInList() {
 	  userListBackground.appendChild(HTMLelement);
 	});
   
-	// Wait for all additions to complete
 	await Promise.all(addPromises);
   }
   
@@ -452,7 +451,6 @@ export function createUserTile(user, type) {
 	  type: type
 	});
   
-	// console.log("userTiles:", userTiles);
 	userListBackground.appendChild(userTile);
 	addEventListenerToTile(userTiles.get(user.id));  
 	return userTile;

@@ -10,7 +10,6 @@ export function showPage(pageId, transition = 'default', changeHash = true) {
         page.classList.remove('default');
         page.classList.remove('signUp');
     });
-    // console.trace("showPage :", pageId);
     if (pageId === 'none') 
         return;
     if (changeHash)

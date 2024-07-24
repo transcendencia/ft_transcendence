@@ -10,7 +10,6 @@ import { guestLoggedIn } from './arenaPage.js';
 import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '../../tournament/js/newTournament.js';
 
 
-//import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
 let isInfosShow = false;
 let anonymousStatus;
 
@@ -245,10 +244,6 @@ function downloadFile() {
 }
 
 export function resetModifyPageField() {
-  // Pas vider les username et le alias mais le mettre a la derniere valeur
-  // document.getElementById('changeUsernameInput').value = '';
-  // document.getElementById('changeAliasInput').value = '';
-console.log("resetModifyPageField");
   getProfileInfo(sessionStorage.getItem('host_id'))
   .then(data => {
       populateProfileInfos(data);
@@ -264,5 +259,4 @@ console.log("resetModifyPageField");
   document.getElementById('LinkPicture').innerText = '';
   const toggleSwitch = document.getElementById('toggleSwitch');
   toggleSwitch.classList.remove('active');
-  //vider input nom de la photo
 }
