@@ -480,9 +480,10 @@ function printXYZofVector(vector) {
 }
 
 export async function logoutUser(token) {
+    console.log("coucou je logout le user!");
     if (!token)
         return;
-   
+        console.log("coucou je logout le user! Ca va");
     await fetch('/logout/', {
         method: 'POST',
         headers: {
