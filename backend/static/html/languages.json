@@ -90,6 +90,7 @@
         "statisticsText": "Statistics",
         "backButton": "Back",
         "cancelTournamentButton": "Cancel Tournament",
+        "winningTournament": " has won the tournament!",
 
         "changeInfo": "Only fill in information you want to change",
         "changeUsernameInput": "Username",
@@ -216,6 +217,7 @@
         "statisticsText": "Estadisticas",
         "backButton": "volver",
         "cancelTournamentButton": "Cancelar torneo",
+        "winningTournament": " ha ganado el torneo!",
 
         "changeInfo": "Complete solo la informacion que desea cambiar",
         "changeUsernameInput": "Nombre de usuario",
@@ -343,6 +345,7 @@
         "statisticsText": "Statistiques",
         "backButton": "Retour",
         "cancelTournamentButton": "Annuler le tournoi",
+        "winningTournament": " a gagne le tournoi!",
 
         "changeInfo": "Remplissez uniquement les informations que vous souhaitez modifier",
         "changeUsernameInput": "Nom d'utilisateur",

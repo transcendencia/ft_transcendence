@@ -243,9 +243,9 @@ cancelTournamentButton.addEventListener('click', () => {
     })
     nextMatchElement.style.display = "none";
     if (playersInTournament.length == 0)
-      matchElement.textContent = "..." + " has won the tournament!";
+      matchElement.textContent = "..." + getTranslatedText('winningTournament');
     else
-      matchElement.textContent = playersInTournament[0].username + " has won the tournament!";
+      matchElement.textContent = playersInTournament[0].username + getTranslatedText('winningTournament');
     launchMatchElement.style.display = "none";
     cancelTournamentButton.style.display = "none";
   }
