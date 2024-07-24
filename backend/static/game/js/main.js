@@ -846,14 +846,14 @@ class Arena extends THREE.Mesh {
                 this.ball.isgoingLeft = true;
             }
         }
-        if (keyDown['1'])  
-            this.switchMap(this.oceanMap);
-        if (keyDown['2'])
-            this.switchMap(this.spaceMap);
-        if (keyDown['3'])
-            this.switchMap(this.skyMap);
-        if (keyDown['4'])
-            this.switchMap(this.dragonMap);
+        // if (keyDown['1'])  
+        //     this.switchMap(this.oceanMap);
+        // if (keyDown['2'])
+        //     this.switchMap(this.spaceMap);
+        // if (keyDown['3'])
+        //     this.switchMap(this.skyMap);
+        // if (keyDown['4'])
+        //     this.switchMap(this.dragonMap);
         if (keyDown['b'])
         {
             if (!this.isBeingBlurred)

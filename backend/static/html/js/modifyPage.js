@@ -8,9 +8,8 @@ import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userMa
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
 import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '../../tournament/js/newTournament.js';
+import { changeColorMessage } from './signUpPage.js';
 
-
-//import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
 let isInfosShow = false;
 let anonymousStatus;
 
@@ -24,6 +23,8 @@ function handleChangeInfoForm(event) {
   var formData = new FormData(form);
   formData.append('anonymousStatus', anonymousStatus)
 
+  var changeInfoMessage = document.getElementById('changeInfoMessage');
+
   const token = sessionStorage.getItem('host_auth_token');
   fetch('user_info/', {
     method: 'POST',
@@ -34,21 +35,24 @@ function handleChangeInfoForm(event) {
     body: formData,
   })
   .then(response => {
+    if (!response.ok) {
+      return response.json().then(err => Promise.reject(err));
+    }
     return response.json();
   })
   .then(data => {
-    var changeInfoMessage = document.querySelector('.changeInfoMessage');
-    if (data.status === "succes")
-      getProfileInfo(sessionStorage.getItem("host_id"))
-        .then(data => {
-            populateProfileInfos(data);
-            createUserBadge(data, "playersConnHostBadge");  
-        })
-
-    else changeInfoMessage.classList.toggle("errorMessage");
-    document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
+    getProfileInfo(sessionStorage.getItem("host_id"))
+    .then(data => {
+        populateProfileInfos(data);
+        createUserBadge(data, "playersConnHostBadge");  
+    })
+    changeColorMessage('.changeInfoMessage', 'success')
+    changeInfoMessage.innerText = getTranslatedText(data.msg_code);
   })
   .catch(error => {
+    // changeInfoMessage.classList.toggle("errorMessage");
+    changeColorMessage('.changeInfoMessage', 'failure')
+    changeInfoMessage.innerText = getTranslatedText(error.msg_code);
     console.error('There was a problem with the change_profile_info:', error);
   });
 }
@@ -245,10 +249,6 @@ function downloadFile() {
 }
 
 export function resetModifyPageField() {
-  // Pas vider les username et le alias mais le mettre a la derniere valeur
-  // document.getElementById('changeUsernameInput').value = '';
-  // document.getElementById('changeAliasInput').value = '';
-console.log("resetModifyPageField");
   getProfileInfo(sessionStorage.getItem('host_id'))
   .then(data => {
       populateProfileInfos(data);
@@ -264,5 +264,4 @@ console.log("resetModifyPageField");
   document.getElementById('LinkPicture').innerText = '';
   const toggleSwitch = document.getElementById('toggleSwitch');
   toggleSwitch.classList.remove('active');
-  //vider input nom de la photo
 }

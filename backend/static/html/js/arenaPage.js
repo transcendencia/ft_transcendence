@@ -424,7 +424,6 @@ export async function RenderAllUsersInList() {
 	  userListBackground.appendChild(HTMLelement);
 	});
   
-	// Wait for all additions to complete
 	await Promise.all(addPromises);
   }
   
@@ -452,7 +451,6 @@ export function createUserTile(user, type) {
 	  type: type
 	});
   
-	// console.log("userTiles:", userTiles);
 	userListBackground.appendChild(userTile);
 	addEventListenerToTile(userTiles.get(user.id));  
 	return userTile;
@@ -477,7 +475,20 @@ function isGuest(userId) {
 	return false;
 }
 
+let isInfoShow = false;
+const infoButton = document.getElementById("arenaInfoIcon");
+infoButton.addEventListener("mouseenter", displayInfo);
+infoButton.addEventListener("mouseleave", hideInfo);
 
+function displayInfo() {
+	isInfoShow = true;
+	document.getElementById("arenaInfoBox").classList.add("showRectangle");
+}
+
+function hideInfo() {
+	isInfoShow = false;
+	document.getElementById("arenaInfoBox").classList.remove("showRectangle");
+}
 
 
 
