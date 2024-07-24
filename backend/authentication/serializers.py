@@ -29,13 +29,12 @@ class SignupSerializer(serializers.ModelSerializer):
 	
 	def validate_username(self, value):
 		value = value.lower()
-		# logger.debug("validateUsername serializer")
 		if len(value) > 13:
 			raise serializers.ValidationError(error_codes["length_exceeded_username"], code="length_exceeded_username")
 		if value == 'bot':
 			raise serializers.ValidationError(error_codes["unique"], code="unique")
-		# if User.objects.filter(username=value).exists():
-		# 	raise serializers.ValidationError(error_codes["unique_username"], code="unique_username")
+		if User.objects.filter(username=value).exists():
+			raise serializers.ValidationError(error_codes["unique"], code="unique")
 		# logger.debug("je return la value du username")
 		return value
 

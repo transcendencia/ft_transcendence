@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { initPage, showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets } from "./planets.js";
+import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
@@ -17,10 +17,14 @@ import { gameStarted, resetArenaPage} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-import { updateUserStatus, test_back } from "./userManagement.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
+
+export function setLobbyStart(value) {
+    lobbyStart = value;
+}
+
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c4'),
     antialias: true,
@@ -273,7 +277,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     minimapCamera.lookAt(sun.position);
     
 function renderMinimap() {
-    if (!spaceShip)
+    if (!spaceShip || !marker)
         return;
     marker.position.x = spaceShip.position.x;
     marker.position.z = spaceShip.position.z;
@@ -327,7 +331,7 @@ renderer.render(scene, camera);
 
 const rightSideContainer = document.getElementById("rsCont");
 const leftSideContainer = document.getElementById("lsCont");
-let rsContVisible = false;
+export let rsContVisible = false;
 export const structure = document.querySelector(".structure");
 export const escapeBG = document.querySelector(".escapeBG");
 
@@ -339,6 +343,7 @@ export function toggleRSContainerVisibility() {
     if (rsContVisible) {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '-50%';
+        swipeLeftSideContainer('-40%');
         rsContVisible = false;
         swipeLeftSideContainer('-40%');
     } else {
@@ -423,6 +428,7 @@ export function startAnimation() {
     
     target = -1200;
     duration = 500;
+    window.location.hash = '#galaxy';
     let anim2 = new TWEEN.Tween(spaceShip.position)
     .to({z: target}, duration)
     .easing(TWEEN.Easing.Cubic.InOut)
@@ -445,6 +451,8 @@ export function startAnimation() {
             toggleRSContainerVisibility();
             scene.remove(bluelight);
             scene.add(whitelight);
+            const submitButton = document.getElementById('loginButton');
+            submitButton.disabled = false;
         });
         anim1.chain(anim2, anim3);
         anim1.start();
@@ -465,18 +473,18 @@ export function displayHostEscapePage() {
     .catch(error => console.error('Failed to retrieve profile info:', error)); 
 }
 
-export function toggleEscapeContainerVisibility(disconnect = false) {
-    const disconnectButton = document.getElementById('disconnectButton');
-    if (gameState.inGame)
-        disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
-    else
-        disconnectButton.textContent = getTranslatedText("disconnect");
+export let escapeContainerVisible = false;
 
-    if (!disconnect) {
+export function toggleEscapeContainerVisibility() {
+    const disconnectButton = document.getElementById('disconnectButton');
+    if (!escapeContainerVisible) {
         getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
         .catch(error => console.error('Failed to retrieve profile info:', error));    
     }
-    if (targetBlur !== 0) {
+    if (!escapeContainerVisible) {
+        if (gameState.inGame)
+            disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
+        else disconnectButton.textContent = getTranslatedText("disconnect");
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
         escapeContainerVisible = true;
@@ -491,7 +499,16 @@ let pauseGame = false;
 
 export function togglePause() {
     gameState.togglePause();
-    pauseGame ? pauseGame = false : pauseGame = true;
+    if (!pauseGame) {
+        console.log("pause");
+        cancelAnimationFrame(animationFrame);
+    }
+    else {
+        console.log("unpause");
+        lastUpdateTime = performance.now();
+        animate();
+    }
+    pauseGame = !pauseGame;
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
@@ -526,7 +543,6 @@ export function resetGameEscape()
     toggleEscapeContainerVisibility();
     togglePause();
     toggleBlurDisplay(false);
-    pauseGame ? pauseGame = false : pauseGame = true;
 }
 
 function panelRemove(){
@@ -538,7 +554,7 @@ function panelRemove(){
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
-        console.log(camera.position);
+        console.log(lobbyStart);
     if (event.key === 'Enter') {
         if (window.location.hash === "#signUpPage") 
             document.getElementById("submitSignUp").click();
@@ -549,17 +565,18 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         if (gameState.inGame && !gameState.arena.game.isPlaying)
             return;
+        if (gameState.loading)
+            return;
         if (gameState.inGame && gameState.arena.game.isPlaying)
         {
             displayHostEscapePage();
             toggleEscapeContainerVisibility();
             togglePause();
             toggleBlurDisplay(false);
-            pauseGame ? pauseGame = false : pauseGame = true;
             return;
         }
         else if (landedOnPlanet) {
-            togglePlanet();
+            togglePlanet(/* toggleRsContainer: */ true);
             panelRemove();
             showPage('none');
             returnToHost();
@@ -576,19 +593,18 @@ document.addEventListener('keydown', (event) => {
             toggleEscapeContainerVisibility();
             togglePause();
             resetOutlineAndText();
-            togglePause();
-            pauseGame = !pauseGame;
         }
     }
     if (event.target.tagName === 'INPUT')
         return;
     if (event.key === 'e' && inRange && !gameStarted)
-        togglePlanet();
+        togglePlanet(/* toggleRsContainer: */ true);
 });
 
 
 
-let escapeContainerVisible = false;
+
+
 let targetBlur = 0;
 
 export function removeContainerVisible() {
@@ -629,28 +645,24 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
 // composer.addPass(bloomPass);
 
 function update() {
-    if (pauseGame)
-        return;
-    if (lobbyStart && !landedOnPlanet) 
+    if (lobbyStart && !landedOnPlanet) {
         spaceShipMovement();
+        updateRay();
+        getPlanetIntersection();
+    } 
     camMovement();
     planetMovement();
-    if (lobbyStart) {
-        updateRay();
-    if (!landedOnPlanet)
-        getPlanetIntersection();
-}
 return;
 }
 
 let fpsInterval = 1000 / 75; // 75 FPS
 let stats = new Stats();
 let lastUpdateTime = performance.now();
-
+export let animationFrame;
 
 function animate()
 {
-    requestAnimationFrame( animate )
+    animationFrame = requestAnimationFrame( animate )
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
     if (elapsed < fpsInterval) return; // Skip if too big FPS

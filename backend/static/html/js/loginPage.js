@@ -2,12 +2,14 @@ import { moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
-import { gameState } from "../../game/js/main.js";
+import { keyDown, swapToFullScreen, gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape } from "./main.js";
+import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape , toggleRSContainerVisibility, escapeContainerVisible, lobbyStart} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
-import { resetOutline } from "./planetIntersection.js";
-import { togglePlanet } from "./enterPlanet.js";
+import { planetInRange, resetOutline } from "./planetIntersection.js";
+import { rsContVisible } from "./main.js";
+import { checkEach5Sec, landedOnPlanet, togglePlanet } from "./enterPlanet.js";
+import { returnToHost } from "./userPage.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -109,7 +111,6 @@ languageIcons.forEach(function(icon) {
             }
         });
         
-        // Send POST request to change user language in the back if user is logged in
         const token = sessionStorage.getItem('host_auth_token');
         if (token && currentLanguage !== icon.id) {
             updateUserLanguage(icon.id);
@@ -147,81 +148,128 @@ loginForm.addEventListener('submit', handleLoginSubmit);
 function handleLoginSubmit(event) {
     event.preventDefault();
 
+
     const formData = new FormData(this);
-    handleLogin(formData);
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+
+    handleLogin(formData)
+}
+
+function reactivateLoginFields() {
+    document.getElementById('usernameLoginInput').disabled = false;
+    document.getElementById('passwordLoginInput').disabled = false;
+}
+
+function disableLoginFields() {
+    document.getElementById('usernameLoginInput').disabled = true;
+    document.getElementById('passwordLoginInput').disabled = true;
+}
+
+function removeLastUserInfoConts() {
+    const container = document.getElementById('lsCont');
+    const hostBadge = document.getElementById('playersConnHostBadge');
+    let currentElement = container.lastElementChild;
+
+    while (currentElement && currentElement !== hostBadge) {
+        if (currentElement.classList.contains('userInfoCont')) {
+            const elementToRemove = currentElement;
+            currentElement = currentElement.previousElementSibling;
+            container.removeChild(elementToRemove);
+        } else {
+            break;
+        }
+    }
 }
 
 // Handle form submission
-// Should I change it with a patch request
 export async function handleLogin(formData) {
+    disableLoginFields();
+
+    const hostLoggedIn = initializeHostLoggedIn();
+    const submitButton = document.getElementById('loginButton');
+
+    appendFormData(formData, hostLoggedIn);
+
+    setlanguageIconsClicked(false);
+    const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
+
+    return new Promise((resolve) => {
+        fetch('login_page/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) 
+                return response.json().then(err => Promise.reject(err));
+            return response.json();
+        })
+        .then(data => {
+            let guest_token = null;
+            console.log(data.status);
+            if (hostLoggedIn === 'false') {
+                handleHostLogin(data);
+            } else {
+                guest_token = data.token;
+                submitButton.disabled = false;
+            }
+            resolve(guest_token);
+        })
+        .catch(error => {
+            console.error('Erreur :', error);
+            submitButton.disabled = false;
+            document.getElementById(messageContainerId).innerText = getTranslatedText(error.msg_code);
+            reactivateLoginFields()
+        })
+    });
+}
+
+function initializeHostLoggedIn() {
     if (sessionStorage.getItem("hostLoggedIn") === null) {
         sessionStorage.setItem("hostLoggedIn", 'false');
     }
+    return sessionStorage.getItem("hostLoggedIn");
+}
 
-    const hostLoggedIn = sessionStorage.getItem("hostLoggedIn");
-
+function appendFormData(formData, hostLoggedIn) {
     formData.append('hostLoggedIn', hostLoggedIn);
     if (hostLoggedIn === 'false') {
         formData.append('language', currentLanguage);
         formData.append('languageClicked', languageIconsClicked);
     }
+}
 
-    setlanguageIconsClicked(false);
-
-    return new Promise((resolve, reject) => {
-        fetch('login_page/', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            let guest_token = null;
-            console.log(data.status);
-            if (data.status === "success") {
-
-                // console.log("hostLoggedIn", hostLoggedIn);
-                if (hostLoggedIn === 'false') {
-
-                    sessionStorage.setItem("hostLoggedIn", 'true');
-                    sessionStorage.setItem("host_auth_token", data.token);
-                    sessionStorage.setItem("host_id", data.id);
-                    
-                    setCurrentLanguage(data.language.slice(0, 2));
-                    setEscapeLanguageVisual();
-                    get_friends_list();
-                    // console.log("host id:", sessionStorage.getItem("host_id"));
-                    getProfileInfo(sessionStorage.getItem("host_id"))
-                    .then(data => {
-                        populateProfileInfos(data);
-                        createUserBadge(data, "playersConnHostBadge")
-                    })
-                    .catch(error => {
-                        console.error('Failed to retrieve profile info:', error);
-                    });
-                    
-                    TranslateAllTexts();
-                    getGameInfo();
-                    changeGraphics(data.graphic_mode);
-                    updateGraphicsIcon(data.graphic_mode);
-                    showPage('none');
-                    startAnimation();
-                    emptyLoginField();
-                } else {
-                    guest_token = data.token;
-                }
-                resolve(guest_token);
-            } else {
-                const messageContainerId = hostLoggedIn ? 'messageContainer' : 'errorLogGuest';
-
-                document.getElementById(messageContainerId).innerText = getTranslatedText(data.msg_code);
-                resolve(null);
-            }
-        })
-        .catch(error => {
-            console.error('Erreur :', error);
-            reject(error);
-        });
+function handleHostLogin(data){
+    sessionStorage.setItem("hostLoggedIn", 'true');
+    sessionStorage.setItem("host_auth_token", data.token);
+    sessionStorage.setItem("host_id", data.id);
+                
+    setCurrentLanguage(data.language.slice(0, 2));
+    setEscapeLanguageVisual();
+    
+    get_friends_list();
+    getProfileInfo(sessionStorage.getItem("host_id"))
+    .then(data => {
+        populateProfileInfos(data);
+        createUserBadge(data, "playersConnHostBadge");
+        removeLastUserInfoConts();
+    })
+    .catch(error => {
+        console.error('Failed to retrieve profile info:', error);
     });
+    getGameInfo();
+                
+    changeGraphics(data.graphic_mode);
+    updateGraphicsIcon(data.graphic_mode);
+    
+    TranslateAllTexts();
+    showPage('none');
+    startAnimation();
+
+    emptyLoginField();
 }
 
 export function createMatchBlock(tournament, date, modeGame, player1Name, player1ImgSrc, scorePlayer1, scorePlayer2, player2Name, player2ImgSrc, thirdPlayer, victory, isHost = true) {
@@ -339,81 +387,138 @@ export function getGameInfo() {
 }
 
 // Logout
-const disconnectButton = document.getElementById("disconnectButton");
-disconnectButton.addEventListener("click", () => {
-    handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token')); 
-    if (!gameState.inGame)
-        toggleEscapeContainerVisibility();
-});
 
 function resetHTMLelements(){
     document.querySelector(".gameUI").style.visibility = 'hidden';
-    document.getElementsByClassName("bluebar")[0].style.opacity = 0;
     document.getElementById('c4').style.display = 'block';
     document.getElementById('c3').style.display = 'none';
     document.getElementById('c1').style.display = 'none';
 }
 
 
+export let isLoggingOut = false;
 
-function handleLogout(userId, token) {
-    // Disconnect all the guest
-    if (gameState.inGame)
-    {
-        resetGameEscape();
+export function backToLobby(historyArrow = false) {
+    if (historyArrow) {
+        keyDown['e'] = true;
         setTimeout(() => {
-            gameState.arena.displayBackPanel();
+            keyDown['e'] = false;
+            gameState.arena.displayBackPanel(true);
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
-        }, 250);
-        return;
+            gameState.arena.swapToFullScreen();
+        }, 10);
+    } else {
+        resetGameEscape();
+        gameState.arena.displayBackPanel(true);
+        gameState.arena.thirdPlayer.deactivateThirdPlayer();
+        gameState.arena.idleCameraAnimation();
+        gameState.arena.swapToFullScreen();
+        gameState.arena.resetPoint();
+        gameState.arena.game.leftScore = 0;
+        gameState.arena.game.rightScore = 0;
+        gameState.arena.resetUI();
     }
-    logoutGuest(userId);
+}
 
-    // Disconnect the host
-    updateUserStatus('offline', token)
-    .then(() => {
+
+
+export async function handleLogout(userId, token) {
+    if (!userId || !token || isLoggingOut) 
+        return;
+    isLoggingOut = true;
+
+    await new Promise(resolve => {
+        gameState.paused = false;
+        if (rsContVisible)
+            toggleRSContainerVisibility();
+        if (escapeContainerVisible) {
+            togglePause();
+            toggleBlurDisplay(true);
+            toggleEscapeContainerVisibility();
+        }
+        if (landedOnPlanet) {
+            if (planetInRange.name === "settings")
+                returnToHost();
+            clearInterval(checkEach5Sec);
+            togglePlanet(/* toggleRsContainer: */ false);
+        }
+        setSpaceShipToLoginState();
+        showPage('loginPage');
+        swipeLeftSideContainer('-40%');
+        logoutGuest(userId);
+        logoutUser(token);
+        reactivateLoginFields();
         sessionStorage.clear();
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
+        setTimeout(() => {
+            toggleLobbyStart();
+            resolve();
+            gameState.paused = false;
+        }, 50);
     });
-    togglePause();
+    isLoggingOut = false;
+}
+
+export function setSpaceShipToLoginState() {
     spaceShip.rotation.set(0, 0, 0);
     spaceShip.position.set(0, 0, -1293.5);
-    setTimeout(() => {
-        toggleBlurDisplay(true);
-        toggleEscapeContainerVisibility(true);
-        resetOutline();
-        spaceShipInt.visible = true;
-        showPage('loginPage');
-        toggleLobbyStart();
-        swipeLeftSideContainer('-40%');
-        gameState.paused = false;
-        scene.add(bluelight);
-        scene.remove(whitelight);
-    }, 50);
-};
+    spaceShipInt.visible = true;
+    scene.add(bluelight);
+    scene.remove(whitelight);
+}
+
+const disconnectButton = document.getElementById("disconnectButton");
+disconnectButton.addEventListener("click", () => {
+    if (gameState.inGame)
+        backToLobby();
+    else
+        handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'));
+});
+
+function printXYZofVector(vector) {
+    console.log("x: ", vector.x, "y: ", vector.y, "z: ", vector.z);
+}
+
+async function logoutUser(token) {
+    if (!token)
+        return;
+    try {
+        const response = await fetch('/logout/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            keepalive: true,
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur lors du logout');
+        } else {
+            const data = await response.json();
+            // console.log(`User ${data.user_id} status updated to ${data.status}`);
+        }
+    } catch (error) {
+        console.error('Erreur :', error);
+    }
+}
 
 export function logoutGuest(userId) {
     if (userId === sessionStorage.getItem('host_id')) {
         guestLoggedIn.forEach(user => {
-            updateUserStatus('offline', user[1]);
+            logoutUser(user[1]);
         });
     }
     guestLoggedIn.splice(0, guestLoggedIn.length);
 }
 
-window.addEventListener('beforeunload', function (event) {
+window.addEventListener('beforeunload', async function (event) {
+    // event.preventDefault();
     const token = sessionStorage.getItem('host_auth_token');
-    if (token)
-        handleLogout(sessionStorage.getItem('host_id'), token);
+    handleLogout(sessionStorage.getItem('host_id'), token);
+    sessionStorage.clear();
 });
-
-// window.addEventListener('beforeunload', function () {
-//     if (sessionStorage.getItem('host_auth_token')) 
-//         handleLogout(sessionStorage.getItem('host_id'), token);
-// });
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';

@@ -2,58 +2,69 @@ import * as THREE from 'three';
 import { camera, landedOnPlanet } from './main.js';
 import { showPage } from './showPages.js';
 import { currentLanguage, getTranslatedText } from './translatePages.js';
-import { emptyLoginField } from './loginPage.js';
+import { emptyLoginField, getCookie } from './loginPage.js';
 
 export let inCockpit = false;
 
-const backPosition = new THREE.Vector3(0, 4.5, -1295); // Define the target position for the camera
-const frontPosition = new THREE.Vector3(0, 4.5, -1304); // Define the target position for the camera
+const backPosition = new THREE.Vector3(0, 4.5, -1295);
+const frontPosition = new THREE.Vector3(0, 4.5, -1304);
 
 export function moveCameraToFrontOfCockpit(page) {1
-    const duration = 1000; // Define the duration of the animation in milliseconds
-    console.log(backPosition);
-    const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
-        .to(backPosition, duration) // Set the target position and duration
-        .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
-        .start(); // Start the animation
-    if (page === 'signUpPage')
-        showPage('signUpPage', 'signUp');
-    const selectedPage = document.querySelector('.signUpPage');
-    const hologramContainer = selectedPage.querySelector('.hologram-container');
+    const duration = 1000;
+    const cameraAnimation = new TWEEN.Tween(camera.position)
+        .to(backPosition, duration)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+        emptyLoginField();
+        inCockpit = true;
+        if (page === 'signUpPage' && window.location.hash === '#rgpdPage') {
+
+            showPage('signUpPage', 'delay');
+            const selectedPage = document.querySelector('.signUpPage');
+            const hologramContainer = selectedPage.querySelector('.hologram-container');
+            if (hologramContainer) {
+                hologramContainer.classList.remove('open');
+                void hologramContainer.offsetWidth;
+                hologramContainer.classList.add('open');
+            }
+        }
+        else if (page === 'rgpdPage')
+            showPage('rgpdPage', 'default');
+        else {
+            showPage('signUpPage', 'signUp');
+
+            const selectedPage = document.querySelector('.signUpPage');
+            const hologramContainer = selectedPage.querySelector('.hologram-container');
     
-    if (hologramContainer) {
-        hologramContainer.classList.remove('open');
-        void hologramContainer.offsetWidth;
-        hologramContainer.classList.add('open');
-    }
-    else if (page === 'rgpdPage')
-        showPage('rgpdPage', 'default');
-    emptyLoginField();
-    inCockpit = true;
+            if (hologramContainer) {
+                hologramContainer.classList.remove('open');
+                void hologramContainer.offsetWidth;
+                hologramContainer.classList.add('open');
+            }
+
+        }
 }
 
 
 export function moveCameraToBackOfCockpit() {
-    const duration = 1000; // Define the duration of the animation in milliseconds
-    const cameraAnimation = new TWEEN.Tween(camera.position) // Create a new tween animation for the camera position
-    .to(frontPosition, duration) // Set the target position and duration
-    .easing(TWEEN.Easing.Quadratic.Out) // Set the easing function for the animation
-    .start(); // Start the animation
+    const duration = 1000;
+    const cameraAnimation = new TWEEN.Tween(camera.position)
+    .to(frontPosition, duration)
+    .easing(TWEEN.Easing.Quadratic.Out)
+    .start();
     showPage('loginPage');
     emptySignUpField();
     inCockpit = false;
 }
 
-const backToLoginButton = document.querySelector('.backButton');
+const backToLoginButton = document.querySelector('.backToLoginButton');
 
 backToLoginButton.addEventListener('click', function() {
     moveCameraToBackOfCockpit();
 });
 
+const RGPDPage = document.getElementById('RGPDPage');
 
-var submitChangeButton = document.getElementById("submitSignUp");
-submitChangeButton.addEventListener("click", handleSignup);
-const RGPDPage = document.querySelector(".rgpdPage");
 // Add event listener to the sign-up form
 // const signupForm = document.getElementById('signupForm');
 // signupForm.addEventListener('submit', handleSignup);
@@ -61,12 +72,12 @@ const RGPDPage = document.querySelector(".rgpdPage");
 //Add event listner to display RGPG page
 const RGPDPolicy = document.getElementById('RGPDPolicy');
 RGPDPolicy.addEventListener('click', function() {
-    RGPDPage.classList.add("perspectived");
     showPage('rgpdPage');
+    RGPDPage.classList.add("holoPerspective");
+    RGPDPage.classList.remove("noPerspective");
 });
 
 
-//Add event listner to display sign-up page
 const RGPDBack = document.getElementById('RGPDBack');
 RGPDBack.addEventListener('click', function() {
     if (landedOnPlanet) {
@@ -77,39 +88,54 @@ RGPDBack.addEventListener('click', function() {
     else {showPage('signUpPage');}
 });
 
-// Handle form submission
-function handleSignup(event) {
+const signUpForm = document.getElementById('signupForm');
+signUpForm.addEventListener('submit', handleSignUp);
+
+function handleSignUp(event) {
     event.preventDefault();
     
-    var form = document.getElementById("signupForm");
-    var formData = new FormData(form);
+    const messageContainer = document.getElementById('messageContainerSignup');
+    const submitButton = document.getElementById('submitSignUp');
+    submitButton.disabled = true;
+
+    let formData = new FormData(this);
     formData.append('language', currentLanguage);
-    // console.log(formData);
-    // const formData = new FormData(event.target);
+
     fetch('signup/', {
         method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
         body: formData
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+        if (!response.ok) 
+            return response.json().then(err => Promise.reject(err));
         return response.json();
     })
     .then(data => {
-        var signupMessageCont = document.querySelector('.signupMessageCont');
-        if (data.status == "success") {
-            signupMessageCont.classList.remove("failure");
-            signupMessageCont.classList.add("success");
-        } else {
-            signupMessageCont.classList.remove("success");
-            signupMessageCont.classList.add("failure");
-        }
-        document.getElementById('messageContainerSignup').innerText = getTranslatedText(data.msg_code);
+        changeColorMessage('.signupMessageCont', 'success');
+        messageContainer.innerText = getTranslatedText(data.msg_code);
+        submitButton.disabled = false;
     })
     .catch(error => {
+        changeColorMessage('.signupMessageCont', 'failure');
+        messageContainer.innerText = getTranslatedText(error.msg_code);
         console.error('There was a problem with the sign-up:', error);
+        submitButton.disabled = false;
     });
+}
+
+function changeColorMessage(messageContainer, status) {
+    let signupMessageCont = document.querySelector(messageContainer);
+
+    if (status === "success") {
+        signupMessageCont.classList.remove("failure");
+        signupMessageCont.classList.add("success");
+    } else if (status === "failure") {
+        signupMessageCont.classList.remove("success");
+        signupMessageCont.classList.add("failure");
+    }
 }
 
 export function emptySignUpField() {

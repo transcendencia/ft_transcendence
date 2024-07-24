@@ -1,4 +1,4 @@
-import { togglePlanet } from './enterPlanet.js';
+import { togglePlanet, checkEach5Sec } from './enterPlanet.js';
 import { returnToHost } from './userPage.js';
 import { toggleLobbyStart, createUserBadge } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
@@ -10,7 +10,6 @@ import { guestLoggedIn } from './arenaPage.js';
 import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '../../tournament/js/newTournament.js';
 
 
-//import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
 let isInfosShow = false;
 let anonymousStatus;
 
@@ -42,7 +41,7 @@ function handleChangeInfoForm(event) {
       getProfileInfo(sessionStorage.getItem("host_id"))
         .then(data => {
             populateProfileInfos(data);
-            
+            createUserBadge(data, "playersConnHostBadge");  
         })
 
     else changeInfoMessage.classList.toggle("errorMessage");
@@ -55,7 +54,6 @@ function handleChangeInfoForm(event) {
 
 const deleteAccountButton = document.querySelector(".deleteAccountButton");
 const deleteBlockingPanel = document.getElementById('deleteBlockingPanel');
-const blockingPanel = document.getElementById('blockingPanel');
 
 document.getElementById('profile-pic').addEventListener('change', function() {
   let fileName = this.files[0] ? this.files[0].name : 'Aucun fichier sélectionné';
@@ -67,6 +65,17 @@ document.getElementById('deleteAccountCancel').addEventListener("click", functio
   document.getElementById("validateDelete").classList.remove("showRectangle");
   deleteBlockingPanel.classList.remove('show');
 });
+
+function returnToLoginPageInSpaceship() {
+  spaceShip.position.set(0, 0, -1293.5);
+  spaceShip.rotation.set(0, 0, 0);
+
+  setTimeout(() => {
+      toggleLobbyStart(true);
+      spaceShipInt.visible = true;
+      showPage('loginPage');
+  }, 25);
+}
 
 document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
   const token = sessionStorage.getItem('host_auth_token');
@@ -87,6 +96,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
         });
       }
       guestLoggedIn.splice(0, guestLoggedIn.length);
+      clearInterval(checkEach5Sec);
       sessionStorage.clear();
       return response.json();
   })
@@ -97,16 +107,9 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   document.getElementById("validateDelete").classList.remove("showRectangle");
   changeTournamentStatus();
   resetTournament();
-  togglePlanet(true);
-  returnToHost();
-  spaceShip.position.set(0, 0, -1293.5);
-  spaceShip.rotation.set(0, 0, 0);
-
-  setTimeout(() => {
-      toggleLobbyStart(true);
-      spaceShipInt.visible = true;
-      showPage('loginPage');
-  }, 25);
+  togglePlanet(/* toggleRsContainer: */ false);
+  returnToHost(/* updateStats: */ false);
+  returnToLoginPageInSpaceship();
 });
 
 deleteAccountButton.addEventListener("click", deleteAccount);
@@ -116,35 +119,32 @@ function deleteAccount() {
   deleteBlockingPanel.classList.add('show');
 }
 
-// document.addEventListener('DOMContentLoaded', (event) => {
-  const toggleSwitch = document.getElementById('toggleSwitch');
-  let oldUsername;
-  let toggleSwitchClicked = false;
+const toggleSwitch = document.getElementById('toggleSwitch');
+let oldUsername;
+let toggleSwitchClicked = false;
 
-  toggleSwitch.addEventListener('click', function() {
-      this.classList.toggle('active');
-      if (this.classList.contains('active')) {
-        anonymousStatus = true;
-        if (!toggleSwitchClicked) {
-          toggleSwitchClicked = true;
-          oldUsername = document.getElementById('changeUsernameInput').value;
-        }
-        getRandomUsername();
+toggleSwitch.addEventListener('click', function() {
+    this.classList.toggle('active');
+    if (this.classList.contains('active')) {
+      anonymousStatus = true;
+      if (!toggleSwitchClicked) {
+        toggleSwitchClicked = true;
+        oldUsername = document.getElementById('changeUsernameInput').value;
       }
-      else {
-        anonymousStatus = false;
-        document.getElementById('changeUsernameInput').value = oldUsername;
-      }
-  });
-// });
+      getRandomUsername();
+    }
+    else {
+      anonymousStatus = false;
+      document.getElementById('changeUsernameInput').value = oldUsername;
+    }
+});
 
-// document.addEventListener('DOMContentLoaded', (event) => {
-  const thirdPlayerToggleSwitch = document.getElementById('thirdPlayertoggleSwitch');
-  thirdPlayerToggleSwitch.addEventListener('click', function() {
-      this.classList.toggle('active');
-      toggleThirdPlayerMode();
-  });
-// });
+const thirdPlayerToggleSwitch = document.getElementById('thirdPlayertoggleSwitch');
+thirdPlayerToggleSwitch.addEventListener('click', function() {
+    this.classList.toggle('active');
+    toggleThirdPlayerMode();
+});
+
 
 export function getRandomUsername() {
   const token = sessionStorage.getItem('host_auth_token');
@@ -165,13 +165,18 @@ export function getRandomUsername() {
   });
 };
 
-const RGPDPage = document.querySelector(".rgpdPage");
-
+const RGPDPage = document.getElementById('RGPDPage');
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
 RGPDPolicy.addEventListener('click', function() {
-  blockingPanel.classList.add('show');
-  RGPDPage.classList.remove("perspectived");
-  showPage('rgpdPage');
+  deleteBlockingPanel.classList.add('show');
+  showPage('rgpdPage', 'default', /*changeHash:*/ false);
+  RGPDPage.classList.add("noPerspective");
+  RGPDPage.classList.remove("holoPerspective");
+});
+
+const RGPDBack = document.getElementById('RGPDBack');
+RGPDBack.addEventListener('click', function() {
+  deleteBlockingPanel.classList.remove('show');
 });
 
 const infoButton = document.getElementById("infoButton");
@@ -239,10 +244,6 @@ function downloadFile() {
 }
 
 export function resetModifyPageField() {
-  // Pas vider les username et le alias mais le mettre a la derniere valeur
-  // document.getElementById('changeUsernameInput').value = '';
-  // document.getElementById('changeAliasInput').value = '';
-console.log("resetModifyPageField");
   getProfileInfo(sessionStorage.getItem('host_id'))
   .then(data => {
       populateProfileInfos(data);
@@ -258,5 +259,4 @@ console.log("resetModifyPageField");
   document.getElementById('LinkPicture').innerText = '';
   const toggleSwitch = document.getElementById('toggleSwitch');
   toggleSwitch.classList.remove('active');
-  //vider input nom de la photo
 }

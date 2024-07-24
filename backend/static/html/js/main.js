@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { initPage, showPage } from './showPages.js';
 import {marker, spaceShip, spaceShipInt, allModelsLoaded, mixer1, mixer2, mixer3} from "./objs.js";
-import { sun, planets } from "./planets.js";
+import { sun, planets, atmosphere } from "./planets.js";
 import { getPlanetIntersection, updateRay, inRange, resetOutlineAndText } from "./planetIntersection.js"
 import {cancelLanding, landedOnPlanet, togglePlanet} from "./enterPlanet.js"
 import { spaceShipMovement, camMovement, initializeCamera} from './movement.js';
@@ -17,10 +17,14 @@ import { gameStarted, resetArenaPage} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
-import { updateUserStatus, test_back } from "./userManagement.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
+
+export function setLobbyStart(value) {
+    lobbyStart = value;
+}
+
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#c4'),
     antialias: true,
@@ -40,7 +44,7 @@ scene.traverse(obj => {
     }
   });
 
-const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
+const aspectRatio = window.innerWidth / window.innerHeight;
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
@@ -80,7 +84,6 @@ class LobbyVisuals
         this.textLoaded = false;
         this.camera = camera;
         this.renderer = renderer;
-        // this.renderer.physicallyCorrectLights = true;
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.currentGraphics = 'medium';
@@ -107,14 +110,14 @@ class LobbyVisuals
         fontLoader.load('https://threejs.org/examples/fonts/optimer_bold.typeface.json', (font) => {
             const textGeometry = new THREE.TextGeometry('42', {
                 font: font,
-                size: 50, // Adjusted size
-                height: 22, // Adjusted height
+                size: 50,
+                height: 22,
                 curveSegments: 62,
                 bevelEnabled: true,
-                bevelThickness: 0.1, // Reduced bevel thickness
-                bevelSize: 0.2, // Reduced bevel size
+                bevelThickness: 0.1,
+                bevelSize: 0.2,
                 bevelOffset: 0,
-                bevelSegments: 3 // Adjusted bevel segments
+                bevelSegments: 3
             });
             textGeometry.computeBoundingBox();
             const boundingBox = textGeometry.boundingBox;
@@ -131,13 +134,10 @@ class LobbyVisuals
             });
 
             this.textMesh = new THREE.Mesh(textGeometry, material);
-            // Create a pivot object and add the text to it
             const pivot = new THREE.Object3D();
             pivot.add(this.textMesh);
         
-            // Offset the text position so that its center is at the pivot point
             this.textMesh.position.set(-textWidth / 2, -textHeight / 2, -textDepth / 2);
-            // Add the pivot to the scene
             this.scene.add(pivot);
             this.textLoaded = true;
             this.text = pivot;
@@ -151,7 +151,7 @@ class LobbyVisuals
 
         star.position.set(x, y, z);
         this.scene.add(star);
-        this.stars.push(star); // Add the star to the stars array
+        this.stars.push(star);
     }
     addStars(numStars) {
         Array(numStars).fill().forEach(this.addStar.bind(this));
@@ -235,8 +235,7 @@ export const lobbyVisuals = new LobbyVisuals(scene, camera, renderer);
 
 
 
-// Define the size of the minimap
-const minimapWidth = 200; // Adjust as needed
+const minimapWidth = 200;
 const minimapHeight = 200;
 
 // Create an orthographic camera for the minimap
@@ -264,7 +263,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x00000000 }); 
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
     minimapBG.position.set(0, -600, 0);
-    minimapBG.lookAt(minimapCamera.position); // Make the plane face the camera
+    minimapBG.lookAt(minimapCamera.position);
     scene.add(minimapBG);
 
     minimapBG.layers.set(1);
@@ -273,7 +272,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     minimapCamera.lookAt(sun.position);
     
 function renderMinimap() {
-    if (!spaceShip)
+    if (!spaceShip || !marker)
         return;
     marker.position.x = spaceShip.position.x;
     marker.position.z = spaceShip.position.z;
@@ -295,7 +294,6 @@ import { getTranslatedText } from './translatePages.js';
 
 export function displayUsersLogged(user, token) {
     
-    // guestLoggedIn.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
         const userInfoCont = document.createElement('div');
@@ -312,13 +310,10 @@ export function displayUsersLogged(user, token) {
         const usernameText = document.createTextNode(user.username);
         userInfoCont.appendChild(usernameText);
         lsCont.appendChild(userInfoCont);
-        // if (user.isHost)
-        //     return;
 
         userInfoCont.addEventListener('click', function () {
             disconnectLoggedGuest(userInfoCont, user, token);
         });
-    // });
 }
 
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -327,7 +322,7 @@ renderer.render(scene, camera);
 
 const rightSideContainer = document.getElementById("rsCont");
 const leftSideContainer = document.getElementById("lsCont");
-let rsContVisible = false;
+export let rsContVisible = false;
 export const structure = document.querySelector(".structure");
 export const escapeBG = document.querySelector(".escapeBG");
 
@@ -339,6 +334,7 @@ export function toggleRSContainerVisibility() {
     if (rsContVisible) {
         rightSideContainer.style.transition = 'right 0.5s ease-in-out';
         rightSideContainer.style.right = '-50%';
+        swipeLeftSideContainer('-40%');
         rsContVisible = false;
         swipeLeftSideContainer('-40%');
     } else {
@@ -423,6 +419,7 @@ export function startAnimation() {
     
     target = -1200;
     duration = 500;
+    window.location.hash = '#galaxy';
     let anim2 = new TWEEN.Tween(spaceShip.position)
     .to({z: target}, duration)
     .easing(TWEEN.Easing.Cubic.InOut)
@@ -445,6 +442,8 @@ export function startAnimation() {
             toggleRSContainerVisibility();
             scene.remove(bluelight);
             scene.add(whitelight);
+            const submitButton = document.getElementById('loginButton');
+            submitButton.disabled = false;
         });
         anim1.chain(anim2, anim3);
         anim1.start();
@@ -465,18 +464,18 @@ export function displayHostEscapePage() {
     .catch(error => console.error('Failed to retrieve profile info:', error)); 
 }
 
-export function toggleEscapeContainerVisibility(disconnect = false) {
-    const disconnectButton = document.getElementById('disconnectButton');
-    if (gameState.inGame)
-        disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
-    else
-        disconnectButton.textContent = getTranslatedText("disconnect");
+export let escapeContainerVisible = false;
 
-    if (!disconnect) {
+export function toggleEscapeContainerVisibility() {
+    const disconnectButton = document.getElementById('disconnectButton');
+    if (!escapeContainerVisible) {
         getProfileInfo(sessionStorage.getItem('host_id')).then(data => createUserBadge(data, 'escapeUserContainer'))
         .catch(error => console.error('Failed to retrieve profile info:', error));    
     }
-    if (targetBlur !== 0) {
+    if (!escapeContainerVisible) {
+        if (gameState.inGame)
+            disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
+        else disconnectButton.textContent = getTranslatedText("disconnect");
         structure.style.animation = 'headerDown 0.5s ease forwards'
         escapeBG.style.animation = 'unrollBG 0.2s ease 0.5s forwards'
         escapeContainerVisible = true;
@@ -491,7 +490,16 @@ let pauseGame = false;
 
 export function togglePause() {
     gameState.togglePause();
-    pauseGame ? pauseGame = false : pauseGame = true;
+    if (!pauseGame) {
+        console.log("pause");
+        cancelAnimationFrame(animationFrame);
+    }
+    else {
+        console.log("unpause");
+        lastUpdateTime = performance.now();
+        animate();
+    }
+    pauseGame = !pauseGame;
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
@@ -526,7 +534,6 @@ export function resetGameEscape()
     toggleEscapeContainerVisibility();
     togglePause();
     toggleBlurDisplay(false);
-    pauseGame ? pauseGame = false : pauseGame = true;
 }
 
 function panelRemove(){
@@ -538,16 +545,15 @@ function panelRemove(){
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
-        console.log(camera.position);
+        console.log(lobbyStart);
     if (event.key === 'Enter') {
-        if (window.location.hash === "#signUpPage") 
-            document.getElementById("submitSignUp").click();
-        // const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
     }
     if (event.key === 'Escape') {
         if (gameState.inGame && !gameState.arena.game.isPlaying)
+            return;
+        if (gameState.loading)
             return;
         if (gameState.inGame && gameState.arena.game.isPlaying)
         {
@@ -555,11 +561,10 @@ document.addEventListener('keydown', (event) => {
             toggleEscapeContainerVisibility();
             togglePause();
             toggleBlurDisplay(false);
-            pauseGame ? pauseGame = false : pauseGame = true;
             return;
         }
         else if (landedOnPlanet) {
-            togglePlanet();
+            togglePlanet(/* toggleRsContainer: */ true);
             panelRemove();
             showPage('none');
             returnToHost();
@@ -567,6 +572,7 @@ document.addEventListener('keydown', (event) => {
         }
         else if (inCockpit) {
             moveCameraToBackOfCockpit();
+            document.getElementById('usernameLoginInput').focus();
             return;
         }
         else if (lobbyStart) {
@@ -576,19 +582,18 @@ document.addEventListener('keydown', (event) => {
             toggleEscapeContainerVisibility();
             togglePause();
             resetOutlineAndText();
-            togglePause();
-            pauseGame = !pauseGame;
         }
     }
     if (event.target.tagName === 'INPUT')
         return;
     if (event.key === 'e' && inRange && !gameStarted)
-        togglePlanet();
+        togglePlanet(/* toggleRsContainer: */ true);
 });
 
 
 
-let escapeContainerVisible = false;
+
+
 let targetBlur = 0;
 
 export function removeContainerVisible() {
@@ -626,31 +631,26 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
     }
 }
 
-// composer.addPass(bloomPass);
 
 function update() {
-    if (pauseGame)
-        return;
-    if (lobbyStart && !landedOnPlanet) 
+    if (lobbyStart && !landedOnPlanet) {
         spaceShipMovement();
+        updateRay();
+        getPlanetIntersection();
+    } 
     camMovement();
     planetMovement();
-    if (lobbyStart) {
-        updateRay();
-    if (!landedOnPlanet)
-        getPlanetIntersection();
-}
 return;
 }
 
 let fpsInterval = 1000 / 75; // 75 FPS
 let stats = new Stats();
 let lastUpdateTime = performance.now();
-
+export let animationFrame;
 
 function animate()
 {
-    requestAnimationFrame( animate )
+    animationFrame = requestAnimationFrame( animate )
     let now = performance.now();
     let elapsed = now - lastUpdateTime;
     if (elapsed < fpsInterval) return; // Skip if too big FPS
@@ -660,12 +660,10 @@ function animate()
     if (!landedOnPlanet)
         renderMinimap();
     update();
-    // renderer.render(scene, camera);
     composer.render();
     mixer1.update(0.025);
     mixer2.update(0.025);
     mixer3.update(0.025);
-    // renderer.render(scene, camera);
 
     stats.update();
     lastUpdateTime = now - (elapsed % fpsInterval);

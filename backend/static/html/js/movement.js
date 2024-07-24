@@ -12,8 +12,13 @@ let aKeyPressed = false;
 let sKeyPressed = false;
 let dKeyPressed = false;
 let aKeyIsPressed = false;
+let altKeyIsPressed = false;
 
 document.addEventListener('keydown', (event) => {
+    if (altKeyIsPressed)
+        return;
+    if (event.key === 'Alt')
+        altKeyIsPressed = true;
     if (event.key === 'ArrowLeft')
         leftArrowPressed = true;
     if (event.key === 'ArrowRight')
@@ -25,15 +30,17 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'w')
         wKeyPressed = true;
     if (event.key === 'a')
-            aKeyPressed = true;
+        aKeyPressed = true;
     if (event.key === 's')
         sKeyPressed = true;    
     if (event.key === 'd')
-            dKeyPressed = true;
+        dKeyPressed = true;
     aKeyIsPressed = true;
 });
 
 document.addEventListener('keyup', (event) => {
+    if (event.key === 'Alt')
+        altKeyIsPressed = false;
     if (event.key === 'ArrowLeft')
         leftArrowPressed = false;
     if (event.key === 'ArrowRight')
@@ -59,9 +66,8 @@ document.addEventListener('keypress', (event) => {
 
 let distance = 10.5;
 let height = 4.5;
-let moveSpeed = 8;
+let moveSpeed = 20;
 let rotSpeed = 0.10;
-const tolerance = 0.01; 
 
 
 function rotateSpaceShipAnim(targetRot) {
@@ -122,6 +128,7 @@ function endBoost() {
 function spaceShipMovement() {
     if (!aKeyIsPressed)
         return;
+    
     if (upArrowPressed || wKeyPressed) {
         spaceShip.position.x += Math.sin(spaceShip.rotation.y) * moveSpeed;
         spaceShip.position.z += Math.cos(spaceShip.rotation.y) * moveSpeed;
@@ -135,7 +142,6 @@ function spaceShipMovement() {
             rotateSpaceShipAnim(0);
     }
     if (leftArrowPressed || aKeyPressed) {
-        // lobbyVisuals.afterImagePass.uniforms.damp.value = 0.5;
         if (downArrowPressed || sKeyPressed) {
             spaceShip.rotation.y -= 0.05;
         }
@@ -144,7 +150,6 @@ function spaceShipMovement() {
         rotateSpaceShipAnim(-0.80);
     }
     else if (rightArrowPressed || dKeyPressed) {
-        // lobbyVisuals.afterImagePass.uniforms.damp.value = 0.5;
         if (downArrowPressed || sKeyPressed)
             spaceShip.rotation.y += 0.05;
         else 
@@ -152,8 +157,6 @@ function spaceShipMovement() {
         rotateSpaceShipAnim(0.80);
 
     }
-    // else
-    //     lobbyVisuals.afterImagePass.uniforms.damp.value = 0.92;
     spaceShipPointLight.position.copy(spaceShip.position);
 }
 

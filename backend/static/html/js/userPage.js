@@ -30,7 +30,7 @@ statsButtons.forEach((button, index) => {
 let previousFriendList = [];
 let previousSearchList = [];
 
-async function userListChanged() {
+export async function userListChanged() {
   const newData = await get_friends_list();
   if (searchQuery === '') {
     const friendList = filterAndSortLists(newData, '');
@@ -46,7 +46,7 @@ async function userListChanged() {
   return searchListChanged;
 }
 
-function refreshUserList() {
+export function refreshUserList() {
   if (searchQuery === '')
       renderFriendList();
   else RenderUsersSearched(searchQuery);
@@ -84,7 +84,7 @@ export function initUserPlanet() {
 
   let pageDisplayed = "hostProfile";
 
- export function returnToHost() {
+ export function returnToHost(updateStats = true) {
     if (pageDisplayed === "searchedProfile") {
       searchedUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";    
       hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
@@ -96,19 +96,23 @@ export function initUserPlanet() {
       pageDisplayed = "hostProfile";
       resetModifyPageField();
     }
-    chooseStats(1);
-    setTimeout(getUserStats(sessionStorage.getItem("host_id"), 500));
+    if (updateStats) {
+      chooseStats(1);
+      setTimeout(getUserStats(sessionStorage.getItem("host_id"), 500));
+    }
   }
 
   backButtonUserPage.addEventListener('click', () => {
-    console.log("pageDisplayed:", pageDisplayed);
     if (pageDisplayed === "hostProfile")
-      togglePlanet();
+      togglePlanet(/* toggleRsContainer: */ true);
     else if (pageDisplayed === "modifyPage")
     {
       const modifyPage = document.getElementById('userInfoForm');
-      modifyPage.style.visibility = 'hidden';
       returnToHost();
+      //prevent tab on modifyPage input bars
+      setTimeout(() => {
+        modifyPage.style.visibility = 'hidden';
+      }, 1000);
     }
     else if (pageDisplayed === "searchedProfile")
     {
