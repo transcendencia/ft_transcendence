@@ -37,10 +37,8 @@ urlpatterns = [
 
     #tounament.py
     path('add_game/', gameInfo.add_game, name='add_game'),
-    path('get_game_list/', gameInfo.get_game_list, name='get_game_list'),
     path('get_game_user/', gameInfo.get_game_user, name='get_game_user'),
 
-    # path('get_game_list/', gameInfo.get_game_list, name='get_game_list'),
     # path('get_game_info/', gameInfo.get_game_info, name='get_game_info'),
     #rgpd.py
     path('generateDataFile/', rgpd.generateDataFile, name='generateDataFile'),

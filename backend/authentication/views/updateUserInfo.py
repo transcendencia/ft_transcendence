@@ -91,11 +91,12 @@ class UserInfoView(APIView):
     
     if serializer.is_valid():
         serializer.save()
-        return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=status.HTTP_200_OK)
+        return Response({'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=status.HTTP_200_OK)
     
     first_error = next(iter(serializer.errors.values()))[0]
     first_error_code = first_error.code
-    return Response({'status': "failure", "msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
+    print(first_error_code)
+    return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

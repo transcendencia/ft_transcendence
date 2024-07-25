@@ -64,7 +64,7 @@ def login_page(request):
   
   except Exception as e:
       logger.error(f'An error occurred: {str(e)}')
-      return Response({'status': "error", 'message': str(e)})
+      return Response({'status': "error", 'message': str(e)},  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
     try:
@@ -79,7 +79,7 @@ def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
     
     except Exception as e:
       logger.error(f'An error occurred: {str(e)}')
-      return Response({'status': "error", 'message': str(e)})
+      return Response({'status': "error", 'message': str(e)},  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -118,7 +118,6 @@ def getLanguage(language):
   elif language == "es":
     return "es"
   else:
-    print("language: ", language)
     return "en"
 
 class LogoutView(APIView):

@@ -40,13 +40,6 @@ class FriendRequest(models.Model):
   receiver = models.ForeignKey(User, related_name="receiver", on_delete=models.CASCADE)
   status = models.CharField(max_length=10, default='pending')
 
-class Member(models.Model):
-  username = models.CharField(max_length=255)
-  position = models.IntegerField(default=0)
-
-  def __str__(self):
-    return f"{self.username}"
-
 class Game(models.Model):
   player1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='games_as_player1')
   player2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='games_as_player2')

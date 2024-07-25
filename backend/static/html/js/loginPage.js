@@ -509,7 +509,8 @@ export function logoutAllGuest(userId) {
 
 window.addEventListener('beforeunload', async function (event) {
     const token = sessionStorage.getItem('host_auth_token');
-    handleLogout(sessionStorage.getItem('host_id'), token);
+    // handleLogout(sessionStorage.getItem('host_id'), token);
+    logoutUser(token);
     sessionStorage.clear();
 });
 
