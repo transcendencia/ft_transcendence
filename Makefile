@@ -7,7 +7,9 @@ DOCKER_COMPOSE = docker-compose.yml
 # # ---- Launch rules ---- #
 
 all:
-	@docker compose -f ${DOCKER_COMPOSE} up -d --build 
+	@docker compose -f ${DOCKER_COMPOSE} up -d --build
+	@mkdir backend/cert
+	@openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout backend/cert/key.pem -out backend/cert/cert.pem -subj "/CN=localhost" 
 
 up: 
 	@docker compose -f ${DOCKER_COMPOSE} up
@@ -33,6 +35,7 @@ prune:
 fclean:
 	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
 	- @find backend/media -type f ! -name 'default.png' ! -name 'botLogo.png' -delete
+	- @rm -rf backend/cert
 
 re: down
 	${MAKE} all
