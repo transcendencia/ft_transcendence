@@ -13,6 +13,8 @@ venv/
 /backend/authentication/view/__pycache__
 
 
+note
+
 #production files
 backend/productionfiles/
 backend/authentication/migrations/
