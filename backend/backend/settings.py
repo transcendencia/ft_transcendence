@@ -203,3 +203,9 @@ LOGGING = {
         },
     },
 }
+
+PROFILE_PIC_MAX_UPLOAD_SIZE = 5 * 1024 * 1024
+PROFILE_PIC_ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png']
+DEFAULT_PROFILE_PICTURE = 'path/to/default/profile/picture.png'
+PROFILE_PIC_MAX_WIDTH = 1200
+PROFILE_PIC_MAX_HEIGHT = 1200
