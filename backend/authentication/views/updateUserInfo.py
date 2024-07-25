@@ -21,30 +21,47 @@ class UserGraphicModeView(APIView):
   authentication_classes = [TokenAuthentication]
 
   def patch(self, request):
-    request.user.graphic_mode = request.data.get('graphicMode')
-    request.user.save()
-    return HttpResponse(status=status.HTTP_200_OK)
+    try:
+      request.user.graphic_mode = request.data.get('graphicMode')
+      request.user.save()
+      return HttpResponse(status=status.HTTP_200_OK)
+    
+    except Exception as e:
+            logger.error(f'An error occurred: {str(e)}')
+            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserLanguageView(APIView):
   authentication_classes = [TokenAuthentication]
   
   def patch(self, request):
-    user = request.user
-    user.language = request.data.get("language")
-    user.save()
-    return HttpResponse(status=status.HTTP_200_OK)
+    try:
+      user = request.user
+      user.language = request.data.get("language")
+      user.save()
+      return HttpResponse(status=status.HTTP_200_OK)
+    except Exception as e:
+            logger.error(f'An error occurred: {str(e)}')
+            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserStatusView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request):
-      request.user.status = request.data.get('status')
-      request.user.save()
-      return HttpResponse(status=status.HTTP_200_OK)
+      try:
+        request.user.status = request.data.get('status')
+        request.user.save()
+        return HttpResponse(status=status.HTTP_200_OK)
+      except Exception as e:
+            logger.error(f'An error occurred: {str(e)}')
+            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
     def get(self, request, userId):
-      user = get_object_or_404(User, id=userId)
-      return Response({'user_status': user.status}, status=status.HTTP_200_OK)
+      try:
+        user = get_object_or_404(User, id=userId)
+        return Response({'user_status': user.status}, status=status.HTTP_200_OK)
+      except Exception as e:
+            logger.error(f'An error occurred: {str(e)}')
+            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserInfoView(APIView):
   authentication_classes = [TokenAuthentication]

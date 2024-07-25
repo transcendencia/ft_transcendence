@@ -436,6 +436,8 @@ function createUserTile(user, type, reqId) {
 }
 
 function filterAndSortLists(data, query) {
+  if (!data)
+    return ;
   let requestList = data.received_request_list;
   let friendList = data.friends;
   let otherList = data.other_user_list;

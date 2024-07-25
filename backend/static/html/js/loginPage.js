@@ -218,7 +218,7 @@ export async function handleLogin(formData) {
             resolve(guest_token);
         })
         .catch(error => {
-            console.error('Erreur :', error);
+            console.error('Error :', error);
             submitButton.disabled = false;
             document.getElementById(messageContainerId).innerText = getTranslatedText(error.msg_code);
             reactivateLoginFields()
@@ -480,7 +480,7 @@ export async function logoutUser(token) {
     if (!token)
         return;
 
-    await fetch('/logout/', {
+    fetch('/logout/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

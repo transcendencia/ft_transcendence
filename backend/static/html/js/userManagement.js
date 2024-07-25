@@ -6,7 +6,7 @@ export async function updateUserStatus(status, token) {
     if (!token || !status)
         return;
     
-    await fetch('/user/status/', {
+    fetch('/user/status/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -106,7 +106,8 @@ export function send_friend_request(receiver_id) {
         }
     })
     .catch(error => {
-        console.error('Error :', error);
+        error;
+        // console.error('Error :', error);
     });
 }
 
@@ -128,13 +129,14 @@ export async function accept_friend_request(request_id) {
         }
     })
     .catch(error => {
-        console.error('Error :', error);
+        error;
+        // console.error('Error :', error);
     });
 }
 
 export async function delete_friend_request(request_id) {
     const token = sessionStorage.getItem('host_auth_token');
-    await fetch('friend_request/', {
+    fetch('friend_request/', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -149,6 +151,7 @@ export async function delete_friend_request(request_id) {
         }
     })
     .catch(error => {
+        error;
         console.error('Error :', error);
     });
 }
@@ -169,11 +172,9 @@ export async function get_friends_list() {
         }
 
         const data = await response.json();
-        console.log(data);
         return data;
     } catch (error) {
         console.error('Error:', error);
-        throw error;
     }
 }
 
