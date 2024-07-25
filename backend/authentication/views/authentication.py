@@ -3,27 +3,23 @@ import logging
 from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
-from django.shortcuts import render
-from django.http import JsonResponse
 from django.utils import timezone
-from django.template.response import TemplateResponse
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.core.exceptions import ValidationError
-from django.db import IntegrityError
-from django.contrib.auth.password_validation import validate_password
-from authentication.exceptions import PasswordValidationError
 from rest_framework.exceptions import ValidationError
 
 from ..models import User
 from ..serializers import UserSerializer, SignupSerializer
 from ..utils.constants import UserStatus
+from authentication.exceptions import PasswordValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +77,6 @@ def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
             user.language = newLanguage
     user.save()
 
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
@@ -113,12 +108,10 @@ class LogoutView(APIView):
   authentication_classes = [TokenAuthentication]
 
   def post(self, request):
-    print("request.user ", request.user.username, " ", request.user.is_host)
     if request.user.is_host: 
-      print("coucou") # a checker
       request.user.is_host = False
     request.user.status = UserStatus.OFFLINE
     request.user.save()
     request.user.auth_token.delete()
 
-    return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
+    return HttpResponse(status=status.HTTP_200_OK)

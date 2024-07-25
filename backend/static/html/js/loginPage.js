@@ -142,20 +142,6 @@ function setEscapeLanguageVisual() {
     icon.querySelector('.icon').style.opacity = 0;
 }
 
-const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', handleLoginSubmit);
-
-function handleLoginSubmit(event) {
-    event.preventDefault();
-
-
-    const formData = new FormData(this);
-    const submitButton = this.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-
-    handleLogin(formData)
-}
-
 function reactivateLoginFields() {
     document.getElementById('usernameLoginInput').disabled = false;
     document.getElementById('passwordLoginInput').disabled = false;
@@ -182,7 +168,20 @@ function removeLastUserInfoConts() {
     }
 }
 
-// Handle form submission
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', handleLoginSubmit);
+
+function handleLoginSubmit(event) {
+    event.preventDefault();
+
+
+    const formData = new FormData(this);
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+
+    handleLogin(formData)
+}
+
 export async function handleLogin(formData) {
     disableLoginFields();
 
@@ -386,8 +385,6 @@ export function getGameInfo() {
 		});
 }
 
-// Logout
-
 function resetHTMLelements(){
     document.querySelector(".gameUI").style.visibility = 'hidden';
     document.getElementById('c4').style.display = 'block';
@@ -422,7 +419,7 @@ export function backToLobby(historyArrow = false) {
 }
 
 
-
+/*LOGOUT*/
 export async function handleLogout(userId, token) {
     if (!userId || !token || isLoggingOut) 
         return;
@@ -446,7 +443,7 @@ export async function handleLogout(userId, token) {
         setSpaceShipToLoginState();
         showPage('loginPage');
         swipeLeftSideContainer('-40%');
-        logoutGuest(userId);
+        logoutAllGuest(userId);
         logoutUser(token);
         reactivateLoginFields();
         sessionStorage.clear();
@@ -480,10 +477,9 @@ function printXYZofVector(vector) {
 }
 
 export async function logoutUser(token) {
-    console.log("coucou je logout le user!");
     if (!token)
         return;
-        console.log("coucou je logout le user! Ca va");
+
     await fetch('/logout/', {
         method: 'POST',
         headers: {
@@ -502,17 +498,16 @@ export async function logoutUser(token) {
     });
 }
 
-export function logoutGuest(userId) {
+export function logoutAllGuest(userId) {
     if (userId === sessionStorage.getItem('host_id')) {
         guestLoggedIn.forEach(user => {
             logoutUser(user[1]);
         });
+        guestLoggedIn.splice(0, guestLoggedIn.length);
     }
-    guestLoggedIn.splice(0, guestLoggedIn.length);
 }
 
 window.addEventListener('beforeunload', async function (event) {
-    // event.preventDefault();
     const token = sessionStorage.getItem('host_auth_token');
     handleLogout(sessionStorage.getItem('host_id'), token);
     sessionStorage.clear();
