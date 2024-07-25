@@ -92,7 +92,13 @@ buttonHeaders.forEach((buttonHeader, index) => {
     });
 });
 
-
+export function resetHostTournament(){
+	tournamentPlayer.length = 0;
+	getProfileInfo(sessionStorage.getItem("host_id"))
+	.then(data => {
+		populateProfileInfos(data);
+	})
+}
 
 export function resetTournament() {
   if (tournamentState === 1)
