@@ -4,8 +4,8 @@ import { togglePlanet, setCheckerToInterval, checkEach5Sec} from "./enterPlanet.
 import { afterGameTournament, botDifficultyTournament, addUserToTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
-import { askForAlias } from "../../tournament/js/newTournament.js";
-import {userListChanged, refreshUserList } from "./userPage.js";
+import { askForAlias, resetHostTournament } from "../../tournament/js/newTournament.js";
+import { getProfileInfo, populateProfileInfos } from "./userManagement.js";
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
@@ -218,43 +218,46 @@ export let guestLoggedIn = [];
 let isValidating = false;
 
 validatePasswordButton.addEventListener('click', async function() {
-	if (isValidating)
-		return;
-	isValidating = true;
-	validatePasswordButton.style.pointerEvents = 'none';
-	if (guestLoggedIn.length < 7) {
-		let guest = userTiles.get(userClickedId).user;
-		const password = document.getElementById("enterPasswordInput");
-		const formData = new FormData();
-		formData.append("username", guest.username);
-		formData.append("password", password.value);
-		try {
-			let guestToken = await handleLogin(formData);
-			
-			if (guestToken) {
-
-				guestLoggedIn.push([guest, guestToken]);
-				if (planetInRange.name === 'arena')
-					putUserInMatch(plusButtonsArena, 'arena');
-				else 
-					askForAlias(guest);
-				displayUsersLogged(guest, guestToken);
-				document.getElementById('enterPasswordInput').value = '';
-				document.getElementById('errorLogGuest').innerHTML = '';
-				pwWindow.classList.remove("showRectangle");
-				if (planetInRange.name === 'arena')
-					blockingPanel.classList.remove('show');
-			} else {
-				console.log("Erreur dans le login");
-			}
-		} catch (error) {
-			console.error('Erreur lors de la connexion :', error);
-		} finally {
-			isValidating = false;
-            validatePasswordButton.style.pointerEvents = '';
-		}
-	}
-	else console.log("Too many guest");
+    if (isValidating)
+        return;
+    isValidating = true;
+    // validatePasswordButton.style.pointerEvents = 'none';
+    
+    try {
+        if (guestLoggedIn.length < 7) {
+            let guest = userTiles.get(userClickedId).user;
+            const password = document.getElementById("enterPasswordInput");
+            const formData = new FormData();
+            formData.append("username", guest.username);
+            formData.append("password", password.value);
+            
+            let guestToken = await handleLogin(formData);
+            
+            if (guestToken) {
+                guestLoggedIn.push([guest, guestToken]);
+                if (planetInRange.name === 'arena')
+                    putUserInMatch(plusButtonsArena, 'arena');
+                else 
+                    askForAlias(guest);
+                displayUsersLogged(guest, guestToken);
+                document.getElementById('enterPasswordInput').value = '';
+                document.getElementById('errorLogGuest').innerHTML = '';
+                pwWindow.classList.remove("showRectangle");
+                if (planetInRange.name === 'arena')
+                    blockingPanel.classList.remove('show');
+            } else {
+                console.log("Erreur dans le login");
+            }
+        }
+        else {
+            console.log("Too many guest");
+        }
+    } catch (error) {
+        console.error('Erreur lors de la connexion :', error);
+    } finally {
+        isValidating = false;
+        // validatePasswordButton.style.pointerEvents = '';
+    }
 });
 
 backPasswordButton.addEventListener('click', function() {
@@ -317,15 +320,26 @@ async function isListsChanged() {
 	return listsChanged;
   }
 
-  export function initTournamentPlanet(){
-	userListBackground = document.getElementById('userlistTournamentPage');
-	RenderAllUsersInList();
-}
-
   export function initArenaPlanet() {
 	userListBackground = document.getElementById('userlistArenaPage');
 	RenderAllUsersInList();
 	setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
+	matchPlayer.length = 0;
+	getProfileInfo(sessionStorage.getItem("host_id"))
+  	.then(data => {
+      populateProfileInfos(data);
+  	})
+  }
+
+  export function initTournamentPlanet(){
+	userListBackground = document.getElementById('userlistTournamentPage');
+	RenderAllUsersInList();
+	resetHostTournament();
+	// tournamentPlayer.length = 0;
+	// getProfileInfo(sessionStorage.getItem("host_id"))
+	// .then(data => {
+	// 	populateProfileInfos(data);
+	// })
   }
 
 export function resetArenaPage() {
@@ -335,7 +349,11 @@ export function resetArenaPage() {
 	});
 	profileAdded = [];
 	addedPlayerBadges = [];
-	matchPlayer.length = 1;
+	matchPlayer.length = 0;
+	getProfileInfo(sessionStorage.getItem("host_id"))
+  	.then(data => {
+      populateProfileInfos(data);
+  	})
 	resetAddingMode("arena");
 }
   

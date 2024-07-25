@@ -211,10 +211,8 @@ export async function handleLogin(formData) {
             console.log(data.status);
             if (hostLoggedIn === 'false') {
                 handleHostLogin(data);
-            } else {
+            } else
                 guest_token = data.token;
-                submitButton.disabled = false;
-            }
             resolve(guest_token);
         })
         .catch(error => {
@@ -223,6 +221,11 @@ export async function handleLogin(formData) {
             document.getElementById(messageContainerId).innerText = getTranslatedText(error.msg_code);
             reactivateLoginFields()
         })
+        .finally(() => {
+            console.log("finally");
+            submitButton.disabled = false;
+            reactivateLoginFields();
+        });
     });
 }
 

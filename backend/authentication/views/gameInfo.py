@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponse
 from django.template import loader
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 from django.http import JsonResponse
 from django.utils import timezone
@@ -63,9 +63,9 @@ def add_game(request):
     mapGame = data['mapGame']
     gameTime = data['gameTime']
 
-    player1 = User.objects.get(id=player1_id)
-    player2 = User.objects.get(id=player2_id)
-    player3 = User.objects.get(id=player3_id) if player3_id else None
+    player1 = get_object_or_404(User, id=player1_id)
+    player2 = get_object_or_404(User, id=player2_id)
+    player3 = get_object_or_404(User, id=player3_id) if player3_id else None
     game = Game(
         player1=player1,
         player2=player2,
