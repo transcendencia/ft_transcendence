@@ -1,0 +1,9 @@
+Error : TypeError: NetworkError when attempting to fetch resource. loginPage.js:497:17
+    logoutUser https://0.0.0.0:8000/static/html/js/loginPage.js:497
+    (Async: promise callback)
+    logoutUser https://0.0.0.0:8000/static/html/js/loginPage.js:496
+    handleLogout https://0.0.0.0:8000/static/html/js/loginPage.js:447
+    handleLogout https://0.0.0.0:8000/static/html/js/loginPage.js:428
+    <anonymous> https://0.0.0.0:8000/static/html/js/loginPage.js:512
+    (Async: EventListener.handleEvent)
+    <anonymous> https://0.0.0.0:8000/static/html/js/loginPage.js:510
