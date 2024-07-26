@@ -101,7 +101,8 @@ export function resetHostTournament(){
 }
 
 export function resetTournament() {
-  if (tournamentState === 1)
+  console.log("tournamentState", tournamentState);
+  if (tournamentState === 1 | tournamentState === -1)
       return ;
   document.querySelectorAll('.before-launch').forEach(function(el) {
     el.style.display = 'flex';
@@ -130,10 +131,11 @@ export function resetTournament() {
 //add user to tournaments
 
 const botID = 0;
-let tournamentState = 0;
+let tournamentState = -1;
 
 export function changeTournamentStatus(){
-  tournamentState = 2;
+  if (tournamentState == 1)
+    tournamentState = 2;
 }
 
 const leftColumn = document.querySelector(".leftColumn");

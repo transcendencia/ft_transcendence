@@ -95,6 +95,7 @@ function handleSignUp(event) {
     event.preventDefault();
     
     const messageContainer = document.getElementById('messageContainerSignup');
+    messageContainer.innerText = '';
     const submitButton = document.getElementById('submitSignUp');
     submitButton.disabled = true;
 

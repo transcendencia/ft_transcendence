@@ -1,3 +1,5 @@
+import { getCookie } from "../../html/js/loginPage.js";
+
 export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, scorePlayer2, gameplayMode, modeGame, map, user1, user2, user3, gameTime) {
     const payload = {
         player1: player1Id,

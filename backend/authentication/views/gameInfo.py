@@ -55,7 +55,7 @@ def add_game(request):
 
     player1_id = data['player1']
     player2_id = data['player2']
-    player3_id = data.get('player3', None)  # Optional
+    player3_id = data.get('player3', None)
     scorePlayer1 = data['scorePlayer1']
     scorePlayer2 = data['scorePlayer2']
     gameplayMode = data['gameplayMode']

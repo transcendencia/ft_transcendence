@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 from datetime import datetime
-from ..utils.constants import UserStatus
+from ...utils.constants import UserStatus
 
 class Command(BaseCommand):
     help = 'Delete inactive users'
