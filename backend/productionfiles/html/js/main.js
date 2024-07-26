@@ -13,10 +13,12 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-import { gameStarted, resetArenaPage} from './arenaPage.js';
+import { gameStarted, resetArenaPage, guestLoggedIn} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
+import { getTranslatedText } from './translatePages.js';
+import { logoutUser } from "./loginPage.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -44,7 +46,7 @@ scene.traverse(obj => {
     }
   });
 
-const aspectRatio = window.innerWidth / window.innerHeight; // Adjust aspect ratio
+const aspectRatio = window.innerWidth / window.innerHeight;
 const camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000 );
 const planetCam = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 2000);
 
@@ -84,7 +86,6 @@ class LobbyVisuals
         this.textLoaded = false;
         this.camera = camera;
         this.renderer = renderer;
-        // this.renderer.physicallyCorrectLights = true;
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.currentGraphics = 'medium';
@@ -111,14 +112,14 @@ class LobbyVisuals
         fontLoader.load('https://threejs.org/examples/fonts/optimer_bold.typeface.json', (font) => {
             const textGeometry = new THREE.TextGeometry('42', {
                 font: font,
-                size: 50, // Adjusted size
-                height: 22, // Adjusted height
+                size: 50,
+                height: 22,
                 curveSegments: 62,
                 bevelEnabled: true,
-                bevelThickness: 0.1, // Reduced bevel thickness
-                bevelSize: 0.2, // Reduced bevel size
+                bevelThickness: 0.1,
+                bevelSize: 0.2,
                 bevelOffset: 0,
-                bevelSegments: 3 // Adjusted bevel segments
+                bevelSegments: 3
             });
             textGeometry.computeBoundingBox();
             const boundingBox = textGeometry.boundingBox;
@@ -135,13 +136,10 @@ class LobbyVisuals
             });
 
             this.textMesh = new THREE.Mesh(textGeometry, material);
-            // Create a pivot object and add the text to it
             const pivot = new THREE.Object3D();
             pivot.add(this.textMesh);
         
-            // Offset the text position so that its center is at the pivot point
             this.textMesh.position.set(-textWidth / 2, -textHeight / 2, -textDepth / 2);
-            // Add the pivot to the scene
             this.scene.add(pivot);
             this.textLoaded = true;
             this.text = pivot;
@@ -155,7 +153,7 @@ class LobbyVisuals
 
         star.position.set(x, y, z);
         this.scene.add(star);
-        this.stars.push(star); // Add the star to the stars array
+        this.stars.push(star);
     }
     addStars(numStars) {
         Array(numStars).fill().forEach(this.addStar.bind(this));
@@ -239,8 +237,7 @@ export const lobbyVisuals = new LobbyVisuals(scene, camera, renderer);
 
 
 
-// Define the size of the minimap
-const minimapWidth = 200; // Adjust as needed
+const minimapWidth = 200;
 const minimapHeight = 200;
 
 // Create an orthographic camera for the minimap
@@ -268,7 +265,7 @@ const minimapCamera = new THREE.OrthographicCamera(
     const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x00000000 }); 
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
     minimapBG.position.set(0, -600, 0);
-    minimapBG.lookAt(minimapCamera.position); // Make the plane face the camera
+    minimapBG.lookAt(minimapCamera.position);
     scene.add(minimapBG);
 
     minimapBG.layers.set(1);
@@ -294,12 +291,18 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
     userInfoCont.childNodes[1].textContent = user.username;
 }
 
-import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
-import { getTranslatedText } from './translatePages.js';
+function logoutGuest(userInfoCont, user, token) {
+    lsCont.removeChild(userInfoCont);
+    logoutUser(token);
+    for (let i = 0; i < guestLoggedIn.length; i++) {
+        if (guestLoggedIn[i][0].id === user.id) {
+            guestLoggedIn.splice(i, 1);
+        }
+    }
+}
 
 export function displayUsersLogged(user, token) {
     
-    // guestLoggedIn.forEach(user => {
         const lsCont = document.getElementById('lsCont');
 
         const userInfoCont = document.createElement('div');
@@ -316,14 +319,12 @@ export function displayUsersLogged(user, token) {
         const usernameText = document.createTextNode(user.username);
         userInfoCont.appendChild(usernameText);
         lsCont.appendChild(userInfoCont);
-        // if (user.isHost)
-        //     return;
 
         userInfoCont.addEventListener('click', function () {
-            disconnectLoggedGuest(userInfoCont, user, token);
+            logoutGuest(userInfoCont, user, token);
         });
-    // });
 }
+
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -556,9 +557,6 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         console.log(lobbyStart);
     if (event.key === 'Enter') {
-        if (window.location.hash === "#signUpPage") 
-            document.getElementById("submitSignUp").click();
-        // const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
     }
@@ -584,6 +582,7 @@ document.addEventListener('keydown', (event) => {
         }
         else if (inCockpit) {
             moveCameraToBackOfCockpit();
+            document.getElementById('usernameLoginInput').focus();
             return;
         }
         else if (lobbyStart) {
@@ -642,7 +641,6 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
     }
 }
 
-// composer.addPass(bloomPass);
 
 function update() {
     if (lobbyStart && !landedOnPlanet) {
@@ -672,12 +670,10 @@ function animate()
     if (!landedOnPlanet)
         renderMinimap();
     update();
-    // renderer.render(scene, camera);
     composer.render();
     mixer1.update(0.025);
     mixer2.update(0.025);
     mixer3.update(0.025);
-    // renderer.render(scene, camera);
 
     stats.update();
     lastUpdateTime = now - (elapsed % fpsInterval);

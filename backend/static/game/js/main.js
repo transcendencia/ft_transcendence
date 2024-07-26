@@ -1181,12 +1181,7 @@ class Arena extends THREE.Mesh {
             swapToFullScreen();
             if (this.game.thirdPlayer)
                 thirdPlayerUI[0].style.opacity = 1;
-            this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
-            this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
-            this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
-            this.paddleLeft.particles.isActive = false;
-            this.paddleRight.particles.isActive = false;
-            this.ball.particles.isActive = false;
+            this.resetParticles();
             this.idleCameraAnimation();
             const winningScreen = document.querySelector('.winning-screen');
             const winningText = document.getElementById('winningText');
@@ -1232,6 +1227,14 @@ class Arena extends THREE.Mesh {
         this.ball.isRolling = false;
         this.ball.speedZ = 0;
         this.ball.speedX = 0;
+    }
+    resetParticles() {
+        this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
+        this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
+        this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
+        this.paddleLeft.particles.isActive = false;
+        this.paddleRight.particles.isActive = false;
+        this.ball.particles.isActive = false;
     }
     resetUIForRematch()
     {
