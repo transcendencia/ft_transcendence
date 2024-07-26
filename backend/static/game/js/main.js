@@ -691,15 +691,17 @@ class Arena extends THREE.Mesh {
     initializeGameSettings()
     {
         this.game.hasToBeInitialized = false;
-        if (this.game.map === 'oceanMap')
-            this.switchMap(this.oceanMap);
-        else if (this.game.map === 'spaceMap')
-            this.switchMap(this.spaceMap);
-        else if (this.game.map === 'skyMap')
-            this.switchMap(this.skyMap);
-        else if (this.game.map === 'dragonMap')
-            this.switchMap(this.dragonMap);
-        this.addArenaToScene();
+        setTimeout(() => {
+            if (this.game.map === 'oceanMap')
+                this.switchMap(this.oceanMap);
+            else if (this.game.map === 'spaceMap')
+                this.switchMap(this.spaceMap);
+            else if (this.game.map === 'skyMap')
+                this.switchMap(this.skyMap);
+            else if (this.game.map === 'dragonMap')
+                this.switchMap(this.dragonMap);
+            this.addArenaToScene();
+        }, 1500);
     }
     idleCameraAnimation()
     {
@@ -1208,7 +1210,7 @@ class Arena extends THREE.Mesh {
                 this.bot.deactivateBot();
         });
         let targetLight = loserPaddle.defaultLight;
-        if (this.getCurrentMap() === this.dragonMap)
+        if (this.getCurrentMap() === this.dragonMap || this.getCurrentMap() === this.oceanMap)
            targetLight = loserPaddle.defaultLight / 10; 
         const powerPaddleLight = new TWEEN.Tween(loserPaddle.light)
         .to({power: targetLight}, duration)
