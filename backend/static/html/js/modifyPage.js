@@ -162,7 +162,6 @@ export function getRandomUsername() {
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data.username);
     document.getElementById('changeUsernameInput').value = data.username;
   })
   .catch(error => {

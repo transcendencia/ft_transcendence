@@ -89,7 +89,6 @@ def signup(request):
     serializer = SignupSerializer(data=request.data)
     
     if serializer.is_valid(raise_exception=True):
-      print("Sign up serializer is valid")
       user_data = serializer.validated_data
       user = User(username=user_data['username'], language=new_language)
       user.set_password(user_data['password'])
@@ -100,7 +99,6 @@ def signup(request):
 
   except (ValidationError, PasswordValidationError) as e:
     first_error = next(iter(e.detail.values()))[0]
-    print(first_error)
     first_error_code = getattr(first_error, 'code', 'validationError')
     logger.error("Validation error during signup: %s", first_error_code)
     return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)

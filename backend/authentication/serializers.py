@@ -39,17 +39,13 @@ class SignupSerializer(serializers.ModelSerializer):
 		return value
 
 	def validate_password(self, value):
-		print("validate_password")
-		print("password: ", value)
 		try:
 			validate_password(value)
-			print("Password is valid")
 		except ValidationError as e:
 			raise PasswordValidationError(detail=e.error_list[0])
 		return value
 
 	def validate_confirmation_password(self, value):
-		print("validate_confirmation_password")
 		confirmation_password = value
 		password = self.initial_data.get('password')
 
@@ -97,7 +93,6 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 		return value
 
 	def validate_password(self, value):
-		print("validate_password")
 		try:
 			validate_password(value)
 		except ValidationError as e:
@@ -105,7 +100,6 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 		return value
 
 	def validate_confirmation_password(self, value):
-		print("validate_confirmation_password")
 		confirmation_password = value
 		password = self.initial_data.get('password')
 

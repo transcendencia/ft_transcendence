@@ -19,7 +19,6 @@ class CustomPasswordCharacterValidator:
     def validate(self, password, user=None):
         try:
             self.validator.validate(password, user)
-        except ValidationError as e:
-            print(f"Debug: Validation failed. Reason: {str(e)}")
+        except ValidationError:
             raise ValidationError(self.common_error_message, code=self.error_code)
 

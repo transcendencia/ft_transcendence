@@ -208,7 +208,6 @@ export async function handleLogin(formData) {
         }
 
         const data = await response.json();
-        console.log(data.status);
         
         let guest_token = null;
         if (hostLoggedIn === 'false') {
