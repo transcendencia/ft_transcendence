@@ -38,20 +38,20 @@ class SignupSerializer(serializers.ModelSerializer):
 		# logger.debug("je return la value du username")
 		return value
 
-	def validate_password(self, value):
-		try:
-			validate_password(value)
-		except ValidationError as e:
-			raise PasswordValidationError(detail=e.error_list[0])
-		return value
+	# def validate_password(self, value):
+	# 	try:
+	# 		validate_password(value)
+	# 	except ValidationError as e:
+	# 		raise PasswordValidationError(detail=e.error_list[0])
+	# 	return value
 
-	def validate_confirmation_password(self, value):
-		confirmation_password = value
-		password = self.initial_data.get('password')
+	# def validate_confirmation_password(self, value):
+	# 	confirmation_password = value
+	# 	password = self.initial_data.get('password')
 
-		if password != confirmation_password:
-			raise PasswordValidationError(detail="Password not identical")
-		return value
+	# 	if password != confirmation_password:
+	# 		raise PasswordValidationError(detail="Password not identical")
+	# 	return value
 
 
 
