@@ -463,10 +463,23 @@ document.addEventListener('keyup', (event) => {
 });
 
 
+const infoButton = document.getElementById("gameInfoIcon");
+infoButton.addEventListener("mouseenter", displayAnonymousMode);
+infoButton.addEventListener("mouseleave", hideAnonymousMode);
+
+function displayAnonymousMode() {
+  document.getElementById("gameInfoBox").classList.add("showRectangle");
+  console.log("wagwan");
+}
+
+function hideAnonymousMode() {
+    console.log("wagwannn");
+  document.getElementById("gameInfoBox").classList.remove("showRectangle");
+}
+
 const scorePoints = document.getElementsByClassName("parallelogram");
 const scoreUI = document.getElementsByClassName("gameUI");
 const thirdPlayerUI = document.getElementsByClassName("profileCont3");
-
 document.addEventListener('DOMContentLoaded', (event) => {
     const backToLobbyButton = document.getElementById('backToLobbyButton');
 
@@ -485,7 +498,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         gameState.arena.resetUIForRematch();
         setTimeout(() => {
             keyDown['e'] = false;
-        }, 10);
+        }, 50);
     });
 });
 
