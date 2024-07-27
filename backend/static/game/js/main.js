@@ -485,7 +485,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         gameState.arena.resetUIForRematch();
         setTimeout(() => {
             keyDown['e'] = false;
-        }, 10);
+        }, 50);
     });
 });
 
