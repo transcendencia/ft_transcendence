@@ -29,7 +29,6 @@ class SignupSerializer(serializers.ModelSerializer):
 	
 	def validate_username(self, value):
 		value = value.lower()
-		# logger.debug("validateUsername serializer")
 		if len(value) > 13:
 			raise serializers.ValidationError(error_codes["length_exceeded_username"], code="length_exceeded_username")
 		if value == 'bot':
@@ -39,20 +38,21 @@ class SignupSerializer(serializers.ModelSerializer):
 		# logger.debug("je return la value du username")
 		return value
 
-	def validate_confirmation_password(self, value):
-		confirmation_password = value
-		password = self.initial_data.get('password')
-
-		if password != confirmation_password:
-			raise PasswordValidationError(detail="Password not identical")
-		return value
-
 	# def validate_password(self, value):
 	# 	try:
 	# 		validate_password(value)
 	# 	except ValidationError as e:
 	# 		raise PasswordValidationError(detail=e.error_list[0])
 	# 	return value
+
+	# def validate_confirmation_password(self, value):
+	# 	confirmation_password = value
+	# 	password = self.initial_data.get('password')
+
+	# 	if password != confirmation_password:
+	# 		raise PasswordValidationError(detail="Password not identical")
+	# 	return value
+
 
 
 class UpdateInfoSerializer(serializers.ModelSerializer):
@@ -79,13 +79,6 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 				raise serializers.ValidationError(error_codes["unique"], code="unique")
 		return value
 
-	def validate_password(self, value):
-		if value:
-			try:
-				validate_password(value)
-			except ValidationError as e:
-				raise PasswordValidationError(detail=e.error_list[0])
-		return value
 
 	def validate_alias(self, value):
 		if value:
@@ -99,17 +92,21 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 				raise serializers.ValidationError(error_codes["unique_alias"], code="unique_alias")
 		return value
 
-	def validate(self, data):
-		password = data.get('password')
-		confirmation_password = data.pop('confirmation_password', None)
+	def validate_password(self, value):
+		try:
+			validate_password(value)
+		except ValidationError as e:
+			raise PasswordValidationError(detail=e.error_list[0])
+		return value
 
-		if password:
-			if not confirmation_password:
-				raise serializers.ValidationError("You need to confirm your password.")
-			if password != confirmation_password:
-				raise PasswordValidationError(detail="Password not identical")
-		return data
-	
+	def validate_confirmation_password(self, value):
+		confirmation_password = value
+		password = self.initial_data.get('password')
+
+		if password != confirmation_password:
+			raise PasswordValidationError(detail="Password not identical")
+		return value
+
 	def update(self, instance, validated_data):
 		for attr, value in validated_data.items():
 			if attr == 'password' and value:

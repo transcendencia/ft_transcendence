@@ -1,8 +1,6 @@
-export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, scorePlayer2, gameplayMode, modeGame, map, user1, user2, user3, gameTime) {
-    const csrfToken = getCookie('csrftoken');
+import { getCookie } from "../../html/js/loginPage.js";
 
-    console.log(user1);
-    console.log(modeGame);
+export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, scorePlayer2, gameplayMode, modeGame, map, user1, user2, user3, gameTime) {
     const payload = {
         player1: player1Id,
         player2: player2Id,
@@ -18,11 +16,14 @@ export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, 
         user3: user3.toJson()
     };
     try {
+        const token = sessionStorage.getItem('host_auth_token');
+
         const response = await fetch('/add_game/', {
             method: 'POST',
             headers: {
+                'Authorization': `Token ${token}`,
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken  // Include CSRF token in the request headers
+                'X-CSRFToken': getCookie('csrftoken')   
             },
             body: JSON.stringify(payload)
         });
@@ -36,21 +37,3 @@ export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, 
         console.error('Error creating game:', error);
     }
 }
-
-// Utility function to get CSRF token from cookies
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-

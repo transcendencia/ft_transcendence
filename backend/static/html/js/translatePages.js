@@ -40,6 +40,7 @@ const player1Text = document.getElementById('player1Text');
 const player2Text = document.getElementById('player2Text');
 const player3Text = document.getElementById('player3Text');
 const arenaBackButton = document.getElementById('arenaBackButton');
+const arenaInfoText = document.getElementById('arenaInfoBox');
 
 
 function translateArenaPageTexts() {
@@ -55,6 +56,7 @@ function translateArenaPageTexts() {
     enabledText.textContent = getTranslatedText('gamemodeNameText1');
     startText.textContent = getTranslatedText('start');
     arenaBackButton.textContent = getTranslatedText('backButton');
+    arenaInfoText.textContent = getTranslatedText('arenaInfoText');
 }
 
 const trnmtPlayerTexts = document.getElementsByClassName('playerText');
@@ -68,6 +70,8 @@ const trnmtbotDifficultyLevelText = document.getElementById('trnmtBotDifficultyL
 const trnmtStartText = document.getElementById('launch');
 const trnmtThirdPlayerText = document.getElementById('thirdPlayerText');
 const trnmtBackButton = document.getElementById('trnmtBackButton');
+const trnmtLaunchBackButton = document.getElementById('trnmtLaunchBackButton');
+const cancelTournamentButton = document.getElementById('cancelTournamentButton');
 const trnmtNextMatch = document.getElementById('next-match');
 const trnmtLaunchMatch = document.getElementById('launchMatch');
 
@@ -86,6 +90,8 @@ function translateTournamentPageTexts() {
     trnmtStartText.textContent = getTranslatedText('start');
     trnmtThirdPlayerText.textContent = getTranslatedText('thirdPlayer');
     trnmtBackButton.textContent = getTranslatedText('backButton');
+    trnmtLaunchBackButton.textContent = getTranslatedText('backButton');
+    cancelTournamentButton.textContent = getTranslatedText('cancelTournamentButton');
     trnmtNextMatch.textContent = getTranslatedText('nextMatch');
     trnmtLaunchMatch.textContent = getTranslatedText('launchMatch');
 }
@@ -99,7 +105,7 @@ const confirmPassword = document.getElementById('confirmPassword');
 const signUpTitle = document.getElementById('signUpTitle');
 const createAccountText = document.getElementById('createAccountText');
 const SignUpButton = document.querySelectorAll('.actionCont')[1];
-const backToLoginButton = document.querySelector('.hologram-button');
+const backToLoginButton = document.querySelector('.backToLoginButtonText');
 const signupHereButton = document.querySelector('.actionCont');
 
 function translateLoginPageTexts() {

@@ -8,7 +8,7 @@ enterPlanetText.textContent = '';
 
 const raycaster = new THREE.Raycaster();
 
-const rayLength = 3000; // Adjust as needed
+const rayLength = 3000;
 let rayEndPoint = new THREE.Vector3();
 
 export function updateRay() {
@@ -62,7 +62,8 @@ function stopAnimation() {
 }
 
 export function getPlanetIntersection() {
-    const intersects = raycaster.intersectObjects(scene.children, true);
+    const filteredScene = scene.children.filter(obj => obj.planet);
+    const intersects = raycaster.intersectObjects(filteredScene, true);
     if (intersects.length > 0) {
         const aimedObj = intersects[0].object;
         if (!aimedObj.planet)

@@ -1,6 +1,6 @@
 import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
 import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks } from './loginPage.js';
-import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo, populateProfileInfos, updateUserStatus } from './userManagement.js';
+import { get_friends_list, send_friend_request, accept_friend_request, delete_friend_request, getProfileInfo, populateProfileInfos, updateUserStatus } from './userManagement.js';
 import { getUserStats, chooseStats } from './stats.js';
 import {  resetModifyPageField } from './modifyPage.js';
 
@@ -30,7 +30,7 @@ statsButtons.forEach((button, index) => {
 let previousFriendList = [];
 let previousSearchList = [];
 
-async function userListChanged() {
+export async function userListChanged() {
   const newData = await get_friends_list();
   if (searchQuery === '') {
     const friendList = filterAndSortLists(newData, '');
@@ -46,7 +46,7 @@ async function userListChanged() {
   return searchListChanged;
 }
 
-function refreshUserList() {
+export function refreshUserList() {
   if (searchQuery === '')
       renderFriendList();
   else RenderUsersSearched(searchQuery);
@@ -84,7 +84,7 @@ export function initUserPlanet() {
 
   let pageDisplayed = "hostProfile";
 
- export function returnToHost() {
+ export function returnToHost(updateStats = true) {
     if (pageDisplayed === "searchedProfile") {
       searchedUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";    
       hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
@@ -96,19 +96,23 @@ export function initUserPlanet() {
       pageDisplayed = "hostProfile";
       resetModifyPageField();
     }
-    chooseStats(1);
-    setTimeout(getUserStats(sessionStorage.getItem("host_id"), 500));
+    if (updateStats) {
+      chooseStats(1);
+      setTimeout(getUserStats(sessionStorage.getItem("host_id"), 500));
+    }
   }
 
   backButtonUserPage.addEventListener('click', () => {
-    console.log("pageDisplayed:", pageDisplayed);
     if (pageDisplayed === "hostProfile")
-      togglePlanet();
+      togglePlanet(/* toggleRsContainer: */ true);
     else if (pageDisplayed === "modifyPage")
     {
       const modifyPage = document.getElementById('userInfoForm');
-      modifyPage.style.visibility = 'hidden';
       returnToHost();
+      //prevent tab on modifyPage input bars
+      setTimeout(() => {
+        modifyPage.style.visibility = 'hidden';
+      }, 1000);
     }
     else if (pageDisplayed === "searchedProfile")
     {
@@ -193,7 +197,7 @@ export function initUserPlanet() {
   bluePlusImg.addEventListener('click', () => {
     resetProfile();
     displayRequestSent();
-    send_request(displayedUserOnSearchPage.id);
+    send_friend_request(displayedUserOnSearchPage.id);
   });
 
 
@@ -430,7 +434,10 @@ function createUserTile(user, type, reqId) {
   userTile.appendChild(loupeContainer);
   userListBackground.appendChild(userTile);
 }
+
 function filterAndSortLists(data, query) {
+  if (!data)
+    return ;
   let requestList = data.received_request_list;
   let friendList = data.friends;
   let otherList = data.other_user_list;

@@ -3,31 +3,31 @@ import { getTranslatedText} from "./translatePages.js";
 import { setHostAsPlayerOne} from "./arenaPage.js";
 
 export async function updateUserStatus(status, token) {
-    try {
-        const response = await fetch('/user/status/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({ status: status }),
-            keepalive: true,
-        });
-
+    if (!token || !status)
+        return;
+    
+    fetch('/user/status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ status: status }),
+    })
+    .then(response => {
         if (!response.ok) {
-            throw new Error('Erreur lors du logout');
-        } else {
-            const data = await response.json();
-            console.log(`User ${data.user_id} status updated to ${data.status}`);
+            throw new Error('Error while updating user status');
         }
-    } catch (error) {
-        console.error('Erreur :', error);
-    }
+    })
+    .catch(error => {
+        console.error('Error :', error);
+    });
 }
 
 export function getUserStatus(userId) {
     const token = sessionStorage.getItem('host_auth_token');
+
     return fetch(`/user/status/${userId}/`, {
         method: 'GET',
         headers: {
@@ -37,8 +37,7 @@ export function getUserStatus(userId) {
     })
     .then(response => {
         if (!response.ok) {
-            // console.log(response.user_status);
-            throw new Error('Erreur HTTP ' + response.status);
+            throw new Error('Error retrieving status');
         }
         return response.json();
     })
@@ -46,28 +45,29 @@ export function getUserStatus(userId) {
         return data.user_status;
     })
     .catch(error => {
-        console.error('Erreur lors de la récupération du status :', error.message);
+        console.error('Error :', error.message);
     });
 }
 
-export function get_user_list() {
+export function getProfileInfo(userId) {
     const token = sessionStorage.getItem('host_auth_token');
-    // console.log(token);
-    fetch('get_user_list/', {
+
+    return fetch(`user_info/${userId}/`, {
         method: 'GET',
         headers: {
             'Authorization': `Token ${token}`,
-            // 'X-CSRFToken': getCookie('csrftoken')
         }
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error retrieving user profile information');
+        }
+        return response.json();
     })
     .catch(error => {
-        console.error('Error:', error);
-        throw error;
+        console.error('Error :', error);
     });
-};
+}
 
 export function populateProfileInfos(data) {
     document.getElementById('username').textContent = data.profile_info.username;
@@ -87,30 +87,10 @@ export function populateProfileInfos(data) {
     setHostAsPlayerOne(data.profile_info, 'Arena');
 }
 
-export function getProfileInfo(userId) {
-    // console.log("userId:", userId);
+/* FRIEND REQUEST MANAGEMENT*/
+export function send_friend_request(receiver_id) {
     const token = sessionStorage.getItem('host_auth_token');
-    return fetch(`user_info/${userId}/`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Token ${token}`,
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error lors de la recuperation des donnees');
-        }
-        return response.json();
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
-    });
-}
-
-// FRIEND REQUEST
-export function send_request(id) {
-
-    const token = sessionStorage.getItem('host_auth_token');
+    
     fetch('friend_request/', {
         method: 'POST',
         headers: {
@@ -118,21 +98,22 @@ export function send_request(id) {
             'Authorization': `Token ${token}`,
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({ receiver_id: id })
+        body: JSON.stringify({ receiver_id: receiver_id })
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erreur lors de la friendrequest');
+            throw new Error('Error during friend request');
         }
     })
     .catch(error => {
-        console.error('Erreur :', error);
+        error;
+        // console.error('Error :', error);
     });
 }
 
-export async function accept_friend_request(id) {
+export async function accept_friend_request(request_id) {
     const token = sessionStorage.getItem('host_auth_token');
-    console.log("id", id);
+
     await fetch('friend_request/', {
         method: 'PATCH',
         headers: {
@@ -140,36 +121,38 @@ export async function accept_friend_request(id) {
             'Authorization': `Token ${token}`,
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({request_id:  id})
+        body: JSON.stringify({request_id:  request_id})
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erreur lors de la modification de la langue');
-         }
+            throw new Error('Failed to accept friend request');
+        }
     })
     .catch(error => {
-        console.error('Erreur :', error);
+        error;
+        // console.error('Error :', error);
     });
-  }
+}
 
-export async function delete_friend_request(id) {
+export async function delete_friend_request(request_id) {
     const token = sessionStorage.getItem('host_auth_token');
-    await fetch('friend_request/', {
+    fetch('friend_request/', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`,
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({request_id:  id})
+        body: JSON.stringify({request_id:  request_id})
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erreur lors de la modification de la langue');
-         }
+            throw new Error('Failed to delete friend request');
+        }
     })
     .catch(error => {
-        console.error('Erreur :', error);
+        error;
+        console.error('Error :', error);
     });
 }
 
@@ -185,23 +168,21 @@ export async function get_friends_list() {
             }
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Failed to retrieve users list');
         }
+
         const data = await response.json();
-        // console.log(data);
         return data;
     } catch (error) {
         console.error('Error:', error);
-        throw error;
     }
 }
 
-// UPDATE
-// Passer en requete PATCH
+/*UPDATE USER INFO*/
 export function updateUserGraphicMode(graphicMode) {
 	const token = sessionStorage.getItem('host_auth_token');
     return fetch('user/graphic_mode/', {
-        method: 'POST',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`,
@@ -211,19 +192,19 @@ export function updateUserGraphicMode(graphicMode) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erreur lors du changement graphique');
+            throw new Error('Error while changing the graphic mode');
         }
     })
     .catch(error => {
-        console.error('Erreur :', error);
+        console.error('Error :', error);
     });
 }
 
-// Passer en requete PATCH
 export function updateUserLanguage(new_language) {
     const token = sessionStorage.getItem('host_auth_token');
+    
     fetch('user/language/', {
-        method: 'POST',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`,
@@ -233,26 +214,10 @@ export function updateUserLanguage(new_language) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erreur lors de la modification de la langue');
+            throw new Error('Error while changing the language');
         }
     })
     .catch(error => {
-        console.error('Erreur :', error);
+        console.error('Error :', error);
     });
-}
-export function test_back() {
-    console.log("test back");
-    // SIGN UP
-    // document.getElementById('usernameLoginInput').value = 67890;
-    // document.getElementById('passwordLoginInput').value = 'q';
-    // document.getElementById('confirmPasswordSignUpInput').value = 'q';
-    // document.getElementById("submitSignUp").click();
-
-    // LOGIN
-    // document.getElementById('usernameLoginInput').value = 67890;
-    // document.getElementById('passwordLoginInput').value = 'q';
-    // document.getElementById("loginButton").click();
-
-    // GET PROFILE INFO
-    // getProfileInfo(3);
 }

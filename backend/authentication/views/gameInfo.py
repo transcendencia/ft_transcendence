@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponse
 from django.template import loader
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import (csrf_protect, csrf_exempt)
 from django.http import JsonResponse
 from django.utils import timezone
@@ -21,18 +21,8 @@ from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer
 
 import json
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_game_list(request):
-  if request.method == 'GET':
-    games = Game.objects.all()
-    serializers = GameListSerializer(games, many=True)
-    return Response(serializers.data)
-
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def get_game_player2(request):
   if request.method == 'POST':
     host = request.user
@@ -47,7 +37,6 @@ def get_game_player2(request):
   
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def get_game_user(request):
   if request.method == 'GET':
     user = request.user
@@ -59,23 +48,24 @@ def get_game_user(request):
     }
     return Response(response_data)
 
+@authentication_classes([TokenAuthentication])
 def add_game(request):
   if request.method == 'POST':
     data = json.loads(request.body)
-        
+
     player1_id = data['player1']
     player2_id = data['player2']
-    player3_id = data.get('player3', None)  # Optional
+    player3_id = data.get('player3', None)
     scorePlayer1 = data['scorePlayer1']
     scorePlayer2 = data['scorePlayer2']
     gameplayMode = data['gameplayMode']
     modeGame = data['modeGame']
     mapGame = data['mapGame']
     gameTime = data['gameTime']
-    
-    player1 = User.objects.get(id=player1_id)
-    player2 = User.objects.get(id=player2_id)
-    player3 = User.objects.get(id=player3_id) if player3_id else None
+
+    player1 = get_object_or_404(User, id=player1_id)
+    player2 = get_object_or_404(User, id=player2_id)
+    player3 = get_object_or_404(User, id=player3_id) if player3_id else None
     game = Game(
         player1=player1,
         player2=player2,
@@ -87,17 +77,12 @@ def add_game(request):
         mapGame=mapGame,
         gameTime=gameTime
     )
-    game.save()
-    
+    game  .save()
+
     createUserStat(player1, game, data['user1'])
     createUserStat(player2, game, data['user2'])
-    # user1 = data['user1']
-    # user2 = data['user2']
-    # user3 = data.get('user3', None)
-    # print("user1", user1)
-    # print("user2", user2)
-    return JsonResponse({'status': 'success', 'game_id': game.id})
-  return JsonResponse({'status': 'fail'}, status=400)
+    return JsonResponse({'status': 'success', 'game_id': game.id}, status=200)
+  return JsonResponse({'status': 'fail'}, status=405)
 
 def createUserStat(user, game, userStat):
   user.nbr_match += 1

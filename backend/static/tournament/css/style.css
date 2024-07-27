@@ -52,6 +52,10 @@ body {
   flex-direction: row;
 }
 
+#bottomTournament * {
+  margin: 5px;
+}
+
 .square {
   border: 2px solid red;
 }
@@ -179,7 +183,10 @@ body {
   justify-content: end;
   align-items: center;
   padding-right: 110px;
-  padding-top: 10px;
+  padding-top: 20px;
+  font-size: 10px;
+  font-family: 'Space';
+  color: red;
 }
 
 .basicText{
@@ -194,11 +201,10 @@ body {
   background-color: #000f61b2;
   border-radius: 10px;
   height: 50%;
-  width: 50%;
+  width: 35%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 50px;
 }
 
 h2 {
@@ -224,15 +230,16 @@ p{
   color: white;
   font-family: 'Space';
   border-radius: 5px;
-  padding: 10px 10px;
+  /* padding: 10px 10px; */
   background-color: rgb(161, 0, 0);
   border: 5px solid rgb(255, 255, 255);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50px;
-  width: 320px;
-  margin-right: 50px;
+  /* height: 50px; */
+  height: 50%;
+  /* width: 270px; */
+  width: 23%;
 }
 
 .startTournamentButton:hover {

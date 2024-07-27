@@ -63,7 +63,14 @@ body {
     }
 }
 
-
+.dg.main {
+    background-color: #0092fb !important;
+    color: #fcf9f8 !important;
+    /* font-size: 13px !important; */
+    font-family: 'space' !important;
+    width: 56% !important;
+    opacity: 0.9 !important;
+}
 .flag {
     background-size: 50%;
     position: absolute;
@@ -94,19 +101,6 @@ body {
     left: 50%;
     opacity: 0;
     transition: opacity 0.5s ease;
-}
-
-.bluebar {
-    display: none;
-    background-color: #0008ff51;
-    border: 1px solid #ffffffff;
-    height: 100%;
-    position: fixed;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 66%;
-    transition: opacity 2s ease;
-    opacity: 0;
 }
 
 .gameUI {

@@ -12,19 +12,17 @@
         "signUpTitle": "Sign up",
         "createAnAccount": "Create an account",
         "confirmPassword": "Confirm password",
-        "backToLogin": "Back to login",
+        "backToLogin": "Back",
         "successfulSignup": "User created You may now log in",
         "unique": "A user with that username already exists.",
         "unique_alias": "A user with that alias already exists.",
         "blank":"All fields must be completed.",
-        "length_exceeded_username":"Username must contain 13 characters maximum.",
         "length_exceeded_alias":"Alias must contain 13 characters maximum.",
         "length_exceeded_username":"Username must contain 13 characters maximum.",
-        "length_exceeded_alias":"Alias must contain 13 characters maximum.",
         "password_too_short":"This password is too short. It must contain at least 8 characters.",
         "password_too_common":"This password is too common.",
         "invalid":"Password not identical",
-
+        "password_invalid":"The password must contain at least: • one uppercase letter, •one lowercase letter, •one number and one special character from the following: ~!@#$%^&*()_+{}\":;'[].",
 
         "RGPDTitle" : "Privacy Policy",
         "RGPDText": "Your data is only used for the proper functioning of the tournament. Your profile is deleted after two years after the last login. You can modify, download the collected data, or delete your profile, at any time, from the planete profile. For more information go to the CNIL website.",
@@ -77,9 +75,9 @@
         "thirdPlayer": "Third Player",
         "removePlayer": "Remove player",
         "ErrorMinus": "Not enough players",
-        "ErrorTooMany": "Too many players",
         "nextMatch": "Next match:",
         "launchMatch": "Start match",
+        "arenaInfoText": "All alone? Create another account to play against it",
 
         "friendlist": "Friend List",
         "history": "History",
@@ -91,6 +89,8 @@
         "winLoseText4": "Goals",
         "statisticsText": "Statistics",
         "backButton": "Back",
+        "cancelTournamentButton": "Cancel Tournament",
+        "winningTournament": " has won the tournament!",
 
         "changeInfo": "Only fill in information you want to change",
         "changeUsernameInput": "Username",
@@ -152,6 +152,7 @@
         "password_too_short":"Esta contraseña es demasiado corta. Debe contener al menos 8 caracteres.",
         "password_too_common":"Esta contraseña es demasiado común.",
         "invalid":"Contraseña no idéntica",
+        "password_invalid": "La contraseña debe contener al menos: •una letra mayúscula, •una letra minúscula, •un número y un carácter especial de los siguientes: ~!@#$%^&*()_+{}\":;'[].",
 
         "RGPDTitle" : "Politica de privacidad",
         "RGPDText" : "Tus datos solo sirven para el buen funcionamiento del torneo. Tu perfil se elimina después de dos años después de la última conexión. Puede editar, descargar los datos recopilados, o eliminar su perfil, en cualquier momento, desde el planeta perfil. Para más información, visite el sitio web de la CNIL.",
@@ -202,10 +203,10 @@
         "thirdPlayer": "Tercer jugador",
         "removePlayer": "Eliminar",
         "ErrorMinus": "No hay suficiente jugador",
-        "ErrorTooMany": "Demasiados jugadores",
         "nextMatch": "Proximo partido:",
         "launchMatch": "Empezar partido",
-        
+        "arenaInfoText": "Solo? Crea otra cuenta para jugar contra",
+
         "friendlist": "Lista de amigos",
         "history": "Historial",
         "searchInput": "Buscar usuarios...",
@@ -216,6 +217,8 @@
         "winLoseText4": "Goles",
         "statisticsText": "Estadisticas",
         "backButton": "volver",
+        "cancelTournamentButton": "Cancelar torneo",
+        "winningTournament": " ha ganado el torneo!",
 
         "changeInfo": "Complete solo la informacion que desea cambiar",
         "changeUsernameInput": "Nombre de usuario",
@@ -226,7 +229,7 @@
         "changeProfilePicture": "Foto de perfil",
         "chooseProfilePic": "Elija el archivo",
         "deleteAccountButton": "Borrar cuenta",
-        "submitInfoButton": "Entregar",
+        "submitInfoButton": "guardar",
         "validateDeleteAccountText": "Todos los datos se perderan permanentemente. ¿Estas seguro de que quieres eliminar tu cuenta?",
         "deleteAccountConfirmation": "Si",
         "deleteAccountCancel": "No",
@@ -271,6 +274,7 @@
         "RGPDCreate": "En vous iscrivant vous accepter la",
         "RGPDPolicy": "politique de confidentialite",
         "RGPDBack" : "Retour",
+        "password_invalid": "Le mot de passe doit contenir au minimum : •une lettre majuscule, •une lettre minuscule, •un chiffre et un caractère spécial parmi les suivants : ~!@#$%^&*()_+{}\":;'[].",
 
         "successfulSignup": "Utilisateur cree vous pouvez vous connecter",
         "unique": "Un utilisateur avec ce nom existe deja.",
@@ -328,9 +332,9 @@
         "thirdPlayer": "Troisieme joueur",
         "removePlayer": "Supprimer",
         "ErrorMinus": "Pas assez de joueurs",
-        "ErrorTooMany": "Trop de joueurs",
         "nextMatch": "Prochain match:",
         "launchMatch": "Commencer le match",
+        "arenaInfoText": "Tout seul? Cree un autre compte pour jouer contre",
 
         "friendlist": "Liste d'amis",
         "history": "Historique",
@@ -342,6 +346,8 @@
         "winLoseText4": "Buts",
         "statisticsText": "Statistiques",
         "backButton": "Retour",
+        "cancelTournamentButton": "Annuler le tournoi",
+        "winningTournament": " a gagne le tournoi!",
 
         "changeInfo": "Remplissez uniquement les informations que vous souhaitez modifier",
         "changeUsernameInput": "Nom d'utilisateur",
@@ -351,8 +357,8 @@
         "changeConfirmPasswordInput": "Confirme le mot de passe",
         "changeProfilePicture": "Phote de profil",
         "chooseProfilePic": "Choisir le fichier",
-        "deleteAccountButton": "Supprimer le compte",
-        "submitInfoButton": "Soumettre",
+        "deleteAccountButton": "Supprimer compte",
+        "submitInfoButton": "Sauvegarder",
         "validateDeleteAccountText": "Toutes les donnees seront definitivement perdues. Etes-vous sûr de vouloir supprimer votre compte ?",
         "deleteAccountConfirmation": "Oui",
         "deleteAccountCancel": "Non",
@@ -375,7 +381,7 @@
         "enterPasswordText": "Entrer votre mot de passe",
         "enterPasswordInput": "Mot de passe",
         "arenaBackLogInButton": "Retour",
-        "arenaLogInButton": "Connection",
+        "arenaLogInButton": "Connexion",
         "showAliasText": "Voici votre alias pour le tournoi:",
         "aliasLogInButton": "D'accord"
     }

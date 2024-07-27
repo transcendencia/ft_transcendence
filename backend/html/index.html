@@ -3,7 +3,7 @@
     {% load static %}
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="{%static 'game/assets/favicon.ico' %}" />
+    <link rel="icon" type="image/svg+xml" href="{%static 'game/assets/faviconGreen.ico' %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Transcendencia</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -127,12 +127,12 @@
         <div id="messageContainerSignup" class="signupMessageCont"></div>
       </div>
       <div class="perspective2">
-        <div id="submitSignUp" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</div>
-        <!-- <button type="submit" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button> -->
+        <!-- <div id="submitSignUp" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</div> -->
+        <button type="submit" id="submitSignUp" class="actionCont tinyBlueShadowfilter" style="font-size: 35px;">SIGN UP</button>
       </div>
     <!-- </form> -->
-    <div class="hologram-button tinyWhiteShadowfilter">
-      <span class="hologram-button-text">BACK</span>
+    <div class="backToLoginButton tinyWhiteShadowfilter">
+      <span class="backToLoginButtonText">BACK</span>
     </div>
   </form>
 
@@ -191,6 +191,8 @@
         <div id="arenaBackButton" class="planetBackButton" style="width: 90%;">Back</div>
         </div>
         <div class="rightColumn">
+          <img id="arenaInfoIcon" class="arenaInfoIcon" src="../static/html/assets/icons/info_3.png" alt="Information"/>
+          <div id="arenaInfoBox">All alone? Create a new account to play against it</div>
           <div id="arenaTitleText" style="font-size: 50px; font-family: 'space'; color: white;"> Arena </div>
           <div class="choosePlayerCont">
           <div class="thirdPlayerCont">
@@ -273,7 +275,7 @@
       <div id="errorLogGuest" class="d-flex justify-content-center align-items-center text-center" style="height: 10%; width: 60%; font-size: 13px; font-family: 'space'; color: red;"></div>
       <div class="buttonContainer" style="height: 10%;">
         <div id="arenaBackLogInButton" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">back</div>
-      <div type="submit" id="arenaLogInButton" class="validateDeleteButton">Log in</div>
+      <div type="submit" id="arenaLogInButton" class="validateDeleteButton" style="cursor: url('../static/game/assets/cursor/pointer.cur'), pointer;">Log in</div>
       </div>
     </div>
 
@@ -285,11 +287,11 @@
         Player
       </div>
       <div id="showAliasText" class="validateDeleteText">This is your alias for the tournament:</div>
-      <div id="aliasText" class="validateDeleteText">Alias</div>
-      <!-- <div class="changeInfoBar" style="height: 20%;"> -->
-      <!-- </div> -->
+      <div class="changeInfoBar" style="height: 20%;">
+        <div id="aliasText" class="validateDeleteText">Alias</div>
+      </div>
       <div class="buttonContainer" style="height: 10%;">
-      <div id="aliasLogInButton" class="validateDeleteButton">Ok</div>
+        <div id="aliasLogInButton" class="validateDeleteButton">Ok</div>
       </div>
     </div>
 
@@ -531,7 +533,7 @@
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
                       <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
                     </div>
-                    <div id="LinkPicture" style="font-size:10px;" class="changeInfoMessage"></div>
+                    <div id="LinkPicture" class="linkPictureText"></div>
                     <div id= "changeInfoMessage" class="changeInfoMessage"></div>
                     <div class="buttonContainer">
                       <div id="deleteAccountButton" class="deleteAccountButton">Delete Account</div>
@@ -829,10 +831,11 @@
             </div>
           </div>
           <div id="bottomTournament" class="bottomTournament" style="display: none;">
-            <div id="trnmtBackButton" class="planetBackButton" style="width: 20%; height: 50%;">Back</div>
+            <div id="trnmtLaunchBackButton" class="planetBackButton" style="width: 14%; height: 50%;">Back</div>
+            <div id="cancelTournamentButton" class="planetBackButton" style="width: 21%; height: 50%; line-height: 1.2;">Cancel Tournament</div>
             <div class="matchInfo">
-              <div id="next-match" class="basicText" style="padding-left: 20px;"></div>
-              <div id="match" class="basicText" style="padding-left: 20px;"></div>
+              <div id="next-match" class="basicText" style="padding-left: 5px;"></div>
+              <div id="match" class="basicText" style="padding-left: 5px;"></div>
             </div>
             <div id="launchMatch" class="startTournamentButton"></div>
           </div>
@@ -909,7 +912,6 @@
   </div>
     
     <!-- GAME STUFF -->
-  <div class="bluebar glow"></div>
   <div id="startScreen" class="startScreen">
     <div id="startGameText">press e to start</div>
     <div id="startPlayer1Cont" class="startPlayerCont">

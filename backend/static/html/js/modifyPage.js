@@ -3,13 +3,13 @@ import { returnToHost } from './userPage.js';
 import { toggleLobbyStart, createUserBadge } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
-import { getCookie } from './loginPage.js';
+import { getCookie, logoutUser } from './loginPage.js';
 import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
+import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '../../tournament/js/newTournament.js';
+import { changeColorMessage } from './signUpPage.js';
 
-
-//import { toggleThirdPlaInfos } from '../../tournament/js/newTournament.js';
 let isInfosShow = false;
 let anonymousStatus;
 
@@ -23,6 +23,8 @@ function handleChangeInfoForm(event) {
   var formData = new FormData(form);
   formData.append('anonymousStatus', anonymousStatus)
 
+  var changeInfoMessage = document.getElementById('changeInfoMessage');
+
   const token = sessionStorage.getItem('host_auth_token');
   fetch('user_info/', {
     method: 'POST',
@@ -33,21 +35,24 @@ function handleChangeInfoForm(event) {
     body: formData,
   })
   .then(response => {
+    if (!response.ok) {
+      return response.json().then(err => Promise.reject(err));
+    }
     return response.json();
   })
   .then(data => {
-    var changeInfoMessage = document.querySelector('.changeInfoMessage');
-    if (data.status === "succes")
-      getProfileInfo(sessionStorage.getItem("host_id"))
-        .then(data => {
-            populateProfileInfos(data);
-            
-        })
-
-    else changeInfoMessage.classList.toggle("errorMessage");
-    document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
+    getProfileInfo(sessionStorage.getItem("host_id"))
+    .then(data => {
+        populateProfileInfos(data);
+        createUserBadge(data, "playersConnHostBadge");  
+    })
+    changeColorMessage('.changeInfoMessage', 'success')
+    changeInfoMessage.innerText = getTranslatedText(data.msg_code);
   })
   .catch(error => {
+    // changeInfoMessage.classList.toggle("errorMessage");
+    changeColorMessage('.changeInfoMessage', 'failure')
+    changeInfoMessage.innerText = getTranslatedText(error.msg_code);
     console.error('There was a problem with the change_profile_info:', error);
   });
 }
@@ -66,6 +71,18 @@ document.getElementById('deleteAccountCancel').addEventListener("click", functio
   deleteBlockingPanel.classList.remove('show');
 });
 
+function returnToLoginPageInSpaceship() {
+  console.log("returnToLoginPageInSpaceship");
+  spaceShip.position.set(0, 0, -1293.5);
+  spaceShip.rotation.set(0, 0, 0);
+
+  setTimeout(() => {
+      toggleLobbyStart(true);
+      spaceShipInt.visible = true;
+      showPage('loginPage');
+  }, 25);
+}
+
 document.getElementById('deleteAccountConfirmation').addEventListener("click", function() {
   const token = sessionStorage.getItem('host_auth_token');
   document.getElementById("validateDelete").classList.remove("showRectangle");
@@ -81,7 +98,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
       deleteBlockingPanel.classList.remove('show');
       if (guestLoggedIn.length > 0) {
         guestLoggedIn.forEach(user => {
-            updateUserStatus('offline', user[1]);
+            logoutUser(user[1]);
         });
       }
       guestLoggedIn.splice(0, guestLoggedIn.length);
@@ -94,16 +111,11 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   });
 
   document.getElementById("validateDelete").classList.remove("showRectangle");
-  togglePlanet(true);
-  returnToHost();
-  spaceShip.position.set(0, 0, -1293.5);
-  spaceShip.rotation.set(0, 0, 0);
-
-  setTimeout(() => {
-      toggleLobbyStart(true);
-      spaceShipInt.visible = true;
-      showPage('loginPage');
-  }, 25);
+  changeTournamentStatus();
+  resetTournament();
+  togglePlanet(/* toggleRsContainer: */ false);
+  returnToHost(/* updateStats: */ false);
+  returnToLoginPageInSpaceship();
 });
 
 deleteAccountButton.addEventListener("click", deleteAccount);
@@ -113,35 +125,32 @@ function deleteAccount() {
   deleteBlockingPanel.classList.add('show');
 }
 
-// document.addEventListener('DOMContentLoaded', (event) => {
-  const toggleSwitch = document.getElementById('toggleSwitch');
-  let oldUsername;
-  let toggleSwitchClicked = false;
+const toggleSwitch = document.getElementById('toggleSwitch');
+let oldUsername;
+let toggleSwitchClicked = false;
 
-  toggleSwitch.addEventListener('click', function() {
-      this.classList.toggle('active');
-      if (this.classList.contains('active')) {
-        anonymousStatus = true;
-        if (!toggleSwitchClicked) {
-          toggleSwitchClicked = true;
-          oldUsername = document.getElementById('changeUsernameInput').value;
-        }
-        getRandomUsername();
+toggleSwitch.addEventListener('click', function() {
+    this.classList.toggle('active');
+    if (this.classList.contains('active')) {
+      anonymousStatus = true;
+      if (!toggleSwitchClicked) {
+        toggleSwitchClicked = true;
+        oldUsername = document.getElementById('changeUsernameInput').value;
       }
-      else {
-        anonymousStatus = false;
-        document.getElementById('changeUsernameInput').value = oldUsername;
-      }
-  });
-// });
+      getRandomUsername();
+    }
+    else {
+      anonymousStatus = false;
+      document.getElementById('changeUsernameInput').value = oldUsername;
+    }
+});
 
-// document.addEventListener('DOMContentLoaded', (event) => {
-  const thirdPlayerToggleSwitch = document.getElementById('thirdPlayertoggleSwitch');
-  thirdPlayerToggleSwitch.addEventListener('click', function() {
-      this.classList.toggle('active');
-      toggleThirdPlayerMode();
-  });
-// });
+const thirdPlayerToggleSwitch = document.getElementById('thirdPlayertoggleSwitch');
+thirdPlayerToggleSwitch.addEventListener('click', function() {
+    this.classList.toggle('active');
+    toggleThirdPlayerMode();
+});
+
 
 export function getRandomUsername() {
   const token = sessionStorage.getItem('host_auth_token');
@@ -153,7 +162,6 @@ export function getRandomUsername() {
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data.username);
     document.getElementById('changeUsernameInput').value = data.username;
   })
   .catch(error => {
@@ -166,7 +174,7 @@ const RGPDPage = document.getElementById('RGPDPage');
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
 RGPDPolicy.addEventListener('click', function() {
   deleteBlockingPanel.classList.add('show');
-  showPage('rgpdPage');
+  showPage('rgpdPage', 'default', /*changeHash:*/ false);
   RGPDPage.classList.add("noPerspective");
   RGPDPage.classList.remove("holoPerspective");
 });
@@ -174,7 +182,6 @@ RGPDPolicy.addEventListener('click', function() {
 const RGPDBack = document.getElementById('RGPDBack');
 RGPDBack.addEventListener('click', function() {
   deleteBlockingPanel.classList.remove('show');
-  showPage('modifyPage');
 });
 
 const infoButton = document.getElementById("infoButton");
@@ -242,10 +249,6 @@ function downloadFile() {
 }
 
 export function resetModifyPageField() {
-  // Pas vider les username et le alias mais le mettre a la derniere valeur
-  // document.getElementById('changeUsernameInput').value = '';
-  // document.getElementById('changeAliasInput').value = '';
-console.log("resetModifyPageField");
   getProfileInfo(sessionStorage.getItem('host_id'))
   .then(data => {
       populateProfileInfos(data);
@@ -261,5 +264,4 @@ console.log("resetModifyPageField");
   document.getElementById('LinkPicture').innerText = '';
   const toggleSwitch = document.getElementById('toggleSwitch');
   toggleSwitch.classList.remove('active');
-  //vider input nom de la photo
 }

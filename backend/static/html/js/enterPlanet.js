@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
-import { resetTournament, tournamentState } from '../../tournament/js/newTournament.js';
+import { resetTournament } from '../../tournament/js/newTournament.js';
 import { initArenaPlanet, initTournamentPlanet, resetArenaPage } from './arenaPage.js';
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
 import { initUserPlanet } from './userPage.js';
@@ -25,6 +25,7 @@ export function togglePanelDisplay() {
     if (landedOnPlanet && planetInRange.name == "arena") {
         anim = setTimeout(function () {triggerInfiniteAnim(imagesArena[0], imagesArena[1])}, 2000);
         planetPanel[0].style.animation = "roll 2s forwards";
+        planetPanel[0].style.visibility = "visible";
         imagesArena[0].style.animation = "moveImageRight 2s forwards";
         imagesArena[1].style.animation = "moveImageLeft 2s forwards";
         background[0].style.animation = "expandBG 2s forwards";
@@ -33,12 +34,16 @@ export function togglePanelDisplay() {
         imagesArena[0].style.animation = "moveImageRightreverse 1s forwards";
         imagesArena[1].style.animation = "moveImageLeftreverse 1s forwards";
         background[0].style.animation = "expandBGreverse 1s forwards";
-        anim = setTimeout(function() {planetPanel[0].style.animation = "";}, 1000);
+        anim = setTimeout(function() {
+            planetPanel[0].style.animation = "";
+            planetPanel[0].style.visibility = "hidden";
+        }, 1500);
     }
 
     if (landedOnPlanet && planetInRange.name == "settings") {
         anim = setTimeout(function () {triggerInfiniteAnim(imagesUser[0], imagesUser[1])}, 2000);
         planetPanel[1].style.animation = "roll 2s forwards";
+        planetPanel[1].style.visibility = "visible";
         imagesUser[0].style.animation = "moveImageRight 2s forwards";
         imagesUser[1].style.animation = "moveImageLeft 2s forwards";
         background[1].style.animation = "expandBG 2s forwards";
@@ -47,14 +52,16 @@ export function togglePanelDisplay() {
         imagesUser[0].style.animation = "moveImageRightreverse 1s forwards";
         imagesUser[1].style.animation = "moveImageLeftreverse 1s forwards";
         background[1].style.animation = "expandBGreverse 1s forwards"
-        anim = setTimeout(function() {planetPanel[1].style.animation = "";}, 1000)
+        anim = setTimeout(function() {
+            planetPanel[1].style.animation = "";
+            planetPanel[1].style.visibility = "hidden";
+        }, 1500)
     }
 
     if (landedOnPlanet && planetInRange.name == "tournament") {
-        if (tournamentState === 2)
-            resetTournament();
         anim = setTimeout(function () {triggerInfiniteAnim(imagesTournament[0], imagesTournament[1])}, 2000);
         planetPanel[2].style.animation = "roll 2s forwards";
+        planetPanel[2].style.visibility = "visible";
         imagesTournament[0].style.animation = "moveImageRight 2s forwards";
         imagesTournament[1].style.animation = "moveImageLeft 2s forwards";
         background[2].style.animation = "expandBG 2s forwards";
@@ -63,7 +70,10 @@ export function togglePanelDisplay() {
         imagesTournament[0].style.animation = "moveImageRightreverse 1s forwards";
         imagesTournament[1].style.animation = "moveImageLeftreverse 1s forwards";
         background[2].style.animation = "expandBGreverse 1s forwards"
-        anim = setTimeout(function() {planetPanel[2].style.animation = "";}, 1000)
+        anim = setTimeout(function() {
+            planetPanel[2].style.animation = "";
+            planetPanel[2].style.visibility = "hidden";
+        }, 1500)
     }
 }
 
@@ -89,7 +99,7 @@ export function cancelLanding()
     landedOnPlanet = false;
 }
 
-export function togglePlanet(deleteAccount = false) {
+export function togglePlanet(toggleRsContainer = false) {
     if (!landedOnPlanet)
         landedOnPlanet = true;
     else {
@@ -102,7 +112,7 @@ export function togglePlanet(deleteAccount = false) {
         resetRotations();
         landedOnPlanet = false;
     }
-    if (deleteAccount != true)
+    if (toggleRsContainer === true)
         toggleRSContainerVisibility();
     resetOutlineAndText();
     toggleBlurDisplay();
