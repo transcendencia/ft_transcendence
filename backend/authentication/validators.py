@@ -4,7 +4,7 @@ from django_password_validators.password_character_requirements.password_validat
 
 class CustomPasswordCharacterValidator:
     def __init__(self, min_length_digit=1, min_length_alpha=1, min_length_special=1,
-                 min_length_lower=1, min_length_upper=1, special_characters="~!@#$%^&*()_+{}\":;'[]"):
+                 min_length_lower=1, min_length_upper=1, special_characters=".~!@#$%^&*()_+{}\":;'[]"):
         self.validator = PasswordCharacterValidator(
             min_length_digit=min_length_digit,
             min_length_alpha=min_length_alpha,
@@ -14,10 +14,12 @@ class CustomPasswordCharacterValidator:
             special_characters=special_characters,
         )
         self.common_error_message = _("The password must contain at least: • one uppercase letter, •one lowercase letter, •one number and one special character from the following: ~!@#$%^&*()_+{}\":;'[].")
+        self.error_code = "password_invalid"
 
     def validate(self, password, user=None):
         try:
             self.validator.validate(password, user)
-        except ValidationError:
-            raise ValidationError(self.common_error_message)
+        except ValidationError as e:
+            print(f"Debug: Validation failed. Reason: {str(e)}")
+            raise ValidationError(self.common_error_message, code=self.error_code)
 

@@ -22,7 +22,7 @@
         "password_too_short":"This password is too short. It must contain at least 8 characters.",
         "password_too_common":"This password is too common.",
         "invalid":"Password not identical",
-
+        "password_invalid":"The password must contain at least: • one uppercase letter, •one lowercase letter, •one number and one special character from the following: ~!@#$%^&*()_+{}\":;'[].",
 
         "RGPDTitle" : "Privacy Policy",
         "RGPDText": "The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing is user consent. You can modify your data, delete your profile at any time by going in the planete profile. For any reclamation you can go to the CNIL website.",
@@ -152,6 +152,7 @@
         "password_too_short":"Esta contraseña es demasiado corta. Debe contener al menos 8 caracteres.",
         "password_too_common":"Esta contraseña es demasiado común.",
         "invalid":"Contraseña no idéntica",
+        "password_invalid": "La contraseña debe contener al menos: •una letra mayúscula, •una letra minúscula, •un número y un carácter especial de los siguientes: ~!@#$%^&*()_+{}\":;'[].",
 
         "RGPDTitle" : "Politica de privacidad",
         "RGPDText" : "La organizacion ft_transcendance solo recoge los datos necesarios para el buen funcionamiento de los torneos y no los comunica a ningún otro organismo. La base legal del tratamiento de datos es el consentimiento de los usuarios. Puede editar sus datos, eliminar su perfil en cualquier momento en la planeta perfil. Para cualquier consulta puede visitar el sitio web de la CNIL.",
@@ -273,6 +274,7 @@
         "RGPDCreate": "En vous iscrivant vous accepter la",
         "RGPDPolicy": "politique de confidentialite",
         "RGPDBack" : "Retour",
+        "password_invalid": "Le mot de passe doit contenir au minimum : •une lettre majuscule, •une lettre minuscule, •un chiffre et un caractère spécial parmi les suivants : ~!@#$%^&*()_+{}\":;'[].",
 
         "successfulSignup": "Utilisateur cree vous pouvez vous connecter",
         "unique": "Un utilisateur avec ce nom existe deja.",

@@ -88,14 +88,16 @@ class UserInfoView(APIView):
         uploaded_file = request.FILES['profile-pic']
         request.user.profile_picture = uploaded_file
         request.user.save()
-    
+
     if serializer.is_valid():
+        print("Serializer is valid.")
         serializer.save()
         return Response({'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=status.HTTP_200_OK)
     
     first_error = next(iter(serializer.errors.values()))[0]
+    print(first_error)
     first_error_code = first_error.code
-    print(first_error_code)
+    print("first_error_code: ", first_error_code)
     return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
