@@ -221,7 +221,6 @@ validatePasswordButton.addEventListener('click', async function() {
     if (isValidating)
         return;
     isValidating = true;
-    // validatePasswordButton.style.pointerEvents = 'none';
     
     try {
         if (guestLoggedIn.length < 7) {
@@ -245,18 +244,15 @@ validatePasswordButton.addEventListener('click', async function() {
                 pwWindow.classList.remove("showRectangle");
                 if (planetInRange.name === 'arena')
                     blockingPanel.classList.remove('show');
-            } else {
-                console.log("Erreur dans le login");
             }
         }
         else {
-            console.log("Too many guest");
+            document.getElementById('errorLogGuest').innerText = getTranslatedText("tooManyGuest");
         }
     } catch (error) {
         console.error('Erreur lors de la connexion :', error);
     } finally {
         isValidating = false;
-        // validatePasswordButton.style.pointerEvents = '';
     }
 });
 

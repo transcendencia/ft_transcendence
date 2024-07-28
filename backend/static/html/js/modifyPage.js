@@ -24,6 +24,7 @@ function handleChangeInfoForm(event) {
   formData.append('anonymousStatus', anonymousStatus)
 
   var changeInfoMessage = document.getElementById('changeInfoMessage');
+  changeInfoMessage.innerText = '';
 
   const token = sessionStorage.getItem('host_auth_token');
   fetch('user_info/', {

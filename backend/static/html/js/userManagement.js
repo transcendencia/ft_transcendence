@@ -3,10 +3,10 @@ import { getTranslatedText} from "./translatePages.js";
 import { setHostAsPlayerOne} from "./arenaPage.js";
 
 export async function updateUserStatus(status, token) {
-    if (!token || !status)
-        return;
-    
-    fetch('/user/status/', {
+    // if (!token || !status)
+    //     return;
+    console.log("update user status:", status);
+    await fetch('/user/status/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -17,6 +17,9 @@ from .words import words, items
 
 import random
 
+import logging
+logger = logging.getLogger(__name__)
+
 class UserGraphicModeView(APIView):
   authentication_classes = [TokenAuthentication]
 
@@ -50,9 +53,10 @@ class UserStatusView(APIView):
       try:
         request.user.status = request.data.get('status')
         request.user.save()
+        print(request.user.username, request.user.status)
         return HttpResponse(status=status.HTTP_200_OK)
       except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
+            # logger.error(f'An error occurred: {str(e)}')
             return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
     def get(self, request, userId):

@@ -126,7 +126,8 @@
         "arenaBackLogInButton": "Back",
         "arenaLogInButton": "Log in",
         "showAliasText": "This is your alias for the tournament:",
-        "aliasLogInButton": "Ok"
+        "aliasLogInButton": "Ok",
+        "tooManyGuest": "Too many guest"
     },
     "es": {
         "login": "Usuario",
@@ -253,7 +254,8 @@
         "arenaBackLogInButton": "Atras",
         "arenaLogInButton": "Acceso",
         "showAliasText": "Este es tu alias para el torneo:",
-        "aliasLogInButton": "De acuerdo"
+        "aliasLogInButton": "De acuerdo",
+        "tooManyGuest": "Demasiados invitados"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -383,6 +385,7 @@
         "arenaBackLogInButton": "Retour",
         "arenaLogInButton": "Connexion",
         "showAliasText": "Voici votre alias pour le tournoi:",
-        "aliasLogInButton": "D'accord"
+        "aliasLogInButton": "D'accord",
+        "tooManyGuest": "Trop d'invités"
     }
 }
