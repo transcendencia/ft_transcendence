@@ -429,7 +429,6 @@ document.addEventListener('keydown', (event) => {
     if (key.length === 1) { // If it's a single character, convert to lowercase
         key = key.toLowerCase();
     }
-
     if (keyDown.hasOwnProperty(key)) {
         if (gameState != undefined && gameState.arena != undefined && gameState.arena.bot != undefined && gameState.arena.bot.isPlaying) {
             if (key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowUp' || key === 'ArrowDown')

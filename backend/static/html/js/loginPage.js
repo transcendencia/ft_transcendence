@@ -193,37 +193,37 @@ export async function handleLogin(formData) {
     setlanguageIconsClicked(false);
     const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
 
-    return new Promise((resolve) => {
-        fetch('login_page/', {
+    try {
+        const response = await fetch('login_page/', {
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCookie('csrftoken')
             },
             body: formData
-        })
-        .then(response => {
-            if (!response.ok) 
-                return response.json().then(err => Promise.reject(err));
-            return response.json();
-        })
-        .then(data => {
-            let guest_token = null;
-            console.log(data.status);
-            if (hostLoggedIn === 'false') {
-                handleHostLogin(data);
-            } else {
-                guest_token = data.token;
-                submitButton.disabled = false;
-            }
-            resolve(guest_token);
-        })
-        .catch(error => {
-            console.error('Erreur :', error);
-            submitButton.disabled = false;
-            document.getElementById(messageContainerId).innerText = getTranslatedText(error.msg_code);
-            reactivateLoginFields()
-        })
-    });
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw err;
+        }
+
+        const data = await response.json();
+        
+        let guest_token = null;
+        if (hostLoggedIn === 'false') {
+            handleHostLogin(data);
+        } else {
+            guest_token = data.token;
+        }
+        
+        return guest_token;
+    } catch (error) {
+        console.error('Erreur :', error);
+        document.getElementById(messageContainerId).innerText = getTranslatedText(error.msg_code);
+    } finally {
+        submitButton.disabled = false;
+        reactivateLoginFields();
+    }
 }
 
 function initializeHostLoggedIn() {
@@ -486,7 +486,7 @@ export async function logoutUser(token) {
     if (!token)
         return;
 
-    await fetch('/logout/', {
+    fetch('/logout/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -515,7 +515,10 @@ export function logoutAllGuest(userId) {
 
 window.addEventListener('beforeunload', async function (event) {
     const token = sessionStorage.getItem('host_auth_token');
-    handleLogout(sessionStorage.getItem('host_id'), token);
+    const hostId = sessionStorage.getItem('host_id');
+    
+    logoutAllGuest(hostId);
+    logoutUser(token);
     sessionStorage.clear();
 });
 

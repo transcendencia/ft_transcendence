@@ -22,10 +22,10 @@
         "password_too_short":"This password is too short. It must contain at least 8 characters.",
         "password_too_common":"This password is too common.",
         "invalid":"Password not identical",
-
+        "password_invalid":"The password must contain at least: • one uppercase letter, •one lowercase letter, •one number and one special character from the following: ~!@#$%^&*()_+{}\":;'[].",
 
         "RGPDTitle" : "Privacy Policy",
-        "RGPDText": "The ft_transcendance organization collects only the data necessary for the proper functioning of the tournaments and does not communicate them to any other organization. The legal basis for data processing is user consent. You can modify your data, delete your profile at any time by going in the planete profile. For any reclamation you can go to the CNIL website.",
+        "RGPDText": "Your data is only used for the proper functioning of the tournament. Your profile is deleted after two years after the last login. You can modify, download the collected data, or delete your profile, at any time, from the planete profile. For more information go to the CNIL website.",
         "RGPDCreate": "By making you accept the",
         "RGPDPolicy" : "privacy policy",
         "RGPDBack" : "Back",
@@ -90,6 +90,7 @@
         "statisticsText": "Statistics",
         "backButton": "Back",
         "cancelTournamentButton": "Cancel Tournament",
+        "winningTournament": " has won the tournament!",
 
         "changeInfo": "Only fill in information you want to change",
         "changeUsernameInput": "Username",
@@ -152,9 +153,10 @@
         "password_too_short":"Esta contraseña es demasiado corta. Debe contener al menos 8 caracteres.",
         "password_too_common":"Esta contraseña es demasiado común.",
         "invalid":"Contraseña no idéntica",
+        "password_invalid": "La contraseña debe contener al menos: •una letra mayúscula, •una letra minúscula, •un número y un carácter especial de los siguientes: ~!@#$%^&*()_+{}\":;'[].",
 
         "RGPDTitle" : "Politica de privacidad",
-        "RGPDText" : "La organizacion ft_transcendance solo recoge los datos necesarios para el buen funcionamiento de los torneos y no los comunica a ningún otro organismo. La base legal del tratamiento de datos es el consentimiento de los usuarios. Puede editar sus datos, eliminar su perfil en cualquier momento en la planeta perfil. Para cualquier consulta puede visitar el sitio web de la CNIL.",
+        "RGPDText" : "Tus datos solo sirven para el buen funcionamiento del torneo. Tu perfil se elimina después de dos años después de la última conexión. Puede editar, descargar los datos recopilados, o eliminar su perfil, en cualquier momento, desde el planeta perfil. Para más información, visite el sitio web de la CNIL.",
         "RGPDCreate": "Al aceptarte a ti mismo la",
         "RGPDPolicy" : "política de confidencialidad",
         "RGPDBack" : "Volver", 
@@ -217,6 +219,7 @@
         "statisticsText": "Estadisticas",
         "backButton": "volver",
         "cancelTournamentButton": "Cancelar torneo",
+        "winningTournament": " ha ganado el torneo!",
 
         "changeInfo": "Complete solo la informacion que desea cambiar",
         "changeUsernameInput": "Nombre de usuario",
@@ -269,10 +272,11 @@
         "confirmPassword": "confirmer mot de passe",
         "backToLogin": "Retour",
         "RGPDTitle" : "Politique de confidentialite",
-        "RGPDText" : "L'organisation ft_transcendance ne collecte que les donnees necessaires au bon fonctionnement des tournois et ne les communique a aucun autre organisme. La base legale du traitement des donnees est le consentement des utilisateurs. Vous pouvez modifier vos donnees, supprimer votre profile a tout moment dans allant dans la planete profile. Pour toute reclamation vous pouvez aller sur le site de la CNIL.",
+        "RGPDText" : "Vos donnees servent uniquement pour le bon fonctionnement du tournois. Votre profil est supprime au bout de deux ans apres la derniere connexion. Vous pouvez modifier, telecharger les donnees collectees, ou supprimer votre profil, a tout moment, depuis la planete profil. Pour plus d'informations allez sur le site de la CNIL",
         "RGPDCreate": "En vous iscrivant vous accepter la",
         "RGPDPolicy": "politique de confidentialite",
         "RGPDBack" : "Retour",
+        "password_invalid": "Le mot de passe doit contenir au minimum : •une lettre majuscule, •une lettre minuscule, •un chiffre et un caractère spécial parmi les suivants : ~!@#$%^&*()_+{}\":;'[].",
 
         "successfulSignup": "Utilisateur cree vous pouvez vous connecter",
         "unique": "Un utilisateur avec ce nom existe deja.",
@@ -345,6 +349,7 @@
         "statisticsText": "Statistiques",
         "backButton": "Retour",
         "cancelTournamentButton": "Annuler le tournoi",
+        "winningTournament": " a gagne le tournoi!",
 
         "changeInfo": "Remplissez uniquement les informations que vous souhaitez modifier",
         "changeUsernameInput": "Nom d'utilisateur",

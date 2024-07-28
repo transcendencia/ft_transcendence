@@ -183,7 +183,10 @@ body {
   justify-content: end;
   align-items: center;
   padding-right: 110px;
-  padding-top: 10px;
+  padding-top: 20px;
+  font-size: 10px;
+  font-family: 'Space';
+  color: red;
 }
 
 .basicText{

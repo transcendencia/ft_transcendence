@@ -95,6 +95,7 @@ function handleSignUp(event) {
     event.preventDefault();
     
     const messageContainer = document.getElementById('messageContainerSignup');
+    messageContainer.innerText = '';
     const submitButton = document.getElementById('submitSignUp');
     submitButton.disabled = true;
 
@@ -133,7 +134,6 @@ export function changeColorMessage(messageContainer, status) {
         messageCont.classList.remove("failure");
         messageCont.classList.add("success");
     } else if (status === "failure") {
-        console.log("coucou le sang comment ca va");
         messageCont.classList.remove("success");
         messageCont.classList.add("failure");
     }

@@ -3,7 +3,7 @@ import { returnToHost } from './userPage.js';
 import { toggleLobbyStart, createUserBadge } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
-import { getCookie } from './loginPage.js';
+import { getCookie, logoutUser } from './loginPage.js';
 import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
@@ -72,6 +72,7 @@ document.getElementById('deleteAccountCancel').addEventListener("click", functio
 });
 
 function returnToLoginPageInSpaceship() {
+  console.log("returnToLoginPageInSpaceship");
   spaceShip.position.set(0, 0, -1293.5);
   spaceShip.rotation.set(0, 0, 0);
 
@@ -97,7 +98,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
       deleteBlockingPanel.classList.remove('show');
       if (guestLoggedIn.length > 0) {
         guestLoggedIn.forEach(user => {
-            updateUserStatus('offline', user[1]);
+            logoutUser(user[1]);
         });
       }
       guestLoggedIn.splice(0, guestLoggedIn.length);
@@ -161,7 +162,6 @@ export function getRandomUsername() {
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data.username);
     document.getElementById('changeUsernameInput').value = data.username;
   })
   .catch(error => {
