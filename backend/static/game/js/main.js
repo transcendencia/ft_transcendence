@@ -2336,14 +2336,14 @@ class SpaceMap {
         this.renderTarget.texture.format = THREE.RGBFormat;
         this.renderTarget.texture.minFilter = THREE.LinearMipMapLinearFilter;
         this.renderTarget.texture.magFilter = THREE.LinearMipMapLinearFilter;
-
-        this.arenaMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x101030,
-            wireframe:false,
-            transparent:true,
-            metalness: 0.9,
-            opacity: 0.9
-        });
+        // this.arenaMaterial = new THREE.MeshPhysicalMaterial({
+        //     color: 0x101030,
+        //     wireframe:false,
+        //     transparent:true,
+        //     metalness: 0.9,
+        //     opacity: 0.9
+        // });
+        this.arenaMaterial = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
         this.arenaLowGraphicMaterial = new THREE.MeshBasicMaterial({color: 0x101030});
         this.paddleMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
         this.ballMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
