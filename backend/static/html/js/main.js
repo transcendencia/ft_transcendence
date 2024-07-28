@@ -548,7 +548,7 @@ export function resetGameEscape()
     toggleBlurDisplay(false);
 }
 
-function panelRemove(){
+export function panelRemove(){
     blockingPanel.classList.remove('show');
     pwWindow.classList.remove('showRectangle');
     aliasWindow.classList.remove('showRectangle');

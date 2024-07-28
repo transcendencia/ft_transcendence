@@ -454,6 +454,8 @@ export function startAnimation() {
             scene.add(whitelight);
             const submitButton = document.getElementById('loginButton');
             submitButton.disabled = false;
+            document.getElementById('usernameLoginInput').disabled = false;
+            document.getElementById('passwordLoginInput').disabled = false;
         });
         anim1.chain(anim2, anim3);
         anim1.start();
@@ -546,7 +548,7 @@ export function resetGameEscape()
     toggleBlurDisplay(false);
 }
 
-function panelRemove(){
+export function panelRemove(){
     blockingPanel.classList.remove('show');
     pwWindow.classList.remove('showRectangle');
     aliasWindow.classList.remove('showRectangle');

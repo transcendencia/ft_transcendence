@@ -40,6 +40,7 @@ addEventListener("hashchange", () => {
     if (gameState.loading)
         return;
     if (lobbyStart && !gameState.inGame) {
+        alert("Logging out, keep in mind that any press on history arrows while being in the galaxy lobby will cause you to log out.");
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
     }
@@ -57,6 +58,7 @@ addEventListener("hashchange", () => {
         moveCameraToBackOfCockpit();
     else if (window.location.hash === '#galaxy' && oldLocation === '#game'){
         console.log("ouiii");
+        alert("Back to lobby, all data from this current game will be lost.");
         backToLobby(/*historyArrow: */true);
     }
     oldLocation = window.location.hash;

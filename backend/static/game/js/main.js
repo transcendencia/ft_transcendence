@@ -1259,6 +1259,7 @@ class Arena extends THREE.Mesh {
         scoreUI[0].style.opacity = 0;
         this.game.isOver = false;
         this.isBeingReset = false;
+        
     }
     swapToFullScreen()
     {
