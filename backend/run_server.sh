@@ -36,11 +36,5 @@ if not User.objects.filter(username=USER_USERNAME).exists():
     user.save()
 EOF
 
-# uvicorn backend.asgi:application --host 0.0.0.0 --port 8000 --ssl-keyfile /backend/cert/key.pem --ssl-certfile /backend/cert/cert.pem
-
-# Afficher les tâches cron pour confirmation
-#python manage.py runserver 0.0.0.0:8000
-
+daphne -e ssl:8000:privateKey=/backend/cert/key.pem:certKey=/backend/cert/cert.pem -v 3 backend.asgi:application
 #exec python manage.py runserver 0.0.0.0:8000
-
-daphne -e ssl:8000:privateKey=/backend/cert/key.pem:certKey=/backend/cert/cert.pem backend.asgi:application

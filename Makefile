@@ -40,6 +40,7 @@ fclean:
 
 re: down
 	@rm -rf backend/cert
+	- @find backend/media -type f ! -name 'default.png' ! -name 'botLogo.png' -delete
 	${MAKE} all
 
 
@@ -47,6 +48,7 @@ migration:
 	 sudo rm -rf backend/authentication/migrations
 	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
 	- @find backend/media -type f ! -name 'default.png' ! -name 'botLogo.png' -delete
+	- @rm -rf backend/cert
 	${MAKE} all
 	
-.PHONY: all fclean up down
+.PHONY: all up cert detach down prune fclean re migration 
