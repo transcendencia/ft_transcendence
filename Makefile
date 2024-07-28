@@ -8,14 +8,14 @@ DOCKER_COMPOSE = docker-compose.yml
 
 all:
 	@docker compose -f ${DOCKER_COMPOSE} up -d --build
-	@mkdir backend/cert
+	@mkdir -p backend/cert
 	@openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout backend/cert/key.pem -out backend/cert/cert.pem -subj "/CN=localhost" 
 
 up: 
 	@docker compose -f ${DOCKER_COMPOSE} up
 
 cert:
-	@mkdir backend/cert
+	@mkdir -p backend/cert
 	@openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout backend/cert/key.pem -out backend/cert/cert.pem -subj "/CN=localhost"
 
 detach:
@@ -29,6 +29,7 @@ down:
 
 prune:
 	@docker compose -f ${DOCKER_COMPOSE} stop
+	@rm -rf backend/cert
 	@docker system prune -a;
 	@docker volume prune;
 
@@ -38,6 +39,7 @@ fclean:
 	- @rm -rf backend/cert
 
 re: down
+	@rm -rf backend/cert
 	${MAKE} all
 
 
