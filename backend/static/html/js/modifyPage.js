@@ -45,8 +45,10 @@ function handleChangeInfoForm(event) {
     getProfileInfo(sessionStorage.getItem("host_id"))
     .then(data => {
         populateProfileInfos(data);
-        createUserBadge(data, "playersConnHostBadge");  
-    })
+        createUserBadge(data, "playersConnHostBadge");
+      })
+    toggleSwitchClicked = false;
+    document.getElementById('toggleSwitch').classList.remove('active');
     changeColorMessage('.changeInfoMessage', 'success')
     changeInfoMessage.innerText = getTranslatedText(data.msg_code);
   })
@@ -134,6 +136,7 @@ toggleSwitch.addEventListener('click', function() {
     this.classList.toggle('active');
     if (this.classList.contains('active')) {
       anonymousStatus = true;
+      console.log("toggleSwitchClicked: ", toggleSwitchClicked);
       if (!toggleSwitchClicked) {
         toggleSwitchClicked = true;
         oldUsername = document.getElementById('changeUsernameInput').value;

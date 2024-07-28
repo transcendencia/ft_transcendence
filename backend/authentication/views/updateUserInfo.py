@@ -82,6 +82,17 @@ class UserInfoView(APIView):
     data.pop('anonymousStatus')
     serializer = UpdateInfoSerializer(instance=request.user, data=data)
     
+    if serializer.is_valid():
+      self.updateProfilePicture(request, anonymousStatus)
+      serializer.save()
+      return Response({'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=status.HTTP_200_OK)
+    
+    first_error = next(iter(serializer.errors.values()))[0]
+    first_error_code = first_error.code
+    print(first_error_code)
+    return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
+  
+  def updateProfilePicture(self, request, anonymousStatus):
     if anonymousStatus and request.user.profile_picture.name != 'default.png':
         request.user.profile_picture = 'default.png'
         request.user.save()
@@ -92,15 +103,6 @@ class UserInfoView(APIView):
         uploaded_file = request.FILES['profile-pic']
         request.user.profile_picture = uploaded_file
         request.user.save()
-
-    if serializer.is_valid():
-        serializer.save()
-        return Response({'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=status.HTTP_200_OK)
-    
-    first_error = next(iter(serializer.errors.values()))[0]
-    first_error_code = first_error.code
-    print(first_error_code)
-    return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
