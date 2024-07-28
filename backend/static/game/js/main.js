@@ -1963,6 +1963,8 @@ class Ball extends THREE.Mesh {
             this.speedX *= -1;
         this.position.z += this.speedZ;
         this.position.x += this.speedX;
+        if (((this.position.x < (this.arena.position.x - this.arena.length / 2) * 1.2) || this.position.x > (this.arena.position.x + this.arena.length / 2) * 1.2) && this.speedZ != 0)
+            this.position.x = this.arena.position.x;
         this.speedX += this.acceleration;
         this.trailParticles.updateTrail();
     }
