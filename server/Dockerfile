@@ -11,6 +11,7 @@ COPY . /backend/
 RUN apt-get -y update && apt-get -y upgrade && apt install netcat-traditional
 RUN	pip install --upgrade pip
 RUN pip install --no-cache-dir -r ./requirements.txt
+RUN pip install daphne
 RUN pip install djangorestframework
 RUN pip install django-password-validators
 RUN python -m pip install Pillow
