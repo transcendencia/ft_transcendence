@@ -224,10 +224,11 @@ const rightLeftText = document.getElementById('rightLeftText');
 const rightRightText = document.getElementById('rightRightText');
 const rightPowerText = document.getElementById('rightPowerText');
 const rematchText = document.getElementById('rematchText');
-
+const gameHelpText = document.getElementById('gameInfoBox');
 
 function translateGameTexts() {
     startGameText.textContent = getTranslatedText('startGameText');
+    gameHelpText.textContent = getTranslatedText('gameHelpText');
     leftLeftText.textContent = getTranslatedText('leftText');
     leftRightText.textContent = getTranslatedText('rightText');
     leftPowerText.textContent = getTranslatedText('powerText');

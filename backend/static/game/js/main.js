@@ -462,10 +462,23 @@ document.addEventListener('keyup', (event) => {
 });
 
 
+const infoButton = document.getElementById("gameInfoIcon");
+infoButton.addEventListener("mouseenter", displayAnonymousMode);
+infoButton.addEventListener("mouseleave", hideAnonymousMode);
+
+function displayAnonymousMode() {
+  document.getElementById("gameInfoBox").classList.add("showRectangle");
+  console.log("wagwan");
+}
+
+function hideAnonymousMode() {
+    console.log("wagwannn");
+  document.getElementById("gameInfoBox").classList.remove("showRectangle");
+}
+
 const scorePoints = document.getElementsByClassName("parallelogram");
 const scoreUI = document.getElementsByClassName("gameUI");
 const thirdPlayerUI = document.getElementsByClassName("profileCont3");
-
 document.addEventListener('DOMContentLoaded', (event) => {
     const backToLobbyButton = document.getElementById('backToLobbyButton');
 
@@ -484,7 +497,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         gameState.arena.resetUIForRematch();
         setTimeout(() => {
             keyDown['e'] = false;
-        }, 10);
+        }, 50);
     });
 });
 
@@ -690,15 +703,17 @@ class Arena extends THREE.Mesh {
     initializeGameSettings()
     {
         this.game.hasToBeInitialized = false;
-        if (this.game.map === 'oceanMap')
-            this.switchMap(this.oceanMap);
-        else if (this.game.map === 'spaceMap')
-            this.switchMap(this.spaceMap);
-        else if (this.game.map === 'skyMap')
-            this.switchMap(this.skyMap);
-        else if (this.game.map === 'dragonMap')
-            this.switchMap(this.dragonMap);
-        this.addArenaToScene();
+        setTimeout(() => {
+            if (this.game.map === 'oceanMap')
+                this.switchMap(this.oceanMap);
+            else if (this.game.map === 'spaceMap')
+                this.switchMap(this.spaceMap);
+            else if (this.game.map === 'skyMap')
+                this.switchMap(this.skyMap);
+            else if (this.game.map === 'dragonMap')
+                this.switchMap(this.dragonMap);
+            this.addArenaToScene();
+        }, 1500);
     }
     idleCameraAnimation()
     {
@@ -1180,12 +1195,7 @@ class Arena extends THREE.Mesh {
             swapToFullScreen();
             if (this.game.thirdPlayer)
                 thirdPlayerUI[0].style.opacity = 1;
-            this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
-            this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
-            this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
-            this.paddleLeft.particles.isActive = false;
-            this.paddleRight.particles.isActive = false;
-            this.ball.particles.isActive = false;
+            this.resetParticles();
             this.idleCameraAnimation();
             const winningScreen = document.querySelector('.winning-screen');
             const winningText = document.getElementById('winningText');
@@ -1212,7 +1222,7 @@ class Arena extends THREE.Mesh {
                 this.bot.deactivateBot();
         });
         let targetLight = loserPaddle.defaultLight;
-        if (this.getCurrentMap() === this.dragonMap)
+        if (this.getCurrentMap() === this.dragonMap || this.getCurrentMap() === this.oceanMap)
            targetLight = loserPaddle.defaultLight / 10; 
         const powerPaddleLight = new TWEEN.Tween(loserPaddle.light)
         .to({power: targetLight}, duration)
@@ -1231,6 +1241,14 @@ class Arena extends THREE.Mesh {
         this.ball.isRolling = false;
         this.ball.speedZ = 0;
         this.ball.speedX = 0;
+    }
+    resetParticles() {
+        this.paddleLeft.particles.explodeParticles(this.paddleLeft.position, this.paddleLeft.defaultColor);
+        this.paddleRight.particles.explodeParticles(this.paddleRight.position, this.paddleRight.defaultColor);
+        this.ball.particles.explodeParticles(this.ball.position, this.ball.initialColor);
+        this.paddleLeft.particles.isActive = false;
+        this.paddleRight.particles.isActive = false;
+        this.ball.particles.isActive = false;
     }
     resetUIForRematch()
     {
@@ -1945,6 +1963,8 @@ class Ball extends THREE.Mesh {
             this.speedX *= -1;
         this.position.z += this.speedZ;
         this.position.x += this.speedX;
+        if (((this.position.x < (this.arena.position.x - this.arena.length / 2) * 1.2) || this.position.x > (this.arena.position.x + this.arena.length / 2) * 1.2) && this.speedZ != 0)
+            this.position.x = this.arena.position.x;
         this.speedX += this.acceleration;
         this.trailParticles.updateTrail();
     }
@@ -2317,14 +2337,14 @@ class SpaceMap {
         this.renderTarget.texture.format = THREE.RGBFormat;
         this.renderTarget.texture.minFilter = THREE.LinearMipMapLinearFilter;
         this.renderTarget.texture.magFilter = THREE.LinearMipMapLinearFilter;
-
-        this.arenaMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x101030,
-            wireframe:false,
-            transparent:true,
-            metalness: 0.9,
-            opacity: 0.9
-        });
+        // this.arenaMaterial = new THREE.MeshPhysicalMaterial({
+        //     color: 0x101030,
+        //     wireframe:false,
+        //     transparent:true,
+        //     metalness: 0.9,
+        //     opacity: 0.9
+        // });
+        this.arenaMaterial = new THREE.MeshPhongMaterial({color: 0x101030, wireframe:false});
         this.arenaLowGraphicMaterial = new THREE.MeshBasicMaterial({color: 0x101030});
         this.paddleMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
         this.ballMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
