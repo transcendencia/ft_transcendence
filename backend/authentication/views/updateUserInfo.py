@@ -99,6 +99,7 @@ class UserInfoView(APIView):
     
     first_error = next(iter(serializer.errors.values()))[0]
     first_error_code = first_error.code
+    print(first_error_code)
     return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])

@@ -54,6 +54,8 @@ class SignupSerializer(serializers.ModelSerializer):
 	# 	return value
 
 
+import logging
+logger = logging.getLogger(__name__)
 
 class UpdateInfoSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True, required=False)
@@ -68,6 +70,7 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 		}
 
 	def	validate_username(self, value):
+		logger.debug(f"Entering validate_confirmation_password with value: {value}")
 		if value:
 			value = value.lower()
 			if len(value) > 13:
@@ -81,6 +84,7 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 
 
 	def validate_alias(self, value):
+		logger.debug(f"Entering validate_confirmation_password with value: {value}")
 		if value:
 			value = value.lower()
 			if len(value) > 13:
@@ -93,6 +97,11 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 		return value
 
 	def validate_password(self, value):
+		confirmation_password = self.initial_data.get('confirmation_password')
+		
+		if value and not confirmation_password:
+			raise serializers.ValidationError(code="passwordError")
+
 		try:
 			validate_password(value)
 		except ValidationError as e:
@@ -103,7 +112,9 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 		confirmation_password = value
 		password = self.initial_data.get('password')
 
-		if password != confirmation_password:
+		if confirmation_password and not password:
+			raise serializers.ValidationError(code="passwordError")
+		elif password != confirmation_password:
 			raise PasswordValidationError(detail="Password not identical")
 		return value
 
