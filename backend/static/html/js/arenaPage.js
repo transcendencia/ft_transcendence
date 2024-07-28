@@ -1,11 +1,12 @@
 import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { togglePlanet, setCheckerToInterval, checkEach5Sec} from "./enterPlanet.js";
-import { afterGameTournament, botDifficultyTournament, addUserToTournament, changeTournamentStatus } from "../../tournament/js/newTournament.js";
+import { afterGameTournament, botDifficultyTournament, addUserToTournament, changeTournamentStatus, resetTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
 import { askForAlias, resetHostTournament } from "../../tournament/js/newTournament.js";
 import { getProfileInfo, populateProfileInfos } from "./userManagement.js";
+import { resetTournamentPlayer } from "../../tournament/js/newTournament.js";
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
@@ -221,7 +222,7 @@ validatePasswordButton.addEventListener('click', async function() {
     if (isValidating)
         return;
     isValidating = true;
-    validatePasswordButton.style.pointerEvents = 'none';
+    // validatePasswordButton.style.pointerEvents = 'none';
     
     try {
         if (guestLoggedIn.length < 7) {
@@ -256,7 +257,7 @@ validatePasswordButton.addEventListener('click', async function() {
         console.error('Erreur lors de la connexion :', error);
     } finally {
         isValidating = false;
-        validatePasswordButton.style.pointerEvents = '';
+        // validatePasswordButton.style.pointerEvents = '';
     }
 });
 
@@ -297,12 +298,16 @@ export function setHostAsPlayerOne(user, mode) {
 		usernameElement.textContent = user.username;
 	pictureElement.src = user.profile_picture;
 	if (mode === 'Tournament'){
+		resetTournamentPlayer();
 		if (user.alias === null)
 			addUserToTournament(user.id, user.username, user.profile_picture);
 		else
 			addUserToTournament(user.id, user.alias, user.profile_picture);
 	}
-	else addUserToMatch(user.id, user.username, user.profile_picture);
+	else {
+		matchPlayer.length = 0;
+		addUserToMatch(user.id, user.username, user.profile_picture);
+	}
 }
 
 import { get_friends_list, updateUserStatus } from "./userManagement.js";
@@ -342,11 +347,6 @@ async function isListsChanged() {
 	userListBackground = document.getElementById('userlistTournamentPage');
 	RenderAllUsersInList();
 	resetHostTournament();
-	// tournamentPlayer.length = 0;
-	// getProfileInfo(sessionStorage.getItem("host_id"))
-	// .then(data => {
-	// 	populateProfileInfos(data);
-	// })
   }
 
 export function resetArenaPage() {

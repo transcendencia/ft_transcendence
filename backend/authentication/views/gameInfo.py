@@ -21,18 +21,8 @@ from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer
 
 import json
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_game_list(request):
-  if request.method == 'GET':
-    games = Game.objects.all()
-    serializers = GameListSerializer(games, many=True)
-    return Response(serializers.data)
-
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def get_game_player2(request):
   if request.method == 'POST':
     host = request.user
@@ -47,7 +37,6 @@ def get_game_player2(request):
   
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def get_game_user(request):
   if request.method == 'GET':
     user = request.user
@@ -59,6 +48,7 @@ def get_game_user(request):
     }
     return Response(response_data)
 
+@authentication_classes([TokenAuthentication])
 def add_game(request):
   if request.method == 'POST':
     data = json.loads(request.body)
@@ -87,11 +77,11 @@ def add_game(request):
         mapGame=mapGame,
         gameTime=gameTime
     )
-    game.save()
+    game  .save()
 
     createUserStat(player1, game, data['user1'])
     createUserStat(player2, game, data['user2'])
-    return JsonResponse({'status': 'success', 'game_id': game.id})
+    return JsonResponse({'status': 'success', 'game_id': game.id}, status=200)
   return JsonResponse({'status': 'fail'}, status=405)
 
 def createUserStat(user, game, userStat):

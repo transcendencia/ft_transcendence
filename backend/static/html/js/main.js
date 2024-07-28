@@ -13,10 +13,12 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-import { gameStarted, resetArenaPage} from './arenaPage.js';
+import { gameStarted, resetArenaPage, guestLoggedIn} from './arenaPage.js';
 import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
+import { getTranslatedText } from './translatePages.js';
+import { logoutUser } from "./loginPage.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -289,8 +291,15 @@ function resetUserInfoLoggedVisual(userInfoCont, clonedImg, profilePic, user) {
     userInfoCont.childNodes[1].textContent = user.username;
 }
 
-import { disconnectLoggedGuest } from './disconnectLoggedGuest.js';
-import { getTranslatedText } from './translatePages.js';
+function logoutGuest(userInfoCont, user, token) {
+    lsCont.removeChild(userInfoCont);
+    logoutUser(token);
+    for (let i = 0; i < guestLoggedIn.length; i++) {
+        if (guestLoggedIn[i][0].id === user.id) {
+            guestLoggedIn.splice(i, 1);
+        }
+    }
+}
 
 export function displayUsersLogged(user, token) {
     
@@ -312,9 +321,10 @@ export function displayUsersLogged(user, token) {
         lsCont.appendChild(userInfoCont);
 
         userInfoCont.addEventListener('click', function () {
-            disconnectLoggedGuest(userInfoCont, user, token);
+            logoutGuest(userInfoCont, user, token);
         });
 }
+
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -444,6 +454,8 @@ export function startAnimation() {
             scene.add(whitelight);
             const submitButton = document.getElementById('loginButton');
             submitButton.disabled = false;
+            document.getElementById('usernameLoginInput').disabled = false;
+            document.getElementById('passwordLoginInput').disabled = false;
         });
         anim1.chain(anim2, anim3);
         anim1.start();

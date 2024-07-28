@@ -142,20 +142,6 @@ function setEscapeLanguageVisual() {
     icon.querySelector('.icon').style.opacity = 0;
 }
 
-const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', handleLoginSubmit);
-
-function handleLoginSubmit(event) {
-    event.preventDefault();
-
-
-    const formData = new FormData(this);
-    const submitButton = this.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-
-    handleLogin(formData)
-}
-
 function reactivateLoginFields() {
     document.getElementById('usernameLoginInput').disabled = false;
     document.getElementById('passwordLoginInput').disabled = false;
@@ -182,7 +168,20 @@ function removeLastUserInfoConts() {
     }
 }
 
-// Handle form submission
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', handleLoginSubmit);
+
+function handleLoginSubmit(event) {
+    event.preventDefault();
+
+
+    const formData = new FormData(this);
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+
+    handleLogin(formData)
+}
+
 export async function handleLogin(formData) {
     disableLoginFields();
 
@@ -209,7 +208,6 @@ export async function handleLogin(formData) {
         }
 
         const data = await response.json();
-        console.log(data.status);
         
         let guest_token = null;
         if (hostLoggedIn === 'false') {
@@ -222,7 +220,6 @@ export async function handleLogin(formData) {
     } catch (error) {
         console.error('Erreur :', error);
         document.getElementById(messageContainerId).innerText = getTranslatedText(error.msg_code);
-        throw error; // Re-throw the error to be caught in the calling function
     } finally {
         submitButton.disabled = false;
         reactivateLoginFields();
@@ -388,8 +385,6 @@ export function getGameInfo() {
 		});
 }
 
-// Logout
-
 function resetHTMLelements(){
     document.querySelector(".gameUI").style.visibility = 'hidden';
     document.getElementById('c4').style.display = 'block';
@@ -409,6 +404,11 @@ export function backToLobby(historyArrow = false) {
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
             gameState.arena.swapToFullScreen();
+            gameState.arena.resetPoint();
+            gameState.arena.game.leftScore = 0;
+            gameState.arena.game.rightScore = 0;
+            gameState.arena.resetParticles();
+            gameState.arena.resetUI();
         }, 10);
     } else {
         resetGameEscape();
@@ -419,12 +419,13 @@ export function backToLobby(historyArrow = false) {
         gameState.arena.resetPoint();
         gameState.arena.game.leftScore = 0;
         gameState.arena.game.rightScore = 0;
+        gameState.arena.resetParticles();
         gameState.arena.resetUI();
     }
 }
 
 
-
+/*LOGOUT*/
 export async function handleLogout(userId, token) {
     if (!userId || !token || isLoggingOut) 
         return;
@@ -448,7 +449,7 @@ export async function handleLogout(userId, token) {
         setSpaceShipToLoginState();
         showPage('loginPage');
         swipeLeftSideContainer('-40%');
-        logoutGuest(userId);
+        logoutAllGuest(userId);
         logoutUser(token);
         reactivateLoginFields();
         sessionStorage.clear();
@@ -481,44 +482,43 @@ function printXYZofVector(vector) {
     console.log("x: ", vector.x, "y: ", vector.y, "z: ", vector.z);
 }
 
-async function logoutUser(token) {
+export async function logoutUser(token) {
     if (!token)
         return;
-    try {
-        const response = await fetch('/logout/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            keepalive: true,
-        });
 
-        if (!response.ok) {
+    fetch('/logout/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        keepalive: true,
+    })
+    .then(response => {
+        if (!response.ok)
             throw new Error('Erreur lors du logout');
-        } else {
-            const data = await response.json();
-            // console.log(`User ${data.user_id} status updated to ${data.status}`);
-        }
-    } catch (error) {
-        console.error('Erreur :', error);
-    }
+    })
+    .catch(error => {
+        console.error('Error :', error);
+    });
 }
 
-export function logoutGuest(userId) {
+export function logoutAllGuest(userId) {
     if (userId === sessionStorage.getItem('host_id')) {
         guestLoggedIn.forEach(user => {
             logoutUser(user[1]);
         });
+        guestLoggedIn.splice(0, guestLoggedIn.length);
     }
-    guestLoggedIn.splice(0, guestLoggedIn.length);
 }
 
 window.addEventListener('beforeunload', async function (event) {
-    // event.preventDefault();
     const token = sessionStorage.getItem('host_auth_token');
-    handleLogout(sessionStorage.getItem('host_id'), token);
+    const hostId = sessionStorage.getItem('host_id');
+    
+    logoutAllGuest(hostId);
+    logoutUser(token);
     sessionStorage.clear();
 });
 

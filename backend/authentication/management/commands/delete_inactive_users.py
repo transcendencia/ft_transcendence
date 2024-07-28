@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 from datetime import datetime
+from ...utils.constants import UserStatus
 
 class Command(BaseCommand):
     help = 'Delete inactive users'
@@ -29,7 +30,8 @@ class Command(BaseCommand):
             usersToDelete = User.objects.filter(last_login_date=twoYearsAgo)
             for user in usersToDelete:
                 print(f'Utilisateur: {user.username}')
-                user.delete()
+                if user.status is not UserStatus.ONLINE:
+                    user.delete()
                 # User.objects.filter(last_login_date=timezone.now() - timedelta(days=30)).delete()
             # Votre logique ici
             # Par exemple :

@@ -1,6 +1,6 @@
 import { togglePlanet, setCheckerToInterval} from './enterPlanet.js';
 import {  getCookie, createMatchBlock, getGameInfo, clearMatchBlocks } from './loginPage.js';
-import { get_friends_list, send_request, accept_friend_request, delete_friend_request, getProfileInfo, populateProfileInfos, updateUserStatus } from './userManagement.js';
+import { get_friends_list, send_friend_request, accept_friend_request, delete_friend_request, getProfileInfo, populateProfileInfos, updateUserStatus } from './userManagement.js';
 import { getUserStats, chooseStats } from './stats.js';
 import {  resetModifyPageField } from './modifyPage.js';
 
@@ -197,7 +197,7 @@ export function initUserPlanet() {
   bluePlusImg.addEventListener('click', () => {
     resetProfile();
     displayRequestSent();
-    send_request(displayedUserOnSearchPage.id);
+    send_friend_request(displayedUserOnSearchPage.id);
   });
 
 
@@ -436,6 +436,8 @@ function createUserTile(user, type, reqId) {
 }
 
 function filterAndSortLists(data, query) {
+  if (!data)
+    return ;
   let requestList = data.received_request_list;
   let friendList = data.friends;
   let otherList = data.other_user_list;

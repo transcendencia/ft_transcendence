@@ -1,92 +1,101 @@
 import os
 
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.db.models import Sum, F, FloatField, ExpressionWrapper, Case, When
 
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
+from rest_framework import status
 
-from ..models import User, UserStat
-from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer
-
+from ..models import User
+from ..serializers import UpdateInfoSerializer
+from ..utils.constants import UserStatus
 from .words import words, items
 
 import random
-#--------------------LANGUAGE--------------------
+
 class UserGraphicModeView(APIView):
   authentication_classes = [TokenAuthentication]
 
-  def post(self, request):
-    request.user.graphic_mode = request.data.get('graphicMode')
-    request.user.save()
-    return Response({'user_id': request.user.id}, status=200)
+  def patch(self, request):
+    try:
+      request.user.graphic_mode = request.data.get('graphicMode')
+      request.user.save()
+      return HttpResponse(status=status.HTTP_200_OK)
+    
+    except Exception as e:
+            logger.error(f'An error occurred: {str(e)}')
+            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserLanguageView(APIView):
   authentication_classes = [TokenAuthentication]
   
-  def post(self, request):
-    user = request.user
-
-    new_language = request.data.get("language")
-    if new_language != user.language:
-      user.language = new_language
+  def patch(self, request):
+    try:
+      user = request.user
+      user.language = request.data.get("language")
       user.save()
-      return Response({'user_id': user.id, 'languages': user.language}, status=200)
-    else:
-      return Response(status=400)
+      return HttpResponse(status=status.HTTP_200_OK)
+    except Exception as e:
+            logger.error(f'An error occurred: {str(e)}')
+            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserStatusView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request):
+      try:
         request.user.status = request.data.get('status')
         request.user.save()
-        return Response({'user_id': request.user.id, 'status': request.user.status}, status=200)
+        return HttpResponse(status=status.HTTP_200_OK)
+      except Exception as e:
+            logger.error(f'An error occurred: {str(e)}')
+            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
     def get(self, request, userId):
-        try:
-            print(userId)
-            user = User.objects.get(id=userId)
-            return Response({'user_status': user.status}, status=200)
-        except User.DoesNotExist:
-            return Response({'user_status': "Not found", 'error': "L'utilisateur avec cet identifiant n'existe pas."}, status=404)
+      try:
+        user = get_object_or_404(User, id=userId)
+        return Response({'user_status': user.status}, status=status.HTTP_200_OK)
+      except Exception as e:
+            logger.error(f'An error occurred: {str(e)}')
+            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserInfoView(APIView):
   authentication_classes = [TokenAuthentication]
 
   def get(self, request, userId):
     user = get_object_or_404(User, id=userId)
-    if user:
-      profile_info = user.get_profile_info()
-      return Response({'profile_info': profile_info})
-    else:
-      return Response(status=400)
+    profile_info = user.get_profile_info()
+    return Response({'profile_info': profile_info})
   
   def post(self, request):
     anonymousStatus = request.data.get('anonymousStatus') == 'true'
-    if anonymousStatus:
-        request.user.profile_picture = 'default.png'
-        request.user.save()
+    
     data = request.data.copy()
     data.pop('anonymousStatus')
     serializer = UpdateInfoSerializer(instance=request.user, data=data)
-    if 'profile-pic' in request.FILES and not anonymousStatus:
+    
+    if anonymousStatus and request.user.profile_picture.name != 'default.png':
+        request.user.profile_picture = 'default.png'
+        request.user.save()
+        request.user.profile_picture.delete()
+    elif 'profile-pic' in request.FILES and not anonymousStatus:
         if request.user.profile_picture.name != 'default.png':
           request.user.profile_picture.delete()
         uploaded_file = request.FILES['profile-pic']
         request.user.profile_picture = uploaded_file
         request.user.save()
+
     if serializer.is_valid():
         serializer.save()
-        return Response({'status': "succes", 'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=200)
+        return Response({'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=status.HTTP_200_OK)
+    
     first_error = next(iter(serializer.errors.values()))[0]
     first_error_code = first_error.code
-    return Response({'status': "failure", "msg_code": first_error_code})
+    return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -105,10 +114,9 @@ def generate_unique_username(request):
     for i in range(nbrUser + 1):
         username = f"anonymous{i}"
         if not User.objects.filter(username=username).exists():
-            return Response({'username': username}, status=200)
-    return Response(status=400)
+            return Response({'username': username}, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
-#SECURISER
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def delete_account(request):

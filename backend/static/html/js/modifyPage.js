@@ -3,12 +3,12 @@ import { returnToHost } from './userPage.js';
 import { toggleLobbyStart, createUserBadge } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
-import { getCookie } from './loginPage.js';
+import { getCookie, logoutUser } from './loginPage.js';
 import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
 import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '../../tournament/js/newTournament.js';
-
+import { changeColorMessage } from './signUpPage.js';
 
 let isInfosShow = false;
 let anonymousStatus;
@@ -23,6 +23,8 @@ function handleChangeInfoForm(event) {
   var formData = new FormData(form);
   formData.append('anonymousStatus', anonymousStatus)
 
+  var changeInfoMessage = document.getElementById('changeInfoMessage');
+
   const token = sessionStorage.getItem('host_auth_token');
   fetch('user_info/', {
     method: 'POST',
@@ -33,21 +35,25 @@ function handleChangeInfoForm(event) {
     body: formData,
   })
   .then(response => {
+    if (!response.ok) {
+      return response.json().then(err => Promise.reject(err));
+    }
     return response.json();
   })
   .then(data => {
-    var changeInfoMessage = document.querySelector('.changeInfoMessage');
-    if (data.status === "succes")
-      getProfileInfo(sessionStorage.getItem("host_id"))
-        .then(data => {
-            populateProfileInfos(data);
-            createUserBadge(data, "playersConnHostBadge");  
-        })
-
-    else changeInfoMessage.classList.toggle("errorMessage");
-    document.getElementById('changeInfoMessage').innerText = getTranslatedText(data.msg_code);
+    getProfileInfo(sessionStorage.getItem("host_id"))
+    .then(data => {
+        //reset user in Matcjh
+        populateProfileInfos(data);
+        createUserBadge(data, "playersConnHostBadge");  
+    })
+    changeColorMessage('.changeInfoMessage', 'success')
+    changeInfoMessage.innerText = getTranslatedText(data.msg_code);
   })
   .catch(error => {
+    // changeInfoMessage.classList.toggle("errorMessage");
+    changeColorMessage('.changeInfoMessage', 'failure')
+    changeInfoMessage.innerText = getTranslatedText(error.msg_code);
     console.error('There was a problem with the change_profile_info:', error);
   });
 }
@@ -67,6 +73,7 @@ document.getElementById('deleteAccountCancel').addEventListener("click", functio
 });
 
 function returnToLoginPageInSpaceship() {
+  console.log("returnToLoginPageInSpaceship");
   spaceShip.position.set(0, 0, -1293.5);
   spaceShip.rotation.set(0, 0, 0);
 
@@ -92,7 +99,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
       deleteBlockingPanel.classList.remove('show');
       if (guestLoggedIn.length > 0) {
         guestLoggedIn.forEach(user => {
-            updateUserStatus('offline', user[1]);
+            logoutUser(user[1]);
         });
       }
       guestLoggedIn.splice(0, guestLoggedIn.length);
@@ -156,7 +163,6 @@ export function getRandomUsername() {
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data.username);
     document.getElementById('changeUsernameInput').value = data.username;
   })
   .catch(error => {

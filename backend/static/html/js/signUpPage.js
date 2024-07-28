@@ -95,6 +95,7 @@ function handleSignUp(event) {
     event.preventDefault();
     
     const messageContainer = document.getElementById('messageContainerSignup');
+    messageContainer.innerText = '';
     const submitButton = document.getElementById('submitSignUp');
     submitButton.disabled = true;
 
@@ -126,15 +127,15 @@ function handleSignUp(event) {
     });
 }
 
-function changeColorMessage(messageContainer, status) {
-    let signupMessageCont = document.querySelector(messageContainer);
+export function changeColorMessage(messageContainer, status) {
+    let messageCont = document.querySelector(messageContainer);
 
     if (status === "success") {
-        signupMessageCont.classList.remove("failure");
-        signupMessageCont.classList.add("success");
+        messageCont.classList.remove("failure");
+        messageCont.classList.add("success");
     } else if (status === "failure") {
-        signupMessageCont.classList.remove("success");
-        signupMessageCont.classList.add("failure");
+        messageCont.classList.remove("success");
+        messageCont.classList.add("failure");
     }
 }
 

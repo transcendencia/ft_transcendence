@@ -11,7 +11,11 @@ venv/
 /backend/backend/__pycache__/
 /backend/authentication/__pycache__
 /backend/authentication/view/__pycache__
+/backend/cert
 
+note
+
+note
 
 #production files
 backend/productionfiles/
