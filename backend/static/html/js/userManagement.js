@@ -20,6 +20,7 @@ export async function updateUserStatus(status, token) {
         if (!response.ok) {
             throw new Error('Erreur lors du logout');
         } else {
+            console.log("change user status to", status);
             const data = await response.json();
         }
     } catch (error) {

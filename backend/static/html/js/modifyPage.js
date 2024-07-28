@@ -105,7 +105,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   });
 
   document.getElementById("validateDelete").classList.remove("showRectangle");
-  changeTournamentStatus();
+  changeTournamentStatus(2);
   resetTournament();
   togglePlanet(/* toggleRsContainer: */ false);
   returnToHost(/* updateStats: */ false);
