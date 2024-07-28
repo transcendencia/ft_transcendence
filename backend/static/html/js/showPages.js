@@ -1,7 +1,7 @@
 import { lobbyStart, setLobbyStart } from "./main.js";
 import { moveCameraToBackOfCockpit, moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { backToLobby, handleLogout, isLoggingOut } from "./loginPage.js";
-import { gameState } from "../../game/js/main.js";
+import { backToLobbyPressed, gameState } from "../../game/js/main.js";
 
 export function showPage(pageId, transition = 'default', changeHash = true) {
     var pages = document.querySelectorAll('.page');
@@ -40,7 +40,7 @@ addEventListener("hashchange", () => {
     if (gameState.loading)
         return;
     if (lobbyStart && !gameState.inGame) {
-        alert("Logging out, keep in mind that any press on history arrows while being in the galaxy lobby will cause you to log out.");
+        showAlert("You've been logged out, keep in mind that any press on history arrows while being in the galaxy lobby will cause you to log out.");
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
     }
@@ -56,10 +56,34 @@ addEventListener("hashchange", () => {
         showPage('signUpPage');
     } else if (window.location.hash === '#galaxy' && (oldLocation === '#rgpdPage' || oldLocation === "#signUpPage"))
         moveCameraToBackOfCockpit();
-    else if (window.location.hash === '#galaxy' && oldLocation === '#game'){
-        console.log("ouiii");
-        alert("Back to lobby, all data from this current game will be lost.");
+    else if (window.location.hash === '#galaxy' && oldLocation === '#game' && !backToLobbyPressed){
+        showAlert("You were redirected back to lobby, all data from this previous game was lost.");
         backToLobby(/*historyArrow: */true);
     }
     oldLocation = window.location.hash;
 });
+
+function showAlert(message) {
+    let duration = 6000;
+    // Create alert element
+    const alert = document.createElement('div');
+    alert.className = 'alert';
+    alert.textContent = message;
+
+    // Add to body
+    document.body.appendChild(alert);
+
+    // Trigger reflow to enable transition
+    alert.offsetHeight;
+
+    // Show alert
+    alert.classList.add('show');
+
+    // Hide and remove after duration
+    setTimeout(() => {
+        alert.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(alert);
+        }, 300); // Wait for fade out transition
+    }, duration);
+}

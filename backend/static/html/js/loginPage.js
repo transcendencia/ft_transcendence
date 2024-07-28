@@ -404,7 +404,7 @@ export function backToLobby(historyArrow = false) {
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
             gameState.arena.swapToFullScreen();
-        }, 10);
+        }, 100);
     } else {
         resetGameEscape();
         gameState.arena.displayBackPanel(true);

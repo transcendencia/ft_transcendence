@@ -23,6 +23,7 @@ import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
 
+export let backToLobbyPressed;
 let frameCount = 0;
 let lastTime = performance.now();
 
@@ -470,7 +471,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const backToLobbyButton = document.getElementById('backToLobbyButton');
 
     backToLobbyButton.addEventListener('click', () => {
-        gameState.arena.displayBackPanel();
+        window.location.hash = "#galaxy";
+        backToLobbyPressed = true;
+        setTimeout(() => {
+            gameState.arena.displayBackPanel();
+            backToLobbyPressed = false;
+        }, 100);
     });
     const rematchButton = document.getElementById('rematchButton');
 
