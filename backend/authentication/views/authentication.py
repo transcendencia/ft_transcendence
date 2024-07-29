@@ -80,14 +80,14 @@ def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
     except Exception as e:
       logger.error(f'An error occurred: {str(e)}')
       return Response({'status': "error", 'message': str(e)},  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+from django.contrib.auth.models import AbstractUser
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
   try:
     new_language = getLanguage(request.POST.get("language", "en"))
     serializer = SignupSerializer(data=request.data)
-    
+    print(User._meta.get_field('username').validators)
     if serializer.is_valid(raise_exception=True):
       user_data = serializer.validated_data
       user = User(username=user_data['username'], language=new_language)
@@ -100,7 +100,7 @@ def signup(request):
   except (ValidationError, PasswordValidationError) as e:
     first_error = next(iter(e.detail.values()))[0]
     first_error_code = getattr(first_error, 'code', 'validationError')
-    logger.error("Validation error during signup: %s", first_error_code)
+    logger.error("Validation error during signup: %s", first_error)
     return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
 
   except IntegrityError as e:

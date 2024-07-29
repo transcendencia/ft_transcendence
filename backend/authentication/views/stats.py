@@ -9,6 +9,9 @@ from rest_framework import status
 
 from ..models import User, UserStat, FriendRequest
 
+import logging
+logger = logging.getLogger(__name__)
+
 class StatsView(APIView):
     authentication_classes = [TokenAuthentication]
 

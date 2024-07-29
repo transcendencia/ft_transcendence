@@ -195,7 +195,7 @@ const deleteAccountCancel = document.getElementById('deleteAccountCancel');
 const RGPDPolicyInUserPage = document.getElementById('RGPDPolicyInUserPage');
 const infoBack = document.getElementById('infoBack');
 const textAnonymous = document.getElementById('textAnonymous');
-
+const downloadButton = document.getElementById('downloadButton');
 
 function translateModifyPageTexts(){
     changeInfo.textContent = getTranslatedText('changeInfo');
@@ -213,6 +213,7 @@ function translateModifyPageTexts(){
     deleteAccountCancel.textContent = getTranslatedText('deleteAccountCancel');
     RGPDPolicyInUserPage.textContent = getTranslatedText('RGPDPolicyInUserPage');
     textAnonymous.textContent = getTranslatedText('textAnonymous');
+    downloadButton.textContent = getTranslatedText('downloadButton');
      
 }
 
