@@ -63,6 +63,10 @@ body {
     }
 }
 
+.dg {
+    cursor: url('../assets/cursor/pointer.cur'), auto;
+}
+
 .dg.main {
     background-color: #0092fb !important;
     color: #fcf9f8 !important;
@@ -70,6 +74,8 @@ body {
     font-family: 'space' !important;
     width: 56% !important;
     opacity: 0.9 !important;
+    cursor: url('../assets/cursor/pointer.cur'), auto;
+
 }
 .flag {
     background-size: 50%;
@@ -113,7 +119,7 @@ body {
     visibility: hidden;
     opacity: 0;
     transition: opacity 2s ease;
-    cursor: url('../assets/cursor/gun.cur'), auto;
+    cursor: url('../assets/cursor/gun.cur') 25 25, auto;
 }
 
 .scoreUI {
@@ -526,4 +532,28 @@ body {
     font: 20px 'computer';
     color: white;
     font-size: 16px;
+}
+
+#gameInfoIcon {
+    position: absolute;
+    z-index: 3;
+    top: 17%;
+    right: 49.2%;
+}
+
+
+.hiddenGameInfo {
+    position: absolute;
+    display: none;
+    background-color: #000f6166;
+    border: 4px solid #3777ff33;
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    right: 38%;
+    top: 20%;
+    max-width: 30%;
+    border-radius: 5px;
+    font-family: space;
+    align-items: center;
+    animation: pulse 2s ease infinite;
 }

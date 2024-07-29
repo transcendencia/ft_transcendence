@@ -405,6 +405,11 @@ export function backToLobby(historyArrow = false) {
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
             gameState.arena.swapToFullScreen();
+            gameState.arena.resetPoint();
+            gameState.arena.game.leftScore = 0;
+            gameState.arena.game.rightScore = 0;
+            gameState.arena.resetParticles();
+            gameState.arena.resetUI();
         }, 10);
     } else {
         resetGameEscape();
@@ -415,6 +420,7 @@ export function backToLobby(historyArrow = false) {
         gameState.arena.resetPoint();
         gameState.arena.game.leftScore = 0;
         gameState.arena.game.rightScore = 0;
+        gameState.arena.resetParticles();
         gameState.arena.resetUI();
     }
 }

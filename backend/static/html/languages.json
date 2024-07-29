@@ -119,6 +119,7 @@
         "rematchText": "rematch",
         "backToArena": "back to arena",
         "backToTournament": "back to tournament",
+        "gameHelpText": "press space to launch the ball!",
 
 
         "enterPasswordText": "Enter your password",
@@ -249,6 +250,7 @@
         "rematchText": "revancha",
         "backToArena": "volver a arena",
         "backToTournament": "volver a torneo",
+        "gameHelpText": "Pulsa espacio para empezar el punto!",
 
         "enterPasswordText": "Ingresa tu contraseña",
         "enterPasswordInput": "Contrasena",
@@ -379,6 +381,7 @@
         "rematchText": "rejouer",
         "backToArena": "retour a l'arene",
         "backToTournament": "retour au tournoi",
+        "gameHelpText": "Appuie sur espace pour lancer la balle!",
 
         "enterPasswordText": "Entrer votre mot de passe",
         "enterPasswordInput": "Mot de passe",
