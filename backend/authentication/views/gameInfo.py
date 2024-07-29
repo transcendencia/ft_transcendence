@@ -48,41 +48,71 @@ def get_game_user(request):
     }
     return Response(response_data)
 
+@api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def add_game(request):
-  if request.method == 'POST':
-    data = json.loads(request.body)
+    if request.method != 'POST':
+        return JsonResponse({'status': 'fail', 'message': 'Only POST method is allowed'}, status=405)
 
-    player1_id = data['player1']
-    player2_id = data['player2']
-    player3_id = data.get('player3', None)
-    scorePlayer1 = data['scorePlayer1']
-    scorePlayer2 = data['scorePlayer2']
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'fail', 'message': 'Invalid JSON in request body'}, status=400)
+
+    required_fields = ['player1', 'player2', 'scorePlayer1', 'scorePlayer2', 'gameplayMode', 'modeGame', 'mapGame', 'gameTime', 'user1', 'user2']
+    missing_fields = [field for field in required_fields if field not in data]
+    
+    if missing_fields:
+        return JsonResponse({'status': 'fail', 'message': f'Missing required fields: {", ".join(missing_fields)}'}, status=400)
+
+    try:
+        player1_id = int(data.get('player1', 0))  # Default to 0 if 'player1' is not provided
+        player2_id = int(data['player2'])
+        player3_id = int(data.get('player3')) if data.get('player3') not in [None, ''] else None
+        scorePlayer1 = int(data['scorePlayer1'])
+        scorePlayer2 = int(data['scorePlayer2'])
+        gameTime = int(data['gameTime'])
+    except ValueError as e:
+        return JsonResponse({'status': 'fail', 'message': f'Invalid data type: {str(e)}'}, status=400)
+
     gameplayMode = data['gameplayMode']
     modeGame = data['modeGame']
     mapGame = data['mapGame']
-    gameTime = data['gameTime']
 
-    player1 = get_object_or_404(User, id=player1_id)
-    player2 = get_object_or_404(User, id=player2_id)
-    player3 = get_object_or_404(User, id=player3_id) if player3_id else None
-    game = Game(
-        player1=player1,
-        player2=player2,
-        player3=player3,
-        scorePlayer1=scorePlayer1,
-        scorePlayer2=scorePlayer2,
-        gameplayMode=gameplayMode,
-        modeGame=modeGame,
-        mapGame=mapGame,
-        gameTime=gameTime
-    )
-    game  .save()
+    if not all(isinstance(field, str) for field in [gameplayMode, modeGame, mapGame]):
+        return JsonResponse({'status': 'fail', 'message': 'Invalid data type for gameplayMode, modeGame, or mapGame'}, status=400)
 
-    createUserStat(player1, game, data['user1'])
-    createUserStat(player2, game, data['user2'])
-    return JsonResponse({'status': 'success', 'game_id': game.id}, status=200)
-  return JsonResponse({'status': 'fail'}, status=405)
+    try:
+        player1 = get_object_or_404(User, id=player1_id) if player1_id else None
+        player2 = get_object_or_404(User, id=player2_id)
+        player3 = get_object_or_404(User, id=player3_id) if player3_id else None
+
+        game = Game(
+            player1=player1,
+            player2=player2,
+            player3=player3,
+            scorePlayer1=scorePlayer1,
+            scorePlayer2=scorePlayer2,
+            gameplayMode=gameplayMode,
+            modeGame=modeGame,
+            mapGame=mapGame,
+            gameTime=gameTime
+        )
+        game.save()
+
+        createUserStat(player1, game, data['user1']) if player1 else None
+        createUserStat(player2, game, data['user2'])
+        if player3 and 'user3' in data:
+            createUserStat(player3, game, data['user3'])
+
+        return JsonResponse({'status': 'success', 'game_id': game.id}, status=201)
+
+    except User.DoesNotExist:
+        return JsonResponse({'status': 'fail', 'message': 'One or more players not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'fail', 'message': f'An error occurred: {str(e)}'}, status=500)
+
+
 
 def createUserStat(user, game, userStat):
   user.nbr_match += 1

@@ -19,7 +19,7 @@ function toggleGamemodeTournament(buttonHeader, imgIndex) {
       }
   else {
       gamemodeCounterTournament++;    
-      if (gamemodeCounterTournament === 3) // 0 = classic 1 = powerless 2= spin only 
+      if (gamemodeCounterTournament === 3) // 0 = classic 1 = powerless 2 = spin only 
           gamemodeCounterTournament = 0;
       } 
   if (gamemodeCounterTournament === 0)
@@ -104,7 +104,6 @@ export function resetTournamentPlayer(){
 }
 
 export function resetTournament() {
-  console.log("tournamentState", tournamentState);
   if (tournamentState === 1 | tournamentState === -1)
       return ;
   document.querySelectorAll('.before-launch').forEach(function(el) {
@@ -131,9 +130,6 @@ export function resetTournament() {
   resetBracket();
 }
 
-//add user to tournaments
-
-const botID = 0;
 let tournamentState = -1;
 
 export function changeTournamentStatus(newValue){
@@ -278,17 +274,16 @@ cancelTournamentButton.addEventListener('click', () => {
     nbMatch = 0;
     currentMatch = [];
     putFinalPosiionWhenLost(playersInTournament);
-    if (playersInTournament.length == 1 || playersInTournament.length == 0){ //end the tournament
+    if (playersInTournament.length == 1 || playersInTournament.length == 0){
       endTournament(playersInTournament, ul);
       return ;
     }
-    //put matchup in currentMatch variable
     for (let i = 0; i < playersInTournament.length; i += 2) {
       let inverted = 0;
       if (i + 1 >= playersInTournament.length)
         addPlayerToCurrentMatch({ myRef: playersInTournament[i] }, "", "", inverted);
       else{
-        if (playersInTournament[i].username === "bot"){ //the bot will be the player on the right
+        if (playersInTournament[i].username === "bot"){
           const tmp = playersInTournament[i];
           playersInTournament[i] = playersInTournament[i + 1];
           playersInTournament[i + 1] = tmp;
@@ -343,15 +338,11 @@ cancelTournamentButton.addEventListener('click', () => {
     return nbPlayer;
   }
 
-  let tournamentPhase;
-
   launchTournamentElement.addEventListener("click", function() {
     if (countNonBotPlayer(tournamentPlayer) < 3){
       updateElementDisplayAndText("error_msg", getTranslatedText('ErrorMinus'));
       return ;
     }
-    if (tournamentPlayer.length > 4)
-      tournamentPhase = "1/4";
     tournamentState = 1;
     updateElementDisplayAndText("error_msg", "");
     tournamentPlayer.forEach(function(player){
@@ -383,7 +374,6 @@ cancelTournamentButton.addEventListener('click', () => {
 
   function nextMatch() {
     nbMatch ++;
-    // let ul = document.getElementById("match");
     if (nbMatch >= currentMatch.length){
       makeMatchup();
       return ; 
@@ -441,9 +431,6 @@ cancelTournamentButton.addEventListener('click', () => {
 }
 
   async function findWinner(){
-    // afterGameTournament(3,0);
-    // return;
-    console.log("findWinner");
     if (!currentMatch[nbMatch][1]){
       afterGameTournament(3, 0);
       return;
