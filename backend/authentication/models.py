@@ -4,8 +4,15 @@ from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.conf import settings
 from django.utils import timezone
+from django.core.validators import MaxLengthValidator
+from .validators import UsernameValidator
 
 class User(AbstractUser):
+  username = models.CharField(max_length=13, unique=True,
+        validators=[
+            UsernameValidator()
+        ]
+    )
   language = models.CharField(max_length=10, default='en')
   last_login_date = models.DateField(null=True, blank=True)
   created_at = models.DateTimeField(auto_now_add=True)

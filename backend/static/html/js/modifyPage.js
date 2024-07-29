@@ -55,6 +55,7 @@ function handleChangeInfoForm(event) {
   .catch(error => {
     // changeInfoMessage.classList.toggle("errorMessage");
     changeColorMessage('.changeInfoMessage', 'failure')
+    console.log("msg_code: ", error.msg_code)
     changeInfoMessage.innerText = getTranslatedText(error.msg_code);
     console.error('There was a problem with the change_profile_info:', error);
   });
