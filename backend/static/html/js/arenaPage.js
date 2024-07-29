@@ -6,6 +6,7 @@ import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
 import { askForAlias, resetHostTournament } from "../../tournament/js/newTournament.js";
 import { getProfileInfo, populateProfileInfos } from "./userManagement.js";
+import { changeTournamentStatus } from "../../tournament/js/newTournament.js";
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
@@ -265,6 +266,7 @@ backPasswordButton.addEventListener('click', function() {
 
 function addEventListenerToTile(tile, arena) {
 	tile.HTMLelement.addEventListener('click', function() {
+	console.log(tile.user.username, tile.user.status, isGuest(tile.user.id));
 	if (!plusClicked || isBotId(tile.user.id) && planetInRange.name === "arena" && plusClicked === 1)
 		return;
 	if (isBotId(tile.user.id) || (tile.user.status === 'online' && isGuest(tile.user.id))) {
@@ -328,6 +330,7 @@ async function isListsChanged() {
   }
 
   export function initTournamentPlanet(){
+	changeTournamentStatus(0);
 	userListBackground = document.getElementById('userlistTournamentPage');
 	RenderAllUsersInList();
 	resetHostTournament();

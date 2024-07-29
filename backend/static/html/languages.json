@@ -8,6 +8,8 @@
         "loginSuccessful": "You are now logged in!\nPress [E] to enter the galaxy",
         "loginFailed": "Username and/or password invalid",
         "userAlreadyLoggedIn": "User already logged in",
+        "SPABackToLobby": "You were redirected back to lobby, all data from this previous game was lost.",
+        "SPALoggedOut": "You've been logged out, keep in mind that any press on history arrows while being in the galaxy lobby will cause you to log out.",
 
         "signUpTitle": "Sign up",
         "createAnAccount": "Create an account",
@@ -140,6 +142,8 @@
         "loginSuccessful": "¡Ya has iniciado sesion!\nPresiona [E] para ingresar a la galaxia",
         "loginFailed": "Nombre de usuario y/o contraseña no validos",
         "userAlreadyLoggedIn": "El usuario ya esta conectado",
+        "SPABackToLobby": "Fuiste redirigido nuevamente al lobby y se perdieron todos los datos de la partida anterior.",
+        "SPALoggedOut": "Se te ha cerrado la sesión, ten en cuenta que cualquier pulsación en las flechas del historial mientras estás en el lobby de la galaxia hará que cierres la sesión.",
 
         "signUpTitle": "Registrate",
         "createAnAccount": "Crea una cuenta",
@@ -269,6 +273,8 @@
         "loginSuccessful": "Vous êtes maintenant connecte !\nAppuyez sur [E] pour entrer dans la galaxie",
         "loginFailed": "Nom d'utilisateur et/ou mot de passe invalide",
         "userAlreadyLoggedIn": "Utilisateur déjà connecte",
+        "SPABackToLobby": "Vous avez ete redirige au lobby, toute donnee de la partie precedente a ete perdue.",
+        "SPALoggedOut": "Vous avez ete deconnectes, souvenez vous bien que nimporte quel clic sur une fleche d'historique dans le lobby/galaxy vous deconnectera.",
 
         "signUpTitle": "s'Inscrire",
         "createAnAccount": "Cree un compte",
