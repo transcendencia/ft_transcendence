@@ -17,6 +17,9 @@ from .words import words, items
 
 import random
 
+import logging
+logger = logging.getLogger(__name__)
+
 class UserGraphicModeView(APIView):
   authentication_classes = [TokenAuthentication]
 
@@ -50,9 +53,10 @@ class UserStatusView(APIView):
       try:
         request.user.status = request.data.get('status')
         request.user.save()
+        print(request.user.username, request.user.status)
         return HttpResponse(status=status.HTTP_200_OK)
       except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
+            # logger.error(f'An error occurred: {str(e)}')
             return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
     def get(self, request, userId):
@@ -78,6 +82,17 @@ class UserInfoView(APIView):
     data.pop('anonymousStatus')
     serializer = UpdateInfoSerializer(instance=request.user, data=data)
     
+    if serializer.is_valid():
+      self.updateProfilePicture(request, anonymousStatus)
+      serializer.save()
+      return Response({'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=status.HTTP_200_OK)
+    
+    first_error = next(iter(serializer.errors.values()))[0]
+    first_error_code = first_error.code
+    print(first_error_code)
+    return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
+  
+  def updateProfilePicture(self, request, anonymousStatus):
     if anonymousStatus and request.user.profile_picture.name != 'default.png':
         request.user.profile_picture = 'default.png'
         request.user.save()
@@ -88,14 +103,6 @@ class UserInfoView(APIView):
         uploaded_file = request.FILES['profile-pic']
         request.user.profile_picture = uploaded_file
         request.user.save()
-
-    if serializer.is_valid():
-        serializer.save()
-        return Response({'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=status.HTTP_200_OK)
-    
-    first_error = next(iter(serializer.errors.values()))[0]
-    first_error_code = first_error.code
-    return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

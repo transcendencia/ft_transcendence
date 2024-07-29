@@ -109,7 +109,7 @@
         "infoBack" : "Back",
         "textAnonymous": "When activated, assigns a random username and a default profil picture",
         "successfulModifyInfo": "Info changed",
-        
+        "passwordError": "'password' and 'confirmation_password' fields must be filled in to change the password",
         
         "startGameText": "[E] to start the game",
         "leftText": "left",
@@ -127,7 +127,8 @@
         "arenaBackLogInButton": "Back",
         "arenaLogInButton": "Log in",
         "showAliasText": "This is your alias for the tournament:",
-        "aliasLogInButton": "Ok"
+        "aliasLogInButton": "Ok",
+        "tooManyGuest": "Too many guest"
     },
     "es": {
         "login": "Usuario",
@@ -226,7 +227,7 @@
         "changeAliasInput": "alias",
         "AnonymousMode": "Modo anonimo",
         "changePasswordInput": "Contrasena",
-        "changeConfirmPasswordInput": "Confirma la contrasena",
+        "changeConfirmPasswordInput": "Confirmar contrasena",
         "changeProfilePicture": "Foto de perfil",
         "chooseProfilePic": "Elija el archivo",
         "deleteAccountButton": "Borrar cuenta",
@@ -238,6 +239,7 @@
         "infoBack" : "Volver",
         "textAnonymous": "Cuando activa el modo anonimo, tiene un nombre de usuario randon y una imagen de perfil predeterminada",
         "successfulModifyInfo": "información cambiada",
+        "passwordError": "Se deben completar los campos 'contrasena' y 'confirmar contrasena' para cambiar la contraseña",
 
 
         "startGameText": "Pulse [E] para empezar",
@@ -255,7 +257,8 @@
         "arenaBackLogInButton": "Atras",
         "arenaLogInButton": "Acceso",
         "showAliasText": "Este es tu alias para el torneo:",
-        "aliasLogInButton": "De acuerdo"
+        "aliasLogInButton": "De acuerdo",
+        "tooManyGuest": "Demasiados invitados"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -356,7 +359,7 @@
         "changeAliasInput": "alias",
         "AnonymousMode": "Mode anonyme",
         "changePasswordInput": "Mot de passe",
-        "changeConfirmPasswordInput": "Confirme le mot de passe",
+        "changeConfirmPasswordInput": "Confirmer mot de passe",
         "changeProfilePicture": "Phote de profil",
         "chooseProfilePic": "Choisir le fichier",
         "deleteAccountButton": "Supprimer compte",
@@ -368,8 +371,7 @@
         "infoBack" : "Retour",
         "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut",
         "successfulModifyInfo": "Informations change",
-
-
+        "passwordError": "Les champs 'mot de passe' et 'confirmer mot de passe' doivent etre rempli pour change le mot de passe",
 
         "startGameText": "[E] pour commencer",
         "leftText": "gauche",
@@ -386,6 +388,7 @@
         "arenaBackLogInButton": "Retour",
         "arenaLogInButton": "Connexion",
         "showAliasText": "Voici votre alias pour le tournoi:",
-        "aliasLogInButton": "D'accord"
+        "aliasLogInButton": "D'accord",
+        "tooManyGuest": "Trop d'invités"
     }
 }
