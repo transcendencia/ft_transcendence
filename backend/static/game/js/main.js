@@ -468,11 +468,9 @@ infoButton.addEventListener("mouseleave", hideAnonymousMode);
 
 function displayAnonymousMode() {
   document.getElementById("gameInfoBox").classList.add("showRectangle");
-  console.log("wagwan");
 }
 
 function hideAnonymousMode() {
-    console.log("wagwannn");
   document.getElementById("gameInfoBox").classList.remove("showRectangle");
 }
 
@@ -484,6 +482,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     backToLobbyButton.addEventListener('click', () => {
         gameState.arena.displayBackPanel();
+        gameState.eKeyWasPressed = false;
     });
     const rematchButton = document.getElementById('rematchButton');
 
@@ -493,6 +492,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (!gameState.arena.game.isOver)
             return;
         rematchGame();
+        gameState.eKeyWasPressed = false;
         keyDown['e'] = true;
         gameState.arena.resetUIForRematch();
         setTimeout(() => {
@@ -882,7 +882,7 @@ class Arena extends THREE.Mesh {
             this.paddleRight.light.power += 0.1;
             this.bot.isPlaying = !this.bot.isPlaying;
         }
-        if (keyDown['e'])
+        if (keyDown['e'] && !gameState.loading && !this.gameState.eKeyWasPressed)
         {
             if (gameState.loading)
                 return;
