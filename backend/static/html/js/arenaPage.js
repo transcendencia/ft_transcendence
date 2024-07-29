@@ -356,7 +356,7 @@ export function resetArenaPage() {
   async function refreshUserListIfChanged() {
 	if (await isListsChanged())
 	  await RenderAllUsersInList();
-	console.log("Checking...");
+	// console.log("Checking...");
   }
 
   const userTiles = new Map();

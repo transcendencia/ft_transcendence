@@ -487,6 +487,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const rematchButton = document.getElementById('rematchButton');
 
     rematchButton.addEventListener('click', () => {
+        if (gameState.arena.spaceKeyBlocked)
+            return;
         if (gameState.arena.game.tournamentGame)
             return;
         if (!gameState.arena.game.isOver)
@@ -655,6 +657,7 @@ class Arena extends THREE.Mesh {
         this.dragonMap = new DragonMap(this);
         this.singlePlayer = false;
         this.spaceMap.initMap();
+        this.spaceKeyBlocked = false;
         this.composer1 = new EffectComposer(renderer);
         this.composer2 = new EffectComposer(renderer2);
 
@@ -840,8 +843,9 @@ class Arena extends THREE.Mesh {
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
         this.paddleRight.animatePaddle(this);
-        if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling && this.game.rightScore < this.game.maxScore && this.game.leftScore < this.game.maxScore)
+        if (!this.spaceKeyBlocked && keyDown[' '] && this.game.isPlaying && !this.ball.isRolling && this.game.rightScore < this.game.maxScore && this.game.leftScore < this.game.maxScore)
         {
+            console.log("space called with keyBlocked = " + this.spaceKeyBlocked);
             this.ball.speedX = 0;
             this.ball.acceleration = 0;
             this.ball.updateSpeedBar();
@@ -1135,6 +1139,7 @@ class Arena extends THREE.Mesh {
     {
         if (this.game.isOver)
             return;
+        this.spaceKeyBlocked = true;
         let duration = 1150;
         this.ball.trailParticles.regroupTrail();
         this.thirdPlayer.deactivateThirdPlayer();
@@ -1220,6 +1225,7 @@ class Arena extends THREE.Mesh {
             winningScreen.classList.add('visible');
             if (this.game.user2.isBot === 'Bot')
                 this.bot.deactivateBot();
+            this.spaceKeyBlocked = false;
         });
         let targetLight = loserPaddle.defaultLight;
         if (this.getCurrentMap() === this.dragonMap || this.getCurrentMap() === this.oceanMap)
@@ -1256,6 +1262,7 @@ class Arena extends THREE.Mesh {
         this.isBeingReset = false;
         this.resetUI();
         const winningScreen = document.querySelector('.winning-screen');
+        // winningScreen.classList.add('hidden');
         winningScreen.classList.remove('visible');
     }
     displayBackPanel(backToLobby = false)
