@@ -400,6 +400,7 @@ export function backToLobby(historyArrow = false) {
         keyDown['e'] = true;
         setTimeout(() => {
             keyDown['e'] = false;
+            gameState.eKeyWasPressed = false;
             gameState.arena.displayBackPanel(true);
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
@@ -412,6 +413,7 @@ export function backToLobby(historyArrow = false) {
         }, 10);
     } else {
         resetGameEscape();
+        gameState.eKeyWasPressed = false;
         gameState.arena.displayBackPanel(true);
         gameState.arena.thirdPlayer.deactivateThirdPlayer();
         gameState.arena.idleCameraAnimation();
@@ -513,39 +515,14 @@ export function logoutAllGuest(userId) {
     }
 }
 
-let isReloading = false;
-
-function handleUnloadOrReload(event) {
-  console.log("event called = " + event.type);
-  // Check if it's not a reload or if it's a tab close/navigate away
-  if (!isReloading || event.type === 'pagehide') {
+window.addEventListener('beforeunload', async function (event) {
     const token = sessionStorage.getItem('host_auth_token');
     const hostId = sessionStorage.getItem('host_id');
+    
     logoutAllGuest(hostId);
     logoutUser(token);
     sessionStorage.clear();
-  }
-}
-
-// Listen for the reload event
-window.addEventListener('beforeunload', function(event) {
-  isReloading = true;
-  // Reset the flag after a short delay
-  setTimeout(() => { isReloading = false; }, 100);
-  handleUnloadOrReload(event);
 });
-
-// Specifically for Firefox
-window.addEventListener('pagehide', handleUnloadOrReload);
-
-// Capture reload via navigation
-document.addEventListener('DOMContentLoaded', function() {
-  let perfEntries = performance.getEntriesByType("navigation");
-  if (perfEntries.length > 0 && perfEntries[0].type === "reload") {
-    isReloading = true;
-  }
-});
-
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';
