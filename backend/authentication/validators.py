@@ -47,10 +47,10 @@ class ProfilePictureValidator:
         if self.profile_picture.size > settings.PROFILE_PIC_MAX_UPLOAD_SIZE:
             raise ValidationError("profilePicTooLarge", code="profilePicTooLarge")
 
-    # def checkImgSize(self):
-    #     width, height = get_image_dimensions(self.profile_picture)
-    #     if width > settings.PROFILE_PIC_MAX_WIDTH or height > settings.PROFILE_PIC_MAX_HEIGHT:
-    #         raise ValidationError("imageDimensionsTooLarge")
+    def checkImgSize(self):
+        width, height = get_image_dimensions(self.profile_picture)
+        if width > settings.PROFILE_PIC_MAX_WIDTH or height > settings.PROFILE_PIC_MAX_HEIGHT:
+            raise ValidationError("imageDimensionsTooLarge")
 
     def checkImgIntegrity(self):
         try:

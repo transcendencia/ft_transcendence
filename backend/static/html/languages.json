@@ -115,6 +115,7 @@
         "imageDimensionsTooLarge": "The dimensions of the image you selected are too large",
         "invalidImgType": "The profile picture must be in one of the following formats: .png, .jpeg, .png",
         "invalidImage": "The image you selected is invalid",
+        "downloadButton": "Download",
 
         "startGameText": "[E] to start the game",
         "leftText": "left",
@@ -250,6 +251,7 @@
         "imageDimensionsTooLarge": "Las dimensiones de la imagen seleccionada son demasiado grandes",
         "invalidImgType": "La foto de perfil debe estar en uno de los siguientes formatos: .png, .jpeg, .png",
         "invalidImage": "La imagen seleccionada es invalida",
+        "downloadButton": "Descargar",
 
         "startGameText": "Pulse [E] para empezar",
         "leftText": "izquierda",
@@ -288,6 +290,7 @@
         "RGPDCreate": "En vous iscrivant vous accepter la",
         "RGPDPolicy": "politique de confidentialite",
         "RGPDBack" : "Retour",
+
 
         "successfulSignup": "Utilisateur cree vous pouvez vous connecter",
         "unique": "Un utilisateur avec ce nom existe deja.",
@@ -386,6 +389,7 @@
         "imageDimensionsTooLarge": "Les dimensions de l'image sélectionnée sont trop grandes",
         "invalidImgType": "La photode profil doit etre dans l'un des formats suivant: .png, .jpeg, .png",
         "invalidImage": "L'image sélectionnée est invalide",
+        "downloadButton": "Telecharger",
 
         "startGameText": "[E] pour commencer",
         "leftText": "gauche",
