@@ -2,6 +2,7 @@ import { lobbyStart, setLobbyStart } from "./main.js";
 import { moveCameraToBackOfCockpit, moveCameraToFrontOfCockpit } from "./signUpPage.js";
 import { backToLobby, handleLogout, isLoggingOut } from "./loginPage.js";
 import { backToLobbyPressed, gameState } from "../../game/js/main.js";
+import { getTranslatedText } from "./translatePages.js";
 
 export function showPage(pageId, transition = 'default', changeHash = true) {
     var pages = document.querySelectorAll('.page');
@@ -40,7 +41,7 @@ addEventListener("hashchange", () => {
     if (gameState.loading)
         return;
     if (lobbyStart && !gameState.inGame) {
-        showAlert("You've been logged out, keep in mind that any press on history arrows while being in the galaxy lobby will cause you to log out.");
+        showAlert(getTranslatedText("SPALoggedOut"));
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
     }
@@ -57,7 +58,7 @@ addEventListener("hashchange", () => {
     } else if (window.location.hash === '#galaxy' && (oldLocation === '#rgpdPage' || oldLocation === "#signUpPage"))
         moveCameraToBackOfCockpit();
     else if (window.location.hash === '#galaxy' && oldLocation === '#game' && !backToLobbyPressed){
-        showAlert("You were redirected back to lobby, all data from this previous game was lost.");
+        showAlert(getTranslatedText("SPABackToLobby"));
         backToLobby(/*historyArrow: */true);
     }
     oldLocation = window.location.hash;

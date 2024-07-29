@@ -6,7 +6,7 @@ export async function updateUserStatus(status, token) {
     if (!token || !status)
         return;
     
-    fetch('/user/status/', {
+    await fetch('/user/status/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

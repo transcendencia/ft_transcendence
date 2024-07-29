@@ -461,7 +461,7 @@ export function startAnimation() {
         anim1.start();
     }
     
-export function createUserBadge(hostData, elementId) {
+export function createUserBadge(hostData, elementId, hovering = false) {
     const elem = document.getElementById(elementId);
     elem.innerHTML = `
     <div class="profilePic">
@@ -469,6 +469,8 @@ export function createUserBadge(hostData, elementId) {
     </div>
     ${hostData.profile_info.username}
   `;
+  if (!hovering)
+    return;
 }
 
 export function displayHostEscapePage() {

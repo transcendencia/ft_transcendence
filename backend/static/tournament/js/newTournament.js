@@ -133,9 +133,10 @@ export function resetTournament() {
 const botID = 0;
 let tournamentState = -1;
 
-export function changeTournamentStatus(){
-  if (tournamentState == 1)
-    tournamentState = 2;
+export function changeTournamentStatus(newValue){
+  if (newValue == 2 && tournamentState != 1)
+    return;
+  tournamentState = newValue;
 }
 
 const leftColumn = document.querySelector(".leftColumn");
