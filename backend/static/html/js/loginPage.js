@@ -516,14 +516,36 @@ export function logoutAllGuest(userId) {
     }
 }
 
-window.addEventListener('beforeunload', async function (event) {
+// window.addEventListener('beforeunload', async function (event) {
+//     const token = sessionStorage.getItem('host_auth_token');
+//     const hostId = sessionStorage.getItem('host_id');
+    
+//     logoutAllGuest(hostId);
+//     logoutUser(token);
+//     sessionStorage.clear();
+// });
+
+function handleUnload(event) {
     const token = sessionStorage.getItem('host_auth_token');
     const hostId = sessionStorage.getItem('host_id');
     
     logoutAllGuest(hostId);
     logoutUser(token);
     sessionStorage.clear();
-});
+}
+
+// Function to detect Firefox using a more future-proof method
+function isFirefox() {
+  return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+}
+
+if (isFirefox()) {
+  // Firefox-specific event listener
+  window.addEventListener('unload', handleUnload);
+} else {
+  // Event listener for other browsers (including Chromium)
+  window.addEventListener('beforeunload', handleUnload);
+}
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';
