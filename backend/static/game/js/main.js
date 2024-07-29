@@ -188,6 +188,7 @@ class LoadingScreen {
         this.icoLight.position.set(0, 4, 0);
         this.starSpeed = 2;
         this.loadingCompleted = false;
+        this.cancelLoading = false;
         this.scene.add(this.light, this.light2, this.light3, this.icoLight, this.light4);
         this.stars = [];
         this.addStars(2000);
@@ -222,6 +223,8 @@ class LoadingScreen {
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     this.spaceShip.rotation.x -= 0.01;
+                    if (this.cancelLoading)
+                        tweenRecall.stop();
                 });
             const tweenResetOrientation = new TWEEN.Tween(this.spaceShip.rotation)
                 .to({x: 0}, duration / 2)
@@ -235,6 +238,8 @@ class LoadingScreen {
                     this.spaceShip.scale.x -= 0.0004;
                     this.spaceShip.scale.y -= 0.0004;
                     this.spaceShip.scale.z -= 0.0004;
+                    if (this.cancelLoading)
+                        tween1.stop();
                 });
 
             // ROTATION ACCELERATION AND BRIGHTNESS
@@ -248,6 +253,8 @@ class LoadingScreen {
                     this.light3.power *= 1.02;
                     this.icoLight.power *= 1.02;
                     this.iterations++;
+                    if (this.cancelLoading)
+                        tween2.stop();
                 });
 
             // GET FAR FROM BALL
@@ -258,6 +265,10 @@ class LoadingScreen {
                     if (this.currentGraphics === 'high')
                         this.composer.addPass(this.afterimagePass);
                     this.starSpeed = 1;
+                })
+                .onUpdate(() => {
+                    if (this.cancelLoading)
+                        tween3.stop();
                 })
                 .onComplete(() => {
                     this.arena.gameState.switchLoadingToGame();
@@ -277,10 +288,11 @@ class LoadingScreen {
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
                     window.location.hash = '#game';
-                    console.log("alloa");
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
+                    if (this.cancelLoading)
+                        tween4.stop();
                 });
 
             // Chain the tweens together
@@ -372,6 +384,11 @@ class LoadingScreen {
                 this.ico2.geometry = this.highGraphicsGeometry;
                 this.currentGraphics = 'high';
             }
+    }
+    cancelLoadingAnimation()
+    {
+        this.cancelLoading = true;
+        this.loading = false;        
     }
 }
 
@@ -3724,6 +3741,21 @@ class GameState {
         this.inGame = false;
         this.loading = true;
         this.arena.loadingScreen.activateLoadingScreen();
+    }
+    loadingToLobby() {
+        loadingScreen.cancelLoadingAnimation();
+        this.inLobby = true;
+        this.loading = false;
+        this.inGame = false;
+        loadingScreen.activateLoadingScreen();
+        loadingScreen.isAnimatingCamera = true;
+        endGame(this.arena.game.tournamentGame, true);
+        document.getElementById('c4').style.display = 'block';
+        document.getElementById('c3').style.display = 'none';
+        document.getElementById('c1').style.display = 'none';
+        setTimeout(() => {
+            loadingScreen.cancelLoading = false;
+        }, 1000);
     }
     monitorGameState() {
         if (this.loading && !this.arenaCreated)
