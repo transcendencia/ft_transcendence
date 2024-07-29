@@ -534,18 +534,17 @@ function handleUnload(event) {
     sessionStorage.clear();
 }
 
-// Function to detect Firefox using a more future-proof method
 function isFirefox() {
   return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 }
 
 if (isFirefox()) {
-  // Firefox-specific event listener
+  window.addEventListener('pagehide', handleUnload);
   window.addEventListener('unload', handleUnload);
-} else {
-  // Event listener for other browsers (including Chromium)
-  window.addEventListener('beforeunload', handleUnload);
 }
+else 
+  window.addEventListener('beforeunload', handleUnload);
+
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';
