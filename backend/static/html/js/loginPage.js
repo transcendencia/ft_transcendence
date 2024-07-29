@@ -192,6 +192,7 @@ export async function handleLogin(formData) {
 
     setlanguageIconsClicked(false);
     const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
+    document.getElementById(messageContainerId).innerText = '';
 
     try {
         const response = await fetch('login_page/', {
