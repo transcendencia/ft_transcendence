@@ -93,11 +93,14 @@ buttonHeaders.forEach((buttonHeader, index) => {
 });
 
 export function resetHostTournament(){
-	tournamentPlayer.length = 0;
 	getProfileInfo(sessionStorage.getItem("host_id"))
 	.then(data => {
 		populateProfileInfos(data);
 	})
+}
+
+export function resetTournamentPlayer(){
+  tournamentPlayer.length = 0;
 }
 
 export function resetTournament() {
@@ -133,9 +136,11 @@ export function resetTournament() {
 const botID = 0;
 let tournamentState = -1;
 
-export function changeTournamentStatus(){
-  if (tournamentState == 1)
-    tournamentState = 2;
+export function changeTournamentStatus(newValue){
+  if (newValue == 2)
+    if (tournamentState != 1)
+      return ;
+  tournamentState = newValue;
 }
 
 const leftColumn = document.querySelector(".leftColumn");
@@ -338,11 +343,15 @@ cancelTournamentButton.addEventListener('click', () => {
     return nbPlayer;
   }
 
+  let tournamentPhase;
+
   launchTournamentElement.addEventListener("click", function() {
     if (countNonBotPlayer(tournamentPlayer) < 3){
       updateElementDisplayAndText("error_msg", getTranslatedText('ErrorMinus'));
       return ;
     }
+    if (tournamentPlayer.length > 4)
+      tournamentPhase = "1/4";
     tournamentState = 1;
     updateElementDisplayAndText("error_msg", "");
     tournamentPlayer.forEach(function(player){

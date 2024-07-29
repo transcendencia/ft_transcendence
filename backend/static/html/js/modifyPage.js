@@ -44,6 +44,7 @@ function handleChangeInfoForm(event) {
   .then(data => {
     getProfileInfo(sessionStorage.getItem("host_id"))
     .then(data => {
+        //reset user in Matcjh
         populateProfileInfos(data);
         createUserBadge(data, "playersConnHostBadge");
       })
@@ -114,7 +115,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   });
 
   document.getElementById("validateDelete").classList.remove("showRectangle");
-  changeTournamentStatus();
+  changeTournamentStatus(2);
   resetTournament();
   togglePlanet(/* toggleRsContainer: */ false);
   returnToHost(/* updateStats: */ false);
