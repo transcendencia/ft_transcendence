@@ -285,7 +285,7 @@
         "loginFailed": "Nom d'utilisateur et/ou mot de passe invalide",
         "userAlreadyLoggedIn": "Utilisateur déjà connecte",
         "SPABackToLobby": "Vous avez ete redirige au lobby, toute donnee de la partie precedente a ete perdue.",
-        "SPALoggedOut": "Vous avez ete deconnectes, souvenez vous bien que nimporte quel clic sur une fleche d'historique dans le lobby/galaxy vous deconnectera.",
+        "SPALoggedOut": "Vous avez ete deconnecte, souvenez vous bien que nimporte quel click sur une fleche d'historique dans le lobby/galaxy vous deconnectera.",
 
         "signUpTitle": "s'Inscrire",
         "createAnAccount": "Cree un compte",

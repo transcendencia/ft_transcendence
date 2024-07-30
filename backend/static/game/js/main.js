@@ -866,9 +866,8 @@ class Arena extends THREE.Mesh {
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
         this.paddleRight.animatePaddle(this);
-        if (!this.spaceKeyBlocked && keyDown[' '] && this.game.isPlaying && !this.ball.isRolling && this.game.rightScore < this.game.maxScore && this.game.leftScore < this.game.maxScore)
+        if (!this.spaceKeyBlocked && keyDown[' '] && this.game.isPlaying && !this.ball.isRolling && this.game.rightScore < this.game.maxScore && this.game.leftScore < this.game.maxScore && this.paddleLeft.particles.isActive)
         {
-            console.log("space called with keyBlocked = " + this.spaceKeyBlocked);
             this.ball.speedX = 0;
             this.ball.acceleration = 0;
             this.ball.updateSpeedBar();
