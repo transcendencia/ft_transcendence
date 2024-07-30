@@ -39,6 +39,8 @@ class UserGraphicModeView(APIView):
 
     try:
       data = json.loads(request.body)
+      if not isinstance(data, dict):
+            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
     except json.JSONDecodeError:
         return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
     except UnicodeDecodeError:
@@ -68,6 +70,8 @@ class UserLanguageView(APIView):
 
     try:
       data = json.loads(request.body)
+      if not isinstance(data, dict):
+            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
     except json.JSONDecodeError:
         return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
     except UnicodeDecodeError:

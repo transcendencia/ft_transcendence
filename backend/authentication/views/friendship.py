@@ -45,7 +45,7 @@ class FriendRequestView(APIView):
             if receiver_id == sender.id or receiver_id == bot.id:
                 return Response({'message': "Invalid ID"}, status=status.HTTP_400_BAD_REQUEST)
 
-                receiver = get_object_or_404(User, id=receiver_id)
+            receiver = get_object_or_404(User, id=receiver_id)
             friend_request, created = FriendRequest.objects.get_or_create(sender=sender, receiver=receiver)
 
             logger.info(f"Friend request {'created' if created else 'already exists'} from user {sender.username} to user {receiver.username}")
@@ -66,7 +66,6 @@ class FriendRequestView(APIView):
         try:
             data = json.loads(request.body)
             if not isinstance(data, dict):
-                logger.error("Request body must be a JSON object")
                 return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
 
             request_id = data.get("request_id")
@@ -102,7 +101,6 @@ class FriendRequestView(APIView):
         try:
             data = json.loads(request.body)
             if not isinstance(data, dict):
-                logger.error("Request body must be a JSON object")
                 return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
         except json.JSONDecodeError:
             return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_400_BAD_REQUEST)
@@ -115,20 +113,14 @@ class FriendRequestView(APIView):
                 raise ValueError("Request ID is required")
 
             friend_request = get_object_or_404(FriendRequest, id=request_id)
-            if request.user.id == friend_request.sender.id:
-                raise ValueError("Invalid ID")
-
             friend_request.delete()
         
-            logger.info(f"Friend request {request_id} deleted by user {request.user.username}")
             return HttpResponse(status=status.HTTP_200_OK)
         
         except Http404:
-            logger.error('Friend request not found')
             return Response({'status': "error", 'message': "Friend request not found"}, status=status.HTTP_404_NOT_FOUND)
         
         except ValueError as ve:
-            logger.error(f'Value error: {str(ve)}')
             return Response({'status': "error", 'message': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
 
         except (OperationalError, InterfaceError):
