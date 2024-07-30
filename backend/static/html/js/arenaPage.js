@@ -207,7 +207,7 @@ export function putUserInMatch(plusButtonsArray, mode) {
 
 function updateListAndResetTimer() {
 	RenderAllUsersInList();
-	clearTimeout(checkEach5Sec);
+	clearInterval(checkEach5Sec);
 	setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
 }
 
@@ -266,7 +266,6 @@ backPasswordButton.addEventListener('click', function() {
 
 function addEventListenerToTile(tile, arena) {
 	tile.HTMLelement.addEventListener('click', function() {
-	console.log(tile.user.username, tile.user.status, isGuest(tile.user.id));
 	if (!plusClicked || isBotId(tile.user.id) && planetInRange.name === "arena" && plusClicked === 1)
 		return;
 	if (isBotId(tile.user.id) || (tile.user.status === 'online' && isGuest(tile.user.id))) {
@@ -361,11 +360,11 @@ export function resetArenaPage() {
 	resetAddingMode("arena");
 }
   
-  async function refreshUserListIfChanged() {
+export async function refreshUserListIfChanged() {
 	if (await isListsChanged())
 	  await RenderAllUsersInList();
 	// console.log("Checking...");
-  }
+}
 
   const userTiles = new Map();
    
@@ -658,7 +657,6 @@ export async function endGame(isTournament, backToLobby = false) {
 	for(let i = 0; i < guestLoggedIn.length; i++) {
 		if (guestLoggedIn[i][0].id == gameState.arena.game.user1.id || guestLoggedIn[i][0].id == gameState.arena.game.user2.id || guestLoggedIn[i][0].id == gameState.arena.game.user3.id) {
 			const token = guestLoggedIn[i][1];
-			console.log(guestLoggedIn[i][0].id);
 			await updateUserStatus('online', token);
 		}
 	}
@@ -794,6 +792,7 @@ const loginPage = document.querySelector('.loginPage');
 const planetPanel = document.querySelectorAll('.planetPanel');
 const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
+	clearInterval(checkEach5Sec);
     let player2;
     let player3;
     if (matchPlayer.length < 2 || (matchPlayer.length < 3 && matchPlayer[1].thirdPlayer))

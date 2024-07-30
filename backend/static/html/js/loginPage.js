@@ -3,12 +3,12 @@ import { showPage } from "./showPages.js";
 import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { keyDown, swapToFullScreen, gameState } from "../../game/js/main.js";
-import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
+import { changeGraphics, toggleGameStarted, guestLoggedIn, initArenaPlanet, refreshUserListIfChanged } from "./arenaPage.js";
 import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape , toggleRSContainerVisibility, escapeContainerVisible, lobbyStart, panelRemove} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
 import { planetInRange, resetOutline } from "./planetIntersection.js";
 import { rsContVisible } from "./main.js";
-import { checkEach5Sec, landedOnPlanet, togglePlanet } from "./enterPlanet.js";
+import { checkEach5Sec, landedOnPlanet, togglePlanet, setCheckerToInterval } from "./enterPlanet.js";
 import { returnToHost } from "./userPage.js";
 
 function addGlow(elementId, glow) {
@@ -250,7 +250,6 @@ function handleHostLogin(data){
     setCurrentLanguage(data.language.slice(0, 2));
     setEscapeLanguageVisual();
     
-    get_friends_list();
     getProfileInfo(sessionStorage.getItem("host_id"))
     .then(data => {
         populateProfileInfos(data);
@@ -401,8 +400,8 @@ export function backToLobby(historyArrow = false) {
         keyDown['e'] = true;
     } else {
         resetGameEscape();
-        window.location.hash = "#galaxy";
     }
+    window.location.hash = "#galaxy";
     setTimeout(() => {
         keyDown['e'] = false;
         gameState.eKeyWasPressed = false;
@@ -415,7 +414,9 @@ export function backToLobby(historyArrow = false) {
         gameState.arena.game.rightScore = 0;
         gameState.arena.resetParticles();
         gameState.arena.resetUI();
+        setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
     }, 100);
+
 }
 
 
@@ -441,8 +442,8 @@ export async function handleLogout(userId, token) {
             togglePlanet(/* toggleRsContainer: */ false);
             panelRemove();
         }
-        setSpaceShipToLoginState();
         showPage('loginPage');
+        setSpaceShipToLoginState();
         swipeLeftSideContainer('-40%');
         logoutAllGuest(userId);
         logoutUser(token);
@@ -450,8 +451,8 @@ export async function handleLogout(userId, token) {
         clearHostValuesFromSessionStorage();
         setTimeout(() => {
             toggleLobbyStart();
-            resolve();
             gameState.paused = false;
+            resolve();
         }, 50);
     });
     isLoggingOut = false;
@@ -523,7 +524,7 @@ export function clearHostValuesFromSessionStorage() {
     sessionStorage.removeItem("host_id");
 }
 
-function handleUnload(event) {
+function handleUnload() {
     const token = sessionStorage.getItem('host_auth_token');
     const hostId = sessionStorage.getItem('host_id');
     
