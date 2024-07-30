@@ -15,7 +15,7 @@ export function showPage(pageId, transition = 'default', changeHash = true) {
         return;
     if (changeHash)
         window.location.hash = `#${pageId}`;
-   ('currentPage', pageId); // Store current page in sessionStorage
+   sessionStorage.setItem('currentPage', pageId); // Store current page in sessionStorage
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
@@ -25,6 +25,7 @@ export function showPage(pageId, transition = 'default', changeHash = true) {
 let oldLocation = window.location.hash || '#loginPage';
 
 export function initPage() {
+    console.log(sessionStorage.getItem('currentPage'));
     const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
     if (lastPage === 'signUpPage' || lastPage === 'rgpdPage')
         moveCameraToFrontOfCockpit(lastPage, 'signUp');
@@ -51,7 +52,7 @@ addEventListener("hashchange", () => {
     } else if ((window.location.hash === '#galaxy' || window.location.hash === '#game' || window.location.hash === '#loading') && (oldLocation === '#rgpdPage' || oldLocation === "#signUpPage")) {
         moveCameraToBackOfCockpit();
     }
-    else if (window.location.hash === '#loading' && oldLocation === '#game' && !backToLobbyPressed){
+    else if (window.location.hash === '#loading' && oldLocation === '#game' && !backToLobbyPressed && gameState.inGame){
         showAlert(getTranslatedText("SPABackToLobby"));
         backToLobby(/*historyArrow: */true);
     }

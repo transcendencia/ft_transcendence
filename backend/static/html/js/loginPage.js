@@ -399,21 +399,12 @@ export let isLoggingOut = false;
 export function backToLobby(historyArrow = false) {
     if (historyArrow) {
         keyDown['e'] = true;
-        setTimeout(() => {
-            keyDown['e'] = false;
-            gameState.eKeyWasPressed = false;
-            gameState.arena.displayBackPanel(true);
-            gameState.arena.thirdPlayer.deactivateThirdPlayer();
-            gameState.arena.idleCameraAnimation();
-            gameState.arena.swapToFullScreen();
-            gameState.arena.resetPoint();
-            gameState.arena.game.leftScore = 0;
-            gameState.arena.game.rightScore = 0;
-            gameState.arena.resetParticles();
-            gameState.arena.resetUI();
-        }, 100);
     } else {
         resetGameEscape();
+        window.location.hash = "#galaxy";
+    }
+    setTimeout(() => {
+        keyDown['e'] = false;
         gameState.eKeyWasPressed = false;
         gameState.arena.displayBackPanel(true);
         gameState.arena.thirdPlayer.deactivateThirdPlayer();
@@ -424,7 +415,7 @@ export function backToLobby(historyArrow = false) {
         gameState.arena.game.rightScore = 0;
         gameState.arena.resetParticles();
         gameState.arena.resetUI();
-    }
+    }, 100);
 }
 
 
