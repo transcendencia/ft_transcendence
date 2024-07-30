@@ -50,7 +50,8 @@ export function getUserStatus(userId) {
 
 export function getProfileInfo(userId) {
     const token = sessionStorage.getItem('host_auth_token');
-
+    if (!userId)
+        return;
     return fetch(`user_info/${userId}/`, {
         method: 'GET',
         headers: {
