@@ -456,7 +456,7 @@ export async function handleLogout(userId, token) {
         logoutAllGuest(userId);
         logoutUser(token);
         reactivateLoginFields();
-        sessionStorage.clear();
+        clearHostValuesFromSessionStorage();
         setTimeout(() => {
             toggleLobbyStart();
             resolve();
@@ -523,8 +523,14 @@ export function logoutAllGuest(userId) {
     
 //     logoutAllGuest(hostId);
 //     logoutUser(token);
-//     sessionStorage.clear();
+//     clearHostValuesFromSessionStorage();
 // });
+
+export function clearHostValuesFromSessionStorage() {
+    sessionStorage.removeItem("hostLoggedIn");
+    sessionStorage.removeItem("host_auth_token");
+    sessionStorage.removeItem("host_id");
+}
 
 function handleUnload(event) {
     const token = sessionStorage.getItem('host_auth_token');
@@ -532,7 +538,7 @@ function handleUnload(event) {
     
     logoutAllGuest(hostId);
     logoutUser(token);
-    sessionStorage.clear();
+    clearHostValuesFromSessionStorage();
 }
 
 function isFirefox() {

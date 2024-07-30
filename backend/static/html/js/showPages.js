@@ -15,8 +15,7 @@ export function showPage(pageId, transition = 'default', changeHash = true) {
         return;
     if (changeHash)
         window.location.hash = `#${pageId}`;
-    sessionStorage.setItem('currentPage', pageId); // Store current page in sessionStorage
-    console.trace("showpage", pageId, sessionStorage.getItem('currentPage'));
+   ('currentPage', pageId); // Store current page in sessionStorage
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
@@ -26,7 +25,6 @@ export function showPage(pageId, transition = 'default', changeHash = true) {
 let oldLocation = window.location.hash || '#loginPage';
 
 export function initPage() {
-    console.log("lastPage", sessionStorage.getItem('currentPage'));
     const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
     if (lastPage === 'signUpPage' || lastPage === 'rgpdPage')
         moveCameraToFrontOfCockpit(lastPage, 'signUp');
@@ -34,7 +32,7 @@ export function initPage() {
 }
 
 addEventListener("hashchange", () => {
-    console.log("info", window.location.hash, oldLocation, lobbyStart, isLoggingOut);
+    console.log("OnHashChange | currentHash:", window.location.hash, "| oldHash:", oldLocation, "| lobbyStartVar:", lobbyStart, "| isLogginOutVar:", isLoggingOut);
     if (lobbyStart && !gameState.inGame && !gameState.loading) {
         showAlert(getTranslatedText("SPALoggedOut"));
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);

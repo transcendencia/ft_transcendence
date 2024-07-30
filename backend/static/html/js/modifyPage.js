@@ -106,7 +106,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
       }
       guestLoggedIn.splice(0, guestLoggedIn.length);
       clearInterval(checkEach5Sec);
-      sessionStorage.clear();
+      clearHostValuesFromSessionStorage();
       return response.json();
   })
   .catch(error => {
