@@ -11,7 +11,7 @@ import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '
 import { changeColorMessage } from './signUpPage.js';
 
 let isInfosShow = false;
-let anonymousStatus;
+let anonymousStatus = false;
 
 var submitChangeButton = document.querySelector(".submitChangeButton");
 submitChangeButton.addEventListener("click", handleChangeInfoForm);
@@ -31,7 +31,7 @@ function handleChangeInfoForm(event) {
     method: 'POST',
     headers: {
       'Authorization': `Token ${token}`,
-      'X-CRSFToken': getCookie('crsftoken')
+      'X-CSRFToken': getCookie('csrftoken')
     },
     body: formData,
   })
@@ -166,13 +166,18 @@ export function getRandomUsername() {
           'Authorization': `Token ${token}`,
       }
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(err => Promise.reject(err));
+    }
+    return response.json();})
   .then(data => {
     document.getElementById('changeUsernameInput').value = data.username;
   })
   .catch(error => {
       console.error('Error:', error);
-      throw error;
+      var changeInfoMessage = document.getElementById('changeInfoMessage');
+      changeInfoMessage.innerText = getTranslatedText(error.msg_code);
   });
 };
 
