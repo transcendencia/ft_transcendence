@@ -100,9 +100,10 @@ class FriendListView(APIView):
             }
 
             return JsonResponse(data, status=status.HTTP_200_OK)
-        except Exception as e:
+        
+        except OperationalError as e:
             logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)
     
     def create_user_pair(self, user, request_id):
         return {
@@ -112,9 +113,9 @@ class FriendListView(APIView):
     
     def get_or_create_bot(self):
         try:
-            bot, _ = User.objects.get_or_create(username="bot", defaults={'password': 'bot1234'})
+            bot, _ = User.objects.get_or_create(username="bot", defaults={'password': os.getenv('BOT_PASSWORD')})
             return UserSerializer(bot).data
         
-        except Exception as e:
+        except OperationalError as e:
             logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)

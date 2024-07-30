@@ -24,6 +24,7 @@
         "invalidConfirmationPassword":"Password not identical",
         "password_invalid":"The password must contain at least: • one uppercase letter, •one lowercase letter, •one number and one special character from the following: ~!@#$%^&*()_+{}\":;'[].",
         "invalid_characters": "The username can only contain letters, numbers, or @/./+/-/_",
+        "invalidWhitespacePassword": "Password cannot contain spaces",
 
         "RGPDTitle" : "Privacy Policy",
         "RGPDText": "Your data is only used for the proper functioning of the tournament. Your profile is deleted after two years after the last login. You can modify, download the collected data, or delete your profile, at any time, from the planete profile. For more information go to the CNIL website.",
@@ -115,6 +116,7 @@
         "imageDimensionsTooLarge": "The dimensions of the image you selected are too large",
         "invalidImgType": "The profile picture must be in one of the following formats: .png, .jpeg, .png",
         "invalidImage": "The image you selected is invalid",
+        "invalidCharAlias": "The alias can only contain letters, numbers, or @/./+/-/_",
 
         "startGameText": "[E] to start the game",
         "leftText": "left",
@@ -161,6 +163,7 @@
         "invalidConfirmationPassword":"Contraseña no idéntica",
         "password_invalid": "La contraseña debe contener al menos: •una letra mayúscula, •una letra minúscula, •un número y un carácter especial de los siguientes: ~!@#$%^&*()_+{}\":;'[].",
         "invalid_characters": "El nombre de usuario solo puede contener letras, números o @/./+/-/_",
+        "invalidWhitespacePassword": "La contraseña no puede contener espacios",
 
         "RGPDTitle" : "Politica de privacidad",
         "RGPDText" : "Tus datos solo sirven para el buen funcionamiento del torneo. Tu perfil se elimina después de dos años después de la última conexión. Puede editar, descargar los datos recopilados, o eliminar su perfil, en cualquier momento, desde el planeta perfil. Para más información, visite el sitio web de la CNIL.",
@@ -250,6 +253,7 @@
         "imageDimensionsTooLarge": "Las dimensiones de la imagen seleccionada son demasiado grandes",
         "invalidImgType": "La foto de perfil debe estar en uno de los siguientes formatos: .png, .jpeg, .png",
         "invalidImage": "La imagen seleccionada es invalida",
+        "invalidCharAlias": "El alias de usuario solo puede contener letras, números o @/./+/-/_",
 
         "startGameText": "Pulse [E] para empezar",
         "leftText": "izquierda",
@@ -300,7 +304,8 @@
         "invalidConfirmationPassword":"Mot de passe non identique",
         "password_invalid": "Le mot de passe doit contenir au minimum : •une lettre majuscule, •une lettre minuscule, •un chiffre et un caractère spécial parmi les suivants : ~!@#$%^&*()_+{}\":;'[].",
         "invalid_characters": "Le nom d'utilisateur ne peut contenir que des lettres, des nombres ou @/./+/-/_",
-        
+        "invalidWhitespacePassword": "Le mot de passe ne peut pas contenir d'espaces",
+
         "settingsPlanetInfo1": "[Nom]: Profil",
         "settingsPlanetInfo2": "[ID]: SO-0911",
         "settingsPlanetInfo3": "[Temperature]: +127°C",
@@ -383,9 +388,10 @@
         "successfulModifyInfo": "Informations change",
         "passwordError": "Les champs 'mot de passe' et 'confirmer mot de passe' doivent etre rempli pour change le mot de passe",
         "profilePicTooLarge": "La taille du fichier de la photo de profil est trop grande",
-        "imageDimensionsTooLarge": "Les dimensions de l'image sélectionnée sont trop grandes",
+        "imageDimensionsTooLarge": "Les dimensions de l'image sélectionnee sont trop grandes",
         "invalidImgType": "La photode profil doit etre dans l'un des formats suivant: .png, .jpeg, .png",
-        "invalidImage": "L'image sélectionnée est invalide",
+        "invalidImage": "L'image sélectionnee est invalide",
+        "invalidCharAlias": "L'alias ne peut contenir que des lettres, des nombres ou @/./+/-/_",
 
         "startGameText": "[E] pour commencer",
         "leftText": "gauche",
