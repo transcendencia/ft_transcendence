@@ -76,3 +76,22 @@ body {
 .playerText {
     z-index:99; font-size: 15px; font-family: 'space'; color: white;
 }
+
+.alert {
+    position: fixed;
+    bottom: 0.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff0000;
+    font-size: 10px;
+    font-family: 'space';
+    background-color: #05005b;
+    border-radius: 5px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.alert.show {
+    opacity: 1;
+}

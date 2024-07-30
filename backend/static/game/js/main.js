@@ -23,6 +23,7 @@ import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
 
+export let backToLobbyPressed;
 let frameCount = 0;
 let lastTime = performance.now();
 
@@ -498,8 +499,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const backToLobbyButton = document.getElementById('backToLobbyButton');
 
     backToLobbyButton.addEventListener('click', () => {
-        gameState.arena.displayBackPanel();
+        window.location.hash = "#galaxy";
+        backToLobbyPressed = true;
+        setTimeout(() => {
+            gameState.arena.displayBackPanel();
         gameState.eKeyWasPressed = false;
+            backToLobbyPressed = false;
+        }, 100);
     });
     const rematchButton = document.getElementById('rematchButton');
 
@@ -1301,6 +1307,7 @@ class Arena extends THREE.Mesh {
         scoreUI[0].style.opacity = 0;
         this.game.isOver = false;
         this.isBeingReset = false;
+        
     }
     swapToFullScreen()
     {
@@ -3428,8 +3435,9 @@ class Bot {
             this.updatesToPowerUp = (Math.floor(Math.random() * 30) + 1) / this.powerUpLikeness;
     }
     deactivateBot() {
+        if (this.isPlaying)
+            this.deactivateGui();
         this.isPlaying = false;
-        this.deactivateGui();
     }
     initGUI() {
         this.gui = new dat.GUI();

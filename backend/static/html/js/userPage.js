@@ -69,7 +69,7 @@ export function initUserPlanet() {
     refreshUserList();
   if (pageDisplayed === "searchedProfile")
     refreshSearchedPage(displayedUserOnSearchPage);
-  // console.log("checking...");
+  console.log("checking...");
   }, 5000));
 }
 
@@ -285,6 +285,8 @@ async function displayUserType(user,type) {
 }
 
 function refreshSearchedPage(user) {
+  if (!user)
+    return;
   getProfileInfo(user.id).then(data => {
     const userData = data.profile_info;
     if (searchedUserFinishedAMatch(userData.nbr_match)) {
