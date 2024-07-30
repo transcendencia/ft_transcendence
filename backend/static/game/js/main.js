@@ -23,6 +23,7 @@ import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
 
+export let backToLobbyPressed;
 let frameCount = 0;
 let lastTime = performance.now();
 
@@ -188,6 +189,7 @@ class LoadingScreen {
         this.icoLight.position.set(0, 4, 0);
         this.starSpeed = 2;
         this.loadingCompleted = false;
+        this.cancelLoading = false;
         this.scene.add(this.light, this.light2, this.light3, this.icoLight, this.light4);
         this.stars = [];
         this.addStars(2000);
@@ -222,6 +224,8 @@ class LoadingScreen {
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(() => {
                     this.spaceShip.rotation.x -= 0.01;
+                    if (this.cancelLoading)
+                        tweenRecall.stop();
                 });
             const tweenResetOrientation = new TWEEN.Tween(this.spaceShip.rotation)
                 .to({x: 0}, duration / 2)
@@ -235,6 +239,8 @@ class LoadingScreen {
                     this.spaceShip.scale.x -= 0.0004;
                     this.spaceShip.scale.y -= 0.0004;
                     this.spaceShip.scale.z -= 0.0004;
+                    if (this.cancelLoading)
+                        tween1.stop();
                 });
 
             // ROTATION ACCELERATION AND BRIGHTNESS
@@ -248,6 +254,8 @@ class LoadingScreen {
                     this.light3.power *= 1.02;
                     this.icoLight.power *= 1.02;
                     this.iterations++;
+                    if (this.cancelLoading)
+                        tween2.stop();
                 });
 
             // GET FAR FROM BALL
@@ -258,6 +266,10 @@ class LoadingScreen {
                     if (this.currentGraphics === 'high')
                         this.composer.addPass(this.afterimagePass);
                     this.starSpeed = 1;
+                })
+                .onUpdate(() => {
+                    if (this.cancelLoading)
+                        tween3.stop();
                 })
                 .onComplete(() => {
                     this.arena.gameState.switchLoadingToGame();
@@ -277,10 +289,11 @@ class LoadingScreen {
                     this.arena.gameState.loading = false;
                     this.arena.gameState.inGame = true;
                     window.location.hash = '#game';
-                    console.log("alloa");
                 })
                 .onUpdate((obj) => {
                     document.getElementById('c1').style.opacity = obj.opacity;
+                    if (this.cancelLoading)
+                        tween4.stop();
                 });
 
             // Chain the tweens together
@@ -372,6 +385,11 @@ class LoadingScreen {
                 this.ico2.geometry = this.highGraphicsGeometry;
                 this.currentGraphics = 'high';
             }
+    }
+    cancelLoadingAnimation()
+    {
+        this.cancelLoading = true;
+        this.loading = false;        
     }
 }
 
@@ -468,11 +486,9 @@ infoButton.addEventListener("mouseleave", hideAnonymousMode);
 
 function displayAnonymousMode() {
   document.getElementById("gameInfoBox").classList.add("showRectangle");
-  console.log("wagwan");
 }
 
 function hideAnonymousMode() {
-    console.log("wagwannn");
   document.getElementById("gameInfoBox").classList.remove("showRectangle");
 }
 
@@ -483,16 +499,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const backToLobbyButton = document.getElementById('backToLobbyButton');
 
     backToLobbyButton.addEventListener('click', () => {
-        gameState.arena.displayBackPanel();
+        window.location.hash = "#galaxy";
+        backToLobbyPressed = true;
+        setTimeout(() => {
+            gameState.arena.displayBackPanel();
+        gameState.eKeyWasPressed = false;
+            backToLobbyPressed = false;
+        }, 100);
     });
     const rematchButton = document.getElementById('rematchButton');
 
     rematchButton.addEventListener('click', () => {
+        if (gameState.arena.spaceKeyBlocked)
+            return;
         if (gameState.arena.game.tournamentGame)
             return;
         if (!gameState.arena.game.isOver)
             return;
         rematchGame();
+        gameState.eKeyWasPressed = false;
         keyDown['e'] = true;
         gameState.arena.resetUIForRematch();
         setTimeout(() => {
@@ -655,6 +680,7 @@ class Arena extends THREE.Mesh {
         this.dragonMap = new DragonMap(this);
         this.singlePlayer = false;
         this.spaceMap.initMap();
+        this.spaceKeyBlocked = false;
         this.composer1 = new EffectComposer(renderer);
         this.composer2 = new EffectComposer(renderer2);
 
@@ -840,8 +866,9 @@ class Arena extends THREE.Mesh {
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
         this.paddleRight.animatePaddle(this);
-        if (keyDown[' '] && this.game.isPlaying && !this.ball.isRolling && this.game.rightScore < this.game.maxScore && this.game.leftScore < this.game.maxScore)
+        if (!this.spaceKeyBlocked && keyDown[' '] && this.game.isPlaying && !this.ball.isRolling && this.game.rightScore < this.game.maxScore && this.game.leftScore < this.game.maxScore)
         {
+            console.log("space called with keyBlocked = " + this.spaceKeyBlocked);
             this.ball.speedX = 0;
             this.ball.acceleration = 0;
             this.ball.updateSpeedBar();
@@ -882,7 +909,7 @@ class Arena extends THREE.Mesh {
             this.paddleRight.light.power += 0.1;
             this.bot.isPlaying = !this.bot.isPlaying;
         }
-        if (keyDown['e'])
+        if (keyDown['e'] && !gameState.loading && !this.gameState.eKeyWasPressed)
         {
             if (gameState.loading)
                 return;
@@ -1135,6 +1162,7 @@ class Arena extends THREE.Mesh {
     {
         if (this.game.isOver)
             return;
+        this.spaceKeyBlocked = true;
         let duration = 1150;
         this.ball.trailParticles.regroupTrail();
         this.thirdPlayer.deactivateThirdPlayer();
@@ -1220,6 +1248,7 @@ class Arena extends THREE.Mesh {
             winningScreen.classList.add('visible');
             if (this.game.user2.isBot === 'Bot')
                 this.bot.deactivateBot();
+            this.spaceKeyBlocked = false;
         });
         let targetLight = loserPaddle.defaultLight;
         if (this.getCurrentMap() === this.dragonMap || this.getCurrentMap() === this.oceanMap)
@@ -1256,6 +1285,7 @@ class Arena extends THREE.Mesh {
         this.isBeingReset = false;
         this.resetUI();
         const winningScreen = document.querySelector('.winning-screen');
+        // winningScreen.classList.add('hidden');
         winningScreen.classList.remove('visible');
     }
     displayBackPanel(backToLobby = false)
@@ -1277,6 +1307,7 @@ class Arena extends THREE.Mesh {
         scoreUI[0].style.opacity = 0;
         this.game.isOver = false;
         this.isBeingReset = false;
+        
     }
     swapToFullScreen()
     {
@@ -3404,8 +3435,9 @@ class Bot {
             this.updatesToPowerUp = (Math.floor(Math.random() * 30) + 1) / this.powerUpLikeness;
     }
     deactivateBot() {
+        if (this.isPlaying)
+            this.deactivateGui();
         this.isPlaying = false;
-        this.deactivateGui();
     }
     initGUI() {
         this.gui = new dat.GUI();
@@ -3717,6 +3749,21 @@ class GameState {
         this.inGame = false;
         this.loading = true;
         this.arena.loadingScreen.activateLoadingScreen();
+    }
+    loadingToLobby() {
+        loadingScreen.cancelLoadingAnimation();
+        this.inLobby = true;
+        this.loading = false;
+        this.inGame = false;
+        loadingScreen.activateLoadingScreen();
+        loadingScreen.isAnimatingCamera = true;
+        endGame(this.arena.game.tournamentGame, true);
+        document.getElementById('c4').style.display = 'block';
+        document.getElementById('c3').style.display = 'none';
+        document.getElementById('c1').style.display = 'none';
+        setTimeout(() => {
+            loadingScreen.cancelLoading = false;
+        }, 1000);
     }
     monitorGameState() {
         if (this.loading && !this.arenaCreated)

@@ -222,7 +222,6 @@ validatePasswordButton.addEventListener('click', async function() {
     if (isValidating)
         return;
     isValidating = true;
-    // validatePasswordButton.style.pointerEvents = 'none';
     
     try {
         if (guestLoggedIn.length < 7) {
@@ -246,18 +245,15 @@ validatePasswordButton.addEventListener('click', async function() {
                 pwWindow.classList.remove("showRectangle");
                 if (planetInRange.name === 'arena')
                     blockingPanel.classList.remove('show');
-            } else {
-                console.log("Erreur dans le login");
             }
         }
         else {
-            console.log("Too many guest");
+            document.getElementById('errorLogGuest').innerText = getTranslatedText("tooManyGuest");
         }
     } catch (error) {
         console.error('Erreur lors de la connexion :', error);
     } finally {
         isValidating = false;
-        // validatePasswordButton.style.pointerEvents = '';
     }
 });
 
@@ -270,6 +266,7 @@ backPasswordButton.addEventListener('click', function() {
 
 function addEventListenerToTile(tile, arena) {
 	tile.HTMLelement.addEventListener('click', function() {
+	console.log(tile.user.username, tile.user.status, isGuest(tile.user.id));
 	if (!plusClicked || isBotId(tile.user.id) && planetInRange.name === "arena" && plusClicked === 1)
 		return;
 	if (isBotId(tile.user.id) || (tile.user.status === 'online' && isGuest(tile.user.id))) {
@@ -343,7 +340,7 @@ async function isListsChanged() {
   }
 
   export function initTournamentPlanet(){
-	changeTournamentStatus(0)
+	changeTournamentStatus(0);
 	userListBackground = document.getElementById('userlistTournamentPage');
 	RenderAllUsersInList();
 	resetHostTournament();
@@ -367,7 +364,7 @@ export function resetArenaPage() {
   async function refreshUserListIfChanged() {
 	if (await isListsChanged())
 	  await RenderAllUsersInList();
-	console.log("Checking...");
+	// console.log("Checking...");
   }
 
   const userTiles = new Map();
@@ -650,7 +647,6 @@ export async function endGame(isTournament, backToLobby = false) {
 	const hostId = sessionStorage.getItem('host_id');
 	if (hostId == gameState.arena.game.user1.id  || hostId == gameState.arena.game.user2.id  || (hostId == gameState.arena.game.user3.id )){
 		const token = sessionStorage.getItem('host_auth_token');
-		console.log(hostId);
 		await updateUserStatus('online', token);
 	}
 	for(let i = 0; i < guestLoggedIn.length; i++) {
@@ -812,4 +808,5 @@ startButton.addEventListener('click', function() {
         }
     }
     switchToGame(gameState, matchPlayer[0], player2, player3, false);
+	window.location.hash = "#loading";
 });

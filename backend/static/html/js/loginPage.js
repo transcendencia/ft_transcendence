@@ -4,7 +4,7 @@ import { alien1, alien2, alien3, spaceShip, spaceShipInt} from "./objs.js";
 import { TranslateAllTexts, currentLanguage, languageIconsClicked, setlanguageIconsClicked, setCurrentLanguage, getTranslatedText} from "./translatePages.js";
 import { keyDown, swapToFullScreen, gameState } from "../../game/js/main.js";
 import { changeGraphics, toggleGameStarted, guestLoggedIn } from "./arenaPage.js";
-import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape , toggleRSContainerVisibility, escapeContainerVisible, lobbyStart} from "./main.js";
+import { startAnimation, toggleBlurDisplay, toggleEscapeContainerVisibility, togglePause, toggleLobbyStart, bluelight, createUserBadge, scene, swipeLeftSideContainer, whitelight, displayHostEscapePage, removeContainerVisible, escapeBG, structure, resetGameEscape , toggleRSContainerVisibility, escapeContainerVisible, lobbyStart, panelRemove} from "./main.js";
 import { updateUserLanguage, updateUserStatus, get_friends_list, getProfileInfo, populateProfileInfos} from "./userManagement.js";
 import { planetInRange, resetOutline } from "./planetIntersection.js";
 import { rsContVisible } from "./main.js";
@@ -192,6 +192,7 @@ export async function handleLogin(formData) {
 
     setlanguageIconsClicked(false);
     const messageContainerId = (hostLoggedIn === 'true') ? 'errorLogGuest' : 'messageContainer';
+    document.getElementById(messageContainerId).innerText = '';
 
     try {
         const response = await fetch('login_page/', {
@@ -400,6 +401,7 @@ export function backToLobby(historyArrow = false) {
         keyDown['e'] = true;
         setTimeout(() => {
             keyDown['e'] = false;
+            gameState.eKeyWasPressed = false;
             gameState.arena.displayBackPanel(true);
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
@@ -409,9 +411,10 @@ export function backToLobby(historyArrow = false) {
             gameState.arena.game.rightScore = 0;
             gameState.arena.resetParticles();
             gameState.arena.resetUI();
-        }, 10);
+        }, 100);
     } else {
         resetGameEscape();
+        gameState.eKeyWasPressed = false;
         gameState.arena.displayBackPanel(true);
         gameState.arena.thirdPlayer.deactivateThirdPlayer();
         gameState.arena.idleCameraAnimation();
@@ -445,6 +448,7 @@ export async function handleLogout(userId, token) {
                 returnToHost();
             clearInterval(checkEach5Sec);
             togglePlanet(/* toggleRsContainer: */ false);
+            panelRemove();
         }
         setSpaceShipToLoginState();
         showPage('loginPage');
@@ -452,7 +456,7 @@ export async function handleLogout(userId, token) {
         logoutAllGuest(userId);
         logoutUser(token);
         reactivateLoginFields();
-        sessionStorage.clear();
+        clearHostValuesFromSessionStorage();
         setTimeout(() => {
             toggleLobbyStart();
             resolve();
@@ -513,14 +517,41 @@ export function logoutAllGuest(userId) {
     }
 }
 
-window.addEventListener('beforeunload', async function (event) {
+// window.addEventListener('beforeunload', async function (event) {
+//     const token = sessionStorage.getItem('host_auth_token');
+//     const hostId = sessionStorage.getItem('host_id');
+    
+//     logoutAllGuest(hostId);
+//     logoutUser(token);
+//     clearHostValuesFromSessionStorage();
+// });
+
+export function clearHostValuesFromSessionStorage() {
+    sessionStorage.removeItem("hostLoggedIn");
+    sessionStorage.removeItem("host_auth_token");
+    sessionStorage.removeItem("host_id");
+}
+
+function handleUnload(event) {
     const token = sessionStorage.getItem('host_auth_token');
     const hostId = sessionStorage.getItem('host_id');
     
     logoutAllGuest(hostId);
     logoutUser(token);
-    sessionStorage.clear();
-});
+    clearHostValuesFromSessionStorage();
+}
+
+function isFirefox() {
+  return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+}
+
+if (isFirefox()) {
+  window.addEventListener('pagehide', handleUnload);
+  window.addEventListener('unload', handleUnload);
+}
+else 
+  window.addEventListener('beforeunload', handleUnload);
+
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';

@@ -24,6 +24,7 @@ function handleChangeInfoForm(event) {
   formData.append('anonymousStatus', anonymousStatus)
 
   var changeInfoMessage = document.getElementById('changeInfoMessage');
+  changeInfoMessage.innerText = '';
 
   const token = sessionStorage.getItem('host_auth_token');
   fetch('user_info/', {
@@ -45,14 +46,17 @@ function handleChangeInfoForm(event) {
     .then(data => {
         //reset user in Matcjh
         populateProfileInfos(data);
-        createUserBadge(data, "playersConnHostBadge");  
-    })
+        createUserBadge(data, "playersConnHostBadge");
+      })
+    toggleSwitchClicked = false;
+    document.getElementById('toggleSwitch').classList.remove('active');
     changeColorMessage('.changeInfoMessage', 'success')
     changeInfoMessage.innerText = getTranslatedText(data.msg_code);
   })
   .catch(error => {
     // changeInfoMessage.classList.toggle("errorMessage");
     changeColorMessage('.changeInfoMessage', 'failure')
+    console.log("msg_code: ", error.msg_code)
     changeInfoMessage.innerText = getTranslatedText(error.msg_code);
     console.error('There was a problem with the change_profile_info:', error);
   });
@@ -104,7 +108,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
       }
       guestLoggedIn.splice(0, guestLoggedIn.length);
       clearInterval(checkEach5Sec);
-      sessionStorage.clear();
+      clearHostValuesFromSessionStorage();
       return response.json();
   })
   .catch(error => {
@@ -134,6 +138,7 @@ toggleSwitch.addEventListener('click', function() {
     this.classList.toggle('active');
     if (this.classList.contains('active')) {
       anonymousStatus = true;
+      console.log("toggleSwitchClicked: ", toggleSwitchClicked);
       if (!toggleSwitchClicked) {
         toggleSwitchClicked = true;
         oldUsername = document.getElementById('changeUsernameInput').value;

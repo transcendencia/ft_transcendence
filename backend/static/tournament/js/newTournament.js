@@ -132,11 +132,9 @@ export function resetTournament() {
 
 let tournamentState = -1;
 
-export function changeTournamentStatus(newValue){
-  if (newValue == 2)
-    if (tournamentState != 1)
-      return ;
-  tournamentState = newValue;
+export function changeTournamentStatus(){
+  if (tournamentState == 1)
+    tournamentState = 2;
 }
 
 const leftColumn = document.querySelector(".leftColumn");
