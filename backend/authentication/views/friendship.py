@@ -8,7 +8,6 @@ from django.http import HttpResponse, JsonResponse
 from django.db import OperationalError
 from django.http import Http404
 from django.utils.crypto import get_random_string
-
 from rest_framework.views import APIView
 from rest_framework.decorators import authentication_classes
 from rest_framework import status
