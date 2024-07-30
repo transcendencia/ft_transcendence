@@ -266,6 +266,7 @@ backPasswordButton.addEventListener('click', function() {
 
 function addEventListenerToTile(tile, arena) {
 	tile.HTMLelement.addEventListener('click', function() {
+	console.log(tile.user.username, tile.user.status, isGuest(tile.user.id));
 	if (!plusClicked || isBotId(tile.user.id) && planetInRange.name === "arena" && plusClicked === 1)
 		return;
 	if (isBotId(tile.user.id) || (tile.user.status === 'online' && isGuest(tile.user.id))) {
@@ -339,7 +340,7 @@ async function isListsChanged() {
   }
 
   export function initTournamentPlanet(){
-	changeTournamentStatus(0)
+	changeTournamentStatus(0);
 	userListBackground = document.getElementById('userlistTournamentPage');
 	RenderAllUsersInList();
 	resetHostTournament();
@@ -808,4 +809,5 @@ startButton.addEventListener('click', function() {
         }
     }
     switchToGame(gameState, matchPlayer[0], player2, player3, false);
+	window.location.hash = "#loading";
 });
