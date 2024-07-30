@@ -495,7 +495,33 @@ function hideAnonymousMode() {
 const scorePoints = document.getElementsByClassName("parallelogram");
 const scoreUI = document.getElementsByClassName("gameUI");
 const thirdPlayerUI = document.getElementsByClassName("profileCont3");
+
+function isStorageAvailable(type) {
+    let storage;
+    try {
+        storage = window[type];
+        const x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    } catch (e) {
+        return e instanceof DOMException && (
+            e.code === 22 ||
+            e.code === 1014 ||
+            e.name === 'QuotaExceededError' ||
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            (storage && storage.length !== 0);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', (event) => {
+    if (!isStorageAvailable('localStorage') || !isStorageAvailable('sessionStorage')) {
+        alert('Your browser does not support or has disabled necessary storage features. Please enable them or update your browser to use this site.');
+        const oldElement = document.documentElement.cloneNode(true);
+        document.documentElement.parentNode.replaceChild(oldElement, document.documentElement);
+        console.log = console.error = console.info = console.debug = console.warn = function() {};
+        throw new Error('Script execution halted due to storage unavailability');
+    }
     const backToLobbyButton = document.getElementById('backToLobbyButton');
 
     backToLobbyButton.addEventListener('click', () => {

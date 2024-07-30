@@ -504,12 +504,18 @@ infoButton.addEventListener("mouseleave", hideInfo);
 
 function displayInfo() {
 	isInfoShow = true;
-	document.getElementById("arenaInfoBox").classList.add("showRectangle");
+	if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
+		document.getElementById("arenaInfoBox").classList.add("showFirefoxRectangle");
+	else
+		document.getElementById("arenaInfoBox").classList.add("showRectangle");
 }
 
 function hideInfo() {
 	isInfoShow = false;
-	document.getElementById("arenaInfoBox").classList.remove("showRectangle");
+	if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
+		document.getElementById("arenaInfoBox").classList.remove("showFirefoxRectangle");
+	else
+		document.getElementById("arenaInfoBox").classList.remove("showRectangle");
 }
 
 
