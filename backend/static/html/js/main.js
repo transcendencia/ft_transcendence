@@ -518,9 +518,9 @@ export function togglePause() {
     pauseGame = !pauseGame;
 }
 
-const blockingPanel = document.getElementById('blockingPanel');
-const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
-const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
+export const blockingPanel = document.getElementById('blockingPanel');
+export const passwordWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+export const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const deleteWindow = document.getElementById("validateDelete");
 
 
@@ -554,7 +554,7 @@ export function resetGameEscape()
 
 export function panelRemove(){
     blockingPanel.classList.remove('show');
-    pwWindow.classList.remove('showRectangle');
+    passwordWindow.classList.remove('showRectangle');
     aliasWindow.classList.remove('showRectangle');
     deleteWindow.classList.remove('showRectangle');
 }
@@ -570,7 +570,7 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
         returnToSun();
     if (event.key === 'Enter') {
-        if (window.getComputedStyle(pwWindow).display === 'flex')
+        if (window.getComputedStyle(passwordWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
     }
     if (event.key === 'Escape') {

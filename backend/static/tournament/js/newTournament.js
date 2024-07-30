@@ -132,9 +132,10 @@ export function resetTournament() {
 
 let tournamentState = -1;
 
-export function changeTournamentStatus(){
-  if (tournamentState == 1)
-    tournamentState = 2;
+export function changeTournamentStatus(newValue) {
+  if (newValue === 2 && tournamentState !== 1)
+    return;
+  tournamentState = newValue;
 }
 
 const leftColumn = document.querySelector(".leftColumn");
@@ -160,17 +161,13 @@ const backButtonTournamentPage = document.getElementById("trnmtBackButton");
 const backButtonLaunchTournamentPage = document.getElementById("trnmtLaunchBackButton");
 const cancelTournamentButton = document.getElementById("cancelTournamentButton");
 
-backButtonTournamentPage.addEventListener('click', () => {togglePlanet()});
+backButtonTournamentPage.addEventListener('click', () => {togglePlanet(/* toggleRsContainer: */ true);});
 
-backButtonLaunchTournamentPage.addEventListener('click', () => {
-  toggleRSContainerVisibility();  
-  togglePlanet();
-});
+backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet(/* toggleRsContainer: */ true);});
 
 cancelTournamentButton.addEventListener('click', () => {
   tournamentState = 2;
-  toggleRSContainerVisibility();
-  togglePlanet();
+  resetTournament();
 });
 
   export function askForAlias(user){
@@ -421,7 +418,7 @@ cancelTournamentButton.addEventListener('click', () => {
           location.reload();
           tournamentState = 2;
           toggleRSContainerVisibility();
-          togglePlanet();
+          togglePlanet(/* toggleRsContainer: */ false);
           return 1;
         }
         if (status1 === "offline" && status2 === "offline") {
