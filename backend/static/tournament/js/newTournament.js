@@ -159,11 +159,14 @@ const validateAliasButton = document.getElementById("aliasLogInButton");
 const backButtonTournamentPage = document.getElementById("trnmtBackButton");
 const backButtonLaunchTournamentPage = document.getElementById("trnmtLaunchBackButton");
 const cancelTournamentButton = document.getElementById("cancelTournamentButton");
+
 backButtonTournamentPage.addEventListener('click', () => {togglePlanet()});
+
 backButtonLaunchTournamentPage.addEventListener('click', () => {
   toggleRSContainerVisibility();  
   togglePlanet();
 });
+
 cancelTournamentButton.addEventListener('click', () => {
   tournamentState = 2;
   toggleRSContainerVisibility();
@@ -337,7 +340,11 @@ cancelTournamentButton.addEventListener('click', () => {
   }
 
   launchTournamentElement.addEventListener("click", function() {
-    if (countNonBotPlayer(tournamentPlayer) < 3){
+    if (countNonBotPlayer(tournamentPlayer) < 3 && thirdPlayerMode){
+      updateElementDisplayAndText("error_msg", getTranslatedText('ErrorMinus'));
+      return ;
+    }
+    if (tournamentPlayer.length < 3 && !thirdPlayerMode){
       updateElementDisplayAndText("error_msg", getTranslatedText('ErrorMinus'));
       return ;
     }
@@ -410,6 +417,13 @@ cancelTournamentButton.addEventListener('click', () => {
 
     return Promise.all([player1Status, player2Status]).then(([status1, status2]) => {
         console.log(status1, status2);
+        if (status1 == undefined || status2 == undefined){
+          location.reload();
+          tournamentState = 2;
+          toggleRSContainerVisibility();
+          togglePlanet();
+          return 1;
+        }
         if (status1 === "offline" && status2 === "offline") {
           afterGameTournament(0, 0, true);
           return 1;
@@ -424,6 +438,7 @@ cancelTournamentButton.addEventListener('click', () => {
         }
         return 0;
     }).catch(error => {
+        afterGameTournament(0, 0, true);
         return 1;
     });
 }

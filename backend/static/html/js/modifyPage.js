@@ -9,6 +9,7 @@ import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
 import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '../../tournament/js/newTournament.js';
 import { changeColorMessage } from './signUpPage.js';
+import { clearHostValuesFromSessionStorage } from './loginPage.js';
 
 let isInfosShow = false;
 let anonymousStatus;
@@ -109,6 +110,9 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
       guestLoggedIn.splice(0, guestLoggedIn.length);
       clearInterval(checkEach5Sec);
       clearHostValuesFromSessionStorage();
+      sessionStorage.removeItem('hostLoggedIn');
+      sessionStorage.removeItem('host_auth_token');
+      sessionStorage.removeItem('host_id');
       return response.json();
   })
   .catch(error => {

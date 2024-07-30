@@ -19,21 +19,37 @@ from rest_framework.authentication import TokenAuthentication
 from ..models import User, Game, UserStat
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer, GameListSerializer
 
+from django.db import OperationalError
+
 import json
 
-@api_view(['POST'])
+
+@api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 def get_game_player2(request):
-  if request.method == 'POST':
-    host = request.user
-    data = json.loads(request.body)
-    games = Game.objects.filter(player1=(data.get("id"))).union(Game.objects.filter(player2=(data.get("id")))).order_by('-date')
-    serializers = GameListSerializer(games, many=True)
-    response_data = {
-        'host_id': host.id,
-        'games': serializers.data
-    }
-    return Response(response_data)
+    if request.method == 'GET':
+        host = request.user
+        player_id = request.query_params.get("id")
+        
+        if player_id is None:
+            return Response({'status': 'fail', 'message': 'Player ID is required'}, status=400)
+        try:
+            player_id = int(player_id)
+        except ValueError:
+            return Response({'status': 'fail', 'message': 'Invalid Player ID format'}, status=400)
+
+        try:
+            games = Game.objects.filter(player1=player_id).union(Game.objects.filter(player2=player_id)).order_by('-date')
+            serializers = GameListSerializer(games, many=True)
+            response_data = {
+                'host_id': host.id,
+                'games': serializers.data
+            }
+            return Response(response_data)
+        
+        except OperationalError:
+            return Response({'status': 'error', 'message': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
   
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -48,25 +64,36 @@ def get_game_user(request):
     }
     return Response(response_data)
 
+from django.middleware.csrf import get_token
+
+# @csrf_protect
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def add_game(request):
-    if request.method != 'POST':
-        return JsonResponse({'status': 'fail', 'message': 'Only POST method is allowed'}, status=405)
+    print("start add_game")
+
+    # Extract and validate CSRF token
+    # csrf_token = request.META.get('HTTP_X_CSRFTOKEN')
+    # if csrf_token != get_token(request):
+        # return JsonResponse({'status': 'fail', 'message': 'CSRF token missing or incorrect.'}, status=403)
 
     try:
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
     except json.JSONDecodeError:
-        return JsonResponse({'status': 'fail', 'message': 'Invalid JSON in request body'}, status=400)
-
+        return JsonResponse({'status': 'fail', 'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'fail', 'message': f'An error occurred: {str(e)}'}, status=400)
+    
+    if not isinstance(data, dict):
+        return JsonResponse({'status': 'fail', 'message': 'Invalid data format. Expected a JSON object.'}, status=400)
     required_fields = ['player1', 'player2', 'scorePlayer1', 'scorePlayer2', 'gameplayMode', 'modeGame', 'mapGame', 'gameTime', 'user1', 'user2']
     missing_fields = [field for field in required_fields if field not in data]
-    
     if missing_fields:
         return JsonResponse({'status': 'fail', 'message': f'Missing required fields: {", ".join(missing_fields)}'}, status=400)
 
     try:
-        player1_id = int(data.get('player1', 0))  # Default to 0 if 'player1' is not provided
+        player1_id = int(data['player1'])
         player2_id = int(data['player2'])
         player3_id = int(data.get('player3')) if data.get('player3') not in [None, ''] else None
         scorePlayer1 = int(data['scorePlayer1'])
@@ -78,15 +105,13 @@ def add_game(request):
     gameplayMode = data['gameplayMode']
     modeGame = data['modeGame']
     mapGame = data['mapGame']
-
     if not all(isinstance(field, str) for field in [gameplayMode, modeGame, mapGame]):
         return JsonResponse({'status': 'fail', 'message': 'Invalid data type for gameplayMode, modeGame, or mapGame'}, status=400)
 
     try:
-        player1 = get_object_or_404(User, id=player1_id) if player1_id else None
+        player1 = get_object_or_404(User, id=player1_id)
         player2 = get_object_or_404(User, id=player2_id)
         player3 = get_object_or_404(User, id=player3_id) if player3_id else None
-
         game = Game(
             player1=player1,
             player2=player2,
@@ -99,18 +124,14 @@ def add_game(request):
             gameTime=gameTime
         )
         game.save()
-
-        createUserStat(player1, game, data['user1']) if player1 else None
+        createUserStat(player1, game, data['user1'])
         createUserStat(player2, game, data['user2'])
-        if player3 and 'user3' in data:
-            createUserStat(player3, game, data['user3'])
-
         return JsonResponse({'status': 'success', 'game_id': game.id}, status=201)
-
     except User.DoesNotExist:
         return JsonResponse({'status': 'fail', 'message': 'One or more players not found'}, status=404)
-    except Exception as e:
-        return JsonResponse({'status': 'fail', 'message': f'An error occurred: {str(e)}'}, status=500)
+    except OperationalError:
+            return Response({'status': 'error', 'message': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 
