@@ -24,10 +24,10 @@ def generateDataFile(request):
         games = Game.objects.filter(Q(player1=user) | Q(player2=user) | Q(player3=user))
         friends_requests = FriendRequest.objects.filter(Q(receiver=user) | Q(sender=user))
 
-        # Create a buffer to store the file content
+
         buffer = io.StringIO()
 
-        # Write user information
+
         buffer.write("User Information:\n")
         buffer.write(f"Username: {user.username}\n")
         buffer.write(f"Language: {user.language}\n")
@@ -43,7 +43,7 @@ def generateDataFile(request):
         buffer.write(f"Number of Losses: {user.nbr_match_lost}\n")
         buffer.write(f"Number of Goals: {user.nbr_goals}\n\n")
 
-        # Write statistics
+
         buffer.write("Stats:\n")
         for stat in stats:
             buffer.write(
@@ -54,7 +54,7 @@ def generateDataFile(request):
             )
         buffer.write("\n")
 
-        # Write games
+
         buffer.write("Games:\n")
         for game in games:
             buffer.write(
@@ -65,12 +65,12 @@ def generateDataFile(request):
             )
         buffer.write("\n")
 
-        # Write friend requests
+
         buffer.write("Friend Requests:\n")
         for fr in friends_requests:
             buffer.write(f"Sender: {fr.sender}, Receiver: {fr.receiver}, Status: {fr.status}\n")
 
-        # Prepare the file for download
+
         buffer.seek(0)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"user_data_{slugify(user.username)}_{timestamp}.txt"
@@ -82,4 +82,4 @@ def generateDataFile(request):
         return response
     except Exception as e:
         logger.error(f"Error generating file for user {request.user.username}: {str(e)}")
-        return HttpResponse(status=500)  # Changed status to 500 to follow standard HTTP status codes
+        return HttpResponse(status=500)
