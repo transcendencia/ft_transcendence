@@ -5,7 +5,6 @@ import { setHostAsPlayerOne} from "./arenaPage.js";
 export async function updateUserStatus(status, token) {
     if (!token || !status)
         return;
-
     await fetch('/user/status/', {
         method: 'POST',
         headers: {

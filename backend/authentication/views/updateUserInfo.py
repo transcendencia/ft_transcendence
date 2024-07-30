@@ -1,11 +1,14 @@
 import os
+import json
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from django.conf import settings
 from django.core.files.images import get_image_dimensions
 from PIL import Image
 from django.core.exceptions import ValidationError
+from django.db import OperationalError
 
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, authentication_classes
@@ -19,8 +22,10 @@ from ..serializers import UpdateInfoSerializer
 from ..utils.constants import UserStatus
 from .words import words, items
 from ..validators import ProfilePictureValidator
+from django.db import OperationalError, InterfaceError
 
 import random
+import json
 
 import logging
 logger = logging.getLogger(__name__)
@@ -29,48 +34,102 @@ class UserGraphicModeView(APIView):
   authentication_classes = [TokenAuthentication]
 
   def patch(self, request):
+    if not request.body:
+      return Response({'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
+
+    data = json.loads(request.body)
+    if not isinstance(data, dict):
+      return Response({'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+
+    newGraphicMode = data.get('graphicMode')
+    if newGraphicMode is None:
+      return Response({'message': "Graphic mode required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if newGraphicMode not in ["low", "medium", "high"]:
+        return Response({'message': "Invalid graphic mode."}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
-      request.user.graphic_mode = request.data.get('graphicMode')
+      request.user.graphic_mode = newGraphicMode
       request.user.save()
       return HttpResponse(status=status.HTTP_200_OK)
     
-    except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except OperationalError as e:
+        return Response({'message': "A database error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserLanguageView(APIView):
   authentication_classes = [TokenAuthentication]
   
   def patch(self, request):
+    if not request.body:
+      logger.error("Request body is empty")
+      return Response({'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
+
+    data = json.loads(request.body)
+    if not isinstance(data, dict):
+      logger.error("Request body must be a JSON object")
+      return Response({'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+
+    newLanguage = data.get('language')
+    if newLanguage is None:
+      return Response({'message': "Language is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if newLanguage not in ["es1", "en1", "fr1"]:
+        return Response({'message': "Invalid language."}, status=status.HTTP_400_BAD_REQUEST)
+    
     try:
       user = request.user
-      user.language = request.data.get("language")
+      user.language = newLanguage
       user.save()
       return HttpResponse(status=status.HTTP_200_OK)
-    except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    except OperationalError as e:
+        return Response({'message': "A database error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class UserStatusView(APIView):
     authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-      try:
-        request.user.status = request.data.get('status')
-        request.user.save()
-        print(request.user.username, request.user.status)
-        return HttpResponse(status=status.HTTP_200_OK)
-      except Exception as e:
-            # logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-      
-    def get(self, request, userId):
-      try:
-        user = get_object_or_404(User, id=userId)
-        return Response({'user_status': user.status}, status=status.HTTP_200_OK)
-      except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'fail', 'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
+
+        try:
+            new_status = data.get('status')
+            if new_status is None:
+                return Response({'status': 'fail', 'message': 'Status is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            valid_statuses = ['in_game', 'offline', 'online']
+            if new_status not in valid_statuses:
+                return Response({'status': 'fail', 'message': f'Status must be one of {valid_statuses}'}, status=status.HTTP_400_BAD_REQUEST)
+
+            request.user.status = new_status
+            request.user.save()
+            return Response({'status': 'success', 'message': 'Status updated successfully'}, status=status.HTTP_200_OK)
+        except AttributeError:
+            return Response({'status': 'fail', 'message': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+    def get(self, request, userId=None):
+        if userId is None:
+            return Response({'status': 'fail', 'message': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            userId = int(userId)
+        except ValueError:
+            return Response({'status': 'fail', 'message': 'Invalid User ID format'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = get_object_or_404(User, id=userId)
+            return Response({'status': 'success', 'user_status': user.status}, status=status.HTTP_200_OK)
+        except Http404:
+            return Response({'status': 'fail', 'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
 
 class UserInfoView(APIView):
   authentication_classes = [TokenAuthentication]
@@ -82,9 +141,25 @@ class UserInfoView(APIView):
   
   def post(self, request):
     anonymousStatus = request.data.get('anonymousStatus') == 'true'
+
+    try:
+      if 'profile-pic' in request.FILES and not anonymousStatus:
+        validator = ProfilePictureValidator(request.FILES['profile-pic'])
+        validator.validate()
+    except ValidationError as e:
+        return Response({"msg_code": e}, status=status.HTTP_400_BAD_REQUEST)
     
+    request.data._mutable = True
+
+    if anonymousStatus:
+        if 'profile-pic' in request.data:
+            request.data.pop('profile-pic')
+        if 'alias' in request.data:
+            request.data['alias'] = ''
+
     data = request.data.copy()
-    data.pop('anonymousStatus')
+    if 'anonymousStatus' in data:
+      data.pop('anonymousStatus')
     serializer = UpdateInfoSerializer(instance=request.user, data=data)
     
     if serializer.is_valid():
@@ -106,12 +181,7 @@ class UserInfoView(APIView):
         if request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
           request.user.profile_picture.delete()
     elif 'profile-pic' in request.FILES and not anonymousStatus:
-        validator = ProfilePictureValidator(request.FILES['profile-pic'])
-        validator.validate()
-        print("user picture: \"", request.user.profile_picture.name, "\"")
-        print("default picture: \"", settings.DEFAULT_PROFILE_PICTURE, "\"")
         if request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
-          print("coucou")
           request.user.profile_picture.delete()
         uploaded_file = request.FILES['profile-pic']
         request.user.profile_picture = uploaded_file
@@ -126,7 +196,7 @@ def generate_unique_username(request):
     nbrUser = User.objects.all().count()
     for i in range(nbrUser + 1):
         if not User.objects.filter(username=username).exists():
-            return Response({'username': username}, status=200)
+            return Response({'username': username}, status=status.HTTP_200_OK)
         else:
             random_word = random.choice(words)
             random_item = random.choice(items)
@@ -135,10 +205,11 @@ def generate_unique_username(request):
         username = f"anonymous{i}"
         if not User.objects.filter(username=username).exists():
             return Response({'username': username}, status=status.HTTP_200_OK)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response({'msg_code': "noRandomUsernameAvailable"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def delete_account(request):
+  request.user.auth_token.delete()
   request.user.delete()
   return Response({'status' : "success"})

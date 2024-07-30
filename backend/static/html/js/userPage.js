@@ -69,7 +69,7 @@ export function initUserPlanet() {
     refreshUserList();
   if (pageDisplayed === "searchedProfile")
     refreshSearchedPage(displayedUserOnSearchPage);
-  // console.log("checking...");
+  console.log("checking...");
   }, 5000));
 }
 
@@ -285,6 +285,8 @@ async function displayUserType(user,type) {
 }
 
 function refreshSearchedPage(user) {
+  if (!user)
+    return;
   getProfileInfo(user.id).then(data => {
     const userData = data.profile_info;
     if (searchedUserFinishedAMatch(userData.nbr_match)) {
@@ -318,23 +320,21 @@ async function fillSearchedUserPage(user, type) {
   getProfileInfo(user.id).then(data => {previousUserInfos = data.profile_info;});
   refreshSearchedPage(user);
 }
-
 function createUserMatch(user) {
   const token = sessionStorage.getItem('host_auth_token');
   const csrfToken = getCookie('csrftoken');
   
-  fetch('get_game_player2/', {
-    method: 'POST',
+  fetch(`get_game_player2/?id=${encodeURIComponent(user.id)}`, {
+    method: 'GET',
     headers: {
       'Authorization': `Token ${token}`,
       'Content-Type': 'application/json',
       'X-CSRFToken': csrfToken
-    },
-    body: JSON.stringify({id: user.id})
+    }
   })
   .then(response => {
     if (!response.ok) {
-      throw new Error('Error lors de la recuperation des donnees');
+      throw new Error('Error retrieving data');
     }
     return response.json();
   })
@@ -363,7 +363,7 @@ function createUserMatch(user) {
         player1Score = game.scorePlayer2;
         player1Picture = game.player2_profilePicture;
         player2 = game.player1_username;
-        player2Score = game.scorePlayer1
+        player2Score = game.scorePlayer1;
         player2Picture = game.player1_profilePicture;
         if (game.scorePlayer2 > game.scorePlayer1) {
           winner = true;
@@ -373,7 +373,7 @@ function createUserMatch(user) {
     });
   })
   .catch(error => {
-    console.error('Erreur :', error);
+    console.error('Error:', error);
   });
 }
 
