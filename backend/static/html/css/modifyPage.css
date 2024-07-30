@@ -217,6 +217,11 @@
     z-index: 5 !important;
 }
 
+.showFirefoxRectangle {
+    display: contents !important;
+    z-index: 5 !important;
+}
+
 .changeInfoMessage {
     pointer-events: none;
     display: flex;

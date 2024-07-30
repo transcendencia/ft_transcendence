@@ -8,18 +8,17 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-import { DotScreenShader } from 'three/addons/shaders/DotScreenShader.js';
-import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import { Water } from 'three/addons/objects/Water.js';
 import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
 import { lobbyVisuals } from '../../html/js/main.js';
-import { gameStarted } from '../../html/js/arenaPage.js';
 import { getTranslatedText } from '../../html/js/translatePages.js';
-import { endGame, rematchGame } from '../../html/js/arenaPage.js';
+import { endGame, rematchGame, refreshUserListIfChanged } from '../../html/js/arenaPage.js';
 import { updateUserGraphicMode } from '../../html/js/userManagement.js'
+import { setCheckerToInterval } from "./../../html/js/enterPlanet.js";
+
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
 
@@ -495,7 +494,33 @@ function hideAnonymousMode() {
 const scorePoints = document.getElementsByClassName("parallelogram");
 const scoreUI = document.getElementsByClassName("gameUI");
 const thirdPlayerUI = document.getElementsByClassName("profileCont3");
+
+function isStorageAvailable(type) {
+    let storage;
+    try {
+        storage = window[type];
+        const x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    } catch (e) {
+        return e instanceof DOMException && (
+            e.code === 22 ||
+            e.code === 1014 ||
+            e.name === 'QuotaExceededError' ||
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            (storage && storage.length !== 0);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', (event) => {
+    if (!isStorageAvailable('localStorage') || !isStorageAvailable('sessionStorage')) {
+        alert('Your browser does not support or has disabled necessary storage features. Please enable them or update your browser to use this site.');
+        const oldElement = document.documentElement.cloneNode(true);
+        document.documentElement.parentNode.replaceChild(oldElement, document.documentElement);
+        console.log = console.error = console.info = console.debug = console.warn = function() {};
+        throw new Error('Script execution halted due to storage unavailability');
+    }
     const backToLobbyButton = document.getElementById('backToLobbyButton');
 
     backToLobbyButton.addEventListener('click', () => {
@@ -866,9 +891,8 @@ class Arena extends THREE.Mesh {
         if (this.isActive)
             this.paddleLeft.animatePaddle(this);
         this.paddleRight.animatePaddle(this);
-        if (!this.spaceKeyBlocked && keyDown[' '] && this.game.isPlaying && !this.ball.isRolling && this.game.rightScore < this.game.maxScore && this.game.leftScore < this.game.maxScore)
+        if (!this.spaceKeyBlocked && keyDown[' '] && this.game.isPlaying && !this.ball.isRolling && this.game.rightScore < this.game.maxScore && this.game.leftScore < this.game.maxScore && this.paddleLeft.particles.isActive)
         {
-            console.log("space called with keyBlocked = " + this.spaceKeyBlocked);
             this.ball.speedX = 0;
             this.ball.acceleration = 0;
             this.ball.updateSpeedBar();
@@ -895,20 +919,20 @@ class Arena extends THREE.Mesh {
         //     this.switchMap(this.skyMap);
         // if (keyDown['4'])
         //     this.switchMap(this.dragonMap);
-        if (keyDown['b'])
-        {
-            if (!this.isBeingBlurred)
-            {
-                this.isBeingBlurred = true;
-                this.blurScreen();
-            }
-        }
-        if (keyDown['c'])
-        {
-            this.paddleLeft.light.power += 0.1;
-            this.paddleRight.light.power += 0.1;
-            this.bot.isPlaying = !this.bot.isPlaying;
-        }
+        // if (keyDown['b'])
+        // {
+        //     if (!this.isBeingBlurred)
+        //     {
+        //         this.isBeingBlurred = true;
+        //         this.blurScreen();
+        //     }
+        // }
+        // if (keyDown['c'])
+        // {
+        //     this.paddleLeft.light.power += 0.1;
+        //     this.paddleRight.light.power += 0.1;
+        //     this.bot.isPlaying = !this.bot.isPlaying;
+        // }
         if (keyDown['e'] && !gameState.loading && !this.gameState.eKeyWasPressed)
         {
             if (gameState.loading)
@@ -961,13 +985,13 @@ class Arena extends THREE.Mesh {
                 this.paddleRight.changePaddleControls(true);
             }
         }
-        if (keyDown['p'])
-        {
-            swapToFullScreen();
-            this.setTopView(camera, false);
-            this.paddleLeft.changePaddleControls(true);
-            this.paddleRight.changePaddleControls(true);
-        }
+        // if (keyDown['p'])
+        // {
+        //     swapToFullScreen();
+        //     this.setTopView(camera, false);
+        //     this.paddleLeft.changePaddleControls(true);
+        //     this.paddleRight.changePaddleControls(true);
+        // }
         if (this.game.leftScore >= this.game.maxScore || this.game.rightScore >= this.game.maxScore)
         {
             this.game.isPlaying = false;
@@ -3764,6 +3788,7 @@ class GameState {
         setTimeout(() => {
             loadingScreen.cancelLoading = false;
         }, 1000);
+        setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
     }
     monitorGameState() {
         if (this.loading && !this.arenaCreated)

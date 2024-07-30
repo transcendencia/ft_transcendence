@@ -37,9 +37,14 @@ class UserGraphicModeView(APIView):
     if not request.body:
       return Response({'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
 
-    data = json.loads(request.body)
-    if not isinstance(data, dict):
-      return Response({'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+      data = json.loads(request.body)
+      if not isinstance(data, dict):
+            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
+    except UnicodeDecodeError:
+        return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 
     newGraphicMode = data.get('graphicMode')
     if newGraphicMode is None:
@@ -53,21 +58,24 @@ class UserGraphicModeView(APIView):
       request.user.save()
       return HttpResponse(status=status.HTTP_200_OK)
     
-    except OperationalError as e:
-        return Response({'message': "A database error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except (OperationalError, InterfaceError):
+            return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 class UserLanguageView(APIView):
   authentication_classes = [TokenAuthentication]
   
   def patch(self, request):
     if not request.body:
-      logger.error("Request body is empty")
       return Response({'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
 
-    data = json.loads(request.body)
-    if not isinstance(data, dict):
-      logger.error("Request body must be a JSON object")
-      return Response({'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+      data = json.loads(request.body)
+      if not isinstance(data, dict):
+            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
+    except UnicodeDecodeError:
+        return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 
     newLanguage = data.get('language')
     if newLanguage is None:
@@ -82,8 +90,8 @@ class UserLanguageView(APIView):
       user.save()
       return HttpResponse(status=status.HTTP_200_OK)
     
-    except OperationalError as e:
-        return Response({'message': "A database error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except (OperationalError, InterfaceError):
+      return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
 class UserStatusView(APIView):
@@ -95,6 +103,8 @@ class UserStatusView(APIView):
             data = json.loads(request.body.decode('utf-8'))
         except json.JSONDecodeError:
             return JsonResponse({'status': 'fail', 'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
+        except UnicodeDecodeError:
+            return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 
         try:
             new_status = data.get('status')
@@ -135,9 +145,12 @@ class UserInfoView(APIView):
   authentication_classes = [TokenAuthentication]
 
   def get(self, request, userId):
-    user = get_object_or_404(User, id=userId)
-    profile_info = user.get_profile_info()
-    return Response({'profile_info': profile_info})
+    try:
+      user = get_object_or_404(User, id=userId)
+      profile_info = user.get_profile_info()
+      return Response({'profile_info': profile_info})
+    except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
   
   def post(self, request):
     anonymousStatus = request.data.get('anonymousStatus') == 'true'
@@ -160,32 +173,39 @@ class UserInfoView(APIView):
     data = request.data.copy()
     if 'anonymousStatus' in data:
       data.pop('anonymousStatus')
-    serializer = UpdateInfoSerializer(instance=request.user, data=data)
     
-    if serializer.is_valid():
-      try:
+    try:
+      serializer = UpdateInfoSerializer(instance=request.user, data=data)
+      
+      if serializer.is_valid():
         self.updateProfilePicture(request, anonymousStatus)
         serializer.save()
+        if anonymousStatus:
+          request.user.alias = ''
+          request.user.save()
         return Response({'id': request.user.id, 'serializer': serializer.data, 'msg_code': "successfulModifyInfo"}, status=status.HTTP_200_OK)
-      except ValidationError as e:
-        return Response({"msg_code": e.code}, status=status.HTTP_400_BAD_REQUEST)
+    except (OperationalError, InterfaceError) as e:
+            return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
     first_error = next(iter(serializer.errors.values()))[0]
     first_error_code = first_error.code
     return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
   
   def updateProfilePicture(self, request, anonymousStatus):
-    if anonymousStatus and request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
-        request.user.profile_picture = settings.DEFAULT_PROFILE_PICTURE
-        request.user.save()
-        if request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
-          request.user.profile_picture.delete()
-    elif 'profile-pic' in request.FILES and not anonymousStatus:
-        if request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
-          request.user.profile_picture.delete()
-        uploaded_file = request.FILES['profile-pic']
-        request.user.profile_picture = uploaded_file
-        request.user.save()
+    try:
+      if anonymousStatus and request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
+          request.user.profile_picture = settings.DEFAULT_PROFILE_PICTURE
+          request.user.save()
+          if request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
+            request.user.profile_picture.delete()
+      elif 'profile-pic' in request.FILES and not anonymousStatus:
+          if request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
+            request.user.profile_picture.delete()
+          uploaded_file = request.FILES['profile-pic']
+          request.user.profile_picture = uploaded_file
+          request.user.save()
+    except (OperationalError, InterfaceError) as e:
+            return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -210,6 +230,9 @@ def generate_unique_username(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def delete_account(request):
-  request.user.auth_token.delete()
-  request.user.delete()
-  return Response({'status' : "success"})
+  try:
+    request.user.auth_token.delete()
+    request.user.delete()
+    return Response({'status' : "success"}, status=status.HTTP_200_OK)
+  except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)

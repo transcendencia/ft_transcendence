@@ -19,6 +19,7 @@ import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
 import { getTranslatedText } from './translatePages.js';
 import { logoutUser } from "./loginPage.js";
+import { showAlert } from "./showPages.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
 export let lobbyStart = false;
@@ -255,14 +256,15 @@ const minimapCamera = new THREE.OrthographicCamera(
     const minimapRenderer = new THREE.WebGLRenderer();
     minimapRenderer.setSize(window.innerHeight * 0.35, window.innerHeight * 0.35);
     minimapRenderer.setClearColor(0x000000, 0); 
-    minimapRenderer.domElement.style.borderRadius = '100%';
+    minimapRenderer.domElement.style.borderRadius = '50%';
     minimapRenderer.domElement.style.position = 'absolute';
     minimapRenderer.domElement.style.transform = 'translate(-50%, -50%)';
+    minimapRenderer.domElement.style.border = '3px solid #3777ff';
     const minimapContainer = document.getElementById('minimapContainer');
     minimapContainer.appendChild(minimapRenderer.domElement);
 
     const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
-    const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x00000000 }); 
+    const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000020 }); 
     const minimapBG = new THREE.Mesh(planeGeometry, planeMaterial);
     minimapBG.position.set(0, -600, 0);
     minimapBG.lookAt(minimapCamera.position);
@@ -557,9 +559,16 @@ export function panelRemove(){
     deleteWindow.classList.remove('showRectangle');
 }
 
+function returnToSun() {
+    if (!lobbyStart || gameState.inGame || gameState.loading || landedOnPlanet)
+        return;
+    spaceShip.rotation.set(0, THREE.MathUtils.degToRad(180), 0);
+    spaceShip.position.set(0, 0, 1000);
+}
+
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
-        console.log(sessionStorage.getItem('currentPage')); // Store current page in sessionStorage
+        returnToSun();
     if (event.key === 'Enter') {
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
@@ -645,6 +654,11 @@ export function toggleBlurDisplay(displayColoredPanel = false) {
     }
 }
 
+function checkSpaceShipDistance() {
+    if (sun.position.distanceTo(spaceShip.position) > 2500)
+        showAlert("Press p to return to sun", 1000);
+}
+
 
 function update() {
     if (lobbyStart && !landedOnPlanet) {
@@ -654,6 +668,7 @@ function update() {
     } 
     camMovement();
     planetMovement();
+    checkSpaceShipDistance();
 return;
 }
 

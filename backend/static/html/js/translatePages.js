@@ -107,6 +107,7 @@ const createAccountText = document.getElementById('createAccountText');
 const SignUpButton = document.querySelectorAll('.actionCont')[1];
 const backToLoginButton = document.querySelector('.backToLoginButtonText');
 const signupHereButton = document.querySelector('.actionCont');
+const signUpButton = document.getElementById('submitSignUp');
 
 function translateLoginPageTexts() {
     loginText.childNodes[0].textContent = '- ' + getTranslatedText('login') + ' -';
@@ -114,6 +115,7 @@ function translateLoginPageTexts() {
     newToTheGame.childNodes[0].textContent = getTranslatedText('newToTheGame');
     signupHereButton.textContent = getTranslatedText('signUpHere');
     signUpTitle.textContent = getTranslatedText('signUpTitle');
+    signUpButton.textContent = getTranslatedText('signUpButton');
     createAccountText.textContent = getTranslatedText('createAnAccount');
     enterLogin.childNodes[0].textContent = getTranslatedText('login');
     enterPassword.childNodes[0].textContent = getTranslatedText('password');
