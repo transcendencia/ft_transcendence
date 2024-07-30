@@ -173,7 +173,7 @@ function addClickListenerToNewUserBadge(userBadge, plusButton, tile) {
 }
 
 const blockingPanel = document.getElementById('blockingPanel');
-const pwWindow = document.querySelectorAll(".enterPasswordWindow")[0];
+const passwordWindow = document.querySelectorAll(".enterPasswordWindow")[0];
 const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
 const validatePasswordButton = document.getElementById("arenaLogInButton");
 const backPasswordButton = document.getElementById("arenaBackLogInButton");
@@ -207,7 +207,7 @@ export function putUserInMatch(plusButtonsArray, mode) {
 
 function updateListAndResetTimer() {
 	RenderAllUsersInList();
-	clearTimeout(checkEach5Sec);
+	clearInterval(checkEach5Sec);
 	setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
 }
 
@@ -242,7 +242,7 @@ validatePasswordButton.addEventListener('click', async function() {
                 displayUsersLogged(guest, guestToken);
                 document.getElementById('enterPasswordInput').value = '';
                 document.getElementById('errorLogGuest').innerHTML = '';
-                pwWindow.classList.remove("showRectangle");
+                passwordWindow.classList.remove("showRectangle");
                 if (planetInRange.name === 'arena')
                     blockingPanel.classList.remove('show');
             }
@@ -258,7 +258,7 @@ validatePasswordButton.addEventListener('click', async function() {
 });
 
 backPasswordButton.addEventListener('click', function() {
-	pwWindow.classList.remove("showRectangle");
+	passwordWindow.classList.remove("showRectangle");
 	blockingPanel.classList.remove('show');
 	document.getElementById('enterPasswordInput').value = '';
 	document.getElementById('errorLogGuest').innerText = '';
@@ -266,7 +266,6 @@ backPasswordButton.addEventListener('click', function() {
 
 function addEventListenerToTile(tile, arena) {
 	tile.HTMLelement.addEventListener('click', function() {
-	console.log(tile.user.username, tile.user.status, isGuest(tile.user.id));
 	if (!plusClicked || isBotId(tile.user.id) && planetInRange.name === "arena" && plusClicked === 1)
 		return;
 	if (isBotId(tile.user.id) || (tile.user.status === 'online' && isGuest(tile.user.id))) {
@@ -276,12 +275,12 @@ function addEventListenerToTile(tile, arena) {
 		else putUserInMatch(plusButtonsTournament, 'tournament');
 		return;
 	}
-	pwWindow.classList.toggle("showRectangle");
+	passwordWindow.classList.toggle("showRectangle");
 	blockingPanel.classList.add("show");
 	userClickedId = tile.user.id;
 	const userBadge = createUserInfoObject(tile);
 	const userBadgeAlias = createUserInfoObject(tile);
-	pwWindow.replaceChild(userBadge.userInfoCont, pwWindow.querySelector('.userInfoCont'));
+	passwordWindow.replaceChild(userBadge.userInfoCont, passwordWindow.querySelector('.userInfoCont'));
 	aliasWindow.replaceChild(userBadgeAlias.userInfoCont, aliasWindow.querySelector('.userInfoCont'));
 	});
   }
@@ -361,11 +360,11 @@ export function resetArenaPage() {
 	resetAddingMode("arena");
 }
   
-  async function refreshUserListIfChanged() {
+export async function refreshUserListIfChanged() {
 	if (await isListsChanged())
 	  await RenderAllUsersInList();
 	// console.log("Checking...");
-  }
+}
 
   const userTiles = new Map();
    
@@ -504,12 +503,18 @@ infoButton.addEventListener("mouseleave", hideInfo);
 
 function displayInfo() {
 	isInfoShow = true;
-	document.getElementById("arenaInfoBox").classList.add("showRectangle");
+	if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
+		document.getElementById("arenaInfoBox").classList.add("showFirefoxRectangle");
+	else
+		document.getElementById("arenaInfoBox").classList.add("showRectangle");
 }
 
 function hideInfo() {
 	isInfoShow = false;
-	document.getElementById("arenaInfoBox").classList.remove("showRectangle");
+	if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
+		document.getElementById("arenaInfoBox").classList.remove("showFirefoxRectangle");
+	else
+		document.getElementById("arenaInfoBox").classList.remove("showRectangle");
 }
 
 
@@ -652,7 +657,6 @@ export async function endGame(isTournament, backToLobby = false) {
 	for(let i = 0; i < guestLoggedIn.length; i++) {
 		if (guestLoggedIn[i][0].id == gameState.arena.game.user1.id || guestLoggedIn[i][0].id == gameState.arena.game.user2.id || guestLoggedIn[i][0].id == gameState.arena.game.user3.id) {
 			const token = guestLoggedIn[i][1];
-			console.log(guestLoggedIn[i][0].id);
 			await updateUserStatus('online', token);
 		}
 	}
@@ -695,6 +699,7 @@ export function rematchGame() {
 const gameUI = document.querySelector(".gameUI");
 
 export function switchToGame(gameState, player1, player2, player3, isTournament) {
+	window.location.hash = "#loading";
 	gameStarted = true;
 	gameUI.style.visibility = 'visible';
 	if (isTournament)
@@ -788,6 +793,7 @@ const loginPage = document.querySelector('.loginPage');
 const planetPanel = document.querySelectorAll('.planetPanel');
 const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
+	clearInterval(checkEach5Sec);
     let player2;
     let player3;
     if (matchPlayer.length < 2 || (matchPlayer.length < 3 && matchPlayer[1].thirdPlayer))
@@ -807,5 +813,4 @@ startButton.addEventListener('click', function() {
         }
     }
     switchToGame(gameState, matchPlayer[0], player2, player3, false);
-	window.location.hash = "#loading";
 });

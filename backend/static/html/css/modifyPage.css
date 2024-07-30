@@ -56,7 +56,6 @@
     position: fixed;
     transform: translate(-50%, -50%);
     background-color: rgba(6, 0, 60, 0.6);
-    transition: opacity 1s, visibility 1s;
     opacity: 0;
     visibility: hidden;
 }
@@ -214,6 +213,11 @@
 
 .showRectangle {
     display: flex !important;
+    z-index: 5 !important;
+}
+
+.showFirefoxRectangle {
+    display: contents !important;
     z-index: 5 !important;
 }
 

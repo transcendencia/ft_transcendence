@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility } from "./main.js";
+import { spaceShip, camera, toggleBlurDisplay, toggleRSContainerVisibility, blockingPanel, passwordWindow, aliasWindow} from "./main.js";
 import { resetTournament } from '../../tournament/js/newTournament.js';
 import { initArenaPlanet, initTournamentPlanet, resetArenaPage } from './arenaPage.js';
 import { resetOutline, resetOutlineAndText, planetInRange } from "./planetIntersection.js";
 import { initUserPlanet } from './userPage.js';
+import {  } from './main.js';
 
 export let landedOnPlanet = false;
 let planetPanel = document.querySelectorAll(".planetPanel");
@@ -111,6 +112,9 @@ export function togglePlanet(toggleRsContainer = false) {
         resetOutline();
         resetRotations();
         landedOnPlanet = false;
+        passwordWindow.classList.remove("showRectangle");
+        aliasWindow.classList.remove("showRectangle");
+        blockingPanel.classList.remove('show');
     }
     if (toggleRsContainer === true)
         toggleRSContainerVisibility();

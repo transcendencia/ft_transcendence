@@ -13,6 +13,7 @@ from rest_framework.decorators import authentication_classes
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
+from django.db.utils import OperationalError, InterfaceError
 
 from ..models import User, FriendRequest
 from ..serializers import UserSerializer, UserListSerializer
@@ -27,24 +28,22 @@ class FriendRequestView(APIView):
 
     def post(self, request):
         if not request.body:
-            logger.error("Request body is empty")
             return Response({'status': "error", 'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
         
-        try:
-            data = json.loads(request.body)
-            if not isinstance(data, dict):
-                logger.error("Request body must be a JSON object")
-                return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+        data = json.loads(request.body)
+        if not isinstance(data, dict):
+            return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
 
+        try:
             sender = request.user
-            bot = get_object_or_404(User, username="bot")
 
             receiver_id = data.get('receiver_id')
             if receiver_id is None:
-                raise ValueError("Receiver ID is required")
-
+                return Response({'message': "Receiver ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+            bot = get_object_or_404(User, username="bot")
             if receiver_id == sender.id or receiver_id == bot.id:
-                raise ValueError("Invalid ID")
+                return Response({'message': "Invalid ID"}, status=status.HTTP_400_BAD_REQUEST)
 
             receiver = get_object_or_404(User, id=receiver_id)
             friend_request, created = FriendRequest.objects.get_or_create(sender=sender, receiver=receiver)
@@ -55,14 +54,9 @@ class FriendRequestView(APIView):
         except  Http404:
             logger.error('Friendrequest not found')
             return Response({'status': "error", 'message': "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-        except ValueError as ve:
-            logger.error(f'Value error: {str(ve)}')
-            return Response({'status': "error", 'message': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except (OperationalError, InterfaceError):
+            return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
     def patch(self, request):
         if not request.body:
@@ -72,7 +66,6 @@ class FriendRequestView(APIView):
         try:
             data = json.loads(request.body)
             if not isinstance(data, dict):
-                logger.error("Request body must be a JSON object")
                 return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
 
             request_id = data.get("request_id")
@@ -97,9 +90,8 @@ class FriendRequestView(APIView):
             logger.error(f'Value error: {str(ve)}')
             return Response({'status': "error", 'message': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except (OperationalError, InterfaceError):
+            return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
     def delete(self, request):
         if not request.body:
@@ -109,37 +101,30 @@ class FriendRequestView(APIView):
         try:
             data = json.loads(request.body)
             if not isinstance(data, dict):
-                logger.error("Request body must be a JSON object")
                 return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+        except json.JSONDecodeError:
+            return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_400_BAD_REQUEST)
+        except UnicodeDecodeError:
+            return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 
+        try:
             request_id = data.get("request_id")
             if request_id is None:
                 raise ValueError("Request ID is required")
 
             friend_request = get_object_or_404(FriendRequest, id=request_id)
-            if request.user.id == friend_request.sender.id:
-                raise ValueError("Invalid ID")
-
             friend_request.delete()
         
-            logger.info(f"Friend request {request_id} deleted by user {request.user.username}")
             return HttpResponse(status=status.HTTP_200_OK)
         
         except Http404:
-            logger.error('Friend request not found')
             return Response({'status': "error", 'message': "Friend request not found"}, status=status.HTTP_404_NOT_FOUND)
         
         except ValueError as ve:
-            logger.error(f'Value error: {str(ve)}')
             return Response({'status': "error", 'message': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
 
-        except json.JSONDecodeError:
-            logger.error("Invalid JSON in request body")
-            return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_400_BAD_REQUEST)
-
-        except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': "An unexpected error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except (OperationalError, InterfaceError):
+            return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 class FriendListView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -184,9 +169,8 @@ class FriendListView(APIView):
 
             return JsonResponse(data, status=status.HTTP_200_OK)
         
-        except OperationalError as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except (OperationalError, InterfaceError):
+            return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
     
     def create_user_pair(self, user, request_id):
         return {
@@ -198,7 +182,7 @@ class FriendListView(APIView):
         try:
             characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*(-_=+)'
             bot_password = get_random_string(8, characters)
-            bot, _ = User.objects.get_or_create(username="bot")
+            bot, _ = User.objects.get_or_create(username="bot", profile_picture="botLogo.png")
             bot.set_password(bot_password)
             return UserSerializer(bot).data
         
