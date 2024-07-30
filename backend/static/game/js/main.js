@@ -3428,8 +3428,9 @@ class Bot {
             this.updatesToPowerUp = (Math.floor(Math.random() * 30) + 1) / this.powerUpLikeness;
     }
     deactivateBot() {
+        if (this.isPlaying)
+            this.deactivateGui();
         this.isPlaying = false;
-        this.deactivateGui();
     }
     initGUI() {
         this.gui = new dat.GUI();
