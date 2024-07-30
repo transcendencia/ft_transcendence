@@ -10,6 +10,7 @@ import { planetInRange, resetOutline } from "./planetIntersection.js";
 import { rsContVisible } from "./main.js";
 import { checkEach5Sec, landedOnPlanet, togglePlanet, setCheckerToInterval } from "./enterPlanet.js";
 import { returnToHost } from "./userPage.js";
+import { changeTournamentStatus, resetTournament } from "../../tournament/js/newTournament.js";
 
 function addGlow(elementId, glow) {
     var element = document.getElementById(elementId);
@@ -445,6 +446,8 @@ export async function handleLogout(userId, token) {
         showPage('loginPage');
         setSpaceShipToLoginState();
         swipeLeftSideContainer('-40%');
+        changeTournamentStatus(2);
+        resetTournament();
         logoutAllGuest(userId);
         logoutUser(token);
         reactivateLoginFields();
