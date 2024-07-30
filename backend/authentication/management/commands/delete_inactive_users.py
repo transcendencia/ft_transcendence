@@ -24,7 +24,6 @@ class Command(BaseCommand):
             try:
                 twoYearsAgo = today.replace(year=today.year - 2)
             except ValueError:
-                # Gestion du cas où le 29 février d'une année bissextile n'existe pas dans une année non bissextile
                 twoYearsAgo = today.replace(year=today.year - 2, day=28)
         
             usersToDelete = User.objects.filter(last_login_date=twoYearsAgo)
@@ -32,11 +31,6 @@ class Command(BaseCommand):
                 print(f'Utilisateur: {user.username}')
                 if user.status is not UserStatus.ONLINE:
                     user.delete()
-                # User.objects.filter(last_login_date=timezone.now() - timedelta(days=30)).delete()
-            # Votre logique ici
-            # Par exemple :
-            # 
-            
             completion_message = f"Cron job completed at {timezone.now()}"
             print(completion_message)
             logger.info(completion_message)
