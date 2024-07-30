@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import authentication_classes
 from rest_framework import status
-
+from django.db.utils import OperationalError, InterfaceError
 from ..models import User, UserStat, FriendRequest
 
 import logging
@@ -48,9 +48,8 @@ class StatsView(APIView):
 
             return JsonResponse(data, status=status.HTTP_200_OK)
         
-        except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
     def get_user_info(self, user):
         return {

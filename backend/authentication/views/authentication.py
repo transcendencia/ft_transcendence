@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-from django.db import OperationalError
+from django.db import OperationalError, InterfaceError
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
@@ -62,49 +62,46 @@ def login_page(request):
           'id': user.id, 
           'graphic_mode': user.graphic_mode}, status=status.HTTP_200_OK)
   
-    except Exception as e:
-      return Response({'status': "error", 'message': str(e)},  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except (OperationalError, InterfaceError):
+      return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
-    try:
-      user.last_login_date = timezone.now()
-      user.status = UserStatus.ONLINE
     
+    user.last_login_date = timezone.now()
+    user.status = UserStatus.ONLINE
+    
+    try:
       if isHostLoggedIn == False:
           user.is_host = True
           if isLanguageClicked and newLanguage != user.language:
               user.language = newLanguage
       user.save()
     
-    except OperationalError as e:
-      logger.error(f'An error occurred: {str(e)}')
-      return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+    except (OperationalError, InterfaceError):
+      return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
-  try:
-    new_language = getLanguage(request.POST.get("language", "en"))
-    serializer = SignupSerializer(data=request.data)
   
+  new_language = getLanguage(request.POST.get("language", "en"))
+  
+  try:
+    serializer = SignupSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
       user_data = serializer.validated_data
       user = User(username=user_data['username'], language=new_language)
       user.set_password(user_data['password'])
       user.save()
-      
-      logger.info("User created successfully with username: %s", user.username)
       return Response({"msg_code": "successfulSignup"}, status=status.HTTP_201_CREATED)
 
   except (ValidationError, PasswordValidationError) as e:
     first_error = next(iter(e.detail.values()))[0]
     first_error_code = getattr(first_error, 'code', 'validationError')
-    logger.error("Validation error during signup: %s", first_error)
     return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
 
-  except OperationalError as e:
-    logger.error(f'An error occurred: {str(e)}')
-    return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+  except (OperationalError, InterfaceError):
+      return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
 def getLanguage(language):
@@ -128,6 +125,5 @@ class LogoutView(APIView):
 
       return HttpResponse(status=status.HTTP_200_OK)
     
-    except OperationalError as e:
-      logger.error(f'An error occurred: {str(e)}')
-      return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+    except (OperationalError, InterfaceError):
+      return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
