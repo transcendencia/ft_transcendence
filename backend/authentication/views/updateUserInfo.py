@@ -35,8 +35,8 @@ class UserGraphicModeView(APIView):
       return HttpResponse(status=status.HTTP_200_OK)
     
     except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      logger.error(f'An error occurred: {str(e)}')
+      return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserLanguageView(APIView):
   authentication_classes = [TokenAuthentication]
@@ -84,7 +84,8 @@ class UserInfoView(APIView):
     anonymousStatus = request.data.get('anonymousStatus') == 'true'
     
     data = request.data.copy()
-    data.pop('anonymousStatus')
+    if 'anonymousStatus' in data:
+      data.pop('anonymousStatus')
     serializer = UpdateInfoSerializer(instance=request.user, data=data)
     
     if serializer.is_valid():
@@ -108,10 +109,7 @@ class UserInfoView(APIView):
     elif 'profile-pic' in request.FILES and not anonymousStatus:
         validator = ProfilePictureValidator(request.FILES['profile-pic'])
         validator.validate()
-        print("user picture: \"", request.user.profile_picture.name, "\"")
-        print("default picture: \"", settings.DEFAULT_PROFILE_PICTURE, "\"")
         if request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
-          print("coucou")
           request.user.profile_picture.delete()
         uploaded_file = request.FILES['profile-pic']
         request.user.profile_picture = uploaded_file
@@ -126,7 +124,7 @@ def generate_unique_username(request):
     nbrUser = User.objects.all().count()
     for i in range(nbrUser + 1):
         if not User.objects.filter(username=username).exists():
-            return Response({'username': username}, status=200)
+            return Response({'username': username}, status=status.HTTP_200_OK)
         else:
             random_word = random.choice(words)
             random_item = random.choice(items)
@@ -135,7 +133,7 @@ def generate_unique_username(request):
         username = f"anonymous{i}"
         if not User.objects.filter(username=username).exists():
             return Response({'username': username}, status=status.HTTP_200_OK)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response({'msg_code': "noRandomUsernameAvailable"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])

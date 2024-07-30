@@ -118,6 +118,7 @@
         "invalidImage": "The image you selected is invalid",
         "invalidCharAlias": "The alias can only contain letters, numbers, or @/./+/-/_",
         "downloadButton": "Download",
+        "noRandomUsernameAvailable": "No anonymous username available",
 
         "startGameText": "[E] to start the game",
         "leftText": "left",
@@ -256,6 +257,7 @@
         "invalidImage": "La imagen seleccionada es invalida",
         "invalidCharAlias": "El alias de usuario solo puede contener letras, números o @/./+/-/_",
         "downloadButton": "Descargar",
+        "noRandomUsernameAvailable": "Ningún nombre de usuario anónimo disponible",
 
         "startGameText": "Pulse [E] para empezar",
         "leftText": "izquierda",
@@ -396,6 +398,7 @@
         "invalidImage": "L'image sélectionnee est invalide",
         "invalidCharAlias": "L'alias ne peut contenir que des lettres, des nombres ou @/./+/-/_",
         "downloadButton": "Telecharger",
+        "noRandomUsernameAvailable": "Aucun nom d'utilisateur anonyme disponible",
 
         "startGameText": "[E] pour commencer",
         "leftText": "gauche",

@@ -166,13 +166,18 @@ export function getRandomUsername() {
           'Authorization': `Token ${token}`,
       }
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(err => Promise.reject(err));
+    }
+    return response.json();})
   .then(data => {
     document.getElementById('changeUsernameInput').value = data.username;
   })
   .catch(error => {
       console.error('Error:', error);
-      throw error;
+      var changeInfoMessage = document.getElementById('changeInfoMessage');
+      changeInfoMessage.innerText = getTranslatedText(error.msg_code);
   });
 };
 

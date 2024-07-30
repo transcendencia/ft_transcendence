@@ -1,5 +1,6 @@
 import logging
 import os
+import json
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -10,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import authentication_classes
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.response import Response
 
 from ..models import User, FriendRequest
 from ..serializers import UserSerializer, UserListSerializer
@@ -24,13 +26,35 @@ class FriendRequestView(APIView):
 
     def post(self, request):
         try:
+            data = json.loads(request.body)
+            if not isinstance(data, dict):
+                logger.error("Request body must be a JSON object")
+                return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+
             sender = request.user
-            receiver = get_object_or_404(User, id=request.data.get('receiver_id'))
+            bot = get_object_or_404(User, username="bot")
+            print(sender.id)
+            receiver_id = data.get('receiver_id')
+            if receiver_id is None:
+                raise ValueError("Receiver ID is required")
+
+            if receiver_id == sender.id or receiver_id == bot.id:
+                raise ValueError("Invalid ID")
+
+            receiver = get_object_or_404(User, id=receiver_id)
             friend_request, created = FriendRequest.objects.get_or_create(sender=sender, receiver=receiver)
 
             logger.info(f"Friend request {'created' if created else 'already exists'} from user {sender.username} to user {receiver.username}")
             return HttpResponse(status=status.HTTP_200_OK)
         
+        except User.DoesNotExist:
+            logger.error('User not found')
+            return Response({'status': "error", 'message': "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        except ValueError as ve:
+            logger.error(f'Value error: {str(ve)}')
+            return Response({'status': "error", 'message': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             logger.error(f'An error occurred: {str(e)}')
             return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
