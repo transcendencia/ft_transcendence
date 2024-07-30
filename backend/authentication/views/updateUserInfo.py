@@ -3,6 +3,7 @@ import json
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from django.conf import settings
 from django.core.files.images import get_image_dimensions
 from PIL import Image
@@ -21,8 +22,10 @@ from ..serializers import UpdateInfoSerializer
 from ..utils.constants import UserStatus
 from .words import words, items
 from ..validators import ProfilePictureValidator
+from django.db import OperationalError, InterfaceError
 
 import random
+import json
 
 import logging
 logger = logging.getLogger(__name__)
@@ -82,26 +85,51 @@ class UserLanguageView(APIView):
     except OperationalError as e:
         return Response({'message': "A database error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class UserStatusView(APIView):
     authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-      try:
-        request.user.status = request.data.get('status')
-        request.user.save()
-        print(request.user.username, request.user.status)
-        return HttpResponse(status=status.HTTP_200_OK)
-      except Exception as e:
-            # logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-      
-    def get(self, request, userId):
-      try:
-        user = get_object_or_404(User, id=userId)
-        return Response({'user_status': user.status}, status=status.HTTP_200_OK)
-      except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'fail', 'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
+
+        try:
+            new_status = data.get('status')
+            if new_status is None:
+                return Response({'status': 'fail', 'message': 'Status is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            valid_statuses = ['in_game', 'offline', 'online']
+            if new_status not in valid_statuses:
+                return Response({'status': 'fail', 'message': f'Status must be one of {valid_statuses}'}, status=status.HTTP_400_BAD_REQUEST)
+
+            request.user.status = new_status
+            request.user.save()
+            return Response({'status': 'success', 'message': 'Status updated successfully'}, status=status.HTTP_200_OK)
+        except AttributeError:
+            return Response({'status': 'fail', 'message': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+    def get(self, request, userId=None):
+        if userId is None:
+            return Response({'status': 'fail', 'message': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            userId = int(userId)
+        except ValueError:
+            return Response({'status': 'fail', 'message': 'Invalid User ID format'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = get_object_or_404(User, id=userId)
+            return Response({'status': 'success', 'user_status': user.status}, status=status.HTTP_200_OK)
+        except Http404:
+            return Response({'status': 'fail', 'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
 
 class UserInfoView(APIView):
   authentication_classes = [TokenAuthentication]
@@ -182,5 +210,6 @@ def generate_unique_username(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def delete_account(request):
+  request.user.auth_token.delete()
   request.user.delete()
   return Response({'status' : "success"})
