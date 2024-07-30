@@ -283,8 +283,7 @@ export function getUserStats(userId) {
   fetch(`get_stats/${userId}`, {
     method: 'GET',
     headers: {
-      'Authorization': `Token ${token}`,
-      'X-CSRFToken': getCookie('crsftoken')
+      'Authorization': `Token ${token}`
     }
   })
   .then(response => {

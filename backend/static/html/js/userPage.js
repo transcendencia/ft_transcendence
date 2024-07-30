@@ -322,14 +322,12 @@ async function fillSearchedUserPage(user, type) {
 }
 function createUserMatch(user) {
   const token = sessionStorage.getItem('host_auth_token');
-  const csrfToken = getCookie('csrftoken');
   
   fetch(`get_game_player2/?id=${encodeURIComponent(user.id)}`, {
     method: 'GET',
     headers: {
       'Authorization': `Token ${token}`,
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken
+      'Content-Type': 'application/json'
     }
   })
   .then(response => {

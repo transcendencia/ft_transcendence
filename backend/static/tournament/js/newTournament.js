@@ -132,9 +132,10 @@ export function resetTournament() {
 
 let tournamentState = -1;
 
-export function changeTournamentStatus(){
+export function changeTournamentStatus(newValue){
   if (tournamentState == 1)
     tournamentState = 2;
+  tournamentState = newValue;
 }
 
 const leftColumn = document.querySelector(".leftColumn");
@@ -418,10 +419,7 @@ cancelTournamentButton.addEventListener('click', () => {
     return Promise.all([player1Status, player2Status]).then(([status1, status2]) => {
         console.log(status1, status2);
         if (status1 == undefined || status2 == undefined){
-          location.reload();
-          tournamentState = 2;
-          toggleRSContainerVisibility();
-          togglePlanet();
+          afterGameTournament(0, 0, true);
           return 1;
         }
         if (status1 === "offline" && status2 === "offline") {

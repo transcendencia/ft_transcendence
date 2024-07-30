@@ -9,8 +9,7 @@ export async function updateUserStatus(status, token) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
+            'Authorization': `Token ${token}`
         },
         body: JSON.stringify({ status: status }),
     })
@@ -30,8 +29,7 @@ export function getUserStatus(userId) {
     return fetch(`/user/status/${userId}/`, {
         method: 'GET',
         headers: {
-            'Authorization': `Token ${token}`,
-            'X-CSRFToken': getCookie('csrftoken')
+            'Authorization': `Token ${token}`
         }
     })
     .then(response => {
@@ -54,7 +52,7 @@ export function getProfileInfo(userId) {
     return fetch(`user_info/${userId}/`, {
         method: 'GET',
         headers: {
-            'Authorization': `Token ${token}`,
+            'Authorization': `Token ${token}`
         }
     })
     .then(response => {
@@ -162,8 +160,7 @@ export async function get_friends_list() {
         const response = await fetch('friends_list/', {
             method: 'GET',
             headers: {
-                'Authorization': `Token ${token}`,
-                'X-CSRFToken': getCookie('csrftoken')
+                'Authorization': `Token ${token}`
             }
         });
         if (!response.ok) {

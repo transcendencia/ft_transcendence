@@ -165,7 +165,7 @@ export function getRandomUsername() {
   fetch('generate_unique_username/', {
       method: 'GET',
       headers: {
-          'Authorization': `Token ${token}`,
+          'Authorization': `Token ${token}`
       }
   })
   .then(response => {
@@ -228,8 +228,7 @@ function downloadFile() {
   fetch('generateDataFile/', {
     method: 'GET',
     headers: {
-      'Authorization': `Token ${token}`,
-      'X-CSRFToken': getCookie('csrftoken')
+      'Authorization': `Token ${token}`
     },
   })
   .then(response => {
