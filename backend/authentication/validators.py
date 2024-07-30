@@ -34,9 +34,12 @@ class ProfilePictureValidator:
         self.profile_picture = profile_picture
     
     def validate(self):
-        self.checkFileSize()
-        # self.checkImgSize()
-        self.checkImgIntegrity()
+        try:
+            self.checkFileSize()
+            self.checkImgSize()
+            self.checkImgIntegrity()
+        except ValidationError as e:
+            raise e
 
     def checkImgType(self):
         ext = os.path.splitext(uploaded_file.name)[1].lower()

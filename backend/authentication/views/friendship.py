@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.db import OperationalError
+from django.http import Http404
 
 from rest_framework.views import APIView
 from rest_framework.decorators import authentication_classes
@@ -25,6 +26,10 @@ class FriendRequestView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request):
+        if not request.body:
+            logger.error("Request body is empty")
+            return Response({'status': "error", 'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
             data = json.loads(request.body)
             if not isinstance(data, dict):
@@ -33,7 +38,7 @@ class FriendRequestView(APIView):
 
             sender = request.user
             bot = get_object_or_404(User, username="bot")
-            print(sender.id)
+
             receiver_id = data.get('receiver_id')
             if receiver_id is None:
                 raise ValueError("Receiver ID is required")
@@ -47,8 +52,8 @@ class FriendRequestView(APIView):
             logger.info(f"Friend request {'created' if created else 'already exists'} from user {sender.username} to user {receiver.username}")
             return HttpResponse(status=status.HTTP_200_OK)
         
-        except User.DoesNotExist:
-            logger.error('User not found')
+        except  Http404:
+            logger.error('Friendrequest not found')
             return Response({'status': "error", 'message': "User not found"}, status=status.HTTP_404_NOT_FOUND)
         
         except ValueError as ve:
@@ -60,14 +65,38 @@ class FriendRequestView(APIView):
             return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request):
+        if not request.body:
+            logger.error("Request body is empty")
+            return Response({'status': "error", 'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
-            friend_request = get_object_or_404(FriendRequest, id=request.data.get("request_id"))
+            data = json.loads(request.body)
+            if not isinstance(data, dict):
+                logger.error("Request body must be a JSON object")
+                return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+
+            request_id = data.get("request_id")
+            if request_id is None:
+                raise ValueError("Request ID is required")
+            
+            friend_request = get_object_or_404(FriendRequest, id=request_id)
+            if request.user.id == friend_request.sender.id:
+                raise ValueError("Invalid ID")
+            
             friend_request.status = FriendRequestStatus.ACCEPTED
             friend_request.save()
         
             logger.info(f"Friend request from {friend_request.sender.username} accepted by user {request.user.username}")
             return HttpResponse(status=status.HTTP_200_OK)
         
+        except  Http404:
+            logger.error('Friendrequest not found')
+            return Response({'status': "error", 'message': "Friendrequest not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        except ValueError as ve:
+            logger.error(f'Value error: {str(ve)}')
+            return Response({'status': "error", 'message': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             logger.error(f'An error occurred: {str(e)}')
             return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

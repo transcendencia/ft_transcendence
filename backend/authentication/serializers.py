@@ -72,12 +72,11 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True, required=False)
 	class Meta():
 		model = User
-		fields = ['username', 'password', 'alias', 'profile_picture', 'confirmation_password']
+		fields = ['username', 'password', 'alias', 'confirmation_password']
 		extra_kwargs = {
 			'password': {'write_only': True, 'required': False},
 			'username': {'required': False},
 			'alias': {'required': False},
-			'profile_picture': {'required': False}
 		}
 
 	def	validate_username(self, value):

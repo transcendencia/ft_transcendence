@@ -83,6 +83,20 @@ class UserInfoView(APIView):
   def post(self, request):
     anonymousStatus = request.data.get('anonymousStatus') == 'true'
     
+    request.data._mutable = True
+    request.FILES._mutable = True
+    
+    # data = {key: value for key, value in request.data.items() if key != 'anonymousStatus'}
+    try:
+      if 'profile-pic' in request.FILES and not anonymousStatus:
+        validator = ProfilePictureValidator(request.FILES['profile-pic'])
+        validator.validate()
+      elif 'profile-pic' in request.FILES and anonymousStatus:
+        del request.FILES['profile-pic']
+    except ValidationError as e:
+        print(e)
+        return Response({"msg_code": e}, status=status.HTTP_400_BAD_REQUEST)
+  
     data = request.data.copy()
     if 'anonymousStatus' in data:
       data.pop('anonymousStatus')
@@ -107,8 +121,6 @@ class UserInfoView(APIView):
         if request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
           request.user.profile_picture.delete()
     elif 'profile-pic' in request.FILES and not anonymousStatus:
-        validator = ProfilePictureValidator(request.FILES['profile-pic'])
-        validator.validate()
         if request.user.profile_picture.name != settings.DEFAULT_PROFILE_PICTURE:
           request.user.profile_picture.delete()
         uploaded_file = request.FILES['profile-pic']
