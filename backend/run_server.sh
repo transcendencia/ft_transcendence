@@ -23,12 +23,11 @@ from django.core.management import call_command
 from authentication.models import User
 import os
 
-# Définition des variables utilisateur
-USER_USERNAME=${BOT_USERNAME:-"bot"}'
-USER_STATUS=${BOT_STATUS:-"online"}'
+USER_USERNAME=${BOT_USERNAME:-"bot"}
+USER_STATUS=${BOT_STATUS:-"online"}
 
 if not User.objects.filter(username=USER_USERNAME).exists():
-    user = User.objects.create_user(username=BOT_USERNAME, password=$BOT_PASSWORD, status=USER_STATUS)
+    user = User.objects.create_user(username=BOT_USERNAME, password="$BOT_PASSWORD", status=USER_STATUS)
     user.profile_picture = "botLogo.png"
     user.save()
 EOF
@@ -44,6 +43,6 @@ EOF
 # uvicorn backend.asgi:application --host 0.0.0.0 --port 8000 --ssl-keyfile /backend/cert/key.pem --ssl-certfile /backend/cert/cert.pem
 
 # Afficher les tâches cron pour confirmation
-python manage.py runserver 0.0.0.0:8000
+# python manage.py runserver 0.0.0.0:8000
 
 exec python manage.py runserver 0.0.0.0:8000

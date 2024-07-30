@@ -82,7 +82,7 @@ class FriendRequestView(APIView):
             friend_request = get_object_or_404(FriendRequest, id=request_id)
             if request.user.id == friend_request.sender.id:
                 raise ValueError("Invalid ID")
-            
+                                                                                                  
             friend_request.status = FriendRequestStatus.ACCEPTED
             friend_request.save()
         
