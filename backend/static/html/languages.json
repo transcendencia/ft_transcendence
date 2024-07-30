@@ -28,6 +28,7 @@
         "password_invalid":"The password must contain at least: • one uppercase letter, •one lowercase letter, •one number and one special character from the following: ~!@#$%^&*()_+{}\":;'[].",
         "invalid_characters": "The username can only contain letters, numbers, or @/./+/-/_",
         "invalidWhitespacePassword": "Password cannot contain spaces",
+        "max_length": "Password too long",
 
         "RGPDTitle" : "Privacy Policy",
         "RGPDText": "Your data is only used for the proper functioning of the tournament. Your profile is deleted after two years after the last login. You can modify, download the collected data, or delete your profile, at any time, from the planete profile. For more information go to the CNIL website.",
@@ -172,6 +173,7 @@
         "password_invalid": "La contraseña debe contener al menos: •una letra mayúscula, •una letra minúscula, •un número y un carácter especial de los siguientes: ~!@#$%^&*()_+{}\":;'[].",
         "invalid_characters": "El nombre de usuario solo puede contener letras, números o @/./+/-/_",
         "invalidWhitespacePassword": "La contraseña no puede contener espacios",
+        "max_length": "Mot de passe trop long",
 
         "RGPDTitle" : "Politica de privacidad",
         "RGPDText" : "Tus datos solo sirven para el buen funcionamiento del torneo. Tu perfil se elimina después de dos años después de la última conexión. Puede editar, descargar los datos recopilados, o eliminar su perfil, en cualquier momento, desde el planeta perfil. Para más información, visite el sitio web de la CNIL.",
@@ -319,6 +321,7 @@
         "password_invalid": "Le mot de passe doit contenir au minimum : •une lettre majuscule, •une lettre minuscule, •un chiffre et un caractère spécial parmi les suivants : ~!@#$%^&*()_+{}\":;'[].",
         "invalid_characters": "Le nom d'utilisateur ne peut contenir que des lettres, des nombres ou @/./+/-/_",
         "invalidWhitespacePassword": "Le mot de passe ne peut pas contenir d'espaces",
+        "max_length": "Contrasena demasiado larga",
 
         "settingsPlanetInfo1": "[Nom]: Profil",
         "settingsPlanetInfo2": "[ID]: SO-0911",

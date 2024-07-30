@@ -30,7 +30,6 @@ def index(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_page(request):
-  try:
     username = request.POST.get("username")
     password = request.POST.get("password")
 
@@ -42,33 +41,28 @@ def login_page(request):
     newLanguage = getLanguage(request.POST.get("language")) if not isHostLoggedIn else None
     isLanguageClicked = request.POST.get("languageClicked") == 'true' if not isHostLoggedIn else False
     
-    logger.debug(f'Username received: {usernameLower}, Host logged in: {isHostLoggedIn}')
-
     if usernameLower == 'bot':
       return Response({'msg_code': "loginFailed"}, status=status.HTTP_400_BAD_REQUEST)
     
-    user = authenticate(username=usernameLower, password=password)
-    if user is None:
-      logger.warning(f"Authentication failed for user {username}")
-      return  Response({'msg_code': "loginFailed"}, status=status.HTTP_401_UNAUTHORIZED)
+    try:
+      user = authenticate(username=usernameLower, password=password)
+      if user is None:
+        return  Response({'msg_code': "loginFailed"}, status=status.HTTP_401_UNAUTHORIZED)
 
-    if user.status != UserStatus.OFFLINE:
-      logger.warning(f"User {username} already logged in")
-      return Response({'msg_code': "userAlreadyLoggedIn"}, status=status.HTTP_409_CONFLICT)
+      if user.status != UserStatus.OFFLINE:
+        return Response({'msg_code': "userAlreadyLoggedIn"}, status=status.HTTP_409_CONFLICT)
         
-    updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
-    token, _ = Token.objects.get_or_create(user=user)
-    logger.info(f"User {username} successfully logged in")
+      updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
+      token, _ = Token.objects.get_or_create(user=user)
     
-    return Response({
-        'token': token.key, 
-        'msg_code': "loginSuccessful",
-        'language': user.language, 
-        'id': user.id, 
-        'graphic_mode': user.graphic_mode}, status=status.HTTP_200_OK)
+      return Response({
+          'token': token.key, 
+          'msg_code': "loginSuccessful",
+          'language': user.language, 
+          'id': user.id, 
+          'graphic_mode': user.graphic_mode}, status=status.HTTP_200_OK)
   
-  except Exception as e:
-      logger.error(f'An error occurred: {str(e)}')
+    except Exception as e:
       return Response({'status': "error", 'message': str(e)},  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):

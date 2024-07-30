@@ -94,21 +94,21 @@
         <div class="titleText" style="margin-top:10px; transform: scale(1.2); font-size: 20px;" id="enterLogin">
           Login
         <div class="hologram-textBar d-flex justify-content-center align-items-center">
-          <input id= "usernameSignUpInput" class="text-input" name="username" style="font-size: 30px; " spellcheck="false" autocomplete="off"></input>
+          <input id= "usernameSignUpInput" class="text-input" name="username" style="font-size: 30px; " spellcheck="false" maxlength="13" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
       <div class="titleText" style="margin-top:-8px;transform: scale(1.2); font-size: 20px;" id="enterPassword">
           Password
         <div class="hologram-textBar d-flex justify-content-center align-items-center">
-          <input id= "passwordSignUpInput" class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
+          <input id= "passwordSignUpInput" class="text-input" name="password" style="font-size: 30px;" spellcheck="false" type="password" maxlength="128" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
       <div class="titleText" style="margin-top:-8px; transform: scale(1.2); font-size: 20px;" id="confirmPassword">
         confirm password
         <div class="hologram-textBar d-flex justify-content-center align-items-center">
-          <input id= "confirmPasswordSignUpInput" class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password" autocomplete="off"></input>
+          <input id= "confirmPasswordSignUpInput" class="text-input" name="confirmation_password" style="font-size: 30px;" spellcheck="false" type="password" maxlength="128" autocomplete="off"></input>
           <img src="{%static 'html/assets/icons/frame.png' %}">
         </div>
       </div>
@@ -512,13 +512,13 @@
                       <input id="changeUsernameInput" name="username" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Username" maxlength="13" autocomplete="off"></input>
                     </div>
                     <div class="changeInfoBar">
-                      <input id="changeAliasInput" name="alias" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Alias" maxlength="12" autocomplete="off"></input>
+                      <input id="changeAliasInput" name="alias" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Alias" maxlength="13" autocomplete="off"></input>
                     </div>
                     <div class="changeInfoBar">
-                      <input id="changePasswordInput"name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Password" type="password" autocomplete="off"></input>
+                      <input id="changePasswordInput"name="password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Password" type="password" maxlength="128" autocomplete="off"></input>
                     </div>
                     <div class="changeInfoBar">
-                      <input id="changeConfirmPasswordInput" name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password" type="password" autocomplete="off"></input>
+                      <input id="changeConfirmPasswordInput" name="confirmation_password" class="text-input3" style="font-size: 20px;" spellcheck="false" placeholder="Confirm Password" type="password" maxlength="128" autocomplete="off"></input>
                     </div>
                     <div class="privacyAndDownloadCont">
                       <div id="RGPDPolicyInUserPage" class="actionCont tinyBlueShadowfilter" style="font-size: 20px; font-family: 'space'">

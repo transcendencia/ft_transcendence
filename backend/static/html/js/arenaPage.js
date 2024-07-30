@@ -796,7 +796,6 @@ const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
     let player2;
     let player3;
-	console.log("matchPlayer", matchPlayer);
     if (matchPlayer.length < 2 || (matchPlayer.length < 3 && matchPlayer[1].thirdPlayer))
         return;
     if (matchPlayer.length === 2){
