@@ -120,20 +120,22 @@ class UserInfoView(APIView):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 def generate_unique_username(request):
-  random_word = random.choice(words)
-  random_item = random.choice(items)
-  username = random_word + random_item
-  nbrUser = User.objects.all().count()
-  for i in range(nbrUser + 1):
-    if not User.objects.filter(username=username).exists():
-      return Response({'username': username}, status=200)
-    else:
-      random_word = random.choice(words)
-      random_item = random.choice(items)
-      username = random_word + random_item
-  return Response({"msg_code": "noRandomUsernameAvailable"}, status=status.HTTP_400_BAD_REQUEST)
-
-
+    random_word = random.choice(words)
+    random_item = random.choice(items)
+    username = random_word + random_item
+    nbrUser = User.objects.all().count()
+    for i in range(nbrUser + 1):
+        if not User.objects.filter(username=username).exists():
+            return Response({'username': username}, status=200)
+        else:
+            random_word = random.choice(words)
+            random_item = random.choice(items)
+            username = random_word + random_item
+    for i in range(nbrUser + 1):
+        username = f"anonymous{i}"
+        if not User.objects.filter(username=username).exists():
+            return Response({'username': username}, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
