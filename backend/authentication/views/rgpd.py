@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 import io
 from django.http import HttpResponse
+from rest_framework.response import Response
 from django.utils.text import slugify
 from datetime import datetime
 import logging

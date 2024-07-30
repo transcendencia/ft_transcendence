@@ -1,4 +1,5 @@
 import os
+import json
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -6,6 +7,7 @@ from django.conf import settings
 from django.core.files.images import get_image_dimensions
 from PIL import Image
 from django.core.exceptions import ValidationError
+from django.db import OperationalError
 
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, authentication_classes
@@ -29,27 +31,56 @@ class UserGraphicModeView(APIView):
   authentication_classes = [TokenAuthentication]
 
   def patch(self, request):
+    if not request.body:
+      return Response({'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
+
+    data = json.loads(request.body)
+    if not isinstance(data, dict):
+      return Response({'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+
+    newGraphicMode = data.get('graphicMode')
+    if newGraphicMode is None:
+      return Response({'message': "Graphic mode required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if newGraphicMode not in ["low", "medium", "high"]:
+        return Response({'message': "Invalid graphic mode."}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
-      request.user.graphic_mode = request.data.get('graphicMode')
+      request.user.graphic_mode = newGraphicMode
       request.user.save()
       return HttpResponse(status=status.HTTP_200_OK)
     
-    except Exception as e:
-      logger.error(f'An error occurred: {str(e)}')
-      return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except OperationalError as e:
+        return Response({'message': "A database error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserLanguageView(APIView):
   authentication_classes = [TokenAuthentication]
   
   def patch(self, request):
+    if not request.body:
+      logger.error("Request body is empty")
+      return Response({'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
+
+    data = json.loads(request.body)
+    if not isinstance(data, dict):
+      logger.error("Request body must be a JSON object")
+      return Response({'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+
+    newLanguage = data.get('language')
+    if newLanguage is None:
+      return Response({'message': "Language is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if newLanguage not in ["es1", "en1", "fr1"]:
+        return Response({'message': "Invalid language."}, status=status.HTTP_400_BAD_REQUEST)
+    
     try:
       user = request.user
-      user.language = request.data.get("language")
+      user.language = newLanguage
       user.save()
       return HttpResponse(status=status.HTTP_200_OK)
-    except Exception as e:
-            logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    except OperationalError as e:
+        return Response({'message': "A database error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserStatusView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -82,13 +113,12 @@ class UserInfoView(APIView):
   
   def post(self, request):
     anonymousStatus = request.data.get('anonymousStatus') == 'true'
-    print(anonymousStatus)
+
     try:
       if 'profile-pic' in request.FILES and not anonymousStatus:
         validator = ProfilePictureValidator(request.FILES['profile-pic'])
         validator.validate()
     except ValidationError as e:
-        print(e)
         return Response({"msg_code": e}, status=status.HTTP_400_BAD_REQUEST)
     
     request.data._mutable = True
