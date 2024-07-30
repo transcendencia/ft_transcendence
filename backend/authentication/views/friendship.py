@@ -102,16 +102,44 @@ class FriendRequestView(APIView):
             return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request):
+        if not request.body:
+            logger.error("Request body is empty")
+            return Response({'status': "error", 'message': "Request body is empty"}, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
-            friend_request = get_object_or_404(FriendRequest, id=request.data.get("request_id"))
+            data = json.loads(request.body)
+            if not isinstance(data, dict):
+                logger.error("Request body must be a JSON object")
+                return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
+
+            request_id = data.get("request_id")
+            if request_id is None:
+                raise ValueError("Request ID is required")
+
+            friend_request = get_object_or_404(FriendRequest, id=request_id)
+            if request.user.id == friend_request.sender.id:
+                raise ValueError("Invalid ID")
+
             friend_request.delete()
         
-            logger.info(f"Friend request {friend_request.id} deleted by user {request.user.username}")
+            logger.info(f"Friend request {request_id} deleted by user {request.user.username}")
             return HttpResponse(status=status.HTTP_200_OK)
         
+        except Http404:
+            logger.error('Friend request not found')
+            return Response({'status': "error", 'message': "Friend request not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        except ValueError as ve:
+            logger.error(f'Value error: {str(ve)}')
+            return Response({'status': "error", 'message': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+
+        except json.JSONDecodeError:
+            logger.error("Invalid JSON in request body")
+            return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             logger.error(f'An error occurred: {str(e)}')
-            return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'status': "error", 'message': "An unexpected error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class FriendListView(APIView):
     authentication_classes = [TokenAuthentication]
