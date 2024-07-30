@@ -20,7 +20,7 @@ from ..serializers import UpdateInfoSerializer
 from ..utils.constants import UserStatus
 from .words import words, items
 from ..validators import ProfilePictureValidator
-from django.db import OperationalError
+from django.db import OperationalError, InterfaceError
 
 import random
 import json
@@ -79,8 +79,8 @@ class UserStatusView(APIView):
             return Response({'status': 'success', 'message': 'Status updated successfully'}, status=status.HTTP_200_OK)
         except AttributeError:
             return Response({'status': 'fail', 'message': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
-        except OperationalError:
-            return Response({'status': 'error', 'message': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
     def get(self, request, userId=None):
         if userId is None:
@@ -96,8 +96,8 @@ class UserStatusView(APIView):
             return Response({'status': 'success', 'user_status': user.status}, status=status.HTTP_200_OK)
         except Http404:
             return Response({'status': 'fail', 'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        except OperationalError:
-            return Response({'status': 'error', 'message': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
 class UserInfoView(APIView):

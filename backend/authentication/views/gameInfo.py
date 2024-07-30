@@ -19,7 +19,7 @@ from rest_framework.authentication import TokenAuthentication
 from ..models import User, Game, UserStat
 from ..serializers import UserSerializer, SignupSerializer, UpdateInfoSerializer, UserListSerializer, GameListSerializer
 
-from django.db import OperationalError
+from django.db.utils import OperationalError, InterfaceError
 
 import json
 
@@ -47,44 +47,35 @@ def get_game_player2(request):
             }
             return Response(response_data)
         
-        except OperationalError:
-            return Response({'status': 'error', 'message': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except (OperationalError, InterfaceError) as e:
+            return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
   
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 def get_game_user(request):
-  if request.method == 'GET':
-    user = request.user
-    games = Game.objects.filter(player1=user).union(Game.objects.filter(player2=user)).order_by('-date')
-    serializers = GameListSerializer(games, many=True)
-    response_data = {
-        'user_id': user.id,
-        'games': serializers.data
-    }
-    return Response(response_data)
-
-from django.middleware.csrf import get_token
-
-# @csrf_protect
+    try:
+        user = request.user
+        games = Game.objects.filter(player1=user).union(Game.objects.filter(player2=user)).order_by('-date')
+        serializers = GameListSerializer(games, many=True)
+        response_data = {
+            'user_id': user.id,
+            'games': serializers.data
+        }
+        return Response(response_data)
+    except (OperationalError, InterfaceError) as e:
+        return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def add_game(request):
-    print("start add_game")
-
-    # Extract and validate CSRF token
-    # csrf_token = request.META.get('HTTP_X_CSRFTOKEN')
-    # if csrf_token != get_token(request):
-        # return JsonResponse({'status': 'fail', 'message': 'CSRF token missing or incorrect.'}, status=403)
-
     try:
         data = json.loads(request.body.decode('utf-8'))
     except json.JSONDecodeError:
         return JsonResponse({'status': 'fail', 'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
-    except Exception as e:
-        return JsonResponse({'status': 'fail', 'message': f'An error occurred: {str(e)}'}, status=400)
-    
+    except UnicodeDecodeError:
+        return JsonResponse({'status': 'fail', 'message': 'Invalid Unicode in request body.'}, status=400)
+
     if not isinstance(data, dict):
         return JsonResponse({'status': 'fail', 'message': 'Invalid data format. Expected a JSON object.'}, status=400)
     required_fields = ['player1', 'player2', 'scorePlayer1', 'scorePlayer2', 'gameplayMode', 'modeGame', 'mapGame', 'gameTime', 'user1', 'user2']
@@ -129,10 +120,8 @@ def add_game(request):
         return JsonResponse({'status': 'success', 'game_id': game.id}, status=201)
     except User.DoesNotExist:
         return JsonResponse({'status': 'fail', 'message': 'One or more players not found'}, status=404)
-    except OperationalError:
-            return Response({'status': 'error', 'message': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
+    except (OperationalError, InterfaceError) as e:
+        return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
 def createUserStat(user, game, userStat):
