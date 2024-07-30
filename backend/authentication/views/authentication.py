@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.db import OperationalError
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
@@ -31,8 +32,12 @@ def index(request):
 def login_page(request):
   try:
     username = request.POST.get("username")
-    usernameLower = username.lower()
     password = request.POST.get("password")
+
+    if not username or not password:
+      return Response({'msg_code': "loginFailed"}, status=status.HTTP_400_BAD_REQUEST)
+
+    usernameLower = username.lower()
     isHostLoggedIn = request.POST.get("hostLoggedIn") == 'true'
     newLanguage = getLanguage(request.POST.get("language")) if not isHostLoggedIn else None
     isLanguageClicked = request.POST.get("languageClicked") == 'true' if not isHostLoggedIn else False
@@ -77,17 +82,17 @@ def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
               user.language = newLanguage
       user.save()
     
-    except Exception as e:
+    except OperationalError as e:
       logger.error(f'An error occurred: {str(e)}')
-      return Response({'status': "error", 'message': str(e)},  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-from django.contrib.auth.models import AbstractUser
+      return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
   try:
     new_language = getLanguage(request.POST.get("language", "en"))
     serializer = SignupSerializer(data=request.data)
-    print(User._meta.get_field('username').validators)
+  
     if serializer.is_valid(raise_exception=True):
       user_data = serializer.validated_data
       user = User(username=user_data['username'], language=new_language)
@@ -103,13 +108,9 @@ def signup(request):
     logger.error("Validation error during signup: %s", first_error)
     return Response({"msg_code": first_error_code}, status=status.HTTP_400_BAD_REQUEST)
 
-  except IntegrityError as e:
-    logger.error("Integrity error: unique constraint failed")
-    return Response({"msg_code": "unique"}, status=status.HTTP_400_BAD_REQUEST)
-  
-  except Exception as e:
-      logger.error(f'An error occurred: {str(e)}')
-      return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+  except OperationalError as e:
+    logger.error(f'An error occurred: {str(e)}')
+    return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
 def getLanguage(language):
@@ -133,6 +134,6 @@ class LogoutView(APIView):
 
       return HttpResponse(status=status.HTTP_200_OK)
     
-    except Exception as e:
+    except OperationalError as e:
       logger.error(f'An error occurred: {str(e)}')
-      return Response({'status': "error", 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)

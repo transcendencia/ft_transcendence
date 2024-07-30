@@ -11,7 +11,7 @@ import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '
 import { changeColorMessage } from './signUpPage.js';
 
 let isInfosShow = false;
-let anonymousStatus;
+let anonymousStatus = false;
 
 var submitChangeButton = document.querySelector(".submitChangeButton");
 submitChangeButton.addEventListener("click", handleChangeInfoForm);
@@ -31,7 +31,7 @@ function handleChangeInfoForm(event) {
     method: 'POST',
     headers: {
       'Authorization': `Token ${token}`,
-      'X-CRSFToken': getCookie('crsftoken')
+      'X-CSRFToken': getCookie('csrftoken')
     },
     body: formData,
   })
@@ -48,15 +48,13 @@ function handleChangeInfoForm(event) {
         populateProfileInfos(data);
         createUserBadge(data, "playersConnHostBadge");
       })
-    toggleSwitchClicked = false;
-    document.getElementById('toggleSwitch').classList.remove('active');
     changeColorMessage('.changeInfoMessage', 'success')
     changeInfoMessage.innerText = getTranslatedText(data.msg_code);
+    resetModifyPageField(true);
   })
   .catch(error => {
-    // changeInfoMessage.classList.toggle("errorMessage");
-    changeColorMessage('.changeInfoMessage', 'failure')
-    console.log("msg_code: ", error.msg_code)
+    changeColorMessage('.changeInfoMessage', 'failure');
+    console.log("msg_code: ", error.msg_code);
     changeInfoMessage.innerText = getTranslatedText(error.msg_code);
     console.error('There was a problem with the change_profile_info:', error);
   });
@@ -166,13 +164,18 @@ export function getRandomUsername() {
           'Authorization': `Token ${token}`,
       }
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(err => Promise.reject(err));
+    }
+    return response.json();})
   .then(data => {
     document.getElementById('changeUsernameInput').value = data.username;
   })
   .catch(error => {
       console.error('Error:', error);
-      throw error;
+      var changeInfoMessage = document.getElementById('changeInfoMessage');
+      changeInfoMessage.innerText = getTranslatedText(error.msg_code);
   });
 };
 
@@ -254,7 +257,7 @@ function downloadFile() {
   });
 }
 
-export function resetModifyPageField() {
+export function resetModifyPageField(success = false) {
   getProfileInfo(sessionStorage.getItem('host_id'))
   .then(data => {
       populateProfileInfos(data);
@@ -264,10 +267,13 @@ export function resetModifyPageField() {
   });
   document.getElementById('changePasswordInput').value = '';
   document.getElementById('changeConfirmPasswordInput').value = '';
-  document.getElementById('changeInfoMessage').innerText = '';
   document.getElementById('profile-pic').value = '';
-  document.getElementById('changeInfoMessage').innerText = '';
+  if (success === false) {
+    document.getElementById('changeInfoMessage').innerText = '';
+  }
   document.getElementById('LinkPicture').innerText = '';
+  toggleSwitchClicked = false;
+  anonymousStatus = false;
   const toggleSwitch = document.getElementById('toggleSwitch');
   toggleSwitch.classList.remove('active');
 }

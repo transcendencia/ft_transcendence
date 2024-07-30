@@ -118,6 +118,7 @@ function handleSignUp(event) {
         changeColorMessage('.signupMessageCont', 'success');
         messageContainer.innerText = getTranslatedText(data.msg_code);
         submitButton.disabled = false;
+        emptySignUpField(true);
     })
     .catch(error => {
         changeColorMessage('.signupMessageCont', 'failure');
@@ -139,9 +140,10 @@ export function changeColorMessage(messageContainer, status) {
     }
 }
 
-export function emptySignUpField() {
+export function emptySignUpField(success = false) {
     document.getElementById('usernameSignUpInput').value = '';
     document.getElementById('passwordSignUpInput').value = '';
     document.getElementById('confirmPasswordSignUpInput').value = '';
-    document.getElementById('messageContainerSignup').innerText = '';
+    if (success === false)
+        document.getElementById('messageContainerSignup').innerText = '';
 }

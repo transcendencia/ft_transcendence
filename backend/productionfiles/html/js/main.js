@@ -461,7 +461,7 @@ export function startAnimation() {
         anim1.start();
     }
     
-export function createUserBadge(hostData, elementId) {
+export function createUserBadge(hostData, elementId, hovering = false) {
     const elem = document.getElementById(elementId);
     elem.innerHTML = `
     <div class="profilePic">
@@ -469,6 +469,8 @@ export function createUserBadge(hostData, elementId) {
     </div>
     ${hostData.profile_info.username}
   `;
+  if (!hovering)
+    return;
 }
 
 export function displayHostEscapePage() {
@@ -557,7 +559,7 @@ export function panelRemove(){
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
-        console.log(lobbyStart);
+        console.log(sessionStorage.getItem('currentPage')); // Store current page in sessionStorage
     if (event.key === 'Enter') {
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()

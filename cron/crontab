@@ -1,3 +1,2 @@
-# Chargement des variables d'environnement
-# Exécution de la commande principale toutes les minutes
-* * * * * /etc/launch_crontab.sh
+0 3 * * * /etc/launch_crontab.sh
+

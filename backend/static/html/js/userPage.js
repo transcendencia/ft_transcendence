@@ -69,7 +69,7 @@ export function initUserPlanet() {
     refreshUserList();
   if (pageDisplayed === "searchedProfile")
     refreshSearchedPage(displayedUserOnSearchPage);
-  // console.log("checking...");
+  console.log("checking...");
   }, 5000));
 }
 

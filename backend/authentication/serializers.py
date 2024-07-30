@@ -26,7 +26,9 @@ class SignupSerializer(serializers.ModelSerializer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		for field_name, field in self.fields.items():
-			field.error_messages['blank'] = "All fields must be completed."
+			field_value = self.initial_data.get(field_name, None)
+			if field_value is None or len(field_value) == 0:
+				field.error_messages['blank'] = "All fields must be completed."
 	
 	def validate_username(self, value):
 		value = value.lower()
@@ -42,10 +44,11 @@ class SignupSerializer(serializers.ModelSerializer):
 
 	# add eror code
 	def validate_password(self, value):
-		if not value.strip():
-			raise serializers.ValidationError("Password cannot be empty or whitespace.", code="invalidAllSpace")
-		if ' ' in value:
-			raise serializers.ValidationError("Password cannot contain spaces.", code="invalidSpace")
+		print("coucou")
+		# if ' ' in value:
+		# 	raise serializers.ValidationError("Password cannot contain spaces.", code="invalidSpacePassword")
+		if re.search(r'\s', value):
+			raise serializers.ValidationError(code="invalidWhitespacePassword")
 
 		# try:
 		# 	validate_password(value)
@@ -69,12 +72,11 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True, required=False)
 	class Meta():
 		model = User
-		fields = ['username', 'password', 'alias', 'profile_picture', 'confirmation_password']
+		fields = ['username', 'password', 'alias', 'confirmation_password']
 		extra_kwargs = {
 			'password': {'write_only': True, 'required': False},
 			'username': {'required': False},
 			'alias': {'required': False},
-			'profile_picture': {'required': False}
 		}
 
 	def	validate_username(self, value):
@@ -96,6 +98,9 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 		logger.debug(f"Entering validate_confirmation_password with value: {value}")
 		if value:
 			value = value.lower()
+			allowed_chars_pattern = re.compile(r'^[\w.@+-]+$')
+			if not allowed_chars_pattern.match(value):
+				raise serializers.ValidationError(code="invalidCharAlias")
 			if len(value) > 13:
 				raise serializers.ValidationError(code="length_exceeded_alias")
 			current_user = self.instance
