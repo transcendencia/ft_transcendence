@@ -920,20 +920,20 @@ class Arena extends THREE.Mesh {
         //     this.switchMap(this.skyMap);
         // if (keyDown['4'])
         //     this.switchMap(this.dragonMap);
-        if (keyDown['b'])
-        {
-            if (!this.isBeingBlurred)
-            {
-                this.isBeingBlurred = true;
-                this.blurScreen();
-            }
-        }
-        if (keyDown['c'])
-        {
-            this.paddleLeft.light.power += 0.1;
-            this.paddleRight.light.power += 0.1;
-            this.bot.isPlaying = !this.bot.isPlaying;
-        }
+        // if (keyDown['b'])
+        // {
+        //     if (!this.isBeingBlurred)
+        //     {
+        //         this.isBeingBlurred = true;
+        //         this.blurScreen();
+        //     }
+        // }
+        // if (keyDown['c'])
+        // {
+        //     this.paddleLeft.light.power += 0.1;
+        //     this.paddleRight.light.power += 0.1;
+        //     this.bot.isPlaying = !this.bot.isPlaying;
+        // }
         if (keyDown['e'] && !gameState.loading && !this.gameState.eKeyWasPressed)
         {
             if (gameState.loading)
