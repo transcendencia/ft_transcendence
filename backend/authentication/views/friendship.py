@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.db import OperationalError
 from django.http import Http404
+from django.utils.crypto import get_random_string
 
 from rest_framework.views import APIView
 from rest_framework.decorators import authentication_classes
@@ -196,7 +197,10 @@ class FriendListView(APIView):
     
     def get_or_create_bot(self):
         try:
-            bot, _ = User.objects.get_or_create(username="bot", defaults={'password': os.getenv('BOT_PASSWORD')})
+            characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*(-_=+)'
+            bot_password = get_random_string(8, characters)
+            bot, _ = User.objects.get_or_create(username="bot")
+            bot.set_password(bot_password)
             return UserSerializer(bot).data
         
         except OperationalError as e:
