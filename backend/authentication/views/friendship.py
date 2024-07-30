@@ -182,7 +182,7 @@ class FriendListView(APIView):
         try:
             characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*(-_=+)'
             bot_password = get_random_string(8, characters)
-            bot, _ = User.objects.get_or_create(username="bot")
+            bot, _ = User.objects.get_or_create(username="bot", profile_picture="botLogo.png")
             bot.set_password(bot_password)
             return UserSerializer(bot).data
         
