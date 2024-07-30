@@ -82,7 +82,7 @@ class UserInfoView(APIView):
   
   def post(self, request):
     anonymousStatus = request.data.get('anonymousStatus') == 'true'
-
+    print(anonymousStatus)
     try:
       if 'profile-pic' in request.FILES and not anonymousStatus:
         validator = ProfilePictureValidator(request.FILES['profile-pic'])
@@ -91,8 +91,14 @@ class UserInfoView(APIView):
         print(e)
         return Response({"msg_code": e}, status=status.HTTP_400_BAD_REQUEST)
     
+    request.data._mutable = True
+
     if anonymousStatus:
-      request.data.pop('profile-pic')
+        if 'profile-pic' in request.data:
+            request.data.pop('profile-pic')
+        if 'alias' in request.data:
+            request.data['alias'] = ''
+
     data = request.data.copy()
     if 'anonymousStatus' in data:
       data.pop('anonymousStatus')

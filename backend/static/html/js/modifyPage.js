@@ -48,15 +48,13 @@ function handleChangeInfoForm(event) {
         populateProfileInfos(data);
         createUserBadge(data, "playersConnHostBadge");
       })
-    toggleSwitchClicked = false;
-    document.getElementById('toggleSwitch').classList.remove('active');
     changeColorMessage('.changeInfoMessage', 'success')
     changeInfoMessage.innerText = getTranslatedText(data.msg_code);
+    resetModifyPageField(true);
   })
   .catch(error => {
-    // changeInfoMessage.classList.toggle("errorMessage");
-    changeColorMessage('.changeInfoMessage', 'failure')
-    console.log("msg_code: ", error.msg_code)
+    changeColorMessage('.changeInfoMessage', 'failure');
+    console.log("msg_code: ", error.msg_code);
     changeInfoMessage.innerText = getTranslatedText(error.msg_code);
     console.error('There was a problem with the change_profile_info:', error);
   });
@@ -259,7 +257,7 @@ function downloadFile() {
   });
 }
 
-export function resetModifyPageField() {
+export function resetModifyPageField(success = false) {
   getProfileInfo(sessionStorage.getItem('host_id'))
   .then(data => {
       populateProfileInfos(data);
@@ -269,10 +267,13 @@ export function resetModifyPageField() {
   });
   document.getElementById('changePasswordInput').value = '';
   document.getElementById('changeConfirmPasswordInput').value = '';
-  document.getElementById('changeInfoMessage').innerText = '';
   document.getElementById('profile-pic').value = '';
-  document.getElementById('changeInfoMessage').innerText = '';
+  if (success === false) {
+    document.getElementById('changeInfoMessage').innerText = '';
+  }
   document.getElementById('LinkPicture').innerText = '';
+  toggleSwitchClicked = false;
+  anonymousStatus = false;
   const toggleSwitch = document.getElementById('toggleSwitch');
   toggleSwitch.classList.remove('active');
 }
