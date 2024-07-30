@@ -559,13 +559,10 @@ export function panelRemove(){
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p')
-        console.log(lobbyStart);
+        console.log(sessionStorage.getItem('currentPage')); // Store current page in sessionStorage
     if (event.key === 'Enter') {
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
-    }
-    if (event.key === 't') {
-        gameState.loadingToLobby();
     }
     if (event.key === 'Escape') {
         if (gameState.inGame && !gameState.arena.game.isPlaying)

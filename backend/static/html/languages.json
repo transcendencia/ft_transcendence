@@ -281,7 +281,7 @@
         "confirmPassword": "confirmer mot de passe",
         "backToLogin": "Retour",
         "RGPDTitle" : "Politique de confidentialite",
-        "RGPDText" : "Vos donnees servent uniquement pour le bon fonctionnement du tournois. Votre profil est supprime au bout de deux ans apres la derniere connexion. Vous pouvez modifier, telecharger les donnees collectees, ou supprimer votre profil, a tout moment, depuis la planete profil. Pour plus d'informations allez sur le site de la CNIL",
+        "RGPDText" : "Vos donnees servent uniquement pour le bon fonctionnement du tournois. Votre profil est supprime au bout de deux ans apres la derniere connexion. Vous pouvez modifier, telecharger les donnees collectees, ou supprimer votre profil, a tout moment, depuis la planete profil. Pour plus d'informations visitez le site de la CNIL",
         "RGPDCreate": "En vous iscrivant vous accepter la",
         "RGPDPolicy": "politique de confidentialite",
         "RGPDBack" : "Retour",

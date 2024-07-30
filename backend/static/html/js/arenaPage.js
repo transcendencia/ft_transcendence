@@ -802,4 +802,5 @@ startButton.addEventListener('click', function() {
         }
     }
     switchToGame(gameState, matchPlayer[0], player2, player3, false);
+	window.location.hash = "#loading";
 });

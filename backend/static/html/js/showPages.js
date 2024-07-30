@@ -16,6 +16,7 @@ export function showPage(pageId, transition = 'default', changeHash = true) {
     if (changeHash)
         window.location.hash = `#${pageId}`;
     sessionStorage.setItem('currentPage', pageId); // Store current page in sessionStorage
+    console.trace("showpage", pageId, sessionStorage.getItem('currentPage'));
     pageId = '.' + pageId;
     var selectedPage = document.querySelector(pageId);
     selectedPage.classList.add('show'); // Add the 'show' class to the selected page
@@ -25,22 +26,16 @@ export function showPage(pageId, transition = 'default', changeHash = true) {
 let oldLocation = window.location.hash || '#loginPage';
 
 export function initPage() {
+    console.log("lastPage", sessionStorage.getItem('currentPage'));
     const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
     if (lastPage === 'signUpPage' || lastPage === 'rgpdPage')
         moveCameraToFrontOfCockpit(lastPage, 'signUp');
     else moveCameraToBackOfCockpit();
 }
 
-window.addEventListener("load", function() {
-    const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
-    window.location.hash = `#${lastPage}`;
-});
-
 addEventListener("hashchange", () => {
     console.log("info", window.location.hash, oldLocation, lobbyStart, isLoggingOut);
-    if (gameState.loading)
-        return;
-    if (lobbyStart && !gameState.inGame) {
+    if (lobbyStart && !gameState.inGame && !gameState.loading) {
         showAlert(getTranslatedText("SPALoggedOut"));
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
@@ -57,9 +52,13 @@ addEventListener("hashchange", () => {
         showPage('signUpPage');
     } else if (window.location.hash === '#galaxy' && (oldLocation === '#rgpdPage' || oldLocation === "#signUpPage"))
         moveCameraToBackOfCockpit();
-    else if (window.location.hash === '#galaxy' && oldLocation === '#game' && !backToLobbyPressed){
+    else if (window.location.hash === '#loading' && oldLocation === '#game' && !backToLobbyPressed){
         showAlert(getTranslatedText("SPABackToLobby"));
         backToLobby(/*historyArrow: */true);
+    }
+    else if (window.location.hash === '#galaxy' && oldLocation === '#loading') {
+        showAlert(getTranslatedText("SPABackToLobby"));
+        gameState.loadingToLobby();
     }
     oldLocation = window.location.hash;
 });
