@@ -647,7 +647,6 @@ export async function endGame(isTournament, backToLobby = false) {
 	const hostId = sessionStorage.getItem('host_id');
 	if (hostId == gameState.arena.game.user1.id  || hostId == gameState.arena.game.user2.id  || (hostId == gameState.arena.game.user3.id )){
 		const token = sessionStorage.getItem('host_auth_token');
-		console.log(hostId);
 		await updateUserStatus('online', token);
 	}
 	for(let i = 0; i < guestLoggedIn.length; i++) {

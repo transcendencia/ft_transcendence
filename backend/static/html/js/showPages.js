@@ -48,8 +48,9 @@ addEventListener("hashchange", () => {
         RGPDPage.classList.add("perspectived");
     } else if (window.location.hash === '#signUpPage' && oldLocation === '#rgpdPage') {
         showPage('signUpPage');
-    } else if (window.location.hash === '#galaxy' && (oldLocation === '#rgpdPage' || oldLocation === "#signUpPage"))
+    } else if ((window.location.hash === '#galaxy' || window.location.hash === '#game' || window.location.hash === '#loading') && (oldLocation === '#rgpdPage' || oldLocation === "#signUpPage")) {
         moveCameraToBackOfCockpit();
+    }
     else if (window.location.hash === '#loading' && oldLocation === '#game' && !backToLobbyPressed){
         showAlert(getTranslatedText("SPABackToLobby"));
         backToLobby(/*historyArrow: */true);
