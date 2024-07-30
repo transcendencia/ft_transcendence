@@ -12,6 +12,7 @@
         "SPALoggedOut": "You've been logged out, keep in mind that any press on history arrows while being in the galaxy lobby will cause you to log out.",
 
         "signUpTitle": "Sign up",
+        "signUpButton": "Sign up",
         "createAnAccount": "Create an account",
         "confirmPassword": "Confirm password",
         "backToLogin": "Back",
@@ -155,6 +156,7 @@
         "SPALoggedOut": "Se te ha cerrado la sesión, ten en cuenta que cualquier pulsación en las flechas del historial mientras estás en el lobby de la galaxia hará que cierres la sesión.",
 
         "signUpTitle": "Registrate",
+        "signUpButton": "registrar",
         "createAnAccount": "Crea una cuenta",
         "confirmPassword": "Confirma la contraseña",
         "backToLogin": "Volver",
@@ -294,6 +296,7 @@
         "SPALoggedOut": "Vous avez ete deconnecte, souvenez vous bien que nimporte quel click sur une fleche d'historique dans le lobby/galaxy vous deconnectera.",
 
         "signUpTitle": "s'Inscrire",
+        "signUpButton": "Inscription",
         "createAnAccount": "Cree un compte",
         "confirmPassword": "confirmer mot de passe",
         "backToLogin": "Retour",
