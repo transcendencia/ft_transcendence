@@ -401,6 +401,7 @@ export function backToLobby(historyArrow = false) {
         keyDown['e'] = true;
         setTimeout(() => {
             keyDown['e'] = false;
+            gameState.eKeyWasPressed = false;
             gameState.arena.displayBackPanel(true);
             gameState.arena.thirdPlayer.deactivateThirdPlayer();
             gameState.arena.idleCameraAnimation();
@@ -413,6 +414,7 @@ export function backToLobby(historyArrow = false) {
         }, 10);
     } else {
         resetGameEscape();
+        gameState.eKeyWasPressed = false;
         gameState.arena.displayBackPanel(true);
         gameState.arena.thirdPlayer.deactivateThirdPlayer();
         gameState.arena.idleCameraAnimation();
@@ -514,14 +516,35 @@ export function logoutAllGuest(userId) {
     }
 }
 
-window.addEventListener('beforeunload', async function (event) {
+// window.addEventListener('beforeunload', async function (event) {
+//     const token = sessionStorage.getItem('host_auth_token');
+//     const hostId = sessionStorage.getItem('host_id');
+    
+//     logoutAllGuest(hostId);
+//     logoutUser(token);
+//     sessionStorage.clear();
+// });
+
+function handleUnload(event) {
     const token = sessionStorage.getItem('host_auth_token');
     const hostId = sessionStorage.getItem('host_id');
     
     logoutAllGuest(hostId);
     logoutUser(token);
     sessionStorage.clear();
-});
+}
+
+function isFirefox() {
+  return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+}
+
+if (isFirefox()) {
+  window.addEventListener('pagehide', handleUnload);
+  window.addEventListener('unload', handleUnload);
+}
+else 
+  window.addEventListener('beforeunload', handleUnload);
+
 
 export function emptyLoginField() {
     document.getElementById('messageContainer').innerText = '';

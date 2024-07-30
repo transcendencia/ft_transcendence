@@ -1,11 +1,12 @@
 import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { togglePlanet, setCheckerToInterval, checkEach5Sec} from "./enterPlanet.js";
-import { afterGameTournament, botDifficultyTournament, addUserToTournament } from "../../tournament/js/newTournament.js";
+import { afterGameTournament, botDifficultyTournament, addUserToTournament, changeTournamentStatus, resetTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
 import { askForAlias, resetHostTournament } from "../../tournament/js/newTournament.js";
 import { getProfileInfo, populateProfileInfos } from "./userManagement.js";
+import { resetTournamentPlayer } from "../../tournament/js/newTournament.js";
 
 const leftColumn = document.querySelector(".leftColumn");
 const userlistTitle = leftColumn.childNodes[1];
@@ -287,12 +288,22 @@ function addEventListenerToTile(tile, arena) {
 export function setHostAsPlayerOne(user, mode) {
 	const usernameElement = document.getElementById(`player1${mode}Username`);
 	const pictureElement = document.getElementById(`player1${mode}Picture`);
-	usernameElement.textContent = user.username;
+	if (mode === "Tournament" && user.alias !== null)
+		usernameElement.textContent = user.alias;
+	else
+		usernameElement.textContent = user.username;
 	pictureElement.src = user.profile_picture;
-	
-	if (mode === 'Tournament')
-		addUserToTournament(user.id, user.username, user.profile_picture);
-	else addUserToMatch(user.id, user.username, user.profile_picture);
+	if (mode === 'Tournament'){
+		resetTournamentPlayer();
+		if (user.alias === null)
+			addUserToTournament(user.id, user.username, user.profile_picture);
+		else
+			addUserToTournament(user.id, user.alias, user.profile_picture);
+	}
+	else {
+		matchPlayer.length = 0;
+		addUserToMatch(user.id, user.username, user.profile_picture);
+	}
 }
 
 import { get_friends_list, updateUserStatus } from "./userManagement.js";
@@ -328,14 +339,10 @@ async function isListsChanged() {
   }
 
   export function initTournamentPlanet(){
+	changeTournamentStatus(0)
 	userListBackground = document.getElementById('userlistTournamentPage');
 	RenderAllUsersInList();
 	resetHostTournament();
-	// tournamentPlayer.length = 0;
-	// getProfileInfo(sessionStorage.getItem("host_id"))
-	// .then(data => {
-	// 	populateProfileInfos(data);
-	// })
   }
 
 export function resetArenaPage() {
@@ -356,7 +363,7 @@ export function resetArenaPage() {
   async function refreshUserListIfChanged() {
 	if (await isListsChanged())
 	  await RenderAllUsersInList();
-	console.log("Checking...");
+	// console.log("Checking...");
   }
 
   const userTiles = new Map();
@@ -639,11 +646,13 @@ export async function endGame(isTournament, backToLobby = false) {
 	const hostId = sessionStorage.getItem('host_id');
 	if (hostId == gameState.arena.game.user1.id  || hostId == gameState.arena.game.user2.id  || (hostId == gameState.arena.game.user3.id )){
 		const token = sessionStorage.getItem('host_auth_token');
+		console.log(hostId);
 		await updateUserStatus('online', token);
 	}
 	for(let i = 0; i < guestLoggedIn.length; i++) {
 		if (guestLoggedIn[i][0].id == gameState.arena.game.user1.id || guestLoggedIn[i][0].id == gameState.arena.game.user2.id || guestLoggedIn[i][0].id == gameState.arena.game.user3.id) {
 			const token = guestLoggedIn[i][1];
+			console.log(guestLoggedIn[i][0].id);
 			await updateUserStatus('online', token);
 		}
 	}

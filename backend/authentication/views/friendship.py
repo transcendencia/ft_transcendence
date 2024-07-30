@@ -1,8 +1,10 @@
 import logging
+import os
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse
+from django.db import OperationalError
 
 from rest_framework.views import APIView
 from rest_framework.decorators import authentication_classes
@@ -103,7 +105,7 @@ class FriendListView(APIView):
         
         except OperationalError as e:
             logger.error(f'An error occurred: {str(e)}')
-    return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)
     
     def create_user_pair(self, user, request_id):
         return {

@@ -117,6 +117,7 @@
         "invalidImgType": "The profile picture must be in one of the following formats: .png, .jpeg, .png",
         "invalidImage": "The image you selected is invalid",
         "invalidCharAlias": "The alias can only contain letters, numbers, or @/./+/-/_",
+        "downloadButton": "Download",
 
         "startGameText": "[E] to start the game",
         "leftText": "left",
@@ -254,6 +255,7 @@
         "invalidImgType": "La foto de perfil debe estar en uno de los siguientes formatos: .png, .jpeg, .png",
         "invalidImage": "La imagen seleccionada es invalida",
         "invalidCharAlias": "El alias de usuario solo puede contener letras, números o @/./+/-/_",
+        "downloadButton": "Descargar",
 
         "startGameText": "Pulse [E] para empezar",
         "leftText": "izquierda",
@@ -292,6 +294,7 @@
         "RGPDCreate": "En vous iscrivant vous accepter la",
         "RGPDPolicy": "politique de confidentialite",
         "RGPDBack" : "Retour",
+
 
         "successfulSignup": "Utilisateur cree vous pouvez vous connecter",
         "unique": "Un utilisateur avec ce nom existe deja.",
@@ -375,7 +378,7 @@
         "AnonymousMode": "Mode anonyme",
         "changePasswordInput": "Mot de passe",
         "changeConfirmPasswordInput": "Confirmer mot de passe",
-        "changeProfilePicture": "Phote de profil",
+        "changeProfilePicture": "Photo de profil",
         "chooseProfilePic": "Choisir le fichier",
         "deleteAccountButton": "Supprimer compte",
         "submitInfoButton": "Sauvegarder",
@@ -384,7 +387,7 @@
         "deleteAccountCancel": "Non",
         "RGPDPolicyInUserPage": "Politique de confidentialite",
         "infoBack" : "Retour",
-        "textAnonymous": "Lorsque vous activez le mode anonyme, vous avez un nom d’utilisateur aleatoire et une image de profil par defaut",
+        "textAnonymous": "Lorsque vous activez le mode anonyme,un nom d’utilisateur aleatoire et une image de profil par defaut vous sont assignes",
         "successfulModifyInfo": "Informations change",
         "passwordError": "Les champs 'mot de passe' et 'confirmer mot de passe' doivent etre rempli pour change le mot de passe",
         "profilePicTooLarge": "La taille du fichier de la photo de profil est trop grande",
@@ -392,6 +395,7 @@
         "invalidImgType": "La photode profil doit etre dans l'un des formats suivant: .png, .jpeg, .png",
         "invalidImage": "L'image sélectionnee est invalide",
         "invalidCharAlias": "L'alias ne peut contenir que des lettres, des nombres ou @/./+/-/_",
+        "downloadButton": "Telecharger",
 
         "startGameText": "[E] pour commencer",
         "leftText": "gauche",

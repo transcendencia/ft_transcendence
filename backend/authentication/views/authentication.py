@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.db import OperationalError
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
@@ -31,8 +32,12 @@ def index(request):
 def login_page(request):
   try:
     username = request.POST.get("username")
-    usernameLower = username.lower()
     password = request.POST.get("password")
+
+    if not username or not password:
+      return Response({'msg_code': "loginFailed"}, status=status.HTTP_400_BAD_REQUEST)
+
+    usernameLower = username.lower()
     isHostLoggedIn = request.POST.get("hostLoggedIn") == 'true'
     newLanguage = getLanguage(request.POST.get("language")) if not isHostLoggedIn else None
     isLanguageClicked = request.POST.get("languageClicked") == 'true' if not isHostLoggedIn else False

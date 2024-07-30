@@ -11,7 +11,7 @@ import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '
 import { changeColorMessage } from './signUpPage.js';
 
 let isInfosShow = false;
-let anonymousStatus;
+let anonymousStatus = false;
 
 var submitChangeButton = document.querySelector(".submitChangeButton");
 submitChangeButton.addEventListener("click", handleChangeInfoForm);
@@ -31,7 +31,7 @@ function handleChangeInfoForm(event) {
     method: 'POST',
     headers: {
       'Authorization': `Token ${token}`,
-      'X-CRSFToken': getCookie('crsftoken')
+      'X-CSRFToken': getCookie('csrftoken')
     },
     body: formData,
   })
@@ -44,6 +44,7 @@ function handleChangeInfoForm(event) {
   .then(data => {
     getProfileInfo(sessionStorage.getItem("host_id"))
     .then(data => {
+        //reset user in Matcjh
         populateProfileInfos(data);
         createUserBadge(data, "playersConnHostBadge");
       })
@@ -115,7 +116,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   });
 
   document.getElementById("validateDelete").classList.remove("showRectangle");
-  changeTournamentStatus();
+  changeTournamentStatus(2);
   resetTournament();
   togglePlanet(/* toggleRsContainer: */ false);
   returnToHost(/* updateStats: */ false);

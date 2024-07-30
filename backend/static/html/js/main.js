@@ -562,6 +562,9 @@ document.addEventListener('keydown', (event) => {
         if (window.getComputedStyle(pwWindow).display === 'flex')
             document.getElementById("arenaLogInButton").click()
     }
+    if (event.key === 't') {
+        gameState.loadingToLobby();
+    }
     if (event.key === 'Escape') {
         if (gameState.inGame && !gameState.arena.game.isPlaying)
             return;
