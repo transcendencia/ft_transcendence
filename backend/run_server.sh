@@ -19,20 +19,15 @@ python manage.py collectstatic --noinput
 
 
 python manage.py shell <<EOF
-from django.core.management import call_command
 from authentication.models import User
 from django.utils.crypto import get_random_string
-import os
-
-USER_USERNAME=${BOT_USERNAME:-"bot"}
-USER_STATUS=${BOT_STATUS:-"online"}
 
 characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*(-_=+)'
 bot_password = get_random_string(8, characters)
-if not User.objects.filter(username=USER_USERNAME).exists():
-    user = User.objects.create_user(username=BOT_USERNAME, status=USER_STATUS)
+
+if not User.objects.filter(username="bot").exists():
+    user = User.objects.create_user(username="bot", status="online", profile_picture="botLogo.png")
     user.set_password(bot_password)
-    user.profile_picture = "botLogo.png"
     user.save()
 EOF
 
