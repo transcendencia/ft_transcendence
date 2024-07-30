@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { spaceShip, camera, spaceShipPointLight, landedOnPlanet, lobbyStart } from "./main.js";
 import {planetInRange} from "./planetIntersection.js";
 import { lobbyVisuals } from "./main.js";
+import { isLoggingOut } from "./loginPage.js";
 
 let leftArrowPressed = false;
 let rightArrowPressed = false;
@@ -180,7 +181,7 @@ function camMovement() {
     if (!spaceShip)
         return;
     
-    if (!landedOnPlanet && lobbyStart) {
+    if (!landedOnPlanet) {
         camera.position.copy(new THREE.Vector3(spaceShip.position.x - distance * Math.sin(spaceShip.rotation.y), height, spaceShip.position.z - distance * Math.cos(spaceShip.rotation.y)));
         camera.rotation.y = spaceShip.rotation.y - Math.PI;
     }

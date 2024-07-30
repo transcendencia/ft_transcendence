@@ -25,7 +25,8 @@ export function showPage(pageId, transition = 'default', changeHash = true) {
 let oldLocation = window.location.hash || '#loginPage';
 
 export function initPage() {
-    console.log(sessionStorage.getItem('currentPage'));
+    if (sessionStorage.getItem('currentPage'))
+        showAlert(getTranslatedText("SPALoggedOut"));
     const lastPage = sessionStorage.getItem('currentPage') || 'loginPage';
     if (lastPage === 'signUpPage' || lastPage === 'rgpdPage')
         moveCameraToFrontOfCockpit(lastPage, 'signUp');
@@ -39,6 +40,9 @@ addEventListener("hashchange", () => {
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
     }
+    // if (window.location.hash === '#galaxy' && !lobbyStart) {
+    //     window.location.hash = '#loginpage'
+    // }
     if (window.location.hash === '#loginPage' && oldLocation === '#signUpPage') {
         moveCameraToBackOfCockpit();
     } else if (window.location.hash === '#signUpPage' && (oldLocation === '#loginPage' || oldLocation === '#galaxy')) {
@@ -56,15 +60,14 @@ addEventListener("hashchange", () => {
         showAlert(getTranslatedText("SPABackToLobby"));
         backToLobby(/*historyArrow: */true);
     }
-    else if (window.location.hash === '#galaxy' && oldLocation === '#loading') {
+    else if (window.location.hash === '#galaxy' && oldLocation === '#loading' && gameState.loading) {
         showAlert(getTranslatedText("SPABackToLobby"));
         gameState.loadingToLobby();
     }
     oldLocation = window.location.hash;
 });
 
-function showAlert(message) {
-    let duration = 6000;
+export function showAlert(message, duration = 7000) {
     // Create alert element
     const alert = document.createElement('div');
     alert.className = 'alert';

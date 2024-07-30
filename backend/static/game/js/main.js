@@ -8,18 +8,17 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { HorizontalBlurShader } from 'three/addons/shaders/HorizontalBlurShader.js';
 import { VerticalBlurShader } from 'three/addons/shaders/VerticalBlurShader.js';
-import { DotScreenShader } from 'three/addons/shaders/DotScreenShader.js';
-import { HalftonePass } from 'three/addons/postprocessing/HalftonePass.js';
 import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
 import { Water } from 'three/addons/objects/Water.js';
 import { vertexMain, vertexPars } from './../texturePlayground/shaders/vertex.js';
 import { fragmentMain, fragmentPars } from './../texturePlayground/shaders/fragment.js';
 import { lavaFragmentShader, lavaVertexShader } from './../texturePlayground/shaders/lavaShader.js';
 import { lobbyVisuals } from '../../html/js/main.js';
-import { gameStarted } from '../../html/js/arenaPage.js';
 import { getTranslatedText } from '../../html/js/translatePages.js';
-import { endGame, rematchGame } from '../../html/js/arenaPage.js';
+import { endGame, rematchGame, refreshUserListIfChanged } from '../../html/js/arenaPage.js';
 import { updateUserGraphicMode } from '../../html/js/userManagement.js'
+import { setCheckerToInterval } from "./../../html/js/enterPlanet.js";
+
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
 
@@ -961,13 +960,13 @@ class Arena extends THREE.Mesh {
                 this.paddleRight.changePaddleControls(true);
             }
         }
-        if (keyDown['p'])
-        {
-            swapToFullScreen();
-            this.setTopView(camera, false);
-            this.paddleLeft.changePaddleControls(true);
-            this.paddleRight.changePaddleControls(true);
-        }
+        // if (keyDown['p'])
+        // {
+        //     swapToFullScreen();
+        //     this.setTopView(camera, false);
+        //     this.paddleLeft.changePaddleControls(true);
+        //     this.paddleRight.changePaddleControls(true);
+        // }
         if (this.game.leftScore >= this.game.maxScore || this.game.rightScore >= this.game.maxScore)
         {
             this.game.isPlaying = false;
@@ -3764,6 +3763,7 @@ class GameState {
         setTimeout(() => {
             loadingScreen.cancelLoading = false;
         }, 1000);
+        setCheckerToInterval(setInterval(refreshUserListIfChanged, 5000));
     }
     monitorGameState() {
         if (this.loading && !this.arenaCreated)
