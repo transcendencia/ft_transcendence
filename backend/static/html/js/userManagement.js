@@ -26,7 +26,8 @@ export async function updateUserStatus(status, token) {
 
 export function getUserStatus(userId) {
     const token = sessionStorage.getItem('host_auth_token');
-
+    if (!userId)
+        return;
     return fetch(`/user/status/${userId}/`, {
         method: 'GET',
         headers: {
@@ -90,7 +91,8 @@ export function populateProfileInfos(data) {
 /* FRIEND REQUEST MANAGEMENT*/
 export function send_friend_request(receiver_id) {
     const token = sessionStorage.getItem('host_auth_token');
-    
+    if (!receiver_id)
+        return;
     fetch('friend_request/', {
         method: 'POST',
         headers: {
@@ -113,7 +115,8 @@ export function send_friend_request(receiver_id) {
 
 export async function accept_friend_request(request_id) {
     const token = sessionStorage.getItem('host_auth_token');
-
+    if (!request_id)
+        return;
     await fetch('friend_request/', {
         method: 'PATCH',
         headers: {
@@ -136,6 +139,8 @@ export async function accept_friend_request(request_id) {
 
 export async function delete_friend_request(request_id) {
     const token = sessionStorage.getItem('host_auth_token');
+    if (!request_id)
+        return;
     fetch('friend_request/', {
         method: 'DELETE',
         headers: {
@@ -181,6 +186,8 @@ export async function get_friends_list() {
 /*UPDATE USER INFO*/
 export function updateUserGraphicMode(graphicMode) {
 	const token = sessionStorage.getItem('host_auth_token');
+    if (!graphicMode)
+        return;
     return fetch('user/graphic_mode/', {
         method: 'PATCH',
         headers: {
@@ -202,7 +209,8 @@ export function updateUserGraphicMode(graphicMode) {
 
 export function updateUserLanguage(new_language) {
     const token = sessionStorage.getItem('host_auth_token');
-    
+    if (!new_language)
+        return;
     fetch('user/language/', {
         method: 'PATCH',
         headers: {
