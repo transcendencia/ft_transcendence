@@ -48,7 +48,7 @@ MIDDLEWARE = [
 ]
 
 CRONJOBS = [
-    ('* * * * *', 'authentication.management.commands.delete_inactive_users.Command.handle')
+    ('0 3 * * *', 'authentication.management.commands.delete_inactive_users.Command.handle')
 ]
 
 ROOT_URLCONF = 'backend.urls'
