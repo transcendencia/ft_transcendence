@@ -161,13 +161,13 @@ export function createUserInfoObject(tile, hoverEnabled = false) {
     return {userInfoCont, clonedImg, profilePic};
 }
 
-function addClickListenerToNewUserBadge(userBadge, plusButton, tile) {
+function addClickListenerToNewUserBadge(userBadge, plusButton, tile, plusClickedId) {
 	userBadge.userInfoCont.addEventListener('click', function() {
 		profileAdded[tile.user.id] = false;
 		resetToPlusButton(userBadge.userInfoCont, plusButton);
 		updateListAndResetTimer();
 		removeUserFromMatch(tile.user.id);
-		addedPlayerBadges = addedPlayerBadges.filter(badge => badge.username !== tile.user.username);
+		addedPlayerBadges = addedPlayerBadges.filter(badge => badge.plusClicked !== plusClickedId);
 	});
 }
 
@@ -185,9 +185,9 @@ export function putUserInMatch(plusButtonsArray, mode) {
 	const textCont = tile.HTMLelement.querySelector(".textContainer");
 
 	profileAdded[tile.user.id] = true;
-	
 	const userBadge = createUserInfoObject(tile, true);
 	addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked, username: tile.user.username});
+	const plusClickedId = addedPlayerBadges[addedPlayerBadges.length - 1].plusClicked;
 	const plusButton = plusButtonsArray[plusClicked - 1];
 	plusButton.parentNode.replaceChild(userBadge.userInfoCont, plusButton);
 	let thirdPlayer = 0;
@@ -195,7 +195,7 @@ export function putUserInMatch(plusButtonsArray, mode) {
 		thirdPlayer = 1;
 	resetGlow();
 	resetAddingMode(mode);
-	addClickListenerToNewUserBadge(userBadge, plusButton, tile, userClickedId);
+	addClickListenerToNewUserBadge(userBadge, plusButton, tile, plusClickedId);
 	if (mode === 'tournament'){
 		addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
 	}
