@@ -306,6 +306,6 @@ export function getUserStats(userId) {
 	updateBasicStats(data);
   })
   .catch(error => {
-    console.error('Error fetching user stats:', error);
+    error;
   });
 }

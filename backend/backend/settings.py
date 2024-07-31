@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3=6z0v0=t#kgt@n&iph-ncz-2fi2#a+5^lqupfa03wc$33gc*s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
             'min_length_special': 1,
             'min_length_lower': 1,
             'min_length_upper': 1,
-            'special_characters': "~!@#$%^&*()_+{}\":;'[]",
+            'special_characters': "~!@#$%^&*()_+{}\":;'[].",
         }
     },
 ]

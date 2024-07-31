@@ -313,8 +313,10 @@ export function displayUsersLogged(user, token) {
         const profilePic = document.createElement('div');
         profilePic.classList.add('profilePic');
 
+        const base64Image = user.profile_picture;
+        console.log("displayUsersLogged");
         const img = document.createElement('img');
-        img.src = user.profile_picture;
+        img.src = `data:image/png;base64,${base64Image}`;
 
         profilePic.appendChild(img);
         userInfoCont.appendChild(profilePic);
@@ -465,9 +467,12 @@ export function startAnimation() {
     
 export function createUserBadge(hostData, elementId, hovering = false) {
     const elem = document.getElementById(elementId);
+    console.log("createUSerBadge");
+    const base64Image = hostData.profile_info.profile_picture;
+
     elem.innerHTML = `
     <div class="profilePic">
-      <img src="${hostData.profile_info.profile_picture}">
+      <img src="data:image/png;base64,${base64Image}">
     </div>
     ${hostData.profile_info.username}
   `;

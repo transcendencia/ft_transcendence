@@ -16,7 +16,7 @@ fetch('../../static/html/languages.json')
     languageFile = data;
 })
 .catch(error => {
-    console.error('Error fetching language data:', error);
+    error;
 });
 
 export function getTranslatedText(key) {

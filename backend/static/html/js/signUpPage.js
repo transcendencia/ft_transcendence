@@ -123,7 +123,6 @@ function handleSignUp(event) {
     .catch(error => {
         changeColorMessage('.signupMessageCont', 'failure');
         messageContainer.innerText = getTranslatedText(error.msg_code);
-        console.error('There was a problem with the sign-up:', error);
         submitButton.disabled = false;
     });
 }

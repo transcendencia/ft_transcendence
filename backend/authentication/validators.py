@@ -11,7 +11,7 @@ from django.core.validators import BaseValidator
 
 class CustomPasswordCharacterValidator:
     def __init__(self, min_length_digit=1, min_length_alpha=1, min_length_special=1,
-                 min_length_lower=1, min_length_upper=1, special_characters=".~!@#$%^&*()_+{}\":;'[]"):
+                 min_length_lower=1, min_length_upper=1, special_characters=".~!@#$%^&*()_+{}\":;'[]."):
         self.validator = PasswordCharacterValidator(
             min_length_digit=min_length_digit,
             min_length_alpha=min_length_alpha,

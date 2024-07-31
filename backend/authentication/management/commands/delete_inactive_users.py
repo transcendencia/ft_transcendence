@@ -1,8 +1,6 @@
-import logging
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from ...models import User
-logger = logging.getLogger(__name__)
 from datetime import datetime
 from ...utils.constants import UserStatus
 
@@ -20,3 +18,8 @@ class Command(BaseCommand):
                     user.delete()
         except Exception as e:
             pass
+
+#To test every 10 minutes
+#now = timezone.now()
+#ten_minutes_ago = now - timedelta(minutes=10)
+#usersToDelete = User.objects.filter(last_login_date__lte=ten_minutes_ago)

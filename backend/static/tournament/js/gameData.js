@@ -34,6 +34,6 @@ export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, 
             console.error('Failed to create game');
         }
     } catch (error) {
-        console.error('Error creating game:', error);
+        error;
     }
 }

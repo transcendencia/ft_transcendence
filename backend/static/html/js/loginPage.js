@@ -220,7 +220,7 @@ export async function handleLogin(formData) {
         
         return guest_token;
     } catch (error) {
-        console.error('Erreur :', error);
+        error;
         document.getElementById(messageContainerId).innerText = getTranslatedText(error.msg_code);
     } finally {
         submitButton.disabled = false;
@@ -253,12 +253,13 @@ function handleHostLogin(data){
     
     getProfileInfo(sessionStorage.getItem("host_id"))
     .then(data => {
+        console.log("handleHostLogin");
         populateProfileInfos(data);
         createUserBadge(data, "playersConnHostBadge");
         removeLastUserInfoConts();
     })
     .catch(error => {
-        console.error('Failed to retrieve profile info:', error);
+        error;
     });
     getGameInfo();
                 
@@ -300,7 +301,7 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
     userHI1.classList.add('userHI');
     if (player1Name.length > 8)
         userHI1.setAttribute('text-length-mode', 'long');
-    userHI1.innerHTML = `<div class="imgFrame" style="height: 40px; width: 50px; margin-right: 5px; border-color: ${borderColor};"><img src="${player1ImgSrc}"></div>${player1Name}`;
+    userHI1.innerHTML = `<div class="imgFrame" style="height: 40px; width: 50px; margin-right: 5px; border-color: ${borderColor};"><img src="data:image/png;base64,${player1ImgSrc}"></div>${player1Name}`;
  
     const scoreAndThirdPlayer = document.createElement('div');
     scoreAndThirdPlayer.classList.add('scoreAndThirdPlayer');
@@ -312,7 +313,7 @@ export function createMatchBlock(tournament, date, modeGame, player1Name, player
     if (player2Name.length > 8)
         userHI2.setAttribute('text-length-mode', 'long');
     userHI2.style.justifyContent = 'flex-end';
-    userHI2.innerHTML = `${player2Name}<div class="imgFrame" style="height: 40px; width: 50px; margin-left: 5px; border-color: ${borderColor};"><img src="${player2ImgSrc}"></div>`;
+    userHI2.innerHTML = `${player2Name}<div class="imgFrame" style="height: 40px; width: 50px; margin-left: 5px; border-color: ${borderColor};"><img src="data:image/png;base64,${player2ImgSrc}"></div>`;
   
     // Append elements
     secondLine.appendChild(userHI1);
@@ -382,7 +383,7 @@ export function getGameInfo() {
             })
 		})
 		.catch(error => {
-			console.error('Erreur :', error);
+			error;
 		});
 }
 
@@ -499,7 +500,7 @@ export async function logoutUser(token) {
             throw new Error('Erreur lors du logout');
     })
     .catch(error => {
-        console.error('Error :', error);
+        error;
     });
 }
 

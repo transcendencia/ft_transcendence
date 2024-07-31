@@ -251,7 +251,7 @@ validatePasswordButton.addEventListener('click', async function() {
             document.getElementById('errorLogGuest').innerText = getTranslatedText("tooManyGuest");
         }
     } catch (error) {
-        console.error('Erreur lors de la connexion :', error);
+        error;
     } finally {
         isValidating = false;
     }
@@ -288,11 +288,16 @@ function addEventListenerToTile(tile, arena) {
 export function setHostAsPlayerOne(user, mode) {
 	const usernameElement = document.getElementById(`player1${mode}Username`);
 	const pictureElement = document.getElementById(`player1${mode}Picture`);
+
 	if (mode === "Tournament" && user.alias !== null)
 		usernameElement.textContent = user.alias;
 	else
 		usernameElement.textContent = user.username;
-	pictureElement.src = user.profile_picture;
+	console.log("setHostAsPlayerOne");
+	const base64Image = user.profile_picture;
+	pictureElement.src = `data:image/png;base64,${base64Image}`;
+	console.log("setHostAsPlayerOne done");
+	
 	if (mode === 'Tournament'){
 		resetTournamentPlayer();
 		if (user.alias === null)
@@ -424,7 +429,9 @@ export async function RenderAllUsersInList() {
 	  if (userTiles.has(user.id)) {
 		const { HTMLelement } = userTiles.get(user.id);
 		HTMLelement.querySelector('.textContainer').textContent = user.username;
-		HTMLelement.querySelector('img').src = user.profile_picture;
+		const base64Image = user.profile_picture;
+		console.log("sortedUser");
+		HTMLelement.querySelector('img').src = `data:image/png;base64,${base64Image}`;
 	  } else {
 		const newTile = createUserTile(user, type);
 		newTile.classList.add('removing');
@@ -454,7 +461,10 @@ export function createUserTile(user, type) {
 	
 	const imgContainer = document.createElement('div');
 	imgContainer.classList.add('imgContainer');
-	imgContainer.innerHTML = `<img src="${user.profile_picture}">`;
+
+	console.log("createUserTile");
+	const base64Image = user.profile_picture;
+	imgContainer.innerHTML = `<img src="data:image/png;base64,${base64Image}">`;
 	
 	const textContainer = document.createElement('div');
 	textContainer.classList.add('textContainer');
