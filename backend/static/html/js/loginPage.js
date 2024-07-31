@@ -253,7 +253,6 @@ function handleHostLogin(data){
     
     getProfileInfo(sessionStorage.getItem("host_id"))
     .then(data => {
-        console.log("handleHostLogin");
         populateProfileInfos(data);
         createUserBadge(data, "playersConnHostBadge");
         removeLastUserInfoConts();

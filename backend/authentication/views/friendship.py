@@ -189,7 +189,6 @@ class FriendListView(APIView):
                 bot.save()
             
             data = UserSerializer(bot).data
-            print(data)
             return data
         except OperationalError as e:
             return HttpResponse(status=status.HTTP_503_SERVICE_UNAVAILABLE)

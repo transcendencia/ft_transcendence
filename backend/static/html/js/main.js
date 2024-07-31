@@ -314,7 +314,6 @@ export function displayUsersLogged(user, token) {
         profilePic.classList.add('profilePic');
 
         const base64Image = user.profile_picture;
-        console.log("displayUsersLogged");
         const img = document.createElement('img');
         img.src = `data:image/png;base64,${base64Image}`;
 
@@ -467,7 +466,6 @@ export function startAnimation() {
     
 export function createUserBadge(hostData, elementId, hovering = false) {
     const elem = document.getElementById(elementId);
-    console.log("createUSerBadge");
     const base64Image = hostData.profile_info.profile_picture;
 
     elem.innerHTML = `

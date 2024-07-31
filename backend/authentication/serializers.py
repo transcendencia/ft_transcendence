@@ -9,28 +9,20 @@ from django.conf import settings
 
 class UserSerializer(serializers.ModelSerializer):
 	profile_picture = serializers.SerializerMethodField()
-	# print("userListSerializer")
-	# print(profile_picture)
 
 	class Meta():
 		model = User
 		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'alias', 'is_host']
 	
 	def get_profile_picture(self, obj):
-		# print("get_profile_picture")
-		# Check if the profile picture exists and not in debug mode
 		if obj.profile_picture and not settings.DEBUG:
 			try:
-				# Construct the full file path
 				file_path = os.path.join(settings.MEDIA_ROOT, obj.profile_picture.name)
-				# Open and read the file
 				with open(file_path, 'rb') as img_file:
-					# Encode the file in base64 and return as a UTF-8 string
 					return base64.b64encode(img_file.read()).decode('utf-8')
 			except FileNotFoundError:
 				return None
 
-		# If the file doesn't exist or in debug mode, return the original URL or None
 		return obj.profile_picture.url if obj.profile_picture else None
 
 error_codes = {
@@ -68,10 +60,10 @@ class SignupSerializer(serializers.ModelSerializer):
 		if re.search(r'\s', value):
 			raise serializers.ValidationError(code="invalidWhitespacePassword")
 
-		# try:
-		# 	validate_password(value)
-		# except ValidationError as e:
-		# 	raise PasswordValidationError(detail=e.error_list[0])
+		try:
+			validate_password(value)
+		except ValidationError as e:
+			raise PasswordValidationError(detail=e.error_list[0])
 		return value
 
 	def validate_confirmation_password(self, value):
@@ -169,16 +161,12 @@ class UserListSerializer(serializers.ModelSerializer):
 	def get_profile_picture(self, obj):
 		if obj.profile_picture and not settings.DEBUG:
 			try:
-				# Construct the full file path
 				file_path = os.path.join(settings.MEDIA_ROOT, obj.profile_picture.name)
-				# Open and read the file
 				with open(file_path, 'rb') as img_file:
-					# Encode the file in base64 and return as a UTF-8 string
 					return base64.b64encode(img_file.read()).decode('utf-8')
 			except FileNotFoundError:
 				return None
 
-		# If the file doesn't exist or in debug mode, return the original URL or None
 		return obj.profile_picture.url if obj.profile_picture else None
 
 class GameListSerializer(serializers.ModelSerializer):

@@ -164,7 +164,6 @@ export function createUserInfoObject(tile, hoverEnabled = false) {
 function addClickListenerToNewUserBadge(userBadge, plusButton, tile) {
 	userBadge.userInfoCont.addEventListener('click', function() {
 		profileAdded[tile.user.id] = false;
-		console.log(plusButton);
 		resetToPlusButton(userBadge.userInfoCont, plusButton);
 		updateListAndResetTimer();
 		removeUserFromMatch(tile.user.id);
@@ -293,10 +292,8 @@ export function setHostAsPlayerOne(user, mode) {
 		usernameElement.textContent = user.alias;
 	else
 		usernameElement.textContent = user.username;
-	console.log("setHostAsPlayerOne");
 	const base64Image = user.profile_picture;
 	pictureElement.src = `data:image/png;base64,${base64Image}`;
-	console.log("setHostAsPlayerOne done");
 	
 	if (mode === 'Tournament'){
 		resetTournamentPlayer();
@@ -368,7 +365,6 @@ export function resetArenaPage() {
 export async function refreshUserListIfChanged() {
 	if (await isListsChanged())
 	  await RenderAllUsersInList();
-	// console.log("Checking...");
 }
 
   const userTiles = new Map();
@@ -430,7 +426,6 @@ export async function RenderAllUsersInList() {
 		const { HTMLelement } = userTiles.get(user.id);
 		HTMLelement.querySelector('.textContainer').textContent = user.username;
 		const base64Image = user.profile_picture;
-		console.log("sortedUser");
 		HTMLelement.querySelector('img').src = `data:image/png;base64,${base64Image}`;
 	  } else {
 		const newTile = createUserTile(user, type);
@@ -462,7 +457,6 @@ export function createUserTile(user, type) {
 	const imgContainer = document.createElement('div');
 	imgContainer.classList.add('imgContainer');
 
-	console.log("createUserTile");
 	const base64Image = user.profile_picture;
 	imgContainer.innerHTML = `<img src="data:image/png;base64,${base64Image}">`;
 	
