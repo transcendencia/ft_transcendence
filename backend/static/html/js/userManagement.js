@@ -49,7 +49,7 @@ export function getUserStatus(userId) {
 
 export function getProfileInfo(userId) {
     const token = sessionStorage.getItem('host_auth_token');
-    if (!userId)
+    if (!userId || !token)
         return;
     return fetch(`user_info/${userId}/`, {
         method: 'GET',
@@ -161,7 +161,8 @@ export async function delete_friend_request(request_id) {
 
 export async function get_friends_list() {
     const token = sessionStorage.getItem('host_auth_token');
-    
+    if (!token)
+        return;
     try {
         const response = await fetch('friends_list/', {
             method: 'GET',
