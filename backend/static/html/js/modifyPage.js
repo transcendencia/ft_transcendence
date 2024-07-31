@@ -55,9 +55,7 @@ function handleChangeInfoForm(event) {
   })
   .catch(error => {
     changeColorMessage('.changeInfoMessage', 'failure');
-    console.log("msg_code: ", error.msg_code);
     changeInfoMessage.innerText = getTranslatedText(error.msg_code);
-    console.error('There was a problem with the change_profile_info:', error);
   });
 }
 
@@ -114,7 +112,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
       return response.json();
   })
   .catch(error => {
-      console.error('There was a problem with the delete_account:', error);
+      error;
   });
 
   document.getElementById("validateDelete").classList.remove("showRectangle");
@@ -177,7 +175,6 @@ export function getRandomUsername() {
     document.getElementById('changeUsernameInput').value = data.username;
   })
   .catch(error => {
-      console.error('Error:', error);
       var changeInfoMessage = document.getElementById('changeInfoMessage');
       changeInfoMessage.innerText = getTranslatedText(error.msg_code);
   });
@@ -232,7 +229,6 @@ function downloadFile() {
     },
   })
   .then(response => {
-    console.log(response.ok);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -243,7 +239,6 @@ function downloadFile() {
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    // Use the filename provided by the server if available
     const contentDisposition = response.headers.get('Content-Disposition');
     console.log("file name = " + contentDisposition);
     const filename = contentDisposition?.split('filename=')[1]?.replace(/"/g, '') || 'user_data.txt';
@@ -256,7 +251,6 @@ function downloadFile() {
   })
   .catch(error => {
     console.error('Error during file download:', error);
-    alert('Une erreur est survenue lors du téléchargement du fichier. Veuillez réessayer.');
   });
 }
 
@@ -266,7 +260,7 @@ export function resetModifyPageField(success = false) {
       populateProfileInfos(data);
   })
   .catch(error => {
-      console.error('Failed to retrieve profile info:', error);
+      error;
   });
   document.getElementById('changePasswordInput').value = '';
   document.getElementById('changeConfirmPasswordInput').value = '';

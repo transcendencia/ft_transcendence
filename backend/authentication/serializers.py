@@ -2,13 +2,28 @@ from rest_framework import serializers
 from .models import User, Game
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
-import logging
 import re
+import os
+import base64
+from django.conf import settings
 
 class UserSerializer(serializers.ModelSerializer):
+	profile_picture = serializers.SerializerMethodField()
+
 	class Meta():
 		model = User
 		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'alias', 'is_host']
+	
+	def get_profile_picture(self, obj):
+		if obj.profile_picture and not settings.DEBUG:
+			try:
+				file_path = os.path.join(settings.MEDIA_ROOT, obj.profile_picture.name)
+				with open(file_path, 'rb') as img_file:
+					return base64.b64encode(img_file.read()).decode('utf-8')
+			except FileNotFoundError:
+				return None
+
+		return obj.profile_picture.url if obj.profile_picture else None
 
 error_codes = {
     "length_exceeded_username": "Username must contain 13 characters maximum.",
@@ -39,21 +54,16 @@ class SignupSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError(code="unique")
 		if User.objects.filter(username=value).exists():
 			raise serializers.ValidationError(code="unique")
-		# logger.debug("je return la value du username")
 		return value
 
-	# add eror code
 	def validate_password(self, value):
-		print("coucou")
-		# if ' ' in value:
-		# 	raise serializers.ValidationError("Password cannot contain spaces.", code="invalidSpacePassword")
 		if re.search(r'\s', value):
 			raise serializers.ValidationError(code="invalidWhitespacePassword")
 
-		# try:
-		# 	validate_password(value)
-		# except ValidationError as e:
-		# 	raise PasswordValidationError(detail=e.error_list[0])
+		try:
+			validate_password(value)
+		except ValidationError as e:
+			raise PasswordValidationError(detail=e.error_list[0])
 		return value
 
 	def validate_confirmation_password(self, value):
@@ -63,10 +73,6 @@ class SignupSerializer(serializers.ModelSerializer):
 		if password != confirmation_password:
 			raise serializers.ValidationError(code="invalidConfirmationPassword")
 		return value
-
-
-import logging
-logger = logging.getLogger(__name__)
 
 class UpdateInfoSerializer(serializers.ModelSerializer):
 	confirmation_password = serializers.CharField(write_only=True, required=False)
@@ -80,8 +86,6 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 		}
 
 	def	validate_username(self, value):
-		logger.debug(f"Entering validate_confirmation_password with value: {value}")
-		
 		if value:
 			value = value.lower()
 			if len(value) > 13:
@@ -95,7 +99,6 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 
 
 	def validate_alias(self, value):
-		logger.debug(f"Entering validate_confirmation_password with value: {value}")
 		if value:
 			value = value.lower()
 			allowed_chars_pattern = re.compile(r'^[\w.@+-]+$')
@@ -149,19 +152,53 @@ class PasswordValidationError(serializers.ValidationError):
 		super().__init__(detail)
 
 class UserListSerializer(serializers.ModelSerializer):
+	profile_picture = serializers.SerializerMethodField()
+
 	class Meta():
 		model = User
 		fields = ['id', 'username', 'language', 'last_login_date', 'status', 'profile_picture', 'alias', 'is_host']
+	
+	def get_profile_picture(self, obj):
+		if obj.profile_picture and not settings.DEBUG:
+			try:
+				file_path = os.path.join(settings.MEDIA_ROOT, obj.profile_picture.name)
+				with open(file_path, 'rb') as img_file:
+					return base64.b64encode(img_file.read()).decode('utf-8')
+			except FileNotFoundError:
+				return None
 
+		return obj.profile_picture.url if obj.profile_picture else None
 
 class GameListSerializer(serializers.ModelSerializer):
 	player1_username = serializers.CharField(source='player1.username', read_only=True)
-	player1_profilePicture = serializers.CharField(source='player1.profile_picture.url', read_only=True)
+	player1_profilePicture = serializers.SerializerMethodField()
 	player2_username = serializers.CharField(source='player2.username', read_only=True)
-	player2_profilePicture = serializers.CharField(source='player2.profile_picture.url', read_only=True)
+	player2_profilePicture = serializers.SerializerMethodField()
 	player3_username = serializers.CharField(source='player3.username', read_only=True, allow_null=True)
 	Date = serializers.DateTimeField(format="%Y-%m-%d %H:%M", source='date', read_only=True)
 
 	class Meta:
 		model = Game
 		fields = ['id', 'player1', 'player1_username', 'player1_profilePicture', 'player2', 'player2_username', 'player2_profilePicture', 'player3', 'player3_username', 'scorePlayer1', 'scorePlayer2', 'gameplayMode', 'modeGame', 'Date']
+
+	def get_player1_profilePicture(self, obj):
+		player1 = obj.player1
+		if player1 and player1.profile_picture and not settings.DEBUG:
+			try:
+				file_path = os.path.join(settings.MEDIA_ROOT, player1.profile_picture.name)
+				with open(file_path, 'rb') as img_file:
+					return base64.b64encode(img_file.read()).decode('utf-8')
+			except FileNotFoundError:
+				return None
+		return player1.profile_picture.url if player1 and player1.profile_picture else None
+
+	def get_player2_profilePicture(self, obj):
+		player2 = obj.player2
+		if player2 and player2.profile_picture and not settings.DEBUG:
+			try:
+				file_path = os.path.join(settings.MEDIA_ROOT, player2.profile_picture.name)
+				with open(file_path, 'rb') as img_file:
+					return base64.b64encode(img_file.read()).decode('utf-8')
+			except FileNotFoundError:
+				return None
+		return player2.profile_picture.url if player2 and player2.profile_picture else None

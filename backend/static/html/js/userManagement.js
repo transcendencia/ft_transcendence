@@ -19,7 +19,7 @@ export async function updateUserStatus(status, token) {
         }
     })
     .catch(error => {
-        console.error('Error :', error);
+        error;
     });
 }
 
@@ -43,7 +43,7 @@ export function getUserStatus(userId) {
         return data.user_status;
     })
     .catch(error => {
-        console.error('Error :', error.message);
+        error;
     });
 }
 
@@ -61,17 +61,22 @@ export function getProfileInfo(userId) {
         if (!response.ok) {
             throw new Error('Error retrieving user profile information');
         }
+        console.log("getProfileInfo");
         return response.json();
     })
     .catch(error => {
-        console.error('Error :', error);
+        error;
     });
 }
 
 export function populateProfileInfos(data) {
+    console.log("populateProfileInfo");
     document.getElementById('username').textContent = data.profile_info.username;
     document.getElementById('alias').textContent = data.profile_info.alias;
-    document.getElementById('profile_pic').src = data.profile_info.profile_picture;
+
+    const base64Image = data.profile_info.profile_picture;
+
+    document.getElementById('profile_pic').src = `data:image/png;base64,${base64Image}`;
     document.getElementById('changeUsernameInput').value = data.profile_info.username;
     document.getElementById('changeAliasInput').value = data.profile_info.alias;
 
@@ -107,7 +112,6 @@ export function send_friend_request(receiver_id) {
     })
     .catch(error => {
         error;
-        // console.error('Error :', error);
     });
 }
 
@@ -131,7 +135,6 @@ export async function accept_friend_request(request_id) {
     })
     .catch(error => {
         error;
-        // console.error('Error :', error);
     });
 }
 
@@ -155,7 +158,6 @@ export async function delete_friend_request(request_id) {
     })
     .catch(error => {
         error;
-        console.error('Error :', error);
     });
 }
 
@@ -177,7 +179,7 @@ export async function get_friends_list() {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error:', error);
+        error;
     }
 }
 
@@ -201,7 +203,7 @@ export function updateUserGraphicMode(graphicMode) {
         }
     })
     .catch(error => {
-        console.error('Error :', error);
+        error;
     });
 }
 
@@ -224,6 +226,6 @@ export function updateUserLanguage(new_language) {
         }
     })
     .catch(error => {
-        console.error('Error :', error);
+        error;
     });
 }

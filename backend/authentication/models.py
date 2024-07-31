@@ -6,7 +6,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.validators import MaxLengthValidator
 from .validators import UsernameValidator
-
+import os
 class User(AbstractUser):
   username = models.CharField(max_length=13, unique=True,
         validators=[
@@ -28,18 +28,25 @@ class User(AbstractUser):
   nbr_match_win = models.IntegerField(default=0)
   nbr_match_lost = models.IntegerField(default=0)
   nbr_goals = models.IntegerField(default=0)
+  
+  def get_profile_picture_url(self):
+    if self.profile_picture and hasattr(self.profile_picture, 'url'):
+        return self.profile_picture.url
+    return None
 
   def get_profile_info(self):
-    return {'id': self.id, 
-    'username': self.username, 
-    'alias': self.alias, 
-    'status': self.status,
-    'is_host': self.is_host,
-    'profile_picture': self.profile_picture.url, 
-    'nbr_match': self.nbr_match, 
-    'nbr_match_win': self.nbr_match_win,
-    'nbr_match_lost': self.nbr_match_lost,
-    'nbr_goals': self.nbr_goals}
+      return {
+          'id': self.id,
+          'username': self.username,
+          'alias': self.alias,
+          'status': self.status,
+          'is_host': self.is_host,
+          'profile_picture': self.get_profile_picture_url(),
+          'nbr_match': self.nbr_match,
+          'nbr_match_win': self.nbr_match_win,
+          'nbr_match_lost': self.nbr_match_lost,
+          'nbr_goals': self.nbr_goals
+      }
 
 
 class FriendRequest(models.Model):

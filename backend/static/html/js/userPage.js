@@ -179,7 +179,7 @@ export function initUserPlanet() {
       await delete_friend_request(requestId);
       await RenderUsersSearched(searchQuery);
     } catch (error) {
-      console.error('Error deleting friend request:', error);
+      error;
     }
   });
   
@@ -268,7 +268,9 @@ function searchedUserInfoChanged(profilePic, username, alias) {
 }
 
 function updateSearchedUserInfos(profilePicture, newName, newAlias) {
-  profilePic.src = profilePicture;
+  console.log("updateSearchUserInfos", profilePicture);
+  const base64Image = profilePicture;
+  profilePic.src = `data:image/png;base64,${base64Image}`;
   username.textContent = newName;
   alias.textContent = newAlias;
 }
@@ -289,6 +291,7 @@ function refreshSearchedPage(user) {
     return;
   getProfileInfo(user.id).then(data => {
     const userData = data.profile_info;
+    console.log("getProfileInfo refresh", data.profile_info);
     if (searchedUserFinishedAMatch(userData.nbr_match)) {
       document.getElementById('searchedUserHistory').innerHTML = '';
       getUserStats(user.id);
@@ -371,7 +374,7 @@ function createUserMatch(user) {
     });
   })
   .catch(error => {
-    console.error('Error:', error);
+    error;
   });
 }
 
@@ -396,7 +399,11 @@ function createUserTile(user, type, reqId) {
   
   const imgContainer = document.createElement('div');
   imgContainer.classList.add('imgContainer');
-  imgContainer.innerHTML += `<img src="${user.profile_picture}">`;
+
+  console.log("createUserTile", user.profile_picture);
+  const base64Image = user.profile_picture;
+
+  imgContainer.innerHTML += `<img src="data:image/png;base64,${base64Image}">`;
   
   const textContainer = document.createElement('div');
   textContainer.classList.add('textContainer');

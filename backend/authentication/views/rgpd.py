@@ -10,9 +10,6 @@ from django.http import HttpResponse
 from rest_framework.response import Response
 from django.utils.text import slugify
 from datetime import datetime
-import logging
-
-logger = logging.getLogger(__name__)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -76,9 +73,6 @@ def generateDataFile(request):
         filename = f"user_data_{slugify(user.username)}_{timestamp}.txt"
         response = HttpResponse(buffer.getvalue(), content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
-        print(response['Content-Disposition'])
-        logger.info(f"File generated successfully for user {user.username}")
-        print(response)
         return response
     except Exception as e:
         logger.error(f"Error generating file for user {request.user.username}: {str(e)}")

@@ -1,5 +1,3 @@
-import logging
-
 from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
@@ -21,8 +19,6 @@ from ..models import User
 from ..serializers import UserSerializer, SignupSerializer
 from ..utils.constants import UserStatus
 from authentication.exceptions import PasswordValidationError
-
-logger = logging.getLogger(__name__)
 
 def index(request):
   return render(request, 'index.html')

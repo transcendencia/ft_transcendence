@@ -1,5 +1,7 @@
 import os
 import json
+import base64
+from django.conf import settings
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -26,9 +28,6 @@ from django.db import OperationalError, InterfaceError
 
 import random
 import json
-
-import logging
-logger = logging.getLogger(__name__)
 
 class UserGraphicModeView(APIView):
   authentication_classes = [TokenAuthentication]
@@ -148,6 +147,12 @@ class UserInfoView(APIView):
     try:
       user = get_object_or_404(User, id=userId)
       profile_info = user.get_profile_info()
+      if profile_info['profile_picture'] and not settings.DEBUG:
+        try:
+          with open(os.path.join(settings.MEDIA_ROOT, user.profile_picture.name), 'rb') as img_file:
+              profile_info['profile_picture'] = base64.b64encode(img_file.read()).decode('utf-8')
+        except FileNotFoundError:
+            profile_info['profile_picture'] = None
       return Response({'profile_info': profile_info})
     except (OperationalError, InterfaceError) as e:
             return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)

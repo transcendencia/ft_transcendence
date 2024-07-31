@@ -3679,10 +3679,10 @@ class UserStats {
         this.id = id;
         this.profilePicture = profilePicture;
         this.usernameElement.textContent = username;
-        this.ppElement.src = profilePicture;
+        this.ppElement.src = `data:image/png;base64,${profilePicture}`;
         if (this.isThirdPlayer === false)
         {
-            this.startppElement.src = profilePicture;
+            this.startppElement.src = `data:image/png;base64,${profilePicture}`;
             this.startUserElement.textContent = username;
         }
     }
