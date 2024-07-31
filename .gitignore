@@ -22,7 +22,7 @@ backend/productionfiles/
 backend/authentication/migrations/
 backend/migrations/
 backend/authentication/migrations/0001_initial.py
-backend/logs
+
 
 backend/debug.log
 backend/errors.log

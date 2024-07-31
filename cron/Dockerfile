@@ -19,6 +19,7 @@ RUN apt-get install -y cron
 COPY crontab /etc/cron.d/django-cron
 RUN chmod 0644 /etc/cron.d/django-cron
 RUN crontab /etc/cron.d/django-cron
+RUN mkdir -p /backend/logs && chmod 777 /backend/logs
 COPY launch_crontab.sh /etc/launch_crontab.sh
 RUN chmod +x /etc/launch_crontab.sh
 
