@@ -255,7 +255,6 @@ function downloadFile() {
   })
   .catch(error => {
     console.error('Error during file download:', error);
-    alert('Une erreur est survenue lors du téléchargement du fichier. Veuillez réessayer.');
   });
 }
 
