@@ -31,6 +31,7 @@ if not User.objects.filter(username="bot").exists():
     user.save()
 EOF
 
-uvicorn backend.asgi:application --host 0.0.0.0 --port 8000 --ssl-keyfile /backend/cert/key.pem --ssl-certfile /backend/cert/cert.pem
+#uvicorn backend.asgi:application --host 0.0.0.0 --port 8000 --ssl-keyfile /backend/cert/key.pem --ssl-certfile /backend/cert/cert.pem
 
 # exec python manage.py runserver 0.0.0.0:8000 
+gunicorn --bind 0.0.0.0:8000 -w 1 backend.wsgi:application --keyfile=/backend/cert/key.pem --certfile=/backend/cert/cert.pem

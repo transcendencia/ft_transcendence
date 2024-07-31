@@ -32,7 +32,7 @@ services:
     depends_on:
       - database
     volumes:
-      - ./backend/:/backend
+      - ./backend:/backend
 
   cron:
     container_name: cron
@@ -47,7 +47,22 @@ services:
       - database
       - server
     volumes:
-      - ./backend/:/backend
+      - ./backend:/backend
+
+  nginx:
+    container_name: nginx
+    networks:
+      - ft_transcendence
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "4443:443"
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - server
+
 volumes:
   server_volume:
     name: server_volume
