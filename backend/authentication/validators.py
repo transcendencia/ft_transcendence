@@ -51,7 +51,14 @@ class ProfilePictureValidator:
             raise ValidationError("profilePicTooLarge", code="profilePicTooLarge")
 
     def checkImgSize(self):
-        width, height = get_image_dimensions(self.profile_picture)
+        dimensions = get_image_dimensions(self.profile_picture)
+        if dimensions is None:
+            raise ValidationError("invalidImage")
+        
+        width, height = dimensions
+        if width is None or height is None:
+            raise ValidationError("invalidImage")
+        
         if width > settings.PROFILE_PIC_MAX_WIDTH or height > settings.PROFILE_PIC_MAX_HEIGHT:
             raise ValidationError("imageDimensionsTooLarge")
 
@@ -64,7 +71,6 @@ class ProfilePictureValidator:
 
 class UsernameValidator(BaseValidator):
     def __init__(self, *args, **kwargs):
-        # You can handle additional arguments or configurations here if needed
         pass
 
     def __call__(self, value):
