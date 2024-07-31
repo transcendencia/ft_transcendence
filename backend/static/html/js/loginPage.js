@@ -402,7 +402,8 @@ export function backToLobby(historyArrow = false) {
     } else {
         resetGameEscape();
     }
-    window.location.hash = "#galaxy";
+    // window.location.hash = "#galaxy";
+    history.replaceState(null, null, "#galaxy");
     setTimeout(() => {
         keyDown['e'] = false;
         gameState.eKeyWasPressed = false;

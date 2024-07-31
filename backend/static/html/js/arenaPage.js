@@ -716,6 +716,7 @@ export function switchToGame(gameState, player1, player2, player3, isTournament)
 	if (gameState.arena != undefined)
 		gameState.arena.loadingScreen.activateLoadingScreen();
 	initGame(gameState, player1, player2, player3, isTournament);
+	clearInterval(checkEach5Sec);
 }
 
 function initGameMode(gameState, isTournament){
@@ -797,7 +798,7 @@ const loginPage = document.querySelector('.loginPage');
 const planetPanel = document.querySelectorAll('.planetPanel');
 const startButton = document.querySelector('.redButton');
 startButton.addEventListener('click', function() {
-	clearInterval(checkEach5Sec);
+	// clearInterval(checkEach5Sec);
     let player2;
     let player3;
     if (matchPlayer.length < 2 || (matchPlayer.length < 3 && matchPlayer[1].thirdPlayer))

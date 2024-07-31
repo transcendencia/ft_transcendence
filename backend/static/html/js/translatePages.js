@@ -132,6 +132,7 @@ const graphics3 = document.getElementById('graphicsIcon3');
 const graphicsTitle = document.getElementById('graphicsText');
 const currentlyLoggedAs = document.querySelector('.loggedAs');
 const disconnectButton = document.getElementById('disconnectButton');
+const playersConnected = document.getElementById('playersConnected');
 
 function translateEscapePageTexts() {
     pauseTitle.childNodes[2].textContent = getTranslatedText('pause');
@@ -145,6 +146,7 @@ function translateEscapePageTexts() {
         disconnectButton.textContent = getTranslatedText('disconnect');
     else
         disconnectButton.textContent = getTranslatedText("escapeBackToLobby");
+    playersConnected.textContent = getTranslatedText('playersConnected');
 }
 
 const RGPDTitle = document.getElementById('RGPDTitle');
