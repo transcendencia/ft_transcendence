@@ -196,7 +196,7 @@ export function printBracket(tournamentPlayer, currentMatch, thirdPlayerMode) {
       currentMatch[nbMatch][0] = currentMatch[nbMatch][1];
       currentMatch[nbMatch][1] = tmp;
       currentMatch[nbMatch][2] = currentMatch[nbMatch][3];
-      currentMatch[nbMatch][3] = tmpScore
+      currentMatch[nbMatch][3] = tmpScore;
     }
     if (round == 2){
       if (nbMatch == 0){

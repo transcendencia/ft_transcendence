@@ -268,11 +268,24 @@ cancelTournamentButton.addEventListener('click', () => {
       matchElement.textContent = currentMatch[nbMatch][0].myRef.username;
   }
 
+  let allMatch = [];
+
+  function storeAllMatchs(current, all) {
+    current = current.map(match => {
+        match.unshift(tournamentPhase);
+        match.pop();
+        return match;
+    });
+    all.push(...current);
+    return all;
+  }
+
   function makeMatchup() {
     const ul = document.getElementById("match");
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
     let j = 0;
     nbMatch = 0;
+    allMatch = storeAllMatchs(currentMatch, allMatch);
     currentMatch = [];
     putFinalPosiionWhenLost(playersInTournament);
     if (playersInTournament.length == 1 || playersInTournament.length == 0){ //end the tournament
@@ -321,6 +334,10 @@ cancelTournamentButton.addEventListener('click', () => {
       }
     }
     round ++;
+    if (tournamentPhase == "1/4")
+      tournamentPhase = "1/2";
+    else
+      tournamentPhase = "1/1";
   }
 
   const launchTournamentElement = document.getElementById("launch");
@@ -349,6 +366,9 @@ cancelTournamentButton.addEventListener('click', () => {
     }
     if (tournamentPlayer.length > 4)
       tournamentPhase = "1/4";
+    else
+      tournamentPhase = "1/2";
+    allMatch = [];
     tournamentState = 1;
     updateElementDisplayAndText("error_msg", "");
     tournamentPlayer.forEach(function(player){
@@ -407,6 +427,7 @@ cancelTournamentButton.addEventListener('click', () => {
       winner_name = currentMatch[nbMatch][1].myRef.username;
       currentMatch[nbMatch][1].myRef.round ++;
     }
+
     updateBracket(tournamentPlayer, winner_name, currentMatch, nbMatch, round);
     nextMatch();
     if (gameState.arenaCreated) //if the game has never been launch
