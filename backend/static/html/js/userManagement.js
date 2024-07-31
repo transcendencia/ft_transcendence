@@ -61,7 +61,6 @@ export function getProfileInfo(userId) {
         if (!response.ok) {
             throw new Error('Error retrieving user profile information');
         }
-        console.log("getProfileInfo");
         return response.json();
     })
     .catch(error => {
@@ -70,7 +69,6 @@ export function getProfileInfo(userId) {
 }
 
 export function populateProfileInfos(data) {
-    console.log("populateProfileInfo");
     document.getElementById('username').textContent = data.profile_info.username;
     document.getElementById('alias').textContent = data.profile_info.alias;
 

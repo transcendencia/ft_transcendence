@@ -574,11 +574,8 @@ function addUserToMatch(playerId, username, profile_picture, thirdPlayer = 0) {
 function removeUserFromMatch(playerId) {
   const playerIndex = matchPlayer.findIndex(player => player.playerId === playerId);
   //remove if player is find
-  if (playerIndex !== -1) {
+  if (playerIndex !== -1)
 	  matchPlayer.splice(playerIndex, 1);
-	  console.log(`Player with ID ${playerId} has been removed from the match.`);
-  } else
-	  console.log(`Player with ID ${playerId} is not in the match.`);
 }
 
 

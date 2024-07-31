@@ -14,7 +14,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             message = f"Cron job executed at {timezone.now()}"
-            print(message)
             logger.info(message)
             
             with open('/backend/logs/cron_execution.log', 'a') as f:
@@ -30,11 +29,9 @@ class Command(BaseCommand):
             #two_minutes_ago = now - timedelta(minutes=2)
             #usersToDelete = User.objects.filter(last_login_date__lte=two_minutes_ago)
             for user in usersToDelete:
-                print(f'Utilisateur: {user.username}')
                 if user.status is not UserStatus.ONLINE:
                     user.delete()
             completion_message = f"Cron job completed at {timezone.now()}"
-            print(completion_message)
             logger.info(completion_message)
             
             with open('/backend/logs/cron_execution.log', 'a') as f:
@@ -42,7 +39,6 @@ class Command(BaseCommand):
 
         except Exception as e:
             error_message = f"An error occurred: {str(e)}"
-            print(error_message)
             logger.error(error_message)
             
             with open('/backend/logs/cron_execution.log', 'a') as f:

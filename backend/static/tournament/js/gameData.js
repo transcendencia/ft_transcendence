@@ -29,7 +29,6 @@ export async function createGame(player1Id, player2Id, player3Id, scorePlayer1, 
         });
         if (response.ok) {
             const data = await response.json();
-            console.log('Game created successfully with ID:', data.game_id);
         } else {
             console.error('Failed to create game');
         }

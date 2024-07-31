@@ -413,7 +413,6 @@ cancelTournamentButton.addEventListener('click', () => {
     const player2Status = getUserStatus(currentMatch[nbMatch][1].myRef.playerId);
 
     return Promise.all([player1Status, player2Status]).then(([status1, status2]) => {
-        console.log(status1, status2);
         if (status1 == undefined || status2 == undefined){
           afterGameTournament(0, 0, true);
           return 1;

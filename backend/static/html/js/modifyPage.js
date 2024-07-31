@@ -74,7 +74,6 @@ document.getElementById('deleteAccountCancel').addEventListener("click", functio
 });
 
 function returnToLoginPageInSpaceship() {
-  console.log("returnToLoginPageInSpaceship");
   spaceShip.position.set(0, 0, -1293.5);
   spaceShip.rotation.set(0, 0, 0);
 
@@ -138,7 +137,6 @@ toggleSwitch.addEventListener('click', function() {
     this.classList.toggle('active');
     if (this.classList.contains('active')) {
       anonymousStatus = true;
-      console.log("toggleSwitchClicked: ", toggleSwitchClicked);
       if (!toggleSwitchClicked) {
         toggleSwitchClicked = true;
         oldUsername = document.getElementById('changeUsernameInput').value;
@@ -220,7 +218,6 @@ document.addEventListener('keydown', (event) => {
 const downloadButton = document.getElementById("downloadButton");
 downloadButton.addEventListener("click", downloadFile);
 function downloadFile() {
-  console.log("Initiating file download");
   const token = sessionStorage.getItem('host_auth_token');
   fetch('generateDataFile/', {
     method: 'GET',
@@ -240,14 +237,12 @@ function downloadFile() {
     a.style.display = 'none';
     a.href = url;
     const contentDisposition = response.headers.get('Content-Disposition');
-    console.log("file name = " + contentDisposition);
     const filename = contentDisposition?.split('filename=')[1]?.replace(/"/g, '') || 'user_data.txt';
     a.download = filename;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
-    console.log("File download initiated");
   })
   .catch(error => {
     console.error('Error during file download:', error);

@@ -35,14 +35,10 @@ export async function userListChanged() {
   if (searchQuery === '') {
     const friendList = filterAndSortLists(newData, '');
     const friendListChanged = JSON.stringify(friendList) !== JSON.stringify(previousFriendList);
-    if (friendListChanged)
-      console.log("friendListChanged!");
     return friendListChanged;
   }
   const searchList = filterAndSortLists(newData, searchQuery);
   const searchListChanged = JSON.stringify(searchList) !== JSON.stringify(previousSearchList);
-  if (searchListChanged)
-    console.log("searchListChanged!");
   return searchListChanged;
 }
 
@@ -69,7 +65,6 @@ export function initUserPlanet() {
     refreshUserList();
   if (pageDisplayed === "searchedProfile")
     refreshSearchedPage(displayedUserOnSearchPage);
-  console.log("checking...");
   }, 5000));
 }
 
@@ -268,7 +263,6 @@ function searchedUserInfoChanged(profilePic, username, alias) {
 }
 
 function updateSearchedUserInfos(profilePicture, newName, newAlias) {
-  console.log("updateSearchUserInfos", profilePicture);
   const base64Image = profilePicture;
   profilePic.src = `data:image/png;base64,${base64Image}`;
   username.textContent = newName;
@@ -291,18 +285,15 @@ function refreshSearchedPage(user) {
     return;
   getProfileInfo(user.id).then(data => {
     const userData = data.profile_info;
-    console.log("getProfileInfo refresh", data.profile_info);
     if (searchedUserFinishedAMatch(userData.nbr_match)) {
       document.getElementById('searchedUserHistory').innerHTML = '';
       getUserStats(user.id);
       createUserMatch(user);
       previousUserInfos = userData;
-      console.log("stats changed : ", userData.username);
     }
     if (searchedUserInfoChanged(userData.profile_picture, userData.username, userData.alias)) {
       updateSearchedUserInfos(userData.profile_picture, userData.username, userData.alias);
       previousUserInfos = userData;
-      console.log("info changed : ", userData.username);
     }
   });
 }
@@ -393,14 +384,12 @@ function createUserTile(user, type, reqId) {
   if (user.isHost)
     return;
   
-  console.log("statuuuus:", user.status);
   const userTile = document.createElement('div');
   userTile.classList.add('userTile');
   
   const imgContainer = document.createElement('div');
   imgContainer.classList.add('imgContainer');
 
-  console.log("createUserTile", user.profile_picture);
   const base64Image = user.profile_picture;
 
   imgContainer.innerHTML += `<img src="data:image/png;base64,${base64Image}">`;
