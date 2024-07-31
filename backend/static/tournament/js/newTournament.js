@@ -167,7 +167,7 @@ backButtonLaunchTournamentPage.addEventListener('click', () => {togglePlanet(/* 
 
 cancelTournamentButton.addEventListener('click', () => {
   tournamentState = 2;
-  resetTournament();
+  togglePlanet(/*rscontainer*/true);
 });
 
   export function askForAlias(user){
