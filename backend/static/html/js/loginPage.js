@@ -426,7 +426,7 @@ export async function handleLogout(userId, token) {
     if (!userId || !token || isLoggingOut) 
         return;
     isLoggingOut = true;
-
+    history.pushState(null, null, window.location.href);
     await new Promise(resolve => {
         gameState.paused = false;
         if (rsContVisible)
