@@ -38,6 +38,7 @@
         
         "enterPlanetText": "Press [E] to select",
 
+        "playersConnected": "Players connected",
         "settingsPlanetInfo1": "[Name]: User profile",
         "settingsPlanetInfo2": "[ID]: SO-0911",
         "settingsPlanetInfo3": "[Temperature]: +127°C",
@@ -181,6 +182,7 @@
         "RGPDPolicy" : "política de confidencialidad",
         "RGPDBack" : "Volver", 
 
+        "playersConnected": "Jugadores conectados",
         "settingsPlanetInfo1": "[Nombre] Perfil",
         "settingsPlanetInfo2": "[ID] SO-0911",
         "settingsPlanetInfo3": "[temperatura] +127°C",
@@ -323,6 +325,7 @@
         "invalidWhitespacePassword": "Le mot de passe ne peut pas contenir d'espaces",
         "max_length": "Contrasena demasiado larga",
 
+        "playersConnected": "Joueurs connectes",
         "settingsPlanetInfo1": "[Nom]: Profil",
         "settingsPlanetInfo2": "[ID]: SO-0911",
         "settingsPlanetInfo3": "[Temperature]: +127°C",

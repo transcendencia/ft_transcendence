@@ -507,11 +507,9 @@ let pauseGame = false;
 export function togglePause() {
     gameState.togglePause();
     if (!pauseGame) {
-        console.log("pause");
         cancelAnimationFrame(animationFrame);
     }
     else {
-        console.log("unpause");
         lastUpdateTime = performance.now();
         animate();
     }

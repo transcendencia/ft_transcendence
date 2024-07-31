@@ -34,15 +34,11 @@ export function initPage() {
 }
 
 addEventListener("hashchange", () => {
-    console.log("OnHashChange | currentHash:", window.location.hash, "| oldHash:", oldLocation, "| lobbyStartVar:", lobbyStart, "| isLogginOutVar:", isLoggingOut);
     if (lobbyStart && !gameState.inGame && !gameState.loading) {
         showAlert(getTranslatedText("SPALoggedOut"));
         handleLogout(sessionStorage.getItem('host_id'), sessionStorage.getItem('host_auth_token'), false);
         return;
     }
-    // if (window.location.hash === '#galaxy' && !lobbyStart) {
-    //     window.location.hash = '#loginpage'
-    // }
     if (window.location.hash === '#loginPage' && oldLocation === '#signUpPage') {
         moveCameraToBackOfCockpit();
     } else if (window.location.hash === '#signUpPage' && (oldLocation === '#loginPage' || oldLocation === '#galaxy')) {
@@ -68,21 +64,15 @@ addEventListener("hashchange", () => {
 });
 
 export function showAlert(message, duration = 7000) {
-    // Create alert element
     const alert = document.createElement('div');
     alert.className = 'alert';
     alert.textContent = message;
 
-    // Add to body
     document.body.appendChild(alert);
 
-    // Trigger reflow to enable transition
     alert.offsetHeight;
-
-    // Show alert
     alert.classList.add('show');
 
-    // Hide and remove after duration
     setTimeout(() => {
         alert.classList.remove('show');
         setTimeout(() => {
