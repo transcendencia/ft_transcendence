@@ -243,7 +243,6 @@ function downloadFile() {
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    // Use the filename provided by the server if available
     const contentDisposition = response.headers.get('Content-Disposition');
     console.log("file name = " + contentDisposition);
     const filename = contentDisposition?.split('filename=')[1]?.replace(/"/g, '') || 'user_data.txt';
