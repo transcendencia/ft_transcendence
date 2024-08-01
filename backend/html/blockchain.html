@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Data Form</title>
+</head>
+<body>
+    <h1>Set Blockchain Data</h1>
+    <form id="setDataForm">
+        <input type="number" name="value" placeholder="Enter value">
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Stored Data</h2>
+    <div id="storedData">
+        {% for data in stored_data %}
+            <p>Value: {{ data }}</p>
+        {% endfor %}
+    </div>
+
+    <script type="module" src="{% static 'tournament/js/blockchain.js' %}"></script>
+
+</body>
+</html>

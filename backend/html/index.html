@@ -295,12 +295,20 @@
       </div>
     </div>
 
-
-
-
-
-
-
+    <div class="enterPasswordWindow">
+      <div id="showBlockchainText" class="validateDeleteText">Tournament Stored in the blockchain:</div>
+      <h1>Set Blockchain Data</h1>
+      <form id="setDataForm">
+          <input type="number" name="value" placeholder="Enter value">
+          <button type="submit">Submit</button>
+      </form>
+      <h2>Stored Data</h2>
+      <div id="storedDataContainer">
+        <div id="storedData">
+        </div>
+      </div>
+      <div id="closeBlockchainPanel" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">Back</div>
+    </div>
 
 
     <!-- USER PLANET -->
@@ -665,10 +673,13 @@
               <div id="error_msg" class="errorMsg"></div>
             </div>
             <div class="rightColumnBottomRight before-launch">
-              <div class="switch"  id="thirdPlayertoggleSwitch">
-                <div class="slider"></div>
+              <div id="showTournamentResult" class="smallButton">Show tournament result</div>
+              <div style="display: flex; flex-direction: row;">
+                <div class="switch"  id="thirdPlayertoggleSwitch">
+                  <div class="slider"></div>
+                </div>
+                <div id="thirdPlayerText" class="basicText" style="padding-left: 10px;">Third Player</div> 
               </div>
-              <div id="thirdPlayerText" class="basicText" style="padding-left: 10px;">Third Player</div> 
             </div>
           </div>
           <!-- when the tournament is launch -->
@@ -1058,7 +1069,7 @@
     <script type="module" src="{% static 'tournament/js/gameData.js' %}"></script>
     <script type="module" src="{% static 'tournament/js/newTournament.js' %}"></script>
     <script type="module" src="{% static 'tournament/js/bracket.js' %}"></script>
-
+    <script type="module" src="{% static 'tournament/js/blockchain.js' %}"></script>
 
 </body>
 </html>

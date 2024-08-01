@@ -6,6 +6,8 @@ from .views.friendship import FriendRequestView, FriendListView
 from .views.authentication import LogoutView
 from .views.stats import StatsView
 
+from blockchain.views import blockchain_view
+
 urlpatterns = [
 	path('', authentication.index, name='index'),
 
@@ -42,4 +44,6 @@ urlpatterns = [
     # path('get_game_info/', gameInfo.get_game_info, name='get_game_info'),
     #rgpd.py
     path('generateDataFile/', rgpd.generateDataFile, name='generateDataFile'),
+
+    path('blockchain/', blockchain_view, name='blockchain'),
 ]

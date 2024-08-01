@@ -253,6 +253,28 @@ p{
   cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
 }
 
+.smallButton {
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  font-family: 'Space';
+  border-radius: 5px;
+  padding: 5px;
+  background-color: rgb(161, 0, 0);
+  border: 5px solid rgb(255, 255, 255);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 21px;
+  margin-bottom: 15px;
+}
+
+.smallButton:hover {
+  background-color: rgb(194, 0, 0);
+  box-shadow: 0 0 40px #be1c00;
+  cursor:url('../../game/assets/cursor/pointer.cur'), pointer;
+}
+
 .buttonsContVert {
   display: flex;
   justify-content: center;
@@ -289,17 +311,16 @@ p{
   align-items: end;
   flex-direction: column;
   height: 100%;
-  width: 60%;
+  width: 50%;
 }
 
 .rightColumnBottomRight {
-  padding-left: 50px;
   display: flex;
   justify-content: start;
   align-items: center;
-  flex-direction: row;
+  flex-direction: column;
   height: 100%;
-  width: 40%;
+  width: 50%;
 }
 
 .buttonTitleVert {
