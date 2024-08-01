@@ -122,7 +122,7 @@ class LogoutView(APIView):
       request.user.status = UserStatus.OFFLINE
       request.user.save()
       request.user.auth_token.delete()
-
+      print("logged out: ", request.user.username)
       return HttpResponse(status=status.HTTP_200_OK)
     
     except (OperationalError, InterfaceError):

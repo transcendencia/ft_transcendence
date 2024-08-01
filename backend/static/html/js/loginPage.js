@@ -521,31 +521,97 @@ export function logoutAllGuest(userId) {
 //     clearHostValuesFromSessionStorage();
 // });
 
+
+
+
+
+// export function clearHostValuesFromSessionStorage() {
+//     sessionStorage.removeItem("hostLoggedIn");
+//     sessionStorage.removeItem("host_auth_token");
+//     sessionStorage.removeItem("host_id");
+// }
+
+// function handleUnload() {
+//     const token = sessionStorage.getItem('host_auth_token');
+//     const hostId = sessionStorage.getItem('host_id');
+    
+//     logoutAllGuest(hostId);
+//     logoutUser(token);
+//     clearHostValuesFromSessionStorage();
+// }
+
+// function isFirefox() {
+//   return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+// }
+
+// if (isFirefox()) {
+//   window.addEventListener('pagehide', handleUnload);
+//   window.addEventListener('unload', handleUnload);
+// }
+// else 
+//   window.addEventListener('beforeunload', handleUnload);
+
+
 export function clearHostValuesFromSessionStorage() {
     sessionStorage.removeItem("hostLoggedIn");
     sessionStorage.removeItem("host_auth_token");
     sessionStorage.removeItem("host_id");
 }
 
-function handleUnload() {
-    const token = sessionStorage.getItem('host_auth_token');
-    const hostId = sessionStorage.getItem('host_id');
-    
-    logoutAllGuest(hostId);
-    logoutUser(token);
-    clearHostValuesFromSessionStorage();
+function synchronousLogout(token) {
+    if (!token) return;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", '/logout/', false);  // false makes it synchronous
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Token ${token}`);
+    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+    xhr.send();
+
+    if (xhr.status !== 200) {
+        console.error('Error during synchronous logout:', xhr.statusText);
+    }
 }
 
-function isFirefox() {
-  return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+function handleVisibilityChange() {
+    if (document.visibilityState === 'hidden') {
+        const token = sessionStorage.getItem('host_auth_token');
+        const hostId = sessionStorage.getItem('host_id');
+        
+        if (token && hostId) {
+            localStorage.setItem('logging_out', 'true');
+            logoutAllGuest(hostId);
+            synchronousLogout(token);
+            clearHostValuesFromSessionStorage();
+            localStorage.removeItem('logging_out');
+        }
+    }
 }
 
-if (isFirefox()) {
-  window.addEventListener('pagehide', handleUnload);
-  window.addEventListener('unload', handleUnload);
+function handleBeforeUnload(event) {
+    const isLoggingOut = localStorage.getItem('logging_out');
+    if (!isLoggingOut) {
+        console.log("logging out");
+        const token = sessionStorage.getItem('host_auth_token');
+        const hostId = sessionStorage.getItem('host_id');
+        
+        if (token && hostId) {
+            localStorage.setItem('logging_out', 'true');
+            guestLoggedIn.forEach(user => {
+                synchronousLogout(user[1]);
+            });
+            // logoutAllGuest(hostId);
+            synchronousLogout(token);
+            clearHostValuesFromSessionStorage();
+            localStorage.removeItem('logging_out');
+        }
+    }
+    // Uncomment the following line if you want to show a confirmation dialog
+    event.returnValue = '';
 }
-else 
-  window.addEventListener('beforeunload', handleUnload);
+
+// document.addEventListener('visibilitychange', handleVisibilityChange);
+window.addEventListener('beforeunload', handleBeforeUnload);
 
 
 export function emptyLoginField() {
