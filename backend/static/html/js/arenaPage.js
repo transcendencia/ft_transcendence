@@ -1,7 +1,7 @@
 import { getTranslatedText } from "./translatePages.js";
 import { gameState } from "../../game/js/main.js";
 import { togglePlanet, setCheckerToInterval, checkEach5Sec} from "./enterPlanet.js";
-import { afterGameTournament, botDifficultyTournament, addUserToTournament, changeTournamentStatus, resetTournament } from "../../tournament/js/newTournament.js";
+import { afterGameTournament, botDifficultyTournament, addUserToTournament, changeTournamentStatus, removeUserFromTournament } from "../../tournament/js/newTournament.js";
 import { createGame } from "../../tournament/js/gameData.js";
 import { gamemodeCounterTournament, mapCounterTournament, plusButtonsTournament } from "../../tournament/js/newTournament.js";
 import { askForAlias, resetHostTournament } from "../../tournament/js/newTournament.js";
@@ -161,12 +161,15 @@ export function createUserInfoObject(tile, hoverEnabled = false) {
     return {userInfoCont, clonedImg, profilePic};
 }
 
-function addClickListenerToNewUserBadge(userBadge, plusButton, tile, plusClickedId) {
+function addClickListenerToNewUserBadge(userBadge, plusButton, tile, plusClickedId, mode) {
 	userBadge.userInfoCont.addEventListener('click', function() {
 		profileAdded[tile.user.id] = false;
 		resetToPlusButton(userBadge.userInfoCont, plusButton);
 		updateListAndResetTimer();
-		removeUserFromMatch(tile.user.id);
+		if (mode === "tournament")
+			removeUserFromTournament(tile.user.id);
+		else
+			removeUserFromMatch(tile.user.id);
 		addedPlayerBadges = addedPlayerBadges.filter(badge => badge.plusClicked !== plusClickedId);
 	});
 }
@@ -195,7 +198,7 @@ export function putUserInMatch(plusButtonsArray, mode) {
 		thirdPlayer = 1;
 	resetGlow();
 	resetAddingMode(mode);
-	addClickListenerToNewUserBadge(userBadge, plusButton, tile, plusClickedId);
+	addClickListenerToNewUserBadge(userBadge, plusButton, tile, plusClickedId, mode);
 	if (mode === 'tournament'){
 		addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
 	}
