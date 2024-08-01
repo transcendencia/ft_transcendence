@@ -485,7 +485,6 @@ function printXYZofVector(vector) {
 export async function logoutUser(token) {
     if (!token)
         return;
-
     fetch('/logout/', {
         method: 'POST',
         headers: {
@@ -522,31 +521,70 @@ export function logoutAllGuest(userId) {
 //     clearHostValuesFromSessionStorage();
 // });
 
+function isFirefox() {
+    return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+  }
+
 export function clearHostValuesFromSessionStorage() {
     sessionStorage.removeItem("hostLoggedIn");
     sessionStorage.removeItem("host_auth_token");
     sessionStorage.removeItem("host_id");
 }
 
-function handleUnload() {
+function synchronousLogout(token) {
+    if (!token) return;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", '/logout/', false);  // false makes it synchronous
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Token ${token}`);
+    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+    xhr.send();
+
+    if (xhr.status !== 200) {
+        console.error('Error during synchronous logout:', xhr.statusText);
+    }
+}
+
+function handleBeforeUnload(event) {
+    const isLoggingOut = localStorage.getItem('logging_out');
+    if (!isLoggingOut) {
+        console.log("logging out");
+        const token = sessionStorage.getItem('host_auth_token');
+        const hostId = sessionStorage.getItem('host_id');
+        
+        if (token && hostId) {
+            localStorage.setItem('logging_out', 'true');
+            guestLoggedIn.forEach(user => {
+                synchronousLogout(user[1]);
+            });
+            synchronousLogout(token);
+            clearHostValuesFromSessionStorage();
+            localStorage.removeItem('logging_out');
+        }
+    }
+    event.returnValue = '';
+}
+
+if (isFirefox())
+    window.addEventListener('beforeunload', handleBeforeUnload);
+else
+{
+    window.addEventListener('beforeunload', async function (event) {
     const token = sessionStorage.getItem('host_auth_token');
     const hostId = sessionStorage.getItem('host_id');
     
     logoutAllGuest(hostId);
-    logoutUser(token);
+    // logoutUser(token);
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", '/logout/', false);  // false makes it synchronous
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Token ${token}`);
+    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+    xhr.send();
     clearHostValuesFromSessionStorage();
+    });
 }
-
-function isFirefox() {
-  return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-}
-
-if (isFirefox()) {
-  window.addEventListener('pagehide', handleUnload);
-  window.addEventListener('unload', handleUnload);
-}
-else 
-  window.addEventListener('beforeunload', handleUnload);
 
 
 export function emptyLoginField() {
