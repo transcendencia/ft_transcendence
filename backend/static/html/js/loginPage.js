@@ -576,6 +576,7 @@ else
     
     logoutAllGuest(hostId);
     logoutUser(token);
+    clearHostValuesFromSessionStorage();
     });
 }
 
