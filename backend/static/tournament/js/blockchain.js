@@ -10,7 +10,7 @@ showTournamentResult.addEventListener('click', async function() {
     getAllTournaments().then(tournaments => {
         if (tournaments) {
             tournaments.forEach(tournament => {
-                console.log("tournament: ", tournament);
+                // console.log("tournament: ", tournament); 
                 const title = document.createElement('h2');
                 const hyperTextHash = document.createElement('a');
                 hyperTextHash.textContent = "Tournament " + tournament.id + ":";
@@ -75,7 +75,7 @@ export function createTournament(matches) {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json();  // Parse the JSON response
+        return response.json();
     })
     .then(result => {
         if (result.status === 'success') {
