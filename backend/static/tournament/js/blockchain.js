@@ -12,7 +12,12 @@ showTournamentResult.addEventListener('click', async function() {
             tournaments.forEach(tournament => {
                 console.log("tournament: ", tournament);
                 const title = document.createElement('h2');
-                title.textContent = "Tournament " + tournament.id + ":";
+                const hyperTextHash = document.createElement('a');
+                hyperTextHash.textContent = "Tournament " + tournament.id + ":";
+                hyperTextHash.href = "https://sepolia.etherscan.io/tx/" + tournament.transaction_hash;
+                hyperTextHash.target = "_blank";
+                hyperTextHash.style.textDecoration = "none";
+                title.appendChild(hyperTextHash);
                 allTournamentTab.appendChild(title);    
                 tournament.matches.map(match => {
                     const matchText = document.createElement('p');

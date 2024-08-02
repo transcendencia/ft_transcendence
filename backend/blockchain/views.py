@@ -89,21 +89,17 @@ def get_tournament_view(request, tournament_id):
 @authentication_classes([TokenAuthentication])
 def all_tournaments_view(request):
     try:
-        tournaments = get_all_tournaments()
-        
         host_id = request.user.id
-        print("the host id:")
-        print(host_id)
+        tournaments = get_all_tournaments()
 
         if tournaments is None:
             return JsonResponse({'status': 'error', 'message': 'Failed to fetch tournaments'}, status=500)
-        
-        # Convert the tournaments data to a more JSON-friendly format and filter by host ID
+
         formatted_tournaments = []
         for tournament in tournaments:
             include_tournament = False
             formatted_matches = []
-            for match in tournament[1]:  # tournament[1] contains the matches
+            for match in tournament['matches']:
                 formatted_match = {
                     'tournamentPhase': match[0],
                     'player1Id': match[1],
@@ -117,15 +113,16 @@ def all_tournaments_view(request):
                 if match[1] == host_id or match[4] == host_id:
                     include_tournament = True
                 formatted_matches.append(formatted_match)
-            
+
             if include_tournament:
                 formatted_tournament = {
-                    'id': tournament[0],
-                    'matches': formatted_matches
+                    'id': tournament['id'],
+                    'matches': formatted_matches,
+                    'transaction_hash': tournament['transaction_hash']
                 }
                 formatted_tournaments.append(formatted_tournament)
-        
+
         return JsonResponse({'status': 'success', 'tournaments': formatted_tournaments})
-    
+
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
