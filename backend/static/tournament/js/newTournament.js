@@ -6,6 +6,7 @@ import { resetAddingMode, setAddingMode, plusClicked} from "../../html/js/arenaP
 import { addedPlayerBadges, resetToPlusButton, profileAdded, putUserInMatch, switchToGame } from "../../html/js/arenaPage.js";
 import { printBracket, updateBracket, resetBracket, updateElementDisplayAndText } from "./bracket.js";
 import { toggleRSContainerVisibility } from "../../html/js/main.js";
+import { createTournament } from "./blockchain.js";
 
 export let gamemodeCounterTournament = 0;
 export let mapCounterTournament = 0;
@@ -250,6 +251,11 @@ cancelTournamentButton.addEventListener('click', () => {
 
   function endTournament(playersInTournament, matchElement){
     tournamentState = 2;
+    allMatch = formatAllMatches(allMatch);
+    console.log("allMatch:", allMatch);
+    createTournament(allMatch);
+    console.log("createTournament");
+
     tournamentPlayer.forEach(function(player){
       if (player.position === 0)
         player.position = 1;
@@ -271,11 +277,60 @@ cancelTournamentButton.addEventListener('click', () => {
       matchElement.textContent = currentMatch[nbMatch][0].myRef.username;
   }
 
+  let allMatch = [];
+
+  function storeAllMatchs(current, all) {
+    current = current.map(match => {
+        match = match.map(item => {
+            if (typeof item === 'object' && item !== null && 'myRef' in item)
+                return item.myRef.playerId;
+            return item;
+        });
+        match.unshift(tournamentPhase);
+        match.pop();
+        const thirdValue = match.splice(2, 1)[0];
+        match.splice(4, 0, thirdValue);
+        if (match[4] === ''){
+          match[4] = 0;
+          match.push(false);
+        }
+        else
+          match.push(true);
+        if (match[5] === ''){
+          match[5] = 0;
+          match.push(false);
+        }
+        else
+          match.push(true);
+        return match;
+    });
+    all.push(...current);
+    return all;
+  }
+
+  function formatAllMatches(allMatch) {
+    const formattedMatches = allMatch.map(match => {
+      return {
+        tournamentPhase: match[0],
+        player1Id: match[1],
+        scorePlayer1: match[2],
+        scorePlayer2: match[3],
+        player2Id: match[4],
+        player3Id: match[5],
+        isPlayer2NoPlayer: match[6],
+        isPlayer3NoPlayer: match[7]
+      };
+    });
+    return formattedMatches;
+}
+
+
   function makeMatchup() {
     const ul = document.getElementById("match");
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
     let j = 0;
     nbMatch = 0;
+    allMatch = storeAllMatchs(currentMatch, allMatch);
     currentMatch = [];
     putFinalPosiionWhenLost(playersInTournament);
     if (playersInTournament.length == 1 || playersInTournament.length == 0){
@@ -323,6 +378,12 @@ cancelTournamentButton.addEventListener('click', () => {
       }
     }
     round ++;
+    if (round == 2)
+      return;
+    if (tournamentPhase == "1/4")
+        tournamentPhase = "1/2";
+    else
+      tournamentPhase = "1/1";
   }
 
   const launchTournamentElement = document.getElementById("launch");
@@ -342,6 +403,8 @@ cancelTournamentButton.addEventListener('click', () => {
     return nbPlayer;
   }
 
+  let tournamentPhase;
+
   launchTournamentElement.addEventListener("click", function() {
     if (countNonBotPlayer(tournamentPlayer) < 3 && thirdPlayerMode){
       updateElementDisplayAndText("error_msg", getTranslatedText('ErrorMinus'));
@@ -351,6 +414,11 @@ cancelTournamentButton.addEventListener('click', () => {
       updateElementDisplayAndText("error_msg", getTranslatedText('ErrorMinus'));
       return ;
     }
+    if (tournamentPlayer.length <= 4)
+      tournamentPhase = "1/2";
+    else
+      tournamentPhase = "1/4";
+    allMatch = [];
     tournamentState = 1;
     updateElementDisplayAndText("error_msg", "");
     tournamentPlayer.forEach(function(player){
@@ -443,6 +511,8 @@ cancelTournamentButton.addEventListener('click', () => {
 }
 
   async function findWinner(){
+    afterGameTournament(3, 0);
+    return; 
     if (!currentMatch[nbMatch][1]){
       afterGameTournament(3, 0);
       return;

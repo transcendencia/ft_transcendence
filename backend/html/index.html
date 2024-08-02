@@ -295,17 +295,9 @@
       </div>
     </div>
 
-    <div class="enterPasswordWindow">
+    <div class="enterPasswordWindow" style="width: 80%; height: 80%;">
       <div id="showBlockchainText" class="validateDeleteText">Tournament Stored in the blockchain:</div>
-      <h1>Set Blockchain Data</h1>
-      <form id="setDataForm">
-          <input type="number" name="value" placeholder="Enter value">
-          <button type="submit">Submit</button>
-      </form>
-      <h2>Stored Data</h2>
-      <div id="storedDataContainer">
-        <div id="storedData">
-        </div>
+      <div id="allTournamentTab" class="tournamentTab">
       </div>
       <div id="closeBlockchainPanel" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">Back</div>
     </div>
@@ -537,7 +529,7 @@
                       </div>
                     </div>
                     <div class="profilePicContainer">
-                      <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
+                      <div id="changeProfilePicture" class= "changeProfilePicture">Profile picture:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
                       <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
                     </div>

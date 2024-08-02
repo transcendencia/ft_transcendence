@@ -5,8 +5,28 @@ const blockingPanel = document.getElementById('blockingPanel');
 showTournamentResult.addEventListener('click', async function() {
     blockchainWindow.classList.toggle("showRectangle");
 	blockingPanel.classList.add("show");
-    updateStoredData();
-
+    const allTournamentTab = document.getElementById('allTournamentTab');
+    allTournamentTab.innerHTML = "";
+    getAllTournaments().then(tournaments => {
+        if (tournaments) {
+            tournaments.forEach(tournament => {
+                console.log("tournament: ", tournament);
+                const title = document.createElement('h2');
+                title.textContent = "Tournament " + tournament.id + ":";
+                allTournamentTab.appendChild(title);    
+                tournament.matches.map(match => {
+                    const matchText = document.createElement('p');
+                    let player2 = match.isPlayer2NoPlayer ? "no player" : match.player2Id;
+                    let player3 = match.isPlayer3NoPlayer ? "" : match.player3Id;
+                    if (player3 == "")
+                        matchText.textContent = "   " + match.tournamentPhase + " player 1 id: " + match.player1Id + " " + match.scorePlayer1 + " vs " + match.scorePlayer2 +  " player 2 id: " + player2;
+                    else
+                        matchText.textContent = "   " + match.tournamentPhase + " player 1 id: " + match.player1Id + " " + match.scorePlayer1 + " vs " + match.scorePlayer2 + " player 2 id: " + player2 + " player 3 id: " + player3;
+                    allTournamentTab.appendChild(matchText);
+                })
+            });
+        }
+    }); 
 });
 
 const closeBlockchainPanel = document.getElementById("closeBlockchainPanel");
@@ -16,56 +36,82 @@ closeBlockchainPanel.addEventListener('click', async function() {
     blockingPanel.classList.remove('show');
 });
 
-// Function to fetch and update stored data
-async function updateStoredData() {
+
+async function fetchTournamentData(tournamentId) {
     try {
-        const response = await fetch('/blockchain/');
+        const response = await fetch(`/get_tournament/${tournamentId}/`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
-        const storedDataContainer = document.getElementById('storedData');
-        storedDataContainer.innerHTML = data.stored_data.map(value => `<p>Value: ${value}</p>`).join('');
+        if (data.status === 'success') {
+            const tournamentData = data.tournament_data;
+            console.log('Tournament Data:', tournamentData);
+            return tournamentData;
+        } else {
+            console.error('Error:', data.message);
+            throw new Error(data.message);
+        }
     } catch (error) {
-        console.error('Failed to fetch stored data:', error);
+        console.error('Fetch Error:', error.message);
     }
 }
 
-// Function to initialize the page
-function initializePage() {
-    // Fetch stored data immediately when the page loads
-    updateStoredData();
-
-    // Fetch stored data every 5 seconds (adjust as needed)
-    setInterval(updateStoredData, 5000);
-
-    document.getElementById('setDataForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const response = await fetch('/blockchain/', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: formData
-        });
-        const text = await response.text();
-        console.log('Raw response:', text);
-        try {
-            const result = JSON.parse(text);
-            if (result.status === 'success') {
-                alert('Transaction sent: ' + result.transaction_hash);
-                // Refresh the stored data immediately
-                updateStoredData();
-            } else {
-                alert('Error: ' + result.message);
-            }
-        } catch (error) {
-            console.error('Failed to parse JSON:', error);
-            alert('Unexpected response from server. Check console for details.');
+export function createTournament(matches) {
+    fetch('/create_tournament/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ matches })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json();  // Parse the JSON response
+    })
+    .then(result => {
+        if (result.status === 'success') {
+            console.log('Tournament created successfully');
+            console.log('Transaction hash:', result.transaction_hash);
+        } else {
+            console.error('Error creating tournament:', result.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error in createTournament:', error);
     });
 }
 
-// Call initializePage when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', initializePage);
+async function getAllTournaments() {
+    const token = sessionStorage.getItem('host_auth_token');
+    try {
+        const response = await fetch('/all-tournaments/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            }
+        });
+        if (response.status === 403) {  
+            return null;
+        }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.status === 'success') {
+            return data.tournaments;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        return null;
+    }
+}
 
 function getCookie(name) {
     let cookieValue = null;
