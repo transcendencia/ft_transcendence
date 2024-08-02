@@ -575,14 +575,7 @@ else
     const hostId = sessionStorage.getItem('host_id');
     
     logoutAllGuest(hostId);
-    // logoutUser(token);
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", '/logout/', false);  // false makes it synchronous
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Token ${token}`);
-    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
-    xhr.send();
-    clearHostValuesFromSessionStorage();
+    logoutUser(token);
     });
 }
 
