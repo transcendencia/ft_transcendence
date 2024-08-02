@@ -200,6 +200,12 @@ cancelTournamentButton.addEventListener('click', () => {
     });
   }
 
+  export function removeUserFromTournament(playerId) {
+    const playerIndex = tournamentPlayer.findIndex(player => player.playerId === playerId);
+    if (playerIndex !== -1)
+      tournamentPlayer.splice(playerIndex, 1);
+  }
+
   export function toggleThirdPlayerMode() {
     if (thirdPlayerMode === false)
       thirdPlayerMode = true;
