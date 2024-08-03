@@ -32,17 +32,22 @@ class FriendRequestView(APIView):
             if not isinstance(data, dict):
                 return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
         except json.JSONDecodeError:
-            return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
         except UnicodeDecodeError:
             return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 
-        try:
-            sender = request.user
+        sender = request.user
 
-            receiver_id = data.get('receiver_id')
-            if receiver_id is None:
-                return Response({'message': "Receiver ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
+        receiver_id = data.get('receiver_id')
+        if receiver_id is None:
+            return Response({'message': "Receiver ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            receiver_id = int(receiver_id)
+        except ValueError:
+            return Response({'message': 'Invalid User ID format'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
             bot = get_object_or_404(User, username="bot")
             if receiver_id == sender.id or receiver_id == bot.id:
                 return Response({'message': "Invalid ID"}, status=status.HTTP_400_BAD_REQUEST)
@@ -67,7 +72,7 @@ class FriendRequestView(APIView):
             if not isinstance(data, dict):
                 return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
         except json.JSONDecodeError:
-            return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
         except UnicodeDecodeError:
             return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 
@@ -103,7 +108,7 @@ class FriendRequestView(APIView):
             if not isinstance(data, dict):
                 return Response({'status': "error", 'message': "Request body must be a JSON object"}, status=status.HTTP_400_BAD_REQUEST)
         except json.JSONDecodeError:
-            return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': "error", 'message': "Invalid JSON in request body"}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
         except UnicodeDecodeError:
             return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 

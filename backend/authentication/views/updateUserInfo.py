@@ -39,9 +39,9 @@ class UserGraphicModeView(APIView):
     try:
       data = json.loads(request.body)
       if not isinstance(data, dict):
-            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=415)
+            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     except json.JSONDecodeError:
-        return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=415)
+        return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     except UnicodeDecodeError:
         return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 
@@ -70,9 +70,9 @@ class UserLanguageView(APIView):
     try:
       data = json.loads(request.body)
       if not isinstance(data, dict):
-            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=415)
+            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     except json.JSONDecodeError:
-        return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=415)
+        return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     except UnicodeDecodeError:
         return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 
@@ -101,7 +101,7 @@ class UserStatusView(APIView):
         try:
             data = json.loads(request.body.decode('utf-8'))
         except json.JSONDecodeError:
-            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=415)
+            return JsonResponse({'message': 'Invalid JSON format. Please send data in JSON format.'}, status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
         except UnicodeDecodeError:
             return JsonResponse({'message': 'Invalid Unicode in request body.'}, status=400)
 

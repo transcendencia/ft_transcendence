@@ -13,7 +13,6 @@ class StatsView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def get(self, request, userId=None):
-        print(userId)
         if userId is None:
             return Response({'message': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 
