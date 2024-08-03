@@ -74,7 +74,7 @@ const trnmtLaunchBackButton = document.getElementById('trnmtLaunchBackButton');
 const cancelTournamentButton = document.getElementById('cancelTournamentButton');
 const trnmtNextMatch = document.getElementById('next-match');
 const trnmtLaunchMatch = document.getElementById('launchMatch');
-
+const showTournamentResult = document.getElementById('showTournamentResult');
 
 function translateTournamentPageTexts() {
     for (let i = 0; i < trnmtPlayerTexts.length; i++)
@@ -94,6 +94,7 @@ function translateTournamentPageTexts() {
     cancelTournamentButton.textContent = getTranslatedText('cancelTournamentButton');
     trnmtNextMatch.textContent = getTranslatedText('nextMatch');
     trnmtLaunchMatch.textContent = getTranslatedText('launchMatch');
+    showTournamentResult.textContent = getTranslatedText('showTournamentText')
 }
 
 const loginText = document.getElementById('loginText');
@@ -251,15 +252,20 @@ const arenaBackLogInButton = document.getElementById('arenaBackLogInButton');
 const arenaLogInButton = document.getElementById('arenaLogInButton');
 const showAliasText = document.getElementById('showAliasText');
 const aliasLogInButton = document.getElementById('aliasLogInButton');
+const showBlockchainText = document.getElementById('showBlockchainText');
+const closeBlockchainPanel = document.getElementById('closeBlockchainPanel');
 
 function translatePopupWindow(){
     enterPasswordText.textContent = getTranslatedText('enterPasswordText');
     enterPasswordInput.placeholder = getTranslatedText('enterPasswordInput');
     arenaBackLogInButton.textContent = getTranslatedText('arenaBackLogInButton');
+    closeBlockchainPanel.textContent = getTranslatedText('arenaBackLogInButton');
     arenaLogInButton.textContent = getTranslatedText('arenaLogInButton');
     
     showAliasText.textContent = getTranslatedText('showAliasText');
     aliasLogInButton.textContent = getTranslatedText('aliasLogInButton');
+
+    showBlockchainText.textContent = getTranslatedText('blockchainText')
 }
 
 export function TranslateAllTexts() {

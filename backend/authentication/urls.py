@@ -6,6 +6,8 @@ from .views.friendship import FriendRequestView, FriendListView
 from .views.authentication import LogoutView
 from .views.stats import StatsView
 
+from blockchain.views import create_tournament_view, all_tournaments_view
+
 urlpatterns = [
 	path('', authentication.index, name='index'),
 
@@ -42,4 +44,7 @@ urlpatterns = [
     # path('get_game_info/', gameInfo.get_game_info, name='get_game_info'),
     #rgpd.py
     path('generateDataFile/', rgpd.generateDataFile, name='generateDataFile'),
+
+    path('create_tournament/', create_tournament_view, name='create_tournament'),
+    path('all-tournaments/', all_tournaments_view, name='all_tournaments'),
 ]

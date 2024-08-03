@@ -295,12 +295,12 @@
       </div>
     </div>
 
-
-
-
-
-
-
+    <div class="enterPasswordWindow" style="width: 80%; height: 80%;">
+      <div id="showBlockchainText" class="validateDeleteText">Tournament Stored in the blockchain:</div>
+      <div id="allTournamentTab" class="tournamentTab">
+      </div>
+      <div id="closeBlockchainPanel" class="validateDeleteButton" style="border: 4px solid #ff3737; background-color: #ff373771; color: #ff3737;">Back</div>
+    </div>
 
 
     <!-- USER PLANET -->
@@ -529,7 +529,7 @@
                       </div>
                     </div>
                     <div class="profilePicContainer">
-                      <div id="changeProfilePicture" class= "changeProfilePicture">Photo de profil:</div>
+                      <div id="changeProfilePicture" class= "changeProfilePicture">Profile picture:</div>
                       <input type="file" style="display: none;" id="profile-pic" name="profile-pic" accept="image/*"></input>
                       <label id="chooseProfilePic" for="profile-pic"  class="profilePicButton">Choose file</label>
                     </div>
@@ -665,10 +665,13 @@
               <div id="error_msg" class="errorMsg"></div>
             </div>
             <div class="rightColumnBottomRight before-launch">
-              <div class="switch"  id="thirdPlayertoggleSwitch">
-                <div class="slider"></div>
+              <div id="showTournamentResult" class="smallButton">Show tournament result</div>
+              <div style="display: flex; flex-direction: row;">
+                <div class="switch"  id="thirdPlayertoggleSwitch">
+                  <div class="slider"></div>
+                </div>
+                <div id="thirdPlayerText" class="basicText" style="padding-left: 10px;">Third Player</div> 
               </div>
-              <div id="thirdPlayerText" class="basicText" style="padding-left: 10px;">Third Player</div> 
             </div>
           </div>
           <!-- when the tournament is launch -->
@@ -1058,7 +1061,7 @@
     <script type="module" src="{% static 'tournament/js/gameData.js' %}"></script>
     <script type="module" src="{% static 'tournament/js/newTournament.js' %}"></script>
     <script type="module" src="{% static 'tournament/js/bracket.js' %}"></script>
-
+    <script type="module" src="{% static 'tournament/js/blockchain.js' %}"></script>
 
 </body>
 </html>

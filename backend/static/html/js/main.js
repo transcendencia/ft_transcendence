@@ -522,6 +522,8 @@ export function togglePause() {
 export const blockingPanel = document.getElementById('blockingPanel');
 export const passwordWindow = document.querySelectorAll(".enterPasswordWindow")[0];
 export const aliasWindow = document.querySelectorAll(".enterPasswordWindow")[1];
+export const blockchainWindow = document.querySelectorAll(".enterPasswordWindow")[2];
+
 const deleteWindow = document.getElementById("validateDelete");
 
 
@@ -558,6 +560,7 @@ export function panelRemove(){
     passwordWindow.classList.remove('showRectangle');
     aliasWindow.classList.remove('showRectangle');
     deleteWindow.classList.remove('showRectangle');
+    blockchainWindow.classList.remove('showRectangle');
 }
 
 function returnToSun() {
