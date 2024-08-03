@@ -11,8 +11,9 @@ import json
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.authentication import TokenAuthentication
 
-@csrf_exempt
-@require_http_methods(["POST"])
+# @csrf_exempt
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
 def create_tournament_view(request):
     try:
         data = json.loads(request.body)
@@ -48,43 +49,7 @@ def create_tournament_view(request):
             'status': 'error',
             'message': str(e)
         }, status=400)
-
-@require_http_methods(["GET"])
-def get_tournament_view(request, tournament_id):
-    try:
-        tournament_data = get_tournament(int(tournament_id))
-        
-        if tournament_data:
-            formatted_data = [
-                {
-                    'tournamentPhase': match[0],
-                    'player1Id': match[1],
-                    'scorePlayer1': match[2],
-                    'scorePlayer2': match[3],
-                    'player2Id': match[4],
-                    'player3Id': match[5],
-                    'isPlayer2NoPlayer': match[6],
-                    'isPlayer3NoPlayer': match[7]
-                }
-                for match in tournament_data
-            ]
-            return JsonResponse({
-                'status': 'success',
-                'tournament_data': formatted_data
-            })
-        else:
-            return JsonResponse({
-                'status': 'error',
-                'message': 'Tournament not found'
-            }, status=404)
     
-    except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': str(e)
-        }, status=400)
-    
-
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 def all_tournaments_view(request):

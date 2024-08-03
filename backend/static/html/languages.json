@@ -142,7 +142,12 @@
         "arenaLogInButton": "Log in",
         "showAliasText": "This is your alias for the tournament:",
         "aliasLogInButton": "Ok",
-        "tooManyGuest": "Too many guest"
+        "tooManyGuest": "Too many guest",
+
+        "showTournamentText": "Show tournament result",
+        "blockchainText": "Tournament stored in the blockchain:",
+        "noPlayer": "no player",
+        "unknown": "unknown"
     },
     "es": {
         "login": "Usuario",
@@ -285,7 +290,12 @@
         "arenaLogInButton": "Acceso",
         "showAliasText": "Este es tu alias para el torneo:",
         "aliasLogInButton": "De acuerdo",
-        "tooManyGuest": "Demasiados invitados"
+        "tooManyGuest": "Demasiados invitados",
+
+        "showTournamentText": "Mostrar resultado del torneo",
+        "blockchainText": "Torneo almacenado en la blockchain:",
+        "noPlayer": "ningun jugador",
+        "unknown": "desconocido"
     },
     "fr": {
         "login": "Nom d'Utilisateur",
@@ -431,6 +441,11 @@
         "arenaLogInButton": "Connexion",
         "showAliasText": "Voici votre alias pour le tournoi:",
         "aliasLogInButton": "Nickel",
-        "tooManyGuest": "Trop d'invités"
+        "tooManyGuest": "Trop d'invités",
+
+        "showTournamentText": "Afficher le resultat du tournoi",
+        "blockchainText": "Tournoi stocke dans la blockchain:",
+        "noPlayer": "pas de joueur",
+        "unknown": "inconnu"
     }
 }
