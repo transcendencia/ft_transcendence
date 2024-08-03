@@ -3,13 +3,12 @@ import { returnToHost } from './userPage.js';
 import { toggleLobbyStart, createUserBadge } from './main.js';
 import { spaceShip, spaceShipInt } from './objs.js';
 import { showPage } from "./showPages.js";
-import { getCookie, logoutUser } from './loginPage.js';
+import { clearHostValuesFromSessionStorage, getCookie, logoutUser, pingManager } from './loginPage.js';
 import { getProfileInfo, updateUserStatus, populateProfileInfos } from './userManagement.js';
 import { getTranslatedText } from "./translatePages.js";
 import { guestLoggedIn } from './arenaPage.js';
 import { resetTournament, toggleThirdPlayerMode, changeTournamentStatus } from '../../tournament/js/newTournament.js';
 import { changeColorMessage } from './signUpPage.js';
-import { clearHostValuesFromSessionStorage } from './loginPage.js';
 
 let isInfosShow = false;
 let anonymousStatus = false;
@@ -113,7 +112,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   .catch(error => {
       error;
   });
-
+  pingManager.destroyPingInterval();
   document.getElementById("validateDelete").classList.remove("showRectangle");
   changeTournamentStatus(2);
   resetTournament();

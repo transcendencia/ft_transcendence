@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.db import OperationalError, InterfaceError
+from django.db.models import Q
 
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -19,6 +21,7 @@ from ..models import User
 from ..serializers import UserSerializer, SignupSerializer
 from ..utils.constants import UserStatus
 from authentication.exceptions import PasswordValidationError
+import json
 
 def index(request):
   return render(request, 'index.html')
@@ -123,3 +126,23 @@ class LogoutView(APIView):
     
     except (OperationalError, InterfaceError):
       return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+def update_last_ping(request):
+  try:
+      # Update host's last_ping
+      request.user.last_ping = timezone.now()
+      request.user.save()
+      # Get connected users' IDs from request body
+      connected_user_ids = request.data.get('connectedUsersIDs', [])
+
+      # Update last_ping for connected users
+      User.objects.filter(
+          Q(id__in=connected_user_ids) | Q(id=request.user.id)
+      ).update(last_ping=timezone.now())
+
+      return Response({'message': 'Last ping updated successfully'}, status=status.HTTP_200_OK)
+  except (OperationalError, InterfaceError):
+      return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+  
