@@ -11,10 +11,11 @@ from blockchain.views import create_tournament_view, all_tournaments_view
 urlpatterns = [
 	path('', authentication.index, name='index'),
 
-    #authenitcation.py
+    #authentication.py
     path('login_page/', authentication.login_page, name='login_page'),
     path('signup/', authentication.signup, name='signup'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('update_last_ping/', authentication.update_last_ping, name="update_last_ping"),
 
     #updateUserInfo.py
     path('user/language/', UserLanguageView.as_view(), name='update_language'),

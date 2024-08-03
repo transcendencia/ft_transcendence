@@ -16,6 +16,7 @@ class User(AbstractUser):
   language = models.CharField(max_length=10, default='en')
   last_login_date = models.DateField(null=True, blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
+  last_ping = models.DateTimeField(null=True, blank=True)
 
   status = models.CharField(max_length=10, default='offline')
   profile_picture = models.ImageField(default='default.png')

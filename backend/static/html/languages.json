@@ -7,7 +7,7 @@
         "signUpHere": "Sign up here",
         "loginSuccessful": "You are now logged in!\nPress [E] to enter the galaxy",
         "loginFailed": "Username and/or password invalid",
-        "userAlreadyLoggedIn": "User already logged in",
+        "userAlreadyLoggedIn": "User already logged in, please retry later",
         "SPABackToLobby": "You were redirected back to lobby, all data from this previous game was lost.",
         "SPALoggedOut": "You've been logged out, keep in mind that any press on history arrows or any refresh of the page while being in the galaxy lobby will cause you to log out.",
 
@@ -158,7 +158,7 @@
         "enterPlanetText": "Presiona [E] para seleccionar",
         "loginSuccessful": "¡Ya has iniciado sesion!\nPresiona [E] para ingresar a la galaxia",
         "loginFailed": "Nombre de usuario y/o contraseña no validos",
-        "userAlreadyLoggedIn": "El usuario ya esta conectado",
+        "userAlreadyLoggedIn": "El usuario ya esta conectado, intentelo mas tarde",
         "SPABackToLobby": "Fuiste redirigido nuevamente al lobby y se perdieron todos los datos de la partida anterior.",
         "SPALoggedOut": "Se te ha cerrado la sesión, ten en cuenta que cualquier pulsación en las flechas del historial o una actualizacion de la pagina mientras estás en el lobby de la galaxia hará que cierres la sesión.",
 
@@ -305,7 +305,7 @@
         "signUpHere": "Inscris-toi ici",
         "loginSuccessful": "Vous êtes maintenant connecte !\nAppuyez sur [E] pour entrer dans la galaxie",
         "loginFailed": "Nom d'utilisateur et/ou mot de passe invalide",
-        "userAlreadyLoggedIn": "Utilisateur déjà connecte",
+        "userAlreadyLoggedIn": "Utilisateur déjà connecte, essayez plus tard",
         "SPABackToLobby": "Vous avez ete redirige au lobby, toute donnee de la partie precedente a ete perdue.",
         "SPALoggedOut": "Vous avez ete deconnecte, souvenez vous bien que nimporte quel clic sur une fleche d'historique ou une actualisation de la page dans le lobby/galaxy vous deconnectera.",
 
