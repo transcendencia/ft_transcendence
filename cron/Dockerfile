@@ -7,6 +7,7 @@ COPY . /backend/
 RUN apt-get update && apt-get install -y \
     postgresql-client \
     cron \
+    netcat-traditional \
     && pip install django psycopg2-binary \ 
     && apt-get clean \ 
     && rm -rf /var/lib/apt/lists/*

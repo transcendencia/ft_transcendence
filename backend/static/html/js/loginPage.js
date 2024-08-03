@@ -596,7 +596,6 @@ function synchronousLogout(token) {
 function handleBeforeUnload(event) {
     const isLoggingOut = localStorage.getItem('logging_out');
     if (!isLoggingOut) {
-        console.log("logging out");
         const token = sessionStorage.getItem('host_auth_token');
         const hostId = sessionStorage.getItem('host_id');
         

@@ -9,7 +9,7 @@ DOCKER_COMPOSE = docker-compose.yml
 all:
 	@mkdir -p backend/cert
 	@openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout backend/cert/key.pem -out backend/cert/cert.pem -subj "/CN=localhost" 
-	@docker compose -f ${DOCKER_COMPOSE} up --build
+	@docker compose -f ${DOCKER_COMPOSE} up  --build
 
 up: 
 	@docker compose -f ${DOCKER_COMPOSE} up
@@ -44,7 +44,7 @@ re: down
 
 
 migration:
-	 rm -rf backend/authentication/migrations
+	rm -rf backend/authentication/migrations
 	- @docker compose -f ${DOCKER_COMPOSE} down --rmi all -v --remove-orphans
 	- @find backend/media -type f ! -name 'default.png' ! -name 'botLogo.png' -delete
 	${MAKE} all

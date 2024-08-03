@@ -42,11 +42,11 @@ def login_page(request):
     
     if usernameLower == 'bot':
       return Response({'msg_code': "loginFailed"}, status=status.HTTP_400_BAD_REQUEST)
-    
     try:
       user = authenticate(username=usernameLower, password=password)
       if user is None:
         return  Response({'msg_code': "loginFailed"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
       if user.status != UserStatus.OFFLINE:
         return Response({'msg_code': "userAlreadyLoggedIn"}, status=status.HTTP_409_CONFLICT)

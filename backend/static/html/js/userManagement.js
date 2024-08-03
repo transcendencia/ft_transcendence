@@ -68,6 +68,27 @@ export function getProfileInfo(userId) {
     });
 }
 
+export async function getProfileInfoAsync(userId) {
+    const token = sessionStorage.getItem('host_auth_token');
+    if (!userId || !token)
+        return;
+    try {
+        const response = await fetch(`/user_info/${userId}/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Token ${token}`,
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Error retrieving user profile information');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        return null;
+    }
+}
+
 export function populateProfileInfos(data) {
     document.getElementById('username').textContent = data.profile_info.username;
     document.getElementById('alias').textContent = data.profile_info.alias;

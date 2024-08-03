@@ -5,6 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+import logging
+logger = logging.getLogger(__name__)
+
 import io
 from django.http import HttpResponse
 from rest_framework.response import Response

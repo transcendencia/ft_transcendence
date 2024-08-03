@@ -16,8 +16,6 @@ python manage.py makemigrations authentication
 python manage.py migrate
 python manage.py collectstatic --noinput
 
-
-
 python manage.py shell <<EOF
 from authentication.models import User
 from django.utils.crypto import get_random_string
