@@ -39,7 +39,6 @@ def login_page(request):
     
     if usernameLower == 'bot':
       return Response({'msg_code': "loginFailed"}, status=status.HTTP_400_BAD_REQUEST)
-    logging.info(f'Username: {user.username}, Status: {user.status}')
     try:
       user = authenticate(username=usernameLower, password=password)
       if user is None:
