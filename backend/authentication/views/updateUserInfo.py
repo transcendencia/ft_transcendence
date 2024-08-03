@@ -174,6 +174,10 @@ class UserInfoView(APIView):
             request.data.pop('profile-pic')
         if 'alias' in request.data:
             request.data['alias'] = ''
+        unique_username_response = generate_unique_username(request)
+        if unique_username_response.status_code != status.HTTP_200_OK:
+            return unique_username_response
+        request.data['username'] = unique_username_response.data['username']
 
     data = request.data.copy()
     if 'anonymousStatus' in data:
@@ -212,8 +216,8 @@ class UserInfoView(APIView):
     except (OperationalError, InterfaceError) as e:
             return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
+# @api_view(['GET'])
+# @authentication_classes([TokenAuthentication])
 def generate_unique_username(request):
     random_word = random.choice(words)
     random_item = random.choice(items)
