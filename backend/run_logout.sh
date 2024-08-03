@@ -10,10 +10,9 @@ then
 
     echo "PostgreSQL started"
 fi
-
+sleep 15
 # Run a Python script every 10 seconds
 while true; do
-
   python manage.py shell <<EOF
 from authentication.models import User
 from django.utils import timezone
