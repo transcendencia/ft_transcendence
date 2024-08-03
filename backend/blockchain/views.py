@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .contract_interaction import create_tournament, get_tournament, get_all_tournaments
+from .contract_interaction import create_tournament, get_all_tournaments
 
 
 from django.http import JsonResponse
@@ -11,7 +11,6 @@ import json
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.authentication import TokenAuthentication
 
-# @csrf_exempt
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def create_tournament_view(request):
@@ -30,7 +29,7 @@ def create_tournament_view(request):
              bool(match['isPlayer3NoPlayer']))
             for match in matches
         ]
-        
+
         receipt = create_tournament(formatted_matches)
         if receipt:
             return JsonResponse({
@@ -49,7 +48,7 @@ def create_tournament_view(request):
             'status': 'error',
             'message': str(e)
         }, status=400)
-    
+
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 def all_tournaments_view(request):

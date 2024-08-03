@@ -29,13 +29,14 @@ CONTRACT_ABI = [
 ]
 
 contract = w3.eth.contract(address=CONTRACT_ADDRESS, abi=CONTRACT_ABI)
+# print(f"Contract: {contract}")
 
 def create_tournament(matches):
     try:
         nonce = w3.eth.get_transaction_count(SENDER_ADDRESS)
         create_tournament_function = contract.functions.createTournament(matches)
         gas_estimate = create_tournament_function.estimate_gas({'from': SENDER_ADDRESS})
-        print(f"Gas estimate: {gas_estimate}")
+        # print(f"Gas estimate: {gas_estimate}")
         
         txn = create_tournament_function.build_transaction({
             'chainId': 11155111,  # Sepolia chain ID
@@ -44,28 +45,20 @@ def create_tournament(matches):
             'nonce': nonce,
             'from': SENDER_ADDRESS,
         })
-        print(f"Transaction built: {txn}")
+        # print(f"Transaction built: {txn}")
         
         signed_txn = w3.eth.account.sign_transaction(txn, PRIVATE_KEY)
-        print("Transaction signed")
+        # print("Transaction signed")
         
         tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-        print(f"Transaction sent. Hash: {tx_hash.hex()}")
+        # print(f"Transaction sent. Hash: {tx_hash.hex()}")
         
         tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-        print(f"Transaction receipt received: {tx_receipt}")
+        # print(f"Transaction receipt received: {tx_receipt}")
         
         return tx_receipt
     except Exception as e:
-        print(f"Error in create_tournament: {str(e)}")
-        traceback.print_exc()
-        return None
-
-def get_tournament(tournament_id):
-    try:
-        return contract.functions.getTournament(tournament_id).call()
-    except Exception as e:
-        print(f"Error in get_tournament: {str(e)}")
+        # print(f"Error in create_tournament: {str(e)}")
         traceback.print_exc()
         return None
 
@@ -103,6 +96,3 @@ def get_all_tournaments():
         traceback.print_exc()
         return None
     
-
-# Debugging: Check contract initialization
-print(f"Contract initialized: {contract}")

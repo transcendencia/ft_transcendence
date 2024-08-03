@@ -516,8 +516,6 @@ cancelTournamentButton.addEventListener('click', () => {
 }
 
   async function findWinner(){
-    // afterGameTournament(3, 0);
-    // return;  
     if (!currentMatch[nbMatch][1]){
       afterGameTournament(3, 0);
       return;

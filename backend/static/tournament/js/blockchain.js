@@ -1,12 +1,10 @@
 import { getTranslatedText } from "../../html/js/translatePages.js";
 import { getProfileInfoAsync } from "../../html/js/userManagement.js";
+import { getCookie } from "../../html/js/loginPage.js";
 
 const blockchainWindow = document.querySelectorAll(".enterPasswordWindow")[2];
 const showTournamentResult = document.getElementById("showTournamentResult");
 const blockingPanel = document.getElementById('blockingPanel');
-
-getTranslatedText('showTournamentText')
-getTranslatedText('blockchainText')
 
 showTournamentResult.addEventListener('click', async function() {
     blockchainWindow.classList.toggle("showRectangle");
@@ -16,7 +14,6 @@ showTournamentResult.addEventListener('click', async function() {
     const tournaments = await getAllTournaments();
     if (tournaments) {
         for (const tournament of tournaments) {
-            // console.log("tournament: ", tournament);
             const title = document.createElement('h2');
             const hyperTextHash = document.createElement('a');
             hyperTextHash.textContent = getTranslatedText('tournamentTitle') + " " + tournament.id + ":";
@@ -74,17 +71,6 @@ export function createTournament(matches) {
         }
         return response.json();
     })
-    .then(result => {
-        if (result.status === 'success') {
-            console.log('Tournament created successfully');
-            console.log('Transaction hash:', result.transaction_hash);
-        } else {
-            console.error('Error creating tournament:', result.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error in createTournament:', error);
-    });
 }
 
 async function getAllTournaments() {
@@ -113,19 +99,4 @@ async function getAllTournaments() {
     } catch (error) {
         return null;
     }
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
 }
