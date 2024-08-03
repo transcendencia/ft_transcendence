@@ -716,6 +716,7 @@ export function switchToGame(gameState, player1, player2, player3, isTournament)
 	if (gameState.arena != undefined)
 		gameState.arena.loadingScreen.activateLoadingScreen();
 	initGame(gameState, player1, player2, player3, isTournament);
+
 	clearInterval(checkEach5Sec);
 }
 
@@ -771,6 +772,7 @@ export function    initGame(gameState, player1, player2, player3, isTournament) 
 	  // const 
 	  gameState.arena.game.rightScore = 0;
 	  gameState.arena.game.leftScore = 0;
+
 	  gameState.arena.resetUI();
 	  gameState.arena.game.user1.setUser(player1.username, player1.playerId, player1.profile_picture);
 	  gameState.arena.game.user2.setUser(player2.username, player2.playerId, player2.profile_picture);

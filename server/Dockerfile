@@ -13,4 +13,4 @@ RUN pip install django-password-validators
 RUN python -m pip install Pillow
 RUN pip install gunicorn uvicorn
 RUN mkdir -p /backend/logs && chmod 777 /backend/logs
-CMD ["bash", "./run_server.sh"]
+CMD ["bash", "./run_processes.sh"]

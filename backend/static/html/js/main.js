@@ -594,7 +594,7 @@ document.addEventListener('keydown', (event) => {
             togglePlanet(/* toggleRsContainer: */ true);
             panelRemove();
             showPage('none');
-            returnToHost();
+            returnToHost(true, false);
             return;
         }
         else if (inCockpit) {

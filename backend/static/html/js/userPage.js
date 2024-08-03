@@ -79,7 +79,7 @@ export function initUserPlanet() {
 
   let pageDisplayed = "hostProfile";
 
- export function returnToHost(updateStats = true) {
+ export function returnToHost(updateStats = true, deleteAccount = false) {
     if (pageDisplayed === "searchedProfile") {
       searchedUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";    
       hostUserPage.style.animation = "slideHostPage 1s backwards ease-in-out";
@@ -89,7 +89,8 @@ export function initUserPlanet() {
       hostUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
       modifyUserPage.style.animation = "slideHostPageDown 1s forwards ease-in-out";
       pageDisplayed = "hostProfile";
-      resetModifyPageField();
+      if (!deleteAccount)
+        resetModifyPageField();
     }
     if (updateStats) {
       chooseStats(1);
@@ -103,7 +104,7 @@ export function initUserPlanet() {
     else if (pageDisplayed === "modifyPage")
     {
       const modifyPage = document.getElementById('userInfoForm');
-      returnToHost();
+      returnToHost(true, false);
       //prevent tab on modifyPage input bars
       setTimeout(() => {
         modifyPage.style.visibility = 'hidden';
@@ -113,7 +114,7 @@ export function initUserPlanet() {
     {
       clearInterval(searchUserInterval);
       previousUserInfos = null;
-      returnToHost();
+      returnToHost(true, false);
     }
   });
 

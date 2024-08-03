@@ -854,6 +854,10 @@ class Arena extends THREE.Mesh {
         }
     }
     resetUI() {
+        this.paddleLeft.isPowered = false;
+        this.paddleLeft.paddleMesh.material.color.set(this.getCurrentMap().paddleDefaultColor);
+        this.paddleRight.isPowered = false;
+        this.paddleRight.paddleMesh.material.color.set(this.getCurrentMap().paddleDefaultColor);
         for (let i = 0; i < scorePoints.length; i++) {
             scorePoints.item(i).style.borderColor = "#3777ff";
             scorePoints.item(i).style.backgroundColor = "#0008ff51";

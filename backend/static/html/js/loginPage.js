@@ -242,6 +242,51 @@ function appendFormData(formData, hostLoggedIn) {
         formData.append('languageClicked', languageIconsClicked);
     }
 }
+class PingManager {
+    constructor() {
+        this.pingInterval = null;
+    }
+
+    async launchPingInterval() {
+        this.pingInterval = setInterval(async () => {
+            await this.updatePingTime();
+        }, 5000);
+    }
+    async updatePingTime() {
+        // Uncomment and replace with your actual ping request
+        const connectedUsersIDs = guestLoggedIn.map(user => user[0].id);
+        const token = sessionStorage.getItem('host_auth_token');
+        const url = '/update_last_ping/'; // Adjust this URL to match your Django URL configuration
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+        };
+
+        try {
+            const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({ connectedUsersIDs: connectedUsersIDs })
+            });
+
+            if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+        } catch (error) {
+            console.error('Error updating last ping:', error);
+        }
+    };
+    destroyPingInterval() {
+        if (this.pingInterval !== null) {
+            clearInterval(this.pingInterval);
+            this.pingInterval = null; // Reset the interval ID
+        }
+    }
+}
+
+export const pingManager = new PingManager();
 
 function handleHostLogin(data){
     sessionStorage.setItem("hostLoggedIn", 'true');
@@ -268,7 +313,8 @@ function handleHostLogin(data){
     TranslateAllTexts();
     showPage('none');
     startAnimation();
-
+    pingManager.launchPingInterval();
+    pingManager.updatePingTime();
     emptyLoginField();
 }
 
@@ -439,7 +485,7 @@ export async function handleLogout(userId, token) {
         }
         if (landedOnPlanet) {
             if (planetInRange.name === "settings")
-                returnToHost();
+                returnToHost(true, false);
             clearInterval(checkEach5Sec);
             togglePlanet(/* toggleRsContainer: */ false);
             panelRemove();
@@ -453,6 +499,7 @@ export async function handleLogout(userId, token) {
         logoutUser(token);
         reactivateLoginFields();
         clearHostValuesFromSessionStorage();
+        pingManager.destroyPingInterval();
         setTimeout(() => {
             toggleLobbyStart();
             gameState.paused = false;
@@ -549,7 +596,6 @@ function synchronousLogout(token) {
 function handleBeforeUnload(event) {
     const isLoggingOut = localStorage.getItem('logging_out');
     if (!isLoggingOut) {
-        console.log("logging out");
         const token = sessionStorage.getItem('host_auth_token');
         const hostId = sessionStorage.getItem('host_id');
         
@@ -577,6 +623,7 @@ else
     logoutAllGuest(hostId);
     logoutUser(token);
     clearHostValuesFromSessionStorage();
+
     });
 }
 
