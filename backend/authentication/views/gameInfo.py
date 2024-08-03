@@ -72,7 +72,7 @@ def add_game(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
     except json.JSONDecodeError:
-        return JsonResponse({'status': 'fail', 'message': 'Invalid JSON format. Please send data in JSON format.'}, status=400)
+        return JsonResponse({'status': 'fail', 'message': 'Invalid JSON format. Please send data in JSON format.'}, status=415)
     except UnicodeDecodeError:
         return JsonResponse({'status': 'fail', 'message': 'Invalid Unicode in request body.'}, status=400)
 

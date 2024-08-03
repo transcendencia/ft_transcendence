@@ -89,7 +89,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   document.getElementById("validateDelete").classList.remove("showRectangle");
 
   fetch('delete_account/', {
-      method: 'POST',
+      method: 'DELETE',
       headers: {
           'Authorization': `Token ${token}`,
           'X-CRSFToken': getCookie('crsftoken')

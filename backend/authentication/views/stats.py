@@ -12,7 +12,11 @@ from ..models import User, UserStat, FriendRequest
 class StatsView(APIView):
     authentication_classes = [TokenAuthentication]
 
-    def get(self, request, userId):
+    def get(self, request, userId=None):
+        print(userId)
+        if userId is None:
+            return Response({'message': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             user = get_object_or_404(User, id=userId)
             all_games = UserStat.objects.filter(player=user).order_by('date')
