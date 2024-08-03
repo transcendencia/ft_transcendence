@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -26,6 +26,10 @@ def index(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_page(request):
+    content_type = request.META.get('CONTENT_TYPE', '')
+    if not content_type.startswith('multipart/form-data'):
+      return Response({'error': 'Unsupported Media Type'}, status=415)
+
     username = request.POST.get("username")
     password = request.POST.get("password")
 
@@ -79,7 +83,10 @@ def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
-  
+  content_type = request.META.get('CONTENT_TYPE', '')
+  if not content_type.startswith('multipart/form-data'):
+    return Response({'error': 'Unsupported Media Type'}, status=415)
+
   new_language = getLanguage(request.POST.get("language", "en"))
   
   try:

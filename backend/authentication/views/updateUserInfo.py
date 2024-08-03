@@ -5,7 +5,7 @@ from django.conf import settings
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.http import Http404
+from django.http import Http404, QueryDict
 from django.conf import settings
 from django.core.files.images import get_image_dimensions
 from PIL import Image
@@ -158,6 +158,10 @@ class UserInfoView(APIView):
             return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
   
   def post(self, request):
+    content_type = request.META.get('CONTENT_TYPE', '')
+    if not content_type.startswith('multipart/form-data'):
+      return Response({'error': 'Unsupported Media Type'}, status=415)
+
     anonymousStatus = request.data.get('anonymousStatus') == 'true'
 
     try:
