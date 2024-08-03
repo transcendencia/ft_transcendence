@@ -74,6 +74,9 @@ def generateDataFile(request):
         response = HttpResponse(buffer.getvalue(), content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
-    except Exception as e:
-        logger.error(f"Error generating file for user {request.user.username}: {str(e)}")
-        return HttpResponse(status=500)
+    
+    except Http404:
+        return Response({'status': "error", 'message': "Friend request not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    except (OperationalError, InterfaceError):
+        return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)

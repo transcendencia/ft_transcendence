@@ -52,7 +52,11 @@ def login_page(request):
       if user.status != UserStatus.OFFLINE:
         return Response({'msg_code': "userAlreadyLoggedIn"}, status=status.HTTP_409_CONFLICT)
         
-      updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
+      try:
+        updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
+      except (OperationalError, InterfaceError):
+        return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+      
       token, _ = Token.objects.get_or_create(user=user)
     
       return Response({
@@ -78,7 +82,7 @@ def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
       user.save()
     
     except (OperationalError, InterfaceError):
-      return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+      raise e
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

@@ -220,8 +220,6 @@ class UserInfoView(APIView):
     except (OperationalError, InterfaceError) as e:
             return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-# @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
 def generate_unique_username(request):
     random_word = random.choice(words)
     random_item = random.choice(items)
