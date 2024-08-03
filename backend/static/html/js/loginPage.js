@@ -485,7 +485,7 @@ export async function handleLogout(userId, token) {
         }
         if (landedOnPlanet) {
             if (planetInRange.name === "settings")
-                returnToHost();
+                returnToHost(true, false);
             clearInterval(checkEach5Sec);
             togglePlanet(/* toggleRsContainer: */ false);
             panelRemove();

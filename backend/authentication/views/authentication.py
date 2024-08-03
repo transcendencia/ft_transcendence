@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.http import HttpResponse, QueryDict
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -29,6 +28,10 @@ def index(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_page(request):
+    content_type = request.META.get('CONTENT_TYPE', '')
+    if not content_type.startswith('multipart/form-data'):
+      return Response({'error': 'Unsupported Media Type'}, status=415)
+
     username = request.POST.get("username")
     password = request.POST.get("password")
 
@@ -51,7 +54,11 @@ def login_page(request):
       if user.status != UserStatus.OFFLINE:
         return Response({'msg_code': "userAlreadyLoggedIn"}, status=status.HTTP_409_CONFLICT)
         
-      updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
+      try:
+        updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage)
+      except (OperationalError, InterfaceError):
+        return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+      
       token, _ = Token.objects.get_or_create(user=user)
     
       return Response({
@@ -77,12 +84,15 @@ def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
       user.save()
     
     except (OperationalError, InterfaceError):
-      return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+      raise e
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
-  
+  content_type = request.META.get('CONTENT_TYPE', '')
+  if not content_type.startswith('multipart/form-data'):
+    return Response({'error': 'Unsupported Media Type'}, status=415)
+
   new_language = getLanguage(request.POST.get("language", "en"))
   
   try:

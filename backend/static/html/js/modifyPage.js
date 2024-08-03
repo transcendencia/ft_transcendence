@@ -44,7 +44,7 @@ function handleChangeInfoForm(event) {
   .then(data => {
     getProfileInfo(sessionStorage.getItem("host_id"))
     .then(data => {
-        //reset user in Matcjh
+        //reset user in Match
         populateProfileInfos(data);
         createUserBadge(data, "playersConnHostBadge");
       })
@@ -88,7 +88,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   document.getElementById("validateDelete").classList.remove("showRectangle");
 
   fetch('delete_account/', {
-      method: 'POST',
+      method: 'DELETE',
       headers: {
           'Authorization': `Token ${token}`,
           'X-CRSFToken': getCookie('crsftoken')
@@ -117,7 +117,7 @@ document.getElementById('deleteAccountConfirmation').addEventListener("click", f
   changeTournamentStatus(2);
   resetTournament();
   togglePlanet(/* toggleRsContainer: */ false);
-  returnToHost(/* updateStats: */ false);
+  returnToHost(/* updateStats: */ false, /* deleteAccount */ true);
   returnToLoginPageInSpaceship();
 });
 
@@ -129,22 +129,14 @@ function deleteAccount() {
 }
 
 const toggleSwitch = document.getElementById('toggleSwitch');
-let oldUsername;
-let toggleSwitchClicked = false;
 
 toggleSwitch.addEventListener('click', function() {
     this.classList.toggle('active');
     if (this.classList.contains('active')) {
       anonymousStatus = true;
-      if (!toggleSwitchClicked) {
-        toggleSwitchClicked = true;
-        oldUsername = document.getElementById('changeUsernameInput').value;
-      }
-      getRandomUsername();
     }
     else {
       anonymousStatus = false;
-      document.getElementById('changeUsernameInput').value = oldUsername;
     }
 });
 
@@ -153,29 +145,6 @@ thirdPlayerToggleSwitch.addEventListener('click', function() {
     this.classList.toggle('active');
     toggleThirdPlayerMode();
 });
-
-
-export function getRandomUsername() {
-  const token = sessionStorage.getItem('host_auth_token');
-  fetch('generate_unique_username/', {
-      method: 'GET',
-      headers: {
-          'Authorization': `Token ${token}`
-      }
-  })
-  .then(response => {
-    if (!response.ok) {
-      return response.json().then(err => Promise.reject(err));
-    }
-    return response.json();})
-  .then(data => {
-    document.getElementById('changeUsernameInput').value = data.username;
-  })
-  .catch(error => {
-      var changeInfoMessage = document.getElementById('changeInfoMessage');
-      changeInfoMessage.innerText = getTranslatedText(error.msg_code);
-  });
-};
 
 const RGPDPage = document.getElementById('RGPDPage');
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');
@@ -263,8 +232,5 @@ export function resetModifyPageField(success = false) {
     document.getElementById('changeInfoMessage').innerText = '';
   }
   document.getElementById('LinkPicture').innerText = '';
-  toggleSwitchClicked = false;
   anonymousStatus = false;
-  const toggleSwitch = document.getElementById('toggleSwitch');
-  toggleSwitch.classList.remove('active');
 }
