@@ -146,6 +146,10 @@ export function initUserPlanet() {
         searchedUserPage.style.animation = "slideDiagonally 0.5s forwards ease-in-out";    
         modifyUserPage.style.animation = "slideDiagonally 0.5s forwards ease-in-out";
         pageDisplayed = "searchedProfile";
+        const modifyPage = document.getElementById('userInfoForm');
+        setTimeout(() => {
+          modifyPage.style.visibility = 'hidden';
+        }, 1000);
       }
       else {
         searchedUserPage.style.animation = "slideUserPageUp 0.25s forwards ease-in";

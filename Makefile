@@ -7,9 +7,9 @@ DOCKER_COMPOSE = docker-compose.yml
 # # ---- Launch rules ---- #
 
 all:
-	@docker compose -f ${DOCKER_COMPOSE} up -d --build
 	@mkdir -p backend/cert
 	@openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout backend/cert/key.pem -out backend/cert/cert.pem -subj "/CN=localhost" 
+	@docker compose -f ${DOCKER_COMPOSE} up -d --build
 
 up: 
 	@docker compose -f ${DOCKER_COMPOSE} up

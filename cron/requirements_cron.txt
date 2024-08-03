@@ -1,17 +1,13 @@
 Django==4.2.11
-asgiref==3.7.2  # Updated to be compatible with Django 4.2.11
+asgiref==3.7.2
 psycopg2-binary==2.9.9
 sqlparse==0.5.0
-typing-extensions==4.9.0  # Updated to latest compatible version
+typing-extensions==4.9.0
 whitenoise==6.6.0
 python-dotenv==1.0.1
-fastapi==0.110.0  # Updated to latest version
+fastapi==0.110.0
 uvicorn==0.29.0
 django-crontab==0.7.1
 
-web3==6.15.1  # Updated to latest version
-eth-account==0.11.0  # Updated to be compatible with web3 6.15.1
-
-# Remove backports.zoneinfo as it's not needed for Python 3.9+
-# If you're using Python 3.8 or earlier, uncomment the following line:
-# backports.zoneinfo==0.2.1; python_version < "3.9"
+web3==6.15.1
+eth-account==0.11.0

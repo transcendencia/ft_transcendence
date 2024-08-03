@@ -60,10 +60,10 @@ class SignupSerializer(serializers.ModelSerializer):
 		if re.search(r'\s', value):
 			raise serializers.ValidationError(code="invalidWhitespacePassword")
 
-		try:
-			validate_password(value)
-		except ValidationError as e:
-			raise PasswordValidationError(detail=e.error_list[0])
+		# try:
+		# 	validate_password(value)
+		# except ValidationError as e:
+		# 	raise PasswordValidationError(detail=e.error_list[0])
 		return value
 
 	def validate_confirmation_password(self, value):
