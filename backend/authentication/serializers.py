@@ -42,7 +42,7 @@ class SignupSerializer(serializers.ModelSerializer):
 		super().__init__(*args, **kwargs)
 		for field_name, field in self.fields.items():
 			field_value = self.initial_data.get(field_name, None)
-			if field_value is None or len(field_value) == 0:
+			if field_value is None:
 				field.error_messages['blank'] = "All fields must be completed."
 	
 	def validate_username(self, value):
@@ -88,6 +88,10 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 	def	validate_username(self, value):
 		if value:
 			value = value.lower()
+			
+			if value != value.strip():
+				raise serializers.ValidationError(code="invalid_characters")
+
 			if len(value) > 13:
 				raise serializers.ValidationError(code="length_exceeded_username")
 			current_user = self.instance
@@ -118,6 +122,9 @@ class UpdateInfoSerializer(serializers.ModelSerializer):
 		
 		if value and not confirmation_password:
 			raise serializers.ValidationError(code="passwordError")
+
+		if re.search(r'\s', value):
+			raise serializers.ValidationError(code="invalidWhitespacePassword")
 
 		try:
 			validate_password(value)

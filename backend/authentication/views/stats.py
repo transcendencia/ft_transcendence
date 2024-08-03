@@ -1,13 +1,4 @@
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-
-from django.db.models import Sum, Q
-from rest_framework.views import APIView
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import authentication_classes
-from rest_framework import status
-from django.db.utils import OperationalError, InterfaceError
-from ..models import User, UserStat, FriendRequest
+from ..imports import *
 
 class StatsView(APIView):
     authentication_classes = [TokenAuthentication]

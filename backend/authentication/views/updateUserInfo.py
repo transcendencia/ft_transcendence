@@ -1,33 +1,5 @@
-import os
-import json
-import base64
-from django.conf import settings
-
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
-from django.http import Http404
-from django.conf import settings
-from django.core.files.images import get_image_dimensions
-from PIL import Image
-from django.core.exceptions import ValidationError
-from django.db import OperationalError
-
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view, authentication_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.response import Response
-from rest_framework import status
-
-from ..models import User
-from ..serializers import UpdateInfoSerializer
-from ..utils.constants import UserStatus
+from ..imports import *
 from .words import words, items
-from ..validators import ProfilePictureValidator
-from django.db import OperationalError, InterfaceError
-
-import random
-import json
 
 class UserGraphicModeView(APIView):
   authentication_classes = [TokenAuthentication]
@@ -158,6 +130,9 @@ class UserInfoView(APIView):
             return Response({'status': 'error', 'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
   
   def post(self, request):
+    if not isinstance(request.POST, QueryDict):
+      return Response({'msg_code': "invalidRequestFormat"}, status=status.HTTP_400_BAD_REQUEST)
+
     anonymousStatus = request.data.get('anonymousStatus') == 'true'
 
     try:
@@ -174,6 +149,11 @@ class UserInfoView(APIView):
             request.data.pop('profile-pic')
         if 'alias' in request.data:
             request.data['alias'] = ''
+
+        unique_username_response = generate_unique_username(request)
+        if unique_username_response.status_code != status.HTTP_200_OK:
+            return unique_username_response
+        request.data['username'] = unique_username_response.data['username']
 
     data = request.data.copy()
     if 'anonymousStatus' in data:
@@ -212,8 +192,6 @@ class UserInfoView(APIView):
     except (OperationalError, InterfaceError) as e:
             return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
 def generate_unique_username(request):
     random_word = random.choice(words)
     random_item = random.choice(items)

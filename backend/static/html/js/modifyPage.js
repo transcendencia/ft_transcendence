@@ -130,22 +130,22 @@ function deleteAccount() {
 }
 
 const toggleSwitch = document.getElementById('toggleSwitch');
-let oldUsername;
-let toggleSwitchClicked = false;
+// let oldUsername;
+// let toggleSwitchClicked = false;
 
 toggleSwitch.addEventListener('click', function() {
     this.classList.toggle('active');
     if (this.classList.contains('active')) {
       anonymousStatus = true;
-      if (!toggleSwitchClicked) {
-        toggleSwitchClicked = true;
-        oldUsername = document.getElementById('changeUsernameInput').value;
-      }
-      getRandomUsername();
+      // if (!toggleSwitchClicked) {
+        // toggleSwitchClicked = true;
+        // oldUsername = document.getElementById('changeUsernameInput').value;
+      // }
+      // getRandomUsername();
     }
     else {
       anonymousStatus = false;
-      document.getElementById('changeUsernameInput').value = oldUsername;
+      // document.getElementById('changeUsernameInput').value = oldUsername;
     }
 });
 
@@ -156,27 +156,27 @@ thirdPlayerToggleSwitch.addEventListener('click', function() {
 });
 
 
-export function getRandomUsername() {
-  const token = sessionStorage.getItem('host_auth_token');
-  fetch('generate_unique_username/', {
-      method: 'GET',
-      headers: {
-          'Authorization': `Token ${token}`
-      }
-  })
-  .then(response => {
-    if (!response.ok) {
-      return response.json().then(err => Promise.reject(err));
-    }
-    return response.json();})
-  .then(data => {
-    document.getElementById('changeUsernameInput').value = data.username;
-  })
-  .catch(error => {
-      var changeInfoMessage = document.getElementById('changeInfoMessage');
-      changeInfoMessage.innerText = getTranslatedText(error.msg_code);
-  });
-};
+// export function getRandomUsername() {
+//   const token = sessionStorage.getItem('host_auth_token');
+//   fetch('generate_unique_username/', {
+//       method: 'GET',
+//       headers: {
+//           'Authorization': `Token ${token}`
+//       }
+//   })
+//   .then(response => {
+//     if (!response.ok) {
+//       return response.json().then(err => Promise.reject(err));
+//     }
+//     return response.json();})
+//   .then(data => {
+//     document.getElementById('changeUsernameInput').value = data.username;
+//   })
+//   .catch(error => {
+//       var changeInfoMessage = document.getElementById('changeInfoMessage');
+//       changeInfoMessage.innerText = getTranslatedText(error.msg_code);
+//   });
+// };
 
 const RGPDPage = document.getElementById('RGPDPage');
 const RGPDPolicy = document.getElementById('RGPDPolicyInUserPage');

@@ -1,24 +1,4 @@
-from django.shortcuts import render
-from django.contrib.auth import authenticate
-from django.http import HttpResponse
-from django.utils import timezone
-from django.core.exceptions import ValidationError
-from django.db import IntegrityError
-from django.db import OperationalError, InterfaceError
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework import status
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.exceptions import ValidationError
-
-from ..models import User
-from ..serializers import UserSerializer, SignupSerializer
-from ..utils.constants import UserStatus
-from authentication.exceptions import PasswordValidationError
+from ..imports import *
 
 def index(request):
   return render(request, 'index.html')
@@ -26,6 +6,9 @@ def index(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_page(request):
+    if not isinstance(request.POST, QueryDict):
+      return Response({'msg_code': "invalidRequestFormat"}, status=status.HTTP_400_BAD_REQUEST)
+
     username = request.POST.get("username")
     password = request.POST.get("password")
 
@@ -79,6 +62,8 @@ def updateUserLogin(user, isHostLoggedIn, isLanguageClicked, newLanguage):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
+  if not isinstance(request.POST, QueryDict):
+      return Response({'msg_code': "invalidRequestFormat"}, status=status.HTTP_400_BAD_REQUEST)
   
   new_language = getLanguage(request.POST.get("language", "en"))
   

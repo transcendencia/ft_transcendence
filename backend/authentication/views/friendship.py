@@ -1,24 +1,4 @@
-import os
-import json
-
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, JsonResponse
-from django.db import OperationalError
-from django.http import Http404
-from django.utils.crypto import get_random_string
-from rest_framework.views import APIView
-from rest_framework.decorators import authentication_classes
-from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.response import Response
-from django.db.utils import OperationalError, InterfaceError
-
-from ..models import User, FriendRequest
-from ..serializers import UserSerializer, UserListSerializer
-from ..utils.constants import FriendRequestStatus
-from django.views.decorators.cache import never_cache
-from django.utils.decorators import method_decorator
+from ..imports import *
 
 class FriendRequestView(APIView):
     authentication_classes = [TokenAuthentication]

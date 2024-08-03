@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.core.validators import MaxLengthValidator
 from .validators import UsernameValidator
 import os
+
 class User(AbstractUser):
   username = models.CharField(max_length=13, unique=True,
         validators=[
