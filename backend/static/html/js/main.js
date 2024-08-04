@@ -18,7 +18,7 @@ import { inCockpit, moveCameraToBackOfCockpit } from './signUpPage.js';
 import { returnToHost } from './userPage.js'
 import { gameState } from '../../game/js/main.js';
 import { getTranslatedText } from './translatePages.js';
-import { logoutUser } from "./loginPage.js";
+import { logoutUser, pingManager } from "./loginPage.js";
 import { showAlert } from "./showPages.js";
 
 let cubeLoader = new THREE.CubeTextureLoader();
@@ -571,6 +571,8 @@ function returnToSun() {
 }
 
 document.addEventListener('keydown', (event) => {
+    if (pingManager !== undefined && pingManager.disconnected === true)
+        return ;
     if (event.key === 'p')
         returnToSun();
     if (event.key === 'Enter') {
@@ -665,6 +667,8 @@ function checkSpaceShipDistance() {
 
 
 function update() {
+    if (pingManager !== undefined && pingManager.disconnected === true)
+        return ;
     if (lobbyStart && !landedOnPlanet) {
         spaceShipMovement();
         updateRay();

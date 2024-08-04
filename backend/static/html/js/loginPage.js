@@ -247,10 +247,13 @@ class PingManager {
         this.pingInterval = null;
         this.lastPingTime = Date.now();
         this.pingDelay = 5000; // 5 seconds
+        this.pingFailedCount = 0;
+        this.disconnected = false;
     }
 
     async launchPingInterval() {
         const schedulePing = async () => {
+            if (this.disconnected) return;
             await this.updatePingTime();
             const now = Date.now();
             const elapsed = now - this.lastPingTime;
@@ -295,17 +298,26 @@ class PingManager {
 
             const data = await response.json();
         } catch (error) {
+            this.pingFailedCount++;
             if (error.name === 'AbortError') {
                 console.warn('Ping request timed out');
             } else {
                 console.error('Error updating last ping:', error);
             }
+            if (this.pingFailedCount >= 3) {
+                const disconnectedScreen = document.getElementById('disconnectedScreen');
+                disconnectedScreen.style.display = 'flex';
+                this.disconnected = true;
+                this.destroyPingInterval();
+            }
+               
         }
     }
     destroyPingInterval() {
         if (this.pingInterval !== null) {
             clearTimeout(this.pingInterval);
             this.pingInterval = null;
+            this.pingFailedCount = 0;
         }
     }
 }

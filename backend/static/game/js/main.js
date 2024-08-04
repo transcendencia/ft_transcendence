@@ -18,6 +18,7 @@ import { getTranslatedText } from '../../html/js/translatePages.js';
 import { endGame, rematchGame, refreshUserListIfChanged } from '../../html/js/arenaPage.js';
 import { updateUserGraphicMode } from '../../html/js/userManagement.js'
 import { setCheckerToInterval } from "./../../html/js/enterPlanet.js";
+import { pingManager } from "./../../html/js/loginPage.js";
 
 // FPS COUNTER
 const fpsCounter = document.getElementById('fps-counter');
@@ -4023,7 +4024,7 @@ function animate()
         if (gameState.inLobby)
             return ;
         TWEEN.update();
-        if (gameState.inGame && !gameState.paused)
+        if (gameState.inGame && !gameState.paused && !pingManager.disconnected)
         {
             gameState.arena.monitorArena();
             gameState.arena.thirdPlayer.monitorThirdPlayerMovement();
