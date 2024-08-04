@@ -1,5 +1,6 @@
 {
     "en": {
+        "disconnectedScreen": "You have been disconnected, please refresh the page",
         "login": "Login",
         "password": "Password",
         "loginLanguage": "Choose a language",
@@ -150,6 +151,7 @@
         "unknown": "unknown"
     },
     "es": {
+        "disconnectedScreen": "Ha sido desconectado, refresque la pagina",
         "login": "Usuario",
 		"password": "Contraseña",
         "loginLanguage": "Elige un idioma",
@@ -298,6 +300,7 @@
         "unknown": "desconocido"
     },
     "fr": {
+        "disconnectedScreen": "Vous avez ete deconnecte, veuillez rafraichir la page",
         "login": "Nom d'Utilisateur",
         "password": "Mot de Passe",
         "loginLanguage": "Choisis une langue",
