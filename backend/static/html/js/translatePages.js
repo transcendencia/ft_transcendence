@@ -27,7 +27,7 @@ export function getTranslatedText(key) {
             console.error('Current language ' + currentLanguage + 'not found in language file');
     }
 }
-
+const disconnectedScreen = document.getElementById('disconnectedScreen');
 const userlistText = document.getElementById('userlistText');
 const arenaTitleText = document.getElementById('arenaTitleText');
 const powerupsText = document.getElementById('gamemodeText');
@@ -44,6 +44,7 @@ const arenaInfoText = document.getElementById('arenaInfoBox');
 
 
 function translateArenaPageTexts() {
+    disconnectedScreen.textContent = getTranslatedText('disconnectedScreen');
     userlistText.textContent = getTranslatedText('userlist');
     arenaTitleText.textContent = getTranslatedText('arenaTitle');
     player1Text.textContent = getTranslatedText('player') + ' 1';
