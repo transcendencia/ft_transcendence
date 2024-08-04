@@ -51,6 +51,7 @@ function handleChangeInfoForm(event) {
     changeColorMessage('.changeInfoMessage', 'success')
     changeInfoMessage.innerText = getTranslatedText(data.msg_code);
     resetModifyPageField(true);
+    anonymousStatus = false;
   })
   .catch(error => {
     changeColorMessage('.changeInfoMessage', 'failure');
@@ -233,4 +234,6 @@ export function resetModifyPageField(success = false) {
   }
   document.getElementById('LinkPicture').innerText = '';
   anonymousStatus = false;
+  const toggleSwitch = document.getElementById('toggleSwitch');
+  toggleSwitch.classList.remove('active');
 }
