@@ -128,7 +128,7 @@ export function resetToPlusButton(userInfoCont, plusButton) {
 	userInfoCont.parentNode.replaceChild(plusButton, userInfoCont);
 }
 
-export function createUserInfoObject(tile, hoverEnabled = false) {
+export function createUserInfoObject(tile, mode, hoverEnabled = false) {
     const userInfoCont = document.createElement('div');
     userInfoCont.classList.add('userInfoCont');
 	if (hoverEnabled)
@@ -149,7 +149,10 @@ export function createUserInfoObject(tile, hoverEnabled = false) {
     
     const textSpan = document.createElement('span');
     textSpan.classList.add('default-text');
-    textSpan.textContent = tile.user.username;
+	if (mode == "tournament" && tile.user.alias != null && tile.user.alias.length != 0)
+    	textSpan.textContent = tile.user.alias;
+	else
+		textSpan.textContent = tile.user.username;
     userInfoCont.appendChild(textSpan);
 
     const hoverTextSpan = document.createElement('span');
@@ -188,8 +191,11 @@ export function putUserInMatch(plusButtonsArray, mode) {
 	const textCont = tile.HTMLelement.querySelector(".textContainer");
 
 	profileAdded[tile.user.id] = true;
-	const userBadge = createUserInfoObject(tile, true);
-	addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked, username: tile.user.username});
+	const userBadge = createUserInfoObject(tile, mode, true);
+	if (mode === 'tournament' && tile.user.alias != null && tile.user.alias.length != 0)
+		addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked, username: tile.user.alias});
+	else
+		addedPlayerBadges.push({userBadge: userBadge.userInfoCont, plusClicked, username: tile.user.username});
 	const plusClickedId = addedPlayerBadges[addedPlayerBadges.length - 1].plusClicked;
 	const plusButton = plusButtonsArray[plusClicked - 1];
 	plusButton.parentNode.replaceChild(userBadge.userInfoCont, plusButton);
@@ -200,7 +206,10 @@ export function putUserInMatch(plusButtonsArray, mode) {
 	resetAddingMode(mode);
 	addClickListenerToNewUserBadge(userBadge, plusButton, tile, plusClickedId, mode);
 	if (mode === 'tournament'){
-		addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
+		if (tile.user.alias === null || tile.user.alias.length == 0)
+			addUserToTournament(tile.user.id, tile.user.username, tile.user.profile_picture);
+		else
+			addUserToTournament(tile.user.id, tile.user.alias, tile.user.profile_picture);
 	}
 	else {
 		addUserToMatch(tile.user.id, tile.user.username, tile.user.profile_picture, thirdPlayer);
@@ -280,8 +289,8 @@ function addEventListenerToTile(tile, arena) {
 	passwordWindow.classList.toggle("showRectangle");
 	blockingPanel.classList.add("show");
 	userClickedId = tile.user.id;
-	const userBadge = createUserInfoObject(tile);
-	const userBadgeAlias = createUserInfoObject(tile);
+	const userBadge = createUserInfoObject(tile, planetInRange.name);
+	const userBadgeAlias = createUserInfoObject(tile, planetInRange.name);
 	passwordWindow.replaceChild(userBadge.userInfoCont, passwordWindow.querySelector('.userInfoCont'));
 	aliasWindow.replaceChild(userBadgeAlias.userInfoCont, aliasWindow.querySelector('.userInfoCont'));
 	});
@@ -291,7 +300,7 @@ export function setHostAsPlayerOne(user, mode) {
 	const usernameElement = document.getElementById(`player1${mode}Username`);
 	const pictureElement = document.getElementById(`player1${mode}Picture`);
 
-	if (mode === "Tournament" && user.alias !== null)
+	if (mode === "Tournament" && user.alias !== null && user.alias.length != 0)
 		usernameElement.textContent = user.alias;
 	else
 		usernameElement.textContent = user.username;
@@ -300,7 +309,7 @@ export function setHostAsPlayerOne(user, mode) {
 	
 	if (mode === 'Tournament'){
 		resetTournamentPlayer();
-		if (user.alias === null)
+		if (user.alias === null || user.alias.length == 0)
 			addUserToTournament(user.id, user.username, user.profile_picture);
 		else
 			addUserToTournament(user.id, user.alias, user.profile_picture);

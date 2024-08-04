@@ -123,6 +123,7 @@ export function resetTournament() {
   profileAdded.length = 0;
   addedPlayerBadges.length = 0;
   tournamentPlayer.length = 0;
+  allMatch.length = 0;
   tournamentState = 0;
   round = 1;
   getProfileInfo(sessionStorage.getItem("host_id"))
@@ -178,7 +179,7 @@ cancelTournamentButton.addEventListener('click', () => {
   export function askForAlias(user){
     aliasWindow.classList.toggle("showRectangle");
     const aliasText = document.getElementById('aliasText');
-    if (user.alias === null)
+    if (user.alias === null || user.alias.length == 0)
       aliasText.textContent = user.username;
     else
       aliasText.textContent = user.alias;
@@ -257,7 +258,7 @@ cancelTournamentButton.addEventListener('click', () => {
     tournamentState = 2;
     allMatch = formatAllMatches(allMatch);
     createTournament(allMatch);
-
+    allMatch.length = 0;
     tournamentPlayer.forEach(function(player){
       if (player.position === 0)
         player.position = 1;
@@ -281,7 +282,7 @@ cancelTournamentButton.addEventListener('click', () => {
 
   let allMatch = [];
 
-  function storeAllMatchs(current, all) {
+  function storeAllMatchs(current) {
     current = current.map(match => {
         match = match.map(item => {
             if (typeof item === 'object' && item !== null && 'myRef' in item)
@@ -306,8 +307,7 @@ cancelTournamentButton.addEventListener('click', () => {
           match.push(false);
         return match;
     });
-    all.push(...current);
-    return all;
+    allMatch.push(...current);
   }
 
   function formatAllMatches(allMatch) {
@@ -332,7 +332,7 @@ cancelTournamentButton.addEventListener('click', () => {
     let playersInTournament = tournamentPlayer.filter(player => player.position === 0 && player.round == round);
     let j = 0;
     nbMatch = 0;
-    allMatch = storeAllMatchs(currentMatch, allMatch);
+    storeAllMatchs(currentMatch, allMatch);
     currentMatch = [];
     putFinalPosiionWhenLost(playersInTournament);
     if (playersInTournament.length == 1 || playersInTournament.length == 0){
@@ -420,7 +420,8 @@ cancelTournamentButton.addEventListener('click', () => {
       tournamentPhase = "1/2";
     else
       tournamentPhase = "1/4";
-    allMatch = [];
+    allMatch.length = 0;
+    currentMatch.length = 0;
     tournamentState = 1;
     updateElementDisplayAndText("error_msg", "");
     tournamentPlayer.forEach(function(player){

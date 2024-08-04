@@ -12,6 +12,11 @@ showTournamentResult.addEventListener('click', async function() {
     const allTournamentTab = document.getElementById('allTournamentTab');
     allTournamentTab.innerHTML = "";
     const tournaments = await getAllTournaments();
+    if (tournaments.length == 0){
+        const title = document.createElement('h2');
+        title.textContent = "No Data";
+        allTournamentTab.appendChild(title);
+    }
     if (tournaments) {
         for (const tournament of tournaments) {
             const title = document.createElement('h2');
