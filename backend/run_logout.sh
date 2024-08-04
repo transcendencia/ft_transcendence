@@ -22,7 +22,7 @@ from django.db.models import Q
 from datetime import timedelta
 
 now = timezone.now()
-fifteenSecondsAgo = now - timedelta(seconds=15)
+fifteenSecondsAgo = now - timedelta(seconds=21)
 
 usersToLogout = User.objects.filter(
     ~Q(last_ping__isnull=True) & Q(last_ping__lt=fifteenSecondsAgo) & ~Q(username="bot") & ~Q(status="offline")

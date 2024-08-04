@@ -245,43 +245,67 @@ function appendFormData(formData, hostLoggedIn) {
 class PingManager {
     constructor() {
         this.pingInterval = null;
+        this.lastPingTime = Date.now();
+        this.pingDelay = 5000; // 5 seconds
     }
 
     async launchPingInterval() {
-        this.pingInterval = setInterval(async () => {
+        const schedulePing = async () => {
             await this.updatePingTime();
-        }, 5000);
+            const now = Date.now();
+            const elapsed = now - this.lastPingTime;
+            const nextDelay = Math.max(0, this.pingDelay - (elapsed % this.pingDelay));
+            this.pingInterval = setTimeout(schedulePing, nextDelay);
+        };
+
+        schedulePing();
     }
+
     async updatePingTime() {
-        // Uncomment and replace with your actual ping request
+        const now = Date.now();
+        this.lastPingTime = now;
+        
         const connectedUsersIDs = guestLoggedIn.map(user => user[0].id);
         const token = sessionStorage.getItem('host_auth_token');
-        const url = '/update_last_ping/'; // Adjust this URL to match your Django URL configuration
+        if (!token) return;
+
+        const url = '/update_last_ping/';
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`
         };
 
         try {
+            // Use fetch with a timeout to ensure the request doesn't hang indefinitely
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000); // 4-second timeout
+
             const response = await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({ connectedUsersIDs: connectedUsersIDs })
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ connectedUsersIDs: connectedUsersIDs }),
+                signal: controller.signal
             });
 
+            clearTimeout(timeoutId);
+
             if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
         } catch (error) {
-            console.error('Error updating last ping:', error);
+            if (error.name === 'AbortError') {
+                console.warn('Ping request timed out');
+            } else {
+                console.error('Error updating last ping:', error);
+            }
         }
-    };
+    }
     destroyPingInterval() {
         if (this.pingInterval !== null) {
-            clearInterval(this.pingInterval);
-            this.pingInterval = null; // Reset the interval ID
+            clearTimeout(this.pingInterval);
+            this.pingInterval = null;
         }
     }
 }
