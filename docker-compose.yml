@@ -29,8 +29,6 @@ services:
       - "8000:8000"
     depends_on:
       - database
-    volumes:
-      - ./backend/:/backend
 
   cron:
     container_name: cron
@@ -44,16 +42,8 @@ services:
     depends_on:
       - database
       - server
-    volumes:
-      - ./backend/:/backend
+      
 volumes:
-  server_volume:
-    name: server_volume
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: $PWD/backend
   database_volume:
     name: database_volume
 

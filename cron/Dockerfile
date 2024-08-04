@@ -3,7 +3,9 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 WORKDIR /backend
 COPY requirements_cron.txt /backend
-COPY . /backend/
+COPY /backend /backend
+COPY launch_script.sh /backend
+COPY launch_cron.sh /backend
 RUN apt-get update && apt-get install -y \
     postgresql-client \
     cron \
@@ -23,5 +25,6 @@ RUN crontab /etc/cron.d/django-cron
 RUN mkdir -p /backend/logs && chmod 777 /backend/logs
 COPY launch_crontab.sh /etc/launch_crontab.sh
 RUN chmod +x /etc/launch_crontab.sh
-
+RUN chmod +x  /backend/launch_script.sh
+RUN chmod +x  /backend/launch_cron.sh
 CMD ["bash", "./launch_script.sh"]

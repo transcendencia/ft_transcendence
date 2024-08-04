@@ -1,0 +1,275 @@
+DEBUG 2024-08-04 12:25:52,846 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 12:25:53,088 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 12:25:53,101 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 12:25:53,101 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7ff26e6eb550>
+DEBUG 2024-08-04 12:25:53,102 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 12:25:53,485 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 12:25:53,485 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 12:25:53,486 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 12:25:53,486 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 12:25:53,598 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 12:25:53,598 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623000'}
+DEBUG 2024-08-04 12:25:54,386 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 12:25:54,644 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 12:25:54,657 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 12:25:54,657 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f62ff7815b0>
+DEBUG 2024-08-04 12:25:54,658 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 12:25:55,029 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 12:25:55,030 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 12:25:55,030 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 12:25:55,030 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 12:25:55,204 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 12:25:55,204 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623000'}
+DEBUG 2024-08-04 12:25:56,008 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 12:25:56,251 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 12:25:56,264 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 12:25:56,264 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f786a9fc700>
+DEBUG 2024-08-04 12:25:56,265 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 12:25:56,625 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 12:25:56,625 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 12:25:56,626 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 12:25:56,626 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 12:25:56,745 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 12:25:56,745 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623000'}
+DEBUG 2024-08-04 12:28:06,708 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 12:28:06,953 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 12:28:06,966 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 12:28:06,966 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f5e8b232580>
+DEBUG 2024-08-04 12:28:06,967 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 12:28:07,372 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 12:28:07,372 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 12:28:07,372 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 12:28:07,372 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 12:28:07,480 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 12:28:07,480 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623009'}
+DEBUG 2024-08-04 12:28:08,290 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 12:28:08,531 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 12:28:08,544 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 12:28:08,544 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f966facb6a0>
+DEBUG 2024-08-04 12:28:08,545 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 12:28:08,906 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 12:28:08,907 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 12:28:08,907 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 12:28:08,907 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 12:28:09,012 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 12:28:09,012 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623009'}
+DEBUG 2024-08-04 12:28:09,817 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 12:28:10,067 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 12:28:10,079 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 12:28:10,079 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f074dcb3790>
+DEBUG 2024-08-04 12:28:10,080 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 12:28:10,437 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 12:28:10,437 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 12:28:10,437 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 12:28:10,437 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 12:28:10,545 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 12:28:10,545 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623009'}
+DEBUG 2024-08-04 12:28:51,559 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 12:28:51,819 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 12:28:51,820 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f611daef880>
+DEBUG 2024-08-04 12:28:51,820 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 12:28:52,179 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 12:28:52,180 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 12:28:52,180 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 12:28:52,180 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 12:28:52,290 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 12:28:52,291 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x62300c'}
+WARNING 2024-08-04 12:29:03,694 log Bad Request: /signup/
+WARNING 2024-08-04 12:29:03,694 log Bad Request: /signup/
+DEBUG 2024-08-04 12:45:14,743 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 12:45:14,743 PngImagePlugin STREAM b'sBIT' 41 4
+DEBUG 2024-08-04 12:45:14,743 PngImagePlugin b'sBIT' 41 4 (unknown)
+DEBUG 2024-08-04 12:45:14,743 PngImagePlugin STREAM b'tEXt' 57 25
+DEBUG 2024-08-04 12:45:14,743 PngImagePlugin STREAM b'tEXt' 94 46
+DEBUG 2024-08-04 12:45:14,743 PngImagePlugin STREAM b'IDAT' 152 8192
+WARNING 2024-08-04 12:45:14,744 log Bad Request: /user_info/
+WARNING 2024-08-04 12:45:14,744 log Bad Request: /user_info/
+DEBUG 2024-08-04 12:45:15,742 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 12:45:15,742 PngImagePlugin STREAM b'sBIT' 41 4
+DEBUG 2024-08-04 12:45:15,742 PngImagePlugin b'sBIT' 41 4 (unknown)
+DEBUG 2024-08-04 12:45:15,742 PngImagePlugin STREAM b'tEXt' 57 25
+DEBUG 2024-08-04 12:45:15,742 PngImagePlugin STREAM b'tEXt' 94 46
+DEBUG 2024-08-04 12:45:15,742 PngImagePlugin STREAM b'IDAT' 152 8192
+WARNING 2024-08-04 12:45:15,743 log Bad Request: /user_info/
+WARNING 2024-08-04 12:45:15,743 log Bad Request: /user_info/
+DEBUG 2024-08-04 12:45:15,998 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 12:45:15,998 PngImagePlugin STREAM b'sBIT' 41 4
+DEBUG 2024-08-04 12:45:15,998 PngImagePlugin b'sBIT' 41 4 (unknown)
+DEBUG 2024-08-04 12:45:15,998 PngImagePlugin STREAM b'tEXt' 57 25
+DEBUG 2024-08-04 12:45:15,998 PngImagePlugin STREAM b'tEXt' 94 46
+DEBUG 2024-08-04 12:45:15,998 PngImagePlugin STREAM b'IDAT' 152 8192
+WARNING 2024-08-04 12:45:15,999 log Bad Request: /user_info/
+WARNING 2024-08-04 12:45:15,999 log Bad Request: /user_info/
+DEBUG 2024-08-04 12:45:16,245 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 12:45:16,245 PngImagePlugin STREAM b'sBIT' 41 4
+DEBUG 2024-08-04 12:45:16,245 PngImagePlugin b'sBIT' 41 4 (unknown)
+DEBUG 2024-08-04 12:45:16,245 PngImagePlugin STREAM b'tEXt' 57 25
+DEBUG 2024-08-04 12:45:16,246 PngImagePlugin STREAM b'tEXt' 94 46
+DEBUG 2024-08-04 12:45:16,246 PngImagePlugin STREAM b'IDAT' 152 8192
+WARNING 2024-08-04 12:45:16,246 log Bad Request: /user_info/
+WARNING 2024-08-04 12:45:16,246 log Bad Request: /user_info/
+WARNING 2024-08-04 12:54:46,368 log Bad Request: /signup/
+WARNING 2024-08-04 12:54:46,368 log Bad Request: /signup/
+DEBUG 2024-08-04 12:55:24,246 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 12:55:24,246 PngImagePlugin STREAM b'sBIT' 41 4
+DEBUG 2024-08-04 12:55:24,246 PngImagePlugin b'sBIT' 41 4 (unknown)
+DEBUG 2024-08-04 12:55:24,246 PngImagePlugin STREAM b'tEXt' 57 25
+DEBUG 2024-08-04 12:55:24,246 PngImagePlugin STREAM b'tEXt' 94 46
+DEBUG 2024-08-04 12:55:24,246 PngImagePlugin STREAM b'IDAT' 152 8192
+WARNING 2024-08-04 12:55:24,247 log Bad Request: /user_info/
+WARNING 2024-08-04 12:55:24,247 log Bad Request: /user_info/
+DEBUG 2024-08-04 12:55:30,372 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 12:55:30,372 PngImagePlugin STREAM b'sBIT' 41 4
+DEBUG 2024-08-04 12:55:30,372 PngImagePlugin b'sBIT' 41 4 (unknown)
+DEBUG 2024-08-04 12:55:30,372 PngImagePlugin STREAM b'tEXt' 57 25
+DEBUG 2024-08-04 12:55:30,373 PngImagePlugin STREAM b'tEXt' 94 46
+DEBUG 2024-08-04 12:55:30,373 PngImagePlugin STREAM b'IDAT' 152 8192
+WARNING 2024-08-04 12:55:30,373 log Bad Request: /user_info/
+WARNING 2024-08-04 12:55:30,373 log Bad Request: /user_info/
+DEBUG 2024-08-04 12:55:35,391 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 12:55:35,391 PngImagePlugin STREAM b'eXIf' 41 208
+DEBUG 2024-08-04 12:55:35,391 PngImagePlugin STREAM b'iCCP' 261 389
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin iCCP profile name b'ICC profile'
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin Compression method 0
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'iTXt' 662 3448
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'eXIf' 41 208
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'iCCP' 261 389
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin iCCP profile name b'ICC profile'
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin Compression method 0
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'iTXt' 662 3448
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'eXIf' 41 208
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'iCCP' 261 389
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin iCCP profile name b'ICC profile'
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin Compression method 0
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'iTXt' 662 3448
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'bKGD' 4122 6
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin b'bKGD' 4122 6 (unknown)
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'pHYs' 4140 9
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'tIME' 4161 7
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin b'tIME' 4161 7 (unknown)
+DEBUG 2024-08-04 12:55:35,392 PngImagePlugin STREAM b'IDAT' 4180 8192
+WARNING 2024-08-04 12:55:35,393 log Bad Request: /user_info/
+WARNING 2024-08-04 12:55:35,393 log Bad Request: /user_info/
+WARNING 2024-08-04 12:55:45,412 log Bad Request: /user_info/
+WARNING 2024-08-04 12:55:45,412 log Bad Request: /user_info/
+WARNING 2024-08-04 13:00:53,013 log Bad Request: /user_info/
+WARNING 2024-08-04 13:00:53,013 log Bad Request: /user_info/
+DEBUG 2024-08-04 13:01:38,221 PngImagePlugin STREAM b'IHDR' 16 13
+DEBUG 2024-08-04 13:01:38,221 PngImagePlugin STREAM b'sBIT' 41 4
+DEBUG 2024-08-04 13:01:38,221 PngImagePlugin b'sBIT' 41 4 (unknown)
+DEBUG 2024-08-04 13:01:38,221 PngImagePlugin STREAM b'tEXt' 57 25
+DEBUG 2024-08-04 13:01:38,221 PngImagePlugin STREAM b'tEXt' 94 46
+DEBUG 2024-08-04 13:01:38,221 PngImagePlugin STREAM b'IDAT' 152 8192
+WARNING 2024-08-04 13:01:38,222 log Bad Request: /user_info/
+WARNING 2024-08-04 13:01:38,222 log Bad Request: /user_info/
+DEBUG 2024-08-04 13:34:52,761 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:34:53,007 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 13:34:53,020 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:34:53,020 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f3da63b2550>
+DEBUG 2024-08-04 13:34:53,021 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:34:53,386 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:34:53,387 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:34:53,387 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:34:53,387 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:34:53,487 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:34:53,487 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x62312e'}
+DEBUG 2024-08-04 13:34:54,291 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:34:54,532 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 13:34:54,544 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:34:54,544 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f2c98140610>
+DEBUG 2024-08-04 13:34:54,545 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:34:54,900 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:34:54,900 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:34:54,900 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:34:54,900 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:34:55,010 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:34:55,010 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x62312e'}
+DEBUG 2024-08-04 13:34:55,811 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:34:56,056 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 13:34:56,069 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:34:56,069 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7fd1975bf790>
+DEBUG 2024-08-04 13:34:56,070 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:34:56,446 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:34:56,447 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:34:56,447 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:34:56,447 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:34:56,556 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:34:56,557 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x62312e'}
+DEBUG 2024-08-04 13:38:12,286 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:38:12,544 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 13:38:12,557 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:38:12,558 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7fcc93e0c5e0>
+DEBUG 2024-08-04 13:38:12,558 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:38:12,938 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:38:12,939 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:38:12,939 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:38:12,939 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:38:13,046 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:38:13,047 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x62313d'}
+DEBUG 2024-08-04 13:38:13,886 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:38:14,138 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 13:38:14,151 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:38:14,151 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7ff87cc185e0>
+DEBUG 2024-08-04 13:38:14,152 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:38:14,517 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:38:14,517 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:38:14,517 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:38:14,517 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:38:14,627 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:38:14,627 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x62313d'}
+DEBUG 2024-08-04 13:38:15,501 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:38:15,756 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 13:38:15,769 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:38:15,769 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f457a425790>
+DEBUG 2024-08-04 13:38:15,769 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:38:16,146 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:38:16,147 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:38:16,147 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:38:16,147 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:38:16,247 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:38:16,248 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x62313d'}
+DEBUG 2024-08-04 13:38:56,194 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:38:56,462 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:38:56,462 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7fa4e0062880>
+DEBUG 2024-08-04 13:38:56,463 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:38:56,822 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:38:56,822 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:38:56,822 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:38:56,822 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:38:56,926 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:38:56,926 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623140'}
+DEBUG 2024-08-04 13:46:43,256 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:46:43,604 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 13:46:43,619 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:46:43,620 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f3a2428d4f0>
+DEBUG 2024-08-04 13:46:43,620 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:46:43,984 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:46:43,984 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:46:43,984 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:46:43,984 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:46:44,105 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:46:44,105 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623161'}
+DEBUG 2024-08-04 13:46:45,263 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:46:45,651 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 13:46:45,667 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:46:45,667 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f558ae8b5b0>
+DEBUG 2024-08-04 13:46:45,667 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:46:46,030 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:46:46,031 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:46:46,031 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:46:46,031 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:46:46,146 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:46:46,147 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623161'}
+DEBUG 2024-08-04 13:46:47,212 codec Consider installing rusty-rlp to improve pyrlp performance with a rust basedbackend. Not currently functional for Python 3.11
+DEBUG 2024-08-04 13:46:47,551 selector_events Using selector: EpollSelector
+DEBUG 2024-08-04 13:46:47,567 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion
+DEBUG 2024-08-04 13:46:47,567 request Session cached: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, <requests.sessions.Session object at 0x7f85fbccc6d0>
+DEBUG 2024-08-04 13:46:47,568 connectionpool Starting new HTTPS connection (1): sepolia.infura.io:443
+DEBUG 2024-08-04 13:46:47,925 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 86
+DEBUG 2024-08-04 13:46:47,925 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'Geth/v1.13.15-stable-c5ba367e/linux-amd64/go1.21.9'}
+DEBUG 2024-08-04 13:46:47,926 manager Making request. Method: eth_blockNumber
+DEBUG 2024-08-04 13:46:47,926 rpc Making request HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber
+DEBUG 2024-08-04 13:46:48,027 connectionpool https://sepolia.infura.io:443 "POST /v3/e0507ac8ae16493b9c9384350fa9968a HTTP/11" 200 44
+DEBUG 2024-08-04 13:46:48,027 rpc Getting response HTTP. URI: https://sepolia.infura.io/v3/e0507ac8ae16493b9c9384350fa9968a, Method: eth_blockNumber, Response: {'jsonrpc': '2.0', 'id': 1, 'result': '0x623161'}

@@ -1,2 +1,2 @@
-0 3 * * * /etc/launch_crontab.sh
+* * * * * /etc/launch_crontab.sh
 
