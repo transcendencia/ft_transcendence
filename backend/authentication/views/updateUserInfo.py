@@ -224,6 +224,8 @@ class UserInfoView(APIView):
             return Response({'message': 'Database connection error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 def generate_unique_username(request):
+    if not words or not items:
+      return Response({'msg_code': "noRandomUsernameAvailable"}, status=status.HTTP_400_BAD_REQUEST)
     random_word = random.choice(words)
     random_item = random.choice(items)
     username = random_word + random_item
@@ -235,10 +237,6 @@ def generate_unique_username(request):
             random_word = random.choice(words)
             random_item = random.choice(items)
             username = random_word + random_item
-    for i in range(nbrUser + 1):
-        username = f"anonymous{i}"
-        if not User.objects.filter(username=username).exists():
-            return Response({'username': username}, status=status.HTTP_200_OK)
     return Response({'msg_code': "noRandomUsernameAvailable"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
