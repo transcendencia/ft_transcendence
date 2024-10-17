@@ -23,6 +23,7 @@ detach:
 
 down:
 	@docker compose -f ${DOCKER_COMPOSE} down
+	@rm -rf backend/cert
 
 
 # # ---- Clean rules ---- #
